@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
