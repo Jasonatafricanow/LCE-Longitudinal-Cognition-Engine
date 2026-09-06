@@ -5,6 +5,7 @@ from lce.contracts.baseline import (
     BaselineHistory,
     compute_content_hash,
     normalize_content,
+    validate_model_trace,
 )
 from lce.contracts.consolidation import (
     CandidateBaseline,
@@ -32,4 +33,5 @@ __all__ = [
     "UnauthorizedSourceError",
     "compute_content_hash",
     "normalize_content",
+    "validate_model_trace",
 ]

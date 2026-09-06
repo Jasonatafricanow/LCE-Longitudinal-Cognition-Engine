@@ -4,6 +4,7 @@ Verifies the frozen contracts, boundaries, and behaviors specified in
 LCE-V0-01 and LCE-V0-01R.
 """
 
+import ast
 import sqlite3
 from pathlib import Path
 
@@ -22,18 +23,50 @@ from lce.testing.fake_substrate import FakeMemorySubstrate
 # ---------------------------------------------------------------------------
 # T1 — External-memory-only
 # ---------------------------------------------------------------------------
-def test_t1_external_memory_only(lce_core: LceCore, sqlite_store: SqliteBaselineStore) -> None:
-    """Prove LCE receives Memory through dependency contract and stores NO raw memory table."""
+def test_t1_external_memory_only(
+    lce_core: LceCore,
+    sqlite_store: SqliteBaselineStore,
+    fake_substrate: FakeMemorySubstrate,
+    fake_consolidator: ScriptableFakeConsolidator,
+) -> None:
+    """Prove LCE receives Memory through dependency contract and stores NO raw memory table or raw content."""
+    sentinel = "RAW_MEMORY_SENTINEL_DO_NOT_PERSIST_93A7"
+    fake_substrate.add_memory(
+        "mem-sentinel-1",
+        f"Sensitive raw memory content containing {sentinel}.",
+        ("ev-1",),
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="User has notes.",
+            supporting_memory_ids=("mem-sentinel-1",),
+        )
+    )
+    lce_core.consolidate("region-sentinel", ("mem-sentinel-1",))
+
+    # Verify tables: strictly LCE internal tables and NO raw memory tables
     conn = sqlite3.connect(sqlite_store.db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name ASC")
     tables = [row[0] for row in cursor.fetchall()]
-    conn.close()
 
-    # Tables should only track LCE's own state (revisions, pointer head, ref mapping)
     assert set(tables) == {"baseline_revisions", "baselines_head", "baseline_memory_refs"}
     for forbidden in ("memories", "memory_items", "evidence", "observations", "propositions"):
         assert forbidden not in tables
+
+    # Verify sentinel text does not appear in any row of any table
+    for tbl in tables:
+        cursor.execute(f"SELECT * FROM {tbl}")
+        for row in cursor.fetchall():
+            for cell in row:
+                if isinstance(cell, str):
+                    assert sentinel not in cell, f"Raw memory sentinel leaked into table {tbl} cell: {cell}"
+
+    conn.close()
+
+    # Verify sentinel does not appear anywhere in the persisted SQLite binary file
+    db_bytes = sqlite_store.db_path.read_bytes()
+    assert sentinel.encode("utf-8") not in db_bytes, "Raw memory sentinel found in SQLite database bytes"
 
 
 # ---------------------------------------------------------------------------
@@ -287,7 +320,7 @@ def test_t9_restart_stability(
     fake_substrate: FakeMemorySubstrate,
     fake_consolidator: ScriptableFakeConsolidator,
 ) -> None:
-    """Recreating LCE against the same storage root restores the exact HEAD."""
+    """Recreating LCE against the same storage root restores the exact HEAD and full revision chain."""
     store1 = SqliteBaselineStore(tmp_path)
     core1 = LceCore(
         memory_substrate=fake_substrate,
@@ -295,13 +328,29 @@ def test_t9_restart_stability(
         consolidator=fake_consolidator,
     )
 
-    fake_substrate.add_memory("m1", "Durable memory", ("ev-1",))
-    fake_consolidator.queue_response(CandidateBaseline("Durable truth", ("m1",)))
+    fake_substrate.add_memory("m1", "Point 1", ("ev-1",))
+    fake_substrate.add_memory("m2", "Point 2", ("ev-2",))
+    fake_substrate.add_memory("m3", "Point 3", ("ev-3",))
+
+    # B1 (rev 1)
+    fake_consolidator.queue_response(CandidateBaseline("Understanding B1", ("m1",)))
     res1 = core1.consolidate("reg-restart", ("m1",))
     b1_id = res1.baseline.baseline_id
+
+    # B2 (rev 2)
+    fake_consolidator.queue_response(CandidateBaseline("Understanding B2", ("m1", "m2")))
+    res2 = core1.consolidate("reg-restart", ("m1", "m2"))
+    b2_id = res2.baseline.baseline_id
+
+    # B3 (rev 3)
+    fake_consolidator.queue_response(CandidateBaseline("Understanding B3", ("m1", "m2", "m3")))
+    res3 = core1.consolidate("reg-restart", ("m1", "m2", "m3"))
+    b3_id = res3.baseline.baseline_id
+
+    assert res3.baseline.revision_number == 3
     store1.close()
 
-    # Reconstruct LCE process
+    # Reconstruct LCE process against existing database
     store2 = SqliteBaselineStore(tmp_path)
     core2 = LceCore(
         memory_substrate=fake_substrate,
@@ -311,10 +360,30 @@ def test_t9_restart_stability(
 
     restored_head = core2.get_current_baseline("reg-restart")
     assert restored_head is not None
-    assert restored_head.baseline_id == b1_id
-    assert restored_head.revision_number == 1
-    assert restored_head.content == "Durable truth"
-    assert restored_head.supporting_memory_ids == ("m1",)
+    assert restored_head.baseline_id == b3_id
+    assert restored_head.revision_number == 3
+    assert restored_head.previous_baseline_id == b2_id
+    assert restored_head.content == "Understanding B3"
+    assert restored_head.supporting_memory_ids == ("m1", "m2", "m3")
+
+    history = core2.get_history("reg-restart")
+    assert len(history.revisions) == 3
+    revs = history.revisions
+    assert revs[0].baseline_id == b3_id
+    assert revs[0].revision_number == 3
+    assert revs[0].previous_baseline_id == b2_id
+    assert revs[0].supporting_memory_ids == ("m1", "m2", "m3")
+
+    assert revs[1].baseline_id == b2_id
+    assert revs[1].revision_number == 2
+    assert revs[1].previous_baseline_id == b1_id
+    assert revs[1].supporting_memory_ids == ("m1", "m2")
+
+    assert revs[2].baseline_id == b1_id
+    assert revs[2].revision_number == 1
+    assert revs[2].previous_baseline_id is None
+    assert revs[2].supporting_memory_ids == ("m1",)
+
     store2.close()
 
 
@@ -359,7 +428,7 @@ def test_t10_storage_root_isolation(
 # T11 — No MR authority escalation
 # ---------------------------------------------------------------------------
 def test_t11_no_authority_escalation(lce_core: LceCore) -> None:
-    """LCE Core exposes no write API for Evidence, Canonical Fact, C10, Intent, ActionPolicy."""
+    """LCE Core exposes no write API and codebase imports zero Body/Intent/Appraisal/C10 runtime modules."""
     forbidden_terms = (
         "write_evidence",
         "admit_evidence",
@@ -383,6 +452,25 @@ def test_t11_no_authority_escalation(lce_core: LceCore) -> None:
 
     # LceCore only provides consolidate, get_current_baseline, get_history
     assert set(public_methods) == {"consolidate", "get_current_baseline", "get_history"}
+
+    # Inspect all python files under src/lce to ensure ZERO imports of forbidden runtime authority
+    src_dir = Path(__file__).resolve().parent.parent / "src" / "lce"
+    forbidden_modules = {"mind_runtime", "c10", "intent", "action_policy", "appraisal", "body"}
+
+    for py_file in src_dir.rglob("*.py"):
+        tree = ast.parse(py_file.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    root_mod = alias.name.split(".")[0].lower()
+                    assert root_mod not in forbidden_modules, (
+                        f"Forbidden module imported in {py_file.name}: {alias.name}"
+                    )
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                root_mod = node.module.split(".")[0].lower()
+                assert root_mod not in forbidden_modules, (
+                    f"Forbidden module imported in {py_file.name}: {node.module}"
+                )
 
 
 # ---------------------------------------------------------------------------
@@ -427,3 +515,17 @@ def test_t12_vector_independence(
     assert current is not None
     assert current.baseline_id == b1.baseline_id
     assert current.supporting_memory_ids == ("m1",)
+
+
+def test_candidate_with_duplicate_memory_ids_rejected(
+    lce_core: LceCore,
+    fake_substrate: FakeMemorySubstrate,
+) -> None:
+    """A candidate baseline with duplicate memory IDs fails at the contract boundary and leaves store untouched."""
+    fake_substrate.add_memory("m1", "Content", ("ev-1",))
+    with pytest.raises(ValueError, match="duplicate memory IDs"):
+        CandidateBaseline(
+            content="Understanding",
+            supporting_memory_ids=("m1", "m1"),
+        )
+    assert lce_core.get_current_baseline("reg-dup") is None

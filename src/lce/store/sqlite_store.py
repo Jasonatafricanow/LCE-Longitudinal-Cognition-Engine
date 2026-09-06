@@ -73,15 +73,17 @@ class SqliteBaselineStore(BaselineStorePort):
             self._conn = sqlite3.connect(
                 str(self._db_path),
                 timeout=30.0,
-                autocommit=False,
+                autocommit=True,
             )
             self._conn.execute("PRAGMA foreign_keys = ON;")
+            fk_status = self._conn.execute("PRAGMA foreign_keys;").fetchone()
+            if fk_status is None or fk_status[0] != 1:
+                raise StorageIntegrityError("Failed to enable SQLite foreign keys enforcement")
         return self._conn
 
     def _init_db(self) -> None:
         conn = self._get_connection()
         conn.executescript(_SCHEMA)
-        conn.commit()
 
     def get_head(self, region_id: str) -> Baseline | None:
         """Fetch current HEAD baseline via pointer join."""
@@ -131,74 +133,84 @@ class SqliteBaselineStore(BaselineStorePort):
     def save_revision(self, baseline: Baseline) -> None:
         """Atomically persist revision, supporting refs, and advance HEAD pointer."""
         conn = self._get_connection()
-        current_head = self.get_head(baseline.region_id)
-
-        # Validate monotonic revision sequence
-        if current_head is None:
-            if baseline.revision_number != 1 or baseline.previous_baseline_id is not None:
-                raise StorageIntegrityError(
-                    f"First revision for region '{baseline.region_id}' must have "
-                    f"revision_number=1 and previous_baseline_id=None, got "
-                    f"rev={baseline.revision_number}, prev={baseline.previous_baseline_id}"
-                )
-        else:
-            expected_rev = current_head.revision_number + 1
-            if baseline.revision_number != expected_rev:
-                raise StorageIntegrityError(
-                    f"Expected revision_number={expected_rev} for region '{baseline.region_id}', "
-                    f"got {baseline.revision_number}"
-                )
-            if baseline.previous_baseline_id != current_head.baseline_id:
-                raise StorageIntegrityError(
-                    f"Expected previous_baseline_id='{current_head.baseline_id}' for region "
-                    f"'{baseline.region_id}', got '{baseline.previous_baseline_id}'"
-                )
-
-        now_iso = datetime.now(UTC).isoformat()
-        trace_json = json.dumps(baseline.model_trace, sort_keys=True)
-
+        conn.execute("BEGIN IMMEDIATE;")
         try:
-            with conn:
-                # 1. Insert revision
-                conn.execute(
-                    """
-                    INSERT INTO baseline_revisions (
-                        baseline_id, region_id, revision_number, content,
-                        content_hash, previous_baseline_id, created_at, model_trace_json
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        baseline.baseline_id,
-                        baseline.region_id,
-                        baseline.revision_number,
-                        baseline.content,
-                        baseline.content_hash,
-                        baseline.previous_baseline_id,
-                        baseline.created_at.isoformat(),
-                        trace_json,
-                    ),
-                )
-                # 2. Insert memory references
-                conn.executemany(
-                    """
-                    INSERT INTO baseline_memory_refs (baseline_id, memory_id)
-                    VALUES (?, ?)
-                    """,
-                    [(baseline.baseline_id, m_id) for m_id in baseline.supporting_memory_ids],
-                )
-                # 3. Advance/Upsert HEAD pointer
-                conn.execute(
-                    """
-                    INSERT INTO baselines_head (region_id, baseline_id, updated_at)
-                    VALUES (?, ?, ?)
-                    ON CONFLICT(region_id) DO UPDATE SET
-                        baseline_id = excluded.baseline_id,
-                        updated_at = excluded.updated_at
-                    """,
-                    (baseline.region_id, baseline.baseline_id, now_iso),
-                )
-        except sqlite3.IntegrityError as exc:
-            raise StorageIntegrityError(f"Integrity error saving revision {baseline.baseline_id}: {exc}") from exc
+            current_head = self.get_head(baseline.region_id)
+
+            # Validate monotonic revision sequence
+            if current_head is None:
+                if baseline.revision_number != 1 or baseline.previous_baseline_id is not None:
+                    raise StorageIntegrityError(
+                        f"First revision for region '{baseline.region_id}' must have "
+                        f"revision_number=1 and previous_baseline_id=None, got "
+                        f"rev={baseline.revision_number}, prev={baseline.previous_baseline_id}"
+                    )
+            else:
+                expected_rev = current_head.revision_number + 1
+                if baseline.revision_number != expected_rev:
+                    raise StorageIntegrityError(
+                        f"Expected revision_number={expected_rev} for region '{baseline.region_id}', "
+                        f"got {baseline.revision_number}"
+                    )
+                if baseline.previous_baseline_id != current_head.baseline_id:
+                    raise StorageIntegrityError(
+                        f"Expected previous_baseline_id='{current_head.baseline_id}' for region "
+                        f"'{baseline.region_id}', got '{baseline.previous_baseline_id}'"
+                    )
+
+            now_iso = datetime.now(UTC).isoformat()
+            trace_json = json.dumps(baseline.model_trace, sort_keys=True)
+
+            # 1. Insert revision
+            conn.execute(
+                """
+                INSERT INTO baseline_revisions (
+                    baseline_id, region_id, revision_number, content,
+                    content_hash, previous_baseline_id, created_at, model_trace_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    baseline.baseline_id,
+                    baseline.region_id,
+                    baseline.revision_number,
+                    baseline.content,
+                    baseline.content_hash,
+                    baseline.previous_baseline_id,
+                    baseline.created_at.isoformat(),
+                    trace_json,
+                ),
+            )
+            # 2. Insert memory references
+            conn.executemany(
+                """
+                INSERT INTO baseline_memory_refs (baseline_id, memory_id)
+                VALUES (?, ?)
+                """,
+                [(baseline.baseline_id, m_id) for m_id in baseline.supporting_memory_ids],
+            )
+            # 3. Advance/Upsert HEAD pointer
+            conn.execute(
+                """
+                INSERT INTO baselines_head (region_id, baseline_id, updated_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT(region_id) DO UPDATE SET
+                    baseline_id = excluded.baseline_id,
+                    updated_at = excluded.updated_at
+                """,
+                (baseline.region_id, baseline.baseline_id, now_iso),
+            )
+            conn.execute("COMMIT;")
+        except Exception as exc:
+            if conn.in_transaction:
+                try:
+                    conn.execute("ROLLBACK;")
+                except sqlite3.Error:
+                    pass
+            if isinstance(exc, sqlite3.IntegrityError):
+                raise StorageIntegrityError(
+                    f"Integrity error saving revision {baseline.baseline_id}: {exc}"
+                ) from exc
+            raise
 
     def get_history(self, region_id: str, limit: int | None = None) -> BaselineHistory:
         """Fetch historical revisions ordered by revision descending."""

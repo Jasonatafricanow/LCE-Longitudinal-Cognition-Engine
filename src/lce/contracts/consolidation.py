@@ -11,7 +11,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
-from lce.contracts.baseline import Baseline
+from lce.contracts.baseline import Baseline, validate_model_trace
 from lce.contracts.external_memory import MemoryItemView
 
 
@@ -49,8 +49,9 @@ class CandidateBaseline:
         for mem_id in self.supporting_memory_ids:
             if not isinstance(mem_id, str) or not mem_id.strip():
                 raise ValueError("each supporting_memory_id must be a non-empty string")
-        if not isinstance(self.model_trace, Mapping):
-            raise TypeError("CandidateBaseline.model_trace must be a Mapping")
+        if len(self.supporting_memory_ids) != len(set(self.supporting_memory_ids)):
+            raise ValueError("CandidateBaseline.supporting_memory_ids contains duplicate memory IDs")
+        validate_model_trace(self.model_trace)
 
 
 @dataclass(frozen=True, slots=True)
