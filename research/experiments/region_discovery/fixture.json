@@ -1,0 +1,17 @@
+{
+  "parameters": {
+    "neighbour_count": 3,
+    "minimum_similarity": 0.9,
+    "minimum_overlap": 0.5,
+    "minimum_region_size": 3
+  },
+  "items": [
+    {"id": "P01", "label": "synthetic_stable_a", "vector": [1.0, 0.0, 0.0]},
+    {"id": "P02", "label": "synthetic_stable_a", "vector": [0.99, 0.1, 0.0]},
+    {"id": "P03", "label": "synthetic_stable_a", "vector": [0.98, 0.2, 0.0]},
+    {"id": "P04", "label": "synthetic_stable_a", "vector": [0.97, 0.24, 0.0]},
+    {"id": "P05", "label": "synthetic_weak_group", "vector": [0.0, 1.0, 0.0]},
+    {"id": "P06", "label": "synthetic_weak_group", "vector": [0.1, 0.99, 0.0]},
+    {"id": "P07", "label": "synthetic_isolated", "vector": [0.0, 0.0, 1.0]}
+  ]
+}

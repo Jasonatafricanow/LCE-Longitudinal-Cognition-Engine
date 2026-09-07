@@ -38,3 +38,9 @@ PRODUCTION STATUS:
 NOT YET BOUND TO MR MEMORY/VECTOR SUBSTRATE
 ```
 LCE Core operates contract-first against `MemorySubstratePort`. Upstream production binding will occur once the shared Mind Runtime vector/memory substrate is promoted.
+
+## Research
+
+The [reproducible research surface](research/README.md) contains small, offline, synthetic
+experiments that document the evidence boundaries behind LCE design decisions. Additional design
+notes are collected in [`docs/research/`](docs/research/).

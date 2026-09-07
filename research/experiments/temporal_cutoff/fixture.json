@@ -1,0 +1,9 @@
+{
+  "seed": 1,
+  "events": [
+    {"id": "E01", "time": "T1", "topic": "synthetic_alpha", "signal": "baseline"},
+    {"id": "E02", "time": "T2", "topic": "synthetic_alpha", "signal": "baseline"},
+    {"id": "E03", "time": "T3", "topic": "synthetic_beta", "signal": "future_pattern"},
+    {"id": "E04", "time": "T4", "topic": "synthetic_beta", "signal": "future_pattern"}
+  ]
+}
