@@ -13,6 +13,55 @@ __pycache__/
 *.sqlite3
 *.db
 
+# Credentials and local runtime data
+.env
+.env.*
+*.log
+
+# Vector / serialized experiment data
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.faiss
+
+# Additional local tool caches
+.ruff_cache/
+
+# LCE lab data boundary: keep experiment source visible, hide corpus and outputs.
+lab/**/input/
+lab/**/inputs/
+lab/**/derived/
+lab/**/outputs/
+lab/**/replay/
+lab/**/runs/
+lab/**/artifacts/
+lab/**/reports/
+
+# Machine-local experiment configuration and helpers. These contain external
+# .env paths, personal diary paths, or private LAN endpoints.
+lab/diary_inspiration_05/config.yaml
+lab/diary_inspiration_05/common.py
+lab/diary_pointcloud_01/config.yaml
+lab/diary_pointcloud_01/segment.py
+lab/diary_pointcloud_01/import_diary.py
+lab/diary_pointcloud_01/run_local.py
+lab/diary_pointcloud_01/run_report_only.py
+lab/diary_pointcloud_01/run_on_compute.py
+lab/diary_pointcloud_01/run_flat.py
+lab/diary_pointcloud_01/run_experiment.py
+lab/diary_pointcloud_01/embed.py
+lab/diary_pointcloud_01/qwen_interpret.py
+lab/diary_pointcloud_01R/region_interpreter.py
+lab/diary_semantic_block_02/config.yaml
+lab/diary_semantic_block_02/common.py
+lab/diary_semantic_block_03/config.yaml
+lab/diary_semantic_block_03/common.py
+lab/diary_structure_06R/config.yaml
+lab/diary_structure_06R/common.py
+lab/diary_trend_04/config.yaml
+lab/diary_trend_04/common.py
+
 # Distribution / Packaging
 build/
 dist/
