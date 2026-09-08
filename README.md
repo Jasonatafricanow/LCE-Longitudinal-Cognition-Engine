@@ -35,12 +35,20 @@ src/lce/
 
 ```text
 PRODUCTION STATUS:
-NOT YET BOUND TO MR MEMORY/VECTOR SUBSTRATE
+MR-SIDE BINDING EXISTS
+PRODUCTION ACTIVATION DISABLED
+AUTOMATIC LONGITUDINAL COMPILATION OUT OF SCOPE
 ```
-LCE Core operates contract-first against `MemorySubstratePort`. Upstream production binding will occur once the shared Mind Runtime vector/memory substrate is promoted.
+LCE Core operates contract-first against `MemorySubstratePort`. The MR-side
+adapter exists as an optional integration boundary, but production activation
+remains disabled and LCE Core does not own MR Memory, vectors, or current-turn
+reasoning. Automatic longitudinal compilation remains research work.
 
 ## Research
 
 The [reproducible research surface](research/README.md) contains small, offline, synthetic
 experiments that document the evidence boundaries behind LCE design decisions. Additional design
 notes are collected in [`docs/research/`](docs/research/).
+
+The [research map](docs/research/research-map.md) connects each experiment to
+the architectural consequence it supports and the question that remains open.
