@@ -266,6 +266,51 @@ class ReferenceMemoryStore:
         db.commit()
         return block
 
+    def extend_semantic_block(
+        self,
+        block_id: str,
+        *,
+        content: str | None,
+        evidence_id: str,
+        occurred_at: datetime,
+    ) -> SemanticBlock:
+        """Extend an open semantic stream while retaining its stable block ID."""
+        current = self.get_semantic_block(block_id)
+        evidence = self.get_evidence(evidence_id)
+        if evidence_id not in current.raw_evidence_ids:
+            evidence_ids = current.raw_evidence_ids + (evidence_id,)
+        else:
+            evidence_ids = current.raw_evidence_ids
+        merged_content = current.content
+        if content and content.strip() and content.strip() not in current.content:
+            merged_content = f"{current.content}\n{content.strip()}"
+        db = self._db()
+        db.execute(
+            "UPDATE semantic_blocks SET content = ?, occurred_start = ?, occurred_end = ? WHERE block_id = ?",
+            (
+                merged_content,
+                min(current.occurred_start, occurred_at).isoformat(),
+                max(current.occurred_end, occurred_at).isoformat(),
+                block_id,
+            ),
+        )
+        if evidence_id not in current.raw_evidence_ids:
+            db.execute(
+                "INSERT INTO semantic_block_evidence(block_id, evidence_id) VALUES (?, ?)",
+                (block_id, evidence_id),
+            )
+        db.commit()
+        return SemanticBlock(
+            block_id=current.block_id,
+            content=merged_content,
+            raw_evidence_ids=evidence_ids,
+            occurred_start=min(current.occurred_start, occurred_at),
+            occurred_end=max(current.occurred_end, occurred_at),
+            compiler_version=current.compiler_version,
+            lineage_id=current.lineage_id,
+            metadata=current.metadata,
+        )
+
     def get_semantic_block(self, block_id: str) -> SemanticBlock:
         row = self._db().execute(
             "SELECT block_id, content, occurred_start, occurred_end, compiler_version, lineage_id, metadata_json "
