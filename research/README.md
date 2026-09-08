@@ -15,7 +15,7 @@ These experiments do not define canonical cognition, replace LCE Core authority,
 any interpretation is automatically canonical. Run them offline with:
 
 ```text
-python -m pytest research/experiments -q
+python -m pytest tests/research -q
 ```
 
 Further design notes are collected in [`docs/research/`](../docs/research/).

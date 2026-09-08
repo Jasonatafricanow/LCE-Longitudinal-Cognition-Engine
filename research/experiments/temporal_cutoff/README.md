@@ -41,5 +41,5 @@ From the repository root:
 
 ```text
 python research/experiments/temporal_cutoff/experiment.py
-python -m pytest research/experiments/temporal_cutoff -q
+python -m pytest tests/research/test_temporal_cutoff.py -q
 ```

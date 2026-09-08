@@ -40,5 +40,5 @@ From the repository root:
 
 ```text
 python research/experiments/semantic_neighbourhood/experiment.py
-python -m pytest research/experiments/semantic_neighbourhood -q
+python -m pytest tests/research/test_semantic_neighbourhood.py -q
 ```

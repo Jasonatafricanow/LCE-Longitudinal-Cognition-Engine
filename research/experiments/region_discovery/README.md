@@ -42,5 +42,5 @@ From the repository root:
 
 ```text
 python research/experiments/region_discovery/experiment.py
-python -m pytest research/experiments/region_discovery -q
+python -m pytest tests/research/test_region_discovery.py -q
 ```
