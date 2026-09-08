@@ -264,6 +264,13 @@ class SqliteBaselineStore(BaselineStorePort):
 
         return BaselineHistory(region_id=region_id, revisions=tuple(revisions))
 
+    def list_regions(self) -> tuple[str, ...]:
+        """Return baseline lineages for targeted dependency propagation."""
+        rows = self._get_connection().execute(
+            "SELECT region_id FROM baselines_head ORDER BY region_id"
+        ).fetchall()
+        return tuple(str(row[0]) for row in rows)
+
     def close(self) -> None:
         if self._conn is not None:
             self._conn.close()

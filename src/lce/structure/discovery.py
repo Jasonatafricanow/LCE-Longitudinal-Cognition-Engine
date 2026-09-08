@@ -123,6 +123,10 @@ class SnapshotStore:
                 candidates.append(snapshot)
         return max(candidates, key=lambda item: item.cutoff, default=None)
 
+    def all_snapshots(self) -> tuple[StructureSnapshot, ...]:
+        snapshots = [self._decode(payload) for (payload,) in self.conn.execute("SELECT payload_json FROM snapshots")]
+        return tuple(sorted(snapshots, key=lambda item: (item.cutoff, item.snapshot_id)))
+
     def delete_all(self) -> None:
         self.conn.execute("DELETE FROM snapshots")
         self.conn.commit()
