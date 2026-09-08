@@ -26,3 +26,7 @@ class BaselineStorePort(Protocol):
     def close(self) -> None:
         """Close the storage connection and release underlying resources."""
         ...
+
+    def list_regions(self) -> tuple[str, ...]:
+        """List persisted Baseline lineages for dependency-aware readers."""
+        ...

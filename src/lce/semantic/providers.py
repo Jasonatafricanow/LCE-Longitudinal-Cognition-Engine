@@ -15,7 +15,8 @@ def _subject(value: object, fallback: str) -> str:
 
 
 def _same_subject(left: str, right: str) -> bool:
-    normalize = lambda value: re.sub(r"\W+", "", value, flags=re.UNICODE).casefold()
+    def normalize(value: str) -> str:
+        return re.sub(r"\W+", "", value, flags=re.UNICODE).casefold()
     a, b = normalize(left), normalize(right)
     return bool(a and b and (a == b or a in b or b in a))
 

@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
 from lce.contracts.baseline import Baseline
 from lce.contracts.consolidation import CandidateBaseline, ConsolidationResult
+from lce.contracts.external_memory import MemoryItemView
 from lce.cognition.block_adapter import SemanticBlockMemoryAdapter
 from lce.cognition.worktree import CognitionWorktree, CognitionWorktreeStore
 from lce.core.engine import LceCore
@@ -39,7 +41,13 @@ class _CandidateConsolidator:
         self.content = content
         self.block_ids = block_ids
 
-    def consolidate(self, *, memories, previous_baseline: Baseline | None, context=None) -> CandidateBaseline:
+    def consolidate(
+        self,
+        *,
+        memories: tuple[MemoryItemView, ...],
+        previous_baseline: Baseline | None,
+        context: Mapping[str, object] | None = None,
+    ) -> CandidateBaseline:
         return CandidateBaseline(
             content=self.content,
             supporting_memory_ids=self.block_ids,

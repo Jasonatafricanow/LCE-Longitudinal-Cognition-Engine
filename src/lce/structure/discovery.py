@@ -21,6 +21,8 @@ from lce.structure.contracts import (
     StructureSnapshot,
 )
 
+__all__ = ["SnapshotStructureDiscovery", "StructureConfig"]
+
 
 def _cosine(left: tuple[float, ...], right: tuple[float, ...]) -> float:
     numerator = sum(a * b for a, b in zip(left, right, strict=True))

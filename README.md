@@ -1,54 +1,38 @@
-# LCE Core — Minimal Longitudinal Logical Understanding Core
+# LCE V1 — Longitudinal Cognition Engine
 
-`lce-core` is a lightweight, contract-first Python engine that consolidates externally supplied related memory items into durable, highly compressed long-term logical baselines (`Baseline`).
-
-## Core Architecture & Boundaries
-
-1. **Memory owns the points**: LCE does not own raw memory items or vector coordinates. It consumes external memory views via the read-only `MemorySubstratePort` dependency contract.
-2. **Shared vector substrate**: Point cloud and semantic neighborhood discovery belong to the external vector substrate. `LceCore.consolidate(region_id, memory_ids)` consumes already-identified Memory IDs.
-3. **Stable Identity Provenance**: Baselines reference immutable external `memory_id`s, entirely decoupled from transient vector coordinates or similarity scores.
-4. **Deterministic Equivalence**: Duplicate or redundant memories with unchanged learned understanding do not produce meaningless revision increments (`normalize_content(candidate) == normalize_content(previous)`).
-5. **Fail-Closed Validation**: The semantic consolidator produces candidate baselines that are strictly verified against authorized input memory IDs before commit. Any unknown memory reference fails closed with `UnauthorizedSourceError`.
-6. **Single-Source-of-Truth Storage**: SQLite storage persists immutable `baseline_revisions`, junction `baseline_memory_refs`, and a pointer-only `baselines_head` table in an atomic transaction. Zero raw memory tables exist in LCE.
-7. **Storage-Root Isolation**: Callers supply the storage root directory, ensuring independent runtimes or namespaces have strictly isolated baseline states.
-
-## Package Layout
+LCE is a standalone, contract-first longitudinal cognition pipeline. Its V1
+product boundary is:
 
 ```text
-src/lce/
-├── contracts/
-│   ├── external_memory.py      # MemoryItemView, MemorySubstratePort
-│   ├── baseline.py             # Baseline, BaselineHistory, normalize_content
-│   └── consolidation.py        # CandidateBaseline, ConsolidationResult, SemanticConsolidatorPort
-├── store/
-│   ├── interface.py            # BaselineStorePort
-│   └── sqlite_store.py         # SqliteBaselineStore
-├── core/
-│   ├── equivalence.py          # is_content_equivalent
-│   └── engine.py               # LceCore
-└── testing/
-    ├── fake_substrate.py       # FakeMemorySubstrate
-    └── fake_consolidator.py    # ScriptableFakeConsolidator
+Raw Evidence -> Semantic Block -> vector space -> structures
+-> cognition worktree -> accepted Baseline/HEAD -> Understanding read API
 ```
 
-## Production Status
+LCE does not require MR. Reference Memory is the included minimal local
+substrate and can be replaced through the Memory Port. Raw Evidence remains
+canonical and auditable; Semantic Blocks are the cognition points used for
+vector projection. Derived vectors, structures, higher-order candidates, and
+worktrees never become Raw Evidence.
 
-```text
-PRODUCTION STATUS:
-MR-SIDE BINDING EXISTS
-PRODUCTION ACTIVATION DISABLED
-AUTOMATIC LONGITUDINAL COMPILATION OUT OF SCOPE
+The existing Baseline/HEAD Core remains the accepted revision authority. An
+OPEN cognition worktree is a proposal. Conservative promotion creates a new
+immutable revision only when the Understanding changes; additional support for
+the same text does not create noise revisions.
+
+## Boundaries
+
+LCE V1 stops at `query(current_context) -> accepted Understandings`. It does
+not integrate MR, Body, C10, Persona, Agent identity, Intent, ActionPolicy,
+RuntimeBinding, or current-turn reasoning. See
+[`docs/architecture/LCE_V1_RUNTIME.md`](docs/architecture/LCE_V1_RUNTIME.md)
+and [`docs/architecture/LCE_V1_BOUNDARIES.md`](docs/architecture/LCE_V1_BOUNDARIES.md).
+
+## Development
+
+```powershell
+python -m pytest -q
 ```
-LCE Core operates contract-first against `MemorySubstratePort`. The MR-side
-adapter exists as an optional integration boundary, but production activation
-remains disabled and LCE Core does not own MR Memory, vectors, or current-turn
-reasoning. Automatic longitudinal compilation remains research work.
 
-## Research
-
-The [reproducible research surface](research/README.md) contains small, offline, synthetic
-experiments that document the evidence boundaries behind LCE design decisions. Additional design
-notes are collected in [`docs/research/`](docs/research/).
-
-The [research map](docs/research/research-map.md) connects each experiment to
-the architectural consequence it supports and the question that remains open.
+The standalone setup and replaceable Reference Memory options are documented
+in [`docs/standalone-quickstart.md`](docs/standalone-quickstart.md) and
+[`docs/reference-memory.md`](docs/reference-memory.md).

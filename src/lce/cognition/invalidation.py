@@ -18,9 +18,19 @@ class InvalidationResult:
     affected_worktree_ids: tuple[str, ...]
     affected_baseline_ids: tuple[str, ...]
 
+    @property
+    def invalidated_evidence_id(self) -> str:
+        return self.evidence_id
+
 
 class DependencyInvalidator:
-    def __init__(self, memory, discovery, worktrees, baselines: BaselineStorePort) -> None:
+    def __init__(
+        self,
+        memory: ReferenceMemoryStore,
+        discovery: SnapshotStructureDiscovery,
+        worktrees: CognitionWorktreeStore,
+        baselines: BaselineStorePort,
+    ) -> None:
         self.memory: ReferenceMemoryStore = memory
         self.discovery: SnapshotStructureDiscovery = discovery
         self.worktrees: CognitionWorktreeStore = worktrees

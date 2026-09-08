@@ -88,7 +88,10 @@ class SemanticCompiler:
             occurred_end=material.occurred_at,
             compiler_version=self.compiler_version,
             lineage_id=self.lineage_id,
-            metadata={"subject": subject},
+            metadata={
+                "subject": subject,
+                **({"vector": material.provenance["vector"]} if "vector" in material.provenance else {}),
+            },
         )
         self.store.put_semantic_block(block)
         return block
@@ -101,7 +104,7 @@ class SemanticCompiler:
         checkpoint: CompilerCheckpoint | None,
     ) -> tuple[tuple[str, ...], SemanticBlock | None, int]:
         state = dict(checkpoint.state) if checkpoint is not None else {}
-        sequence = int(state.get("next_block_sequence", 0))
+        sequence = int(str(state.get("next_block_sequence", 0)))
 
         def append(block: SemanticBlock, content: str | None) -> SemanticBlock:
             return self.store.extend_semantic_block(

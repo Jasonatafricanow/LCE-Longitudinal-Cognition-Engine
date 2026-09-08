@@ -119,7 +119,7 @@ class CognitionWorktreeStore:
         return CognitionWorktree(
             worktree_id=str(row[0]), region_id=str(row[1]),
             base_baseline_id=str(row[2]) if row[2] is not None else None,
-            base_revision=int(row[3]) if row[3] is not None else None,
+            base_revision=int(str(row[3])) if row[3] is not None else None,
             candidate_content=str(row[4]),
             supporting_block_ids=tuple(json.loads(str(row[5]))),
             supporting_structure_ids=tuple(json.loads(str(row[6]))),
@@ -142,6 +142,13 @@ class CognitionWorktreeStore:
         else:
             rows = self.conn.execute("SELECT * FROM worktrees WHERE status = ? ORDER BY created_at", (status,)).fetchall()
         return tuple(self._row_to_item(row) for row in rows)
+
+    def find_open_by_region(self, region_id: str) -> CognitionWorktree | None:
+        row = self.conn.execute(
+            "SELECT * FROM worktrees WHERE region_id = ? AND status = 'OPEN' ORDER BY created_at LIMIT 1",
+            (region_id,),
+        ).fetchone()
+        return self._row_to_item(row) if row is not None else None
 
     def update_support(
         self,
