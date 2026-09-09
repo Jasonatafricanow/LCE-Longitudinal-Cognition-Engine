@@ -118,6 +118,7 @@ class LceCore:
             previous_baseline_id=previous_baseline_id,
             model_trace=candidate.model_trace,
             supporting_state_ids=candidate.supporting_state_ids,
+            selected_support=candidate.selected_support,
         )
 
         # Atomically commit revision and advance HEAD

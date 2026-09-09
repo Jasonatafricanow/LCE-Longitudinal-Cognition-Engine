@@ -16,6 +16,15 @@ from lce.reference_memory.contracts import (
     VectorProjection,
 )
 
+_PIPELINE_STAGE_ORDER = {
+    "compiled": 1,
+    "vector-ready": 2,
+    "snapshot/discovery-evaluated": 3,
+    "worktree-support-evaluated": 4,
+    "promotion-evaluated": 5,
+    "complete": 6,
+}
+
 
 class InMemoryReferenceMemory:
     """A complete V1 substrate that shares no implementation with SQLite."""
@@ -230,7 +239,16 @@ class InMemoryReferenceMemory:
     def get_pipeline_stage(self, evidence_id: str) -> str | None:
         return self._stages.get(evidence_id, (None, None))[0]
 
+    def get_pipeline_progress(self, evidence_id: str) -> tuple[str, str | None] | None:
+        value = self._stages.get(evidence_id)
+        return value if value is not None else None
+
     def mark_pipeline_stage(self, evidence_id: str, stage: str, *, fingerprint: str | None = None) -> None:
+        current = self._stages.get(evidence_id)
+        if current is not None and _PIPELINE_STAGE_ORDER.get(current[0], 0) > _PIPELINE_STAGE_ORDER.get(stage, 0):
+            return
+        if current is not None and fingerprint is None:
+            fingerprint = current[1]
         self._stages[evidence_id] = (stage, fingerprint)
 
     def close(self) -> None:

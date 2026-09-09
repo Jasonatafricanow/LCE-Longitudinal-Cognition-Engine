@@ -6,7 +6,7 @@ import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from lce.reference_memory.contracts import SemanticBlockPort
+from lce.reference_memory.contracts import AuthorizedSelectedSupport, SemanticBlockPort
 from lce.store.interface import BaselineStorePort
 
 
@@ -22,6 +22,7 @@ class UnderstandingView:
     unresolved: str | None = None
     status: str = "ACCEPTED"
     worktree_status: str | None = None
+    supporting_semantic_block_state_ids: tuple[str, ...] = ()
 
 
 class AcceptedUnderstandingReadAPI:
@@ -42,12 +43,30 @@ class AcceptedUnderstandingReadAPI:
             blocks = []
             valid = True
             source_refs: set[str] = set()
-            state_refs = dict(zip(baseline.supporting_memory_ids, baseline.supporting_state_ids, strict=False))
-            for block_id in baseline.supporting_memory_ids:
+            selected_support = baseline.selected_support
+            if selected_support:
+                if tuple(item.block_id for item in selected_support) != baseline.supporting_memory_ids:
+                    continue
+            elif baseline.supporting_state_ids:
+                # A legacy baseline with unaligned state IDs cannot be safely served.
+                continue
+            served_state_ids: list[str] = []
+            selected_items = selected_support or tuple(
+                AuthorizedSelectedSupport(block_id=block_id, state_id="legacy-current")
+                for block_id in baseline.supporting_memory_ids
+            )
+            for selected in selected_items:
+                block_id = selected.block_id
                 try:
-                    state_id = state_refs.get(block_id)
-                    block = self.memory.get_semantic_block_state(state_id) if state_id else self.memory.get_semantic_block(block_id)
+                    block = (
+                        self.memory.get_semantic_block_state(selected.state_id)
+                        if baseline.selected_support
+                        else self.memory.get_semantic_block(block_id)
+                    )
                 except KeyError:
+                    valid = False
+                    break
+                if block.block_id != block_id:
                     valid = False
                     break
                 if not all(self.memory.get_evidence(evidence_id).current_valid for evidence_id in block.raw_evidence_ids):
@@ -55,6 +74,8 @@ class AcceptedUnderstandingReadAPI:
                     break
                 blocks.append(block)
                 source_refs.update(block.raw_evidence_ids)
+                if block.state_id:
+                    served_state_ids.append(block.state_id)
             if not valid or not blocks:
                 continue
             searchable = " ".join([baseline.content, *(block.content for block in blocks)]).casefold()
@@ -67,6 +88,7 @@ class AcceptedUnderstandingReadAPI:
                     region_id=baseline.region_id,
                     revision_number=baseline.revision_number,
                     supporting_semantic_block_ids=baseline.supporting_memory_ids,
+                    supporting_semantic_block_state_ids=tuple(served_state_ids),
                     supporting_source_refs=tuple(sorted(source_refs)),
                 )
             )

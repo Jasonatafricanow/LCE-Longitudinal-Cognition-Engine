@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from lce.contracts.baseline import Baseline
+from lce.reference_memory.contracts import AuthorizedSelectedSupport
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,12 +31,19 @@ class CognitionWorktree:
     applicability: str | None = None
     unresolved: str | None = None
     interpretation_trace: Mapping[str, object] = field(default_factory=dict)
+    selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
 
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
             raise ValueError("worktree status must be OPEN, MERGED, or DROPPED")
         if not self.candidate_content.strip():
             raise ValueError("candidate_content must be non-empty")
+        if len({item.block_id for item in self.selected_support}) != len(self.selected_support):
+            raise ValueError("selected_support contains duplicate block IDs")
+        if self.selected_support and not {item.block_id for item in self.selected_support}.issubset(self.supporting_block_ids):
+            raise ValueError("selected_support block IDs must belong to supporting_block_ids")
+        if len({item.state_id for item in self.selected_support}) != len(self.selected_support):
+            raise ValueError("selected_support contains duplicate state IDs")
 
 
 def _now() -> datetime:
@@ -63,7 +71,9 @@ class CognitionWorktreeStore:
                 needs_rebuild INTEGER NOT NULL DEFAULT 0,
                 merged_baseline_id TEXT,
                 applicability TEXT,
-                unresolved TEXT
+                unresolved TEXT,
+                interpretation_trace_json TEXT NOT NULL DEFAULT '{}',
+                selected_support_json TEXT NOT NULL DEFAULT '[]'
             );
             CREATE TABLE IF NOT EXISTS support_cycles (
                 worktree_id TEXT NOT NULL,
@@ -82,6 +92,8 @@ class CognitionWorktreeStore:
         columns = {str(row[1]) for row in self.conn.execute("PRAGMA table_info(worktrees)")}
         if "interpretation_trace_json" not in columns:
             self.conn.execute("ALTER TABLE worktrees ADD COLUMN interpretation_trace_json TEXT NOT NULL DEFAULT '{}'")
+        if "selected_support_json" not in columns:
+            self.conn.execute("ALTER TABLE worktrees ADD COLUMN selected_support_json TEXT NOT NULL DEFAULT '[]'")
         self.conn.commit()
 
     @staticmethod
@@ -99,15 +111,18 @@ class CognitionWorktreeStore:
         applicability: str | None = None,
         unresolved: str | None = None,
         interpretation_trace: Mapping[str, object] | None = None,
+        selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
     ) -> CognitionWorktree:
         now = _now()
+        selected = tuple(selected_support)
+        block_ids = self._tuple(supporting_block_ids)
         item = CognitionWorktree(
             worktree_id=f"wt_{uuid.uuid4().hex}",
             region_id=region_id,
             base_baseline_id=base_baseline.baseline_id if base_baseline else None,
             base_revision=base_baseline.revision_number if base_baseline else None,
             candidate_content=candidate_content,
-            supporting_block_ids=self._tuple(supporting_block_ids),
+            supporting_block_ids=block_ids,
             supporting_structure_ids=self._tuple(supporting_structure_ids),
             created_at=now,
             updated_at=now,
@@ -115,15 +130,25 @@ class CognitionWorktreeStore:
             applicability=applicability,
             unresolved=unresolved,
             interpretation_trace=interpretation_trace or {},
+            selected_support=selected,
         )
         if not item.supporting_block_ids:
             raise ValueError("a worktree requires at least one supporting Semantic Block")
         self.conn.execute(
-            "INSERT INTO worktrees VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            """
+            INSERT INTO worktrees (
+                worktree_id, region_id, base_baseline_id, base_revision, candidate_content,
+                supporting_block_ids_json, supporting_structure_ids_json, created_at, updated_at,
+                status, needs_rebuild, merged_baseline_id, applicability, unresolved,
+                interpretation_trace_json, selected_support_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
             (item.worktree_id, item.region_id, item.base_baseline_id, item.base_revision, item.candidate_content,
              json.dumps(item.supporting_block_ids), json.dumps(item.supporting_structure_ids), item.created_at.isoformat(),
              item.updated_at.isoformat(), item.status, 0, None, item.applicability, item.unresolved,
-             json.dumps(dict(item.interpretation_trace), ensure_ascii=False, sort_keys=True)),
+             json.dumps(dict(item.interpretation_trace), ensure_ascii=False, sort_keys=True),
+             json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in item.selected_support],
+                        ensure_ascii=False, sort_keys=True)),
         )
         self.conn.commit()
         return item
@@ -142,6 +167,10 @@ class CognitionWorktreeStore:
             applicability=str(row[12]) if row[12] is not None else None,
             unresolved=str(row[13]) if row[13] is not None else None,
             interpretation_trace=json.loads(str(row[14])) if row[14] is not None else {},
+            selected_support=tuple(
+                AuthorizedSelectedSupport(block_id=str(value["block_id"]), state_id=str(value["state_id"]))
+                for value in json.loads(str(row[15]))
+            ) if len(row) > 15 and row[15] is not None else (),
         )
 
     def get(self, worktree_id: str) -> CognitionWorktree:
@@ -172,6 +201,7 @@ class CognitionWorktreeStore:
         remove_block_ids: tuple[str, ...] = (),
         add_structure_ids: tuple[str, ...] = (),
         remove_structure_ids: tuple[str, ...] = (),
+        selected_support: tuple[AuthorizedSelectedSupport, ...] | None = None,
     ) -> CognitionWorktree:
         item = self.get(worktree_id)
         if item.status != "OPEN":
@@ -180,12 +210,17 @@ class CognitionWorktreeStore:
         structures = [value for value in item.supporting_structure_ids if value not in remove_structure_ids]
         blocks.extend(add_block_ids)
         structures.extend(add_structure_ids)
+        selected = item.selected_support
+        if selected_support is not None:
+            selected = tuple(selected_support)
         if not blocks:
             raise ValueError("an OPEN worktree must retain at least one supporting block")
         now = _now()
         self.conn.execute(
-            "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, updated_at=? WHERE worktree_id=?",
-            (json.dumps(self._tuple(blocks)), json.dumps(self._tuple(structures)), now.isoformat(), worktree_id),
+            "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, selected_support_json=?, updated_at=? WHERE worktree_id=?",
+            (json.dumps(self._tuple(blocks)), json.dumps(self._tuple(structures)),
+             json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in selected],
+                        ensure_ascii=False, sort_keys=True), now.isoformat(), worktree_id),
         )
         self.conn.commit()
         return self.get(worktree_id)

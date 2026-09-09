@@ -13,6 +13,7 @@ from typing import Protocol, runtime_checkable
 
 from lce.contracts.baseline import Baseline, validate_model_trace
 from lce.contracts.external_memory import MemoryItemView
+from lce.reference_memory.contracts import AuthorizedSelectedSupport
 
 
 class LceError(Exception):
@@ -39,6 +40,7 @@ class CandidateBaseline:
     supporting_memory_ids: tuple[str, ...]
     model_trace: Mapping[str, object] = field(default_factory=dict)
     supporting_state_ids: tuple[str, ...] = ()
+    selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.content, str) or not self.content.strip():
@@ -54,6 +56,16 @@ class CandidateBaseline:
             raise ValueError("CandidateBaseline.supporting_memory_ids contains duplicate memory IDs")
         if len(self.supporting_state_ids) != len(set(self.supporting_state_ids)):
             raise ValueError("CandidateBaseline.supporting_state_ids contains duplicate state IDs")
+        if not isinstance(self.selected_support, tuple):
+            raise TypeError("CandidateBaseline.selected_support must be a tuple")
+        if len({item.block_id for item in self.selected_support}) != len(self.selected_support):
+            raise ValueError("CandidateBaseline.selected_support contains duplicate block IDs")
+        if self.selected_support and tuple(item.block_id for item in self.selected_support) != self.supporting_memory_ids:
+            raise ValueError("CandidateBaseline.selected_support block IDs must align with supporting_memory_ids")
+        if self.selected_support:
+            selected_state_ids = tuple(item.state_id for item in self.selected_support)
+            if self.supporting_state_ids and self.supporting_state_ids != selected_state_ids:
+                raise ValueError("CandidateBaseline.supporting_state_ids must align with selected_support")
         validate_model_trace(self.model_trace)
 
 

@@ -12,6 +12,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
+from lce.reference_memory.contracts import AuthorizedSelectedSupport
+
 _ALLOWED_MODEL_TRACE_KEYS = frozenset(
     {
         "provider",
@@ -108,6 +110,7 @@ class Baseline:
     previous_baseline_id: str | None = None
     model_trace: Mapping[str, object] = field(default_factory=dict)
     supporting_state_ids: tuple[str, ...] = ()
+    selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.baseline_id, str) or not self.baseline_id.strip():
@@ -129,6 +132,18 @@ class Baseline:
                 raise ValueError("each supporting_memory_id must be a non-empty string")
         if len(self.supporting_memory_ids) != len(set(self.supporting_memory_ids)):
             raise ValueError("supporting_memory_ids contains duplicate memory IDs")
+        if not isinstance(self.selected_support, tuple):
+            raise TypeError("selected_support must be a tuple")
+        if len({item.block_id for item in self.selected_support}) != len(self.selected_support):
+            raise ValueError("selected_support contains duplicate block IDs")
+        if self.selected_support and tuple(item.block_id for item in self.selected_support) != self.supporting_memory_ids:
+            raise ValueError("selected_support block IDs must align with supporting_memory_ids")
+        if self.selected_support:
+            selected_state_ids = tuple(item.state_id for item in self.selected_support)
+            if len(selected_state_ids) != len(set(selected_state_ids)):
+                raise ValueError("selected_support contains duplicate state IDs")
+            if self.supporting_state_ids and self.supporting_state_ids != selected_state_ids:
+                raise ValueError("supporting_state_ids must align with selected_support")
         if not isinstance(self.created_at, datetime):
             raise TypeError("created_at must be a datetime")
         if self.created_at.tzinfo is None or self.created_at.tzinfo != UTC:

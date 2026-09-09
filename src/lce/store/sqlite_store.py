@@ -10,6 +10,7 @@ from pathlib import Path
 
 from lce.contracts.baseline import Baseline, BaselineHistory
 from lce.contracts.consolidation import LceError
+from lce.reference_memory.contracts import AuthorizedSelectedSupport
 from lce.store.interface import BaselineStorePort
 
 _SCHEMA = """
@@ -25,6 +26,7 @@ CREATE TABLE IF NOT EXISTS baseline_revisions (
     created_at           TEXT NOT NULL,
     model_trace_json     TEXT NOT NULL DEFAULT '{}',
     supporting_state_ids_json TEXT NOT NULL DEFAULT '[]',
+    selected_support_json TEXT NOT NULL DEFAULT '[]',
     UNIQUE (region_id, revision_number)
 );
 
@@ -88,6 +90,8 @@ class SqliteBaselineStore(BaselineStorePort):
         columns = {str(row[1]) for row in conn.execute("PRAGMA table_info(baseline_revisions)")}
         if "supporting_state_ids_json" not in columns:
             conn.execute("ALTER TABLE baseline_revisions ADD COLUMN supporting_state_ids_json TEXT NOT NULL DEFAULT '[]'")
+        if "selected_support_json" not in columns:
+            conn.execute("ALTER TABLE baseline_revisions ADD COLUMN selected_support_json TEXT NOT NULL DEFAULT '[]'")
 
     def get_head(self, region_id: str) -> Baseline | None:
         """Fetch current HEAD baseline via pointer join."""
@@ -96,7 +100,8 @@ class SqliteBaselineStore(BaselineStorePort):
         cursor.execute(
             """
             SELECT r.baseline_id, r.region_id, r.revision_number, r.content,
-                   r.content_hash, r.previous_baseline_id, r.created_at, r.model_trace_json, r.supporting_state_ids_json
+                   r.content_hash, r.previous_baseline_id, r.created_at, r.model_trace_json,
+                   r.supporting_state_ids_json, r.selected_support_json
             FROM baselines_head h
             JOIN baseline_revisions r ON h.baseline_id = r.baseline_id
             WHERE h.region_id = ?
@@ -119,6 +124,10 @@ class SqliteBaselineStore(BaselineStorePort):
         )
         mem_refs = tuple(r[0] for r in cursor.fetchall())
         state_refs = tuple(json.loads(row[8]))
+        selected_support = tuple(
+            AuthorizedSelectedSupport(block_id=str(value["block_id"]), state_id=str(value["state_id"]))
+            for value in json.loads(row[9])
+        )
 
         model_trace: Mapping[str, object] = json.loads(row[7])
         created_at = datetime.fromisoformat(row[6])
@@ -134,6 +143,7 @@ class SqliteBaselineStore(BaselineStorePort):
             supporting_memory_ids=mem_refs,
             model_trace=model_trace,
             supporting_state_ids=state_refs,
+            selected_support=selected_support,
         )
 
     def save_revision(self, baseline: Baseline) -> None:
@@ -172,8 +182,9 @@ class SqliteBaselineStore(BaselineStorePort):
                 """
                 INSERT INTO baseline_revisions (
                     baseline_id, region_id, revision_number, content,
-                    content_hash, previous_baseline_id, created_at, model_trace_json, supporting_state_ids_json
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    content_hash, previous_baseline_id, created_at, model_trace_json,
+                    supporting_state_ids_json, selected_support_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     baseline.baseline_id,
@@ -185,6 +196,8 @@ class SqliteBaselineStore(BaselineStorePort):
                     baseline.created_at.isoformat(),
                     trace_json,
                     json.dumps(baseline.supporting_state_ids),
+                    json.dumps([{"block_id": value.block_id, "state_id": value.state_id}
+                                for value in baseline.selected_support], sort_keys=True),
                 ),
             )
             # 2. Insert memory references
@@ -226,7 +239,8 @@ class SqliteBaselineStore(BaselineStorePort):
 
         query = """
             SELECT baseline_id, region_id, revision_number, content,
-                   content_hash, previous_baseline_id, created_at, model_trace_json, supporting_state_ids_json
+                   content_hash, previous_baseline_id, created_at, model_trace_json,
+                   supporting_state_ids_json, selected_support_json
             FROM baseline_revisions
             WHERE region_id = ?
             ORDER BY revision_number DESC
@@ -253,6 +267,10 @@ class SqliteBaselineStore(BaselineStorePort):
             )
             mem_refs = tuple(r[0] for r in cursor.fetchall())
             state_refs = tuple(json.loads(row[8]))
+            selected_support = tuple(
+                AuthorizedSelectedSupport(block_id=str(value["block_id"]), state_id=str(value["state_id"]))
+                for value in json.loads(row[9])
+            )
             created_at = datetime.fromisoformat(row[6])
             model_trace: Mapping[str, object] = json.loads(row[7])
 
@@ -268,6 +286,7 @@ class SqliteBaselineStore(BaselineStorePort):
                     supporting_memory_ids=mem_refs,
                     model_trace=model_trace,
                     supporting_state_ids=state_refs,
+                    selected_support=selected_support,
                 )
             )
 

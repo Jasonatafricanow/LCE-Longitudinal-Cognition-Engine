@@ -100,6 +100,18 @@ class SemanticBlock:
 
 
 @dataclass(frozen=True, slots=True)
+class AuthorizedSelectedSupport:
+    """One explicitly authorized immutable state selected for cognition."""
+
+    block_id: str
+    state_id: str
+
+    def __post_init__(self) -> None:
+        _require_text(self.block_id, "block_id")
+        _require_text(self.state_id, "state_id")
+
+
+@dataclass(frozen=True, slots=True)
 class VectorProjection:
     """Rebuildable vector projection of exactly one Semantic Block."""
 

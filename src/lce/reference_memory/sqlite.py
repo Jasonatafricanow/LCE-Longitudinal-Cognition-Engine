@@ -18,6 +18,15 @@ from lce.reference_memory.contracts import (
     VectorProjection,
 )
 
+_PIPELINE_STAGE_ORDER = {
+    "compiled": 1,
+    "vector-ready": 2,
+    "snapshot/discovery-evaluated": 3,
+    "worktree-support-evaluated": 4,
+    "promotion-evaluated": 5,
+    "complete": 6,
+}
+
 
 class ReferenceMemoryStore:
     """Restart-safe local Memory substrate for standalone LCE."""
@@ -608,9 +617,24 @@ class ReferenceMemoryStore:
         row = self._db().execute("SELECT stage FROM pipeline_progress WHERE evidence_id = ?", (evidence_id,)).fetchone()
         return str(row[0]) if row else None
 
+    def get_pipeline_progress(self, evidence_id: str) -> tuple[str, str | None] | None:
+        row = self._db().execute(
+            "SELECT stage, fingerprint FROM pipeline_progress WHERE evidence_id = ?",
+            (evidence_id,),
+        ).fetchone()
+        return (str(row[0]), str(row[1]) if row[1] is not None else None) if row else None
+
     def _mark_pipeline_stage_db(
         self, db: sqlite3.Connection, evidence_id: str, stage: str, fingerprint: str | None
     ) -> None:
+        current = db.execute(
+            "SELECT stage, fingerprint FROM pipeline_progress WHERE evidence_id = ?",
+            (evidence_id,),
+        ).fetchone()
+        if current is not None and _PIPELINE_STAGE_ORDER.get(str(current[0]), 0) > _PIPELINE_STAGE_ORDER.get(stage, 0):
+            return
+        if current is not None and fingerprint is None:
+            fingerprint = str(current[1]) if current[1] is not None else None
         db.execute(
             "INSERT INTO pipeline_progress VALUES (?, ?, ?) ON CONFLICT(evidence_id) DO UPDATE SET stage=excluded.stage, fingerprint=excluded.fingerprint",
             (evidence_id, stage, fingerprint),
