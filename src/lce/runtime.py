@@ -240,9 +240,19 @@ class LceRuntime:
                 raise ValueError("bounded interpreter selected states out of alignment with block IDs")
             selected = supplied
         else:
-            selected_list: list[AuthorizedSelectedSupport] = []
-            for block_id in requested_ids:
-                block = authorized.get(block_id)
+            # The reference interpreter supplies block IDs but no explicit
+            # selection ordering.  Use newest-first for that derived order so
+            # the selected support reflects the current longitudinal edge;
+            # an interpreter that supplies explicit states/order remains
+            # authoritative below.
+            selected_list = []
+            ordered_blocks = sorted(
+                (authorized[block_id] for block_id in requested_ids if block_id in authorized),
+                key=lambda block: (block.occurred_end, block.block_id),
+                reverse=True,
+            )
+            for block in ordered_blocks:
+                block_id = block.block_id
                 if block is None or block.state_id is None:
                     raise ValueError("bounded interpreter selected a block outside the authorized package")
                 selected_list.append(AuthorizedSelectedSupport(block_id=block_id, state_id=block.state_id))
@@ -274,7 +284,10 @@ class LceRuntime:
             "relation": candidate.relation_type,
             "structures": structures,
             "blocks": tuple(
-                (item.block_id, item.state_id, next((block.content for block in snapshot.block_states if block.block_id == item.block_id), ""))
+                # State IDs retain exact immutable provenance, but a newer
+                # state with identical semantic/structural meaning is not
+                # new cognition support (for example, a pure recap).
+                (item.block_id, next((block.content for block in snapshot.block_states if block.block_id == item.block_id), ""))
                 for item in selected_support
             ),
         }
