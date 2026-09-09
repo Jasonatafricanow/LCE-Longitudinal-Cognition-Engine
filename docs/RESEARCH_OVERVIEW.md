@@ -491,6 +491,7 @@ Different documents answer different questions.
 
 - [`README.md`](../README.md) — 30-second project framing and experiment-driven evolution table.
 - [`docs/research/FINDINGS.md`](research/FINDINGS.md) — claim-by-claim findings, limits, status, and architecture consequences.
+- [`docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](ENGINEERING_CHALLENGES_AND_BOUNDARIES.md) — current challenge/status matrix and explicit stop boundaries.
 
 ### Research and experiment surface
 
@@ -520,3 +521,78 @@ Different documents answer different questions.
 | **Engineering invariant** | Runtime correctness behavior backed by closure/regression tests | support identity is distinct from provenance identity |
 | **Exploratory result** | Research observation that influenced design but is not a general scientific claim | multi-membership and giant-region behavior in the studied corpus |
 | **Open question** | Capability or evaluation problem deliberately left unresolved | embedding quality, threshold tuning, higher-order precision |
+
+## 15. Temporal sufficiency and two different UNKNOWN boundaries
+
+A later architecture review made explicit a distinction that was already implicit in the experiments: **time is not the cognition-unit boundary, but temporal order is still part of longitudinal evidence.**
+
+BLOCK-03 rejected day-batch segmentation because clock boundaries do not define semantic identity. TREND-04 then depended on chronological replay and no-future cutoffs to make longitudinal claims falsifiable. INSPIRATION-05 and STRUCTURE-06R observed change across ordered prefixes and temporal evolution. The correction is therefore not "time does not matter". It is:
+
+```text
+semantic continuity -> defines what one cognition unit is
+temporal order      -> constrains how cognition changes can be inferred
+```
+
+### Why LCE does not erase chronology as a required test
+
+One proposed robustness direction was to remove temporal-scale/order information and test whether logical trends could still be reconstructed from semantic material alone.
+
+That was rejected as a V1 proof obligation because it changes the problem.
+
+With chronology:
+
+```text
+A(t1) -> B(t2) -> C(t3) -> D(t4)
+```
+
+LCE can ask bounded longitudinal questions about visibility, emergence, continuation, correction, reconnection, and supersession.
+
+Without chronology:
+
+```text
+A   B   C   D
+```
+
+the system must infer premise/consequence, causal direction, likely reasoning order, and missing transitions. The hypothesis space becomes substantially broader and starts to resemble open-ended deep reasoning reconstruction rather than observation of a real longitudinal process.
+
+For long-running agent products, interactions, events, decisions, versions, and memory records are normally ordered. Using this product-native signal is not benchmark leakage. Removing it merely to demonstrate a more general intelligence capability would move the research goalposts.
+
+### Temporal UNKNOWN
+
+If reliable temporal placement exists, evidence may participate in longitudinal inference subject to the normal authority rules.
+
+If no explicit timestamp exists but relative order can be recovered reliably from version ancestry, explicit before/after relations, source sequence, or other inspectable constraints, an ingestion/integration layer may recover that placement.
+
+If temporal placement remains underdetermined:
+
+```text
+temporal position UNKNOWN
+  -> evidence may remain as ordinary source/reference
+  -> no trajectory / emergence / evolution claim
+```
+
+LCE does not invent a plausible order to preserve coverage.
+
+### Semantic UNKNOWN
+
+A separate stop condition occurs when temporal placement is adequate and an ordered structural pattern is observable, but its higher-order meaning is not sufficiently justified.
+
+```text
+ordered temporal / structural observation
+  -> bounded higher-order candidate
+  -> meaning insufficiently justified
+  -> UNKNOWN is a valid stop
+```
+
+This boundary is motivated by the weak higher-order results retained in INSPIRATION-05 and STRUCTURE-06R: giant/noisy persistence, weak H1 semantics, large overlap noise floor, and low precision in structure-to-structure review.
+
+The two UNKNOWNs therefore mean different things:
+
+| Boundary | Missing information | Consequence |
+| --- | --- | --- |
+| **Temporal UNKNOWN** | where evidence belongs in the longitudinal order | do not construct a longitudinal trajectory claim |
+| **Semantic UNKNOWN** | what an observed ordered pattern means | preserve the observation/candidate but do not invent higher-order semantics |
+
+Both are fail-closed boundaries. One prevents fabricated chronology; the other prevents fabricated meaning.
+
+For the explicit engineering challenge matrix and the implementation/open-boundary distinction, see [`docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](ENGINEERING_CHALLENGES_AND_BOUNDARIES.md).
