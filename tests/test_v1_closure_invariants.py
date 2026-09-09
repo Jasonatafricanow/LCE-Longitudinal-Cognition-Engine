@@ -70,6 +70,83 @@ def _single_worktree(runtime: LceRuntime) -> CognitionWorktree:
     return worktrees[0]
 
 
+@pytest.mark.parametrize(
+    "recap_targets",
+    ((1,), (2,), (4,), (1, 3, 2, 1)),
+    ids=("oldest", "middle", "newest", "successive-recency-permutations"),
+)
+def test_b4_recap_order_preserves_support_until_semantic_change(
+    tmp_path: Path, recap_targets: tuple[int, ...]
+) -> None:
+    vectors = ((1.0, 0.0), (0.99, 0.05), (0.98, 0.12), (0.97, 0.2))
+    runtime = LceRuntime(tmp_path / "run", structure_config=FOUR_BLOCK_CONFIG)
+    initial = runtime.run_batch(_b4_corpus()[:4])[-1]
+    worktree = _single_worktree(runtime)
+    original_identities = runtime.worktrees.support_identities(worktree.worktree_id)
+    original_contents = {block.block_id: block.content for block in initial.snapshot.block_states}
+    original_structures = tuple(
+        (item.structure_id, item.center_block_id, item.member_block_ids, item.k)
+        for item in initial.snapshot.structures
+    )
+    assert worktree.status == "OPEN"
+    assert len(original_identities) == 1
+    assert runtime.baselines.list_regions() == ()
+
+    for index, target in enumerate(recap_targets, start=5):
+        # Reopening between recaps also verifies persisted selected provenance.
+        selected_before = _single_worktree(runtime).selected_support
+        runtime.close()
+        runtime = LceRuntime(tmp_path / "run", structure_config=FOUR_BLOCK_CONFIG)
+        assert _single_worktree(runtime).selected_support == selected_before
+        result = runtime.process(
+            _evidence(f"E{index}", index, f"matter-{target}", vectors[target - 1], recap=True)
+        )
+        current = _single_worktree(runtime)
+        assert {block.block_id: block.content for block in result.snapshot.block_states} == original_contents
+        assert tuple(
+            (item.structure_id, item.center_block_id, item.member_block_ids, item.k)
+            for item in result.snapshot.structures
+        ) == original_structures
+        # Fingerprint normalization must not reorder or discard selected provenance.
+        expected_states = sorted(
+            result.snapshot.block_states,
+            key=lambda block: (block.occurred_end, block.block_id),
+            reverse=True,
+        )
+        assert tuple((item.block_id, item.state_id) for item in current.selected_support) == tuple(
+            (block.block_id, block.state_id) for block in expected_states
+        )
+        assert current.selected_support != selected_before
+        assert f"E{index}" in expected_states[0].raw_evidence_ids
+        assert runtime.worktrees.support_identities(current.worktree_id) == original_identities
+        assert runtime.worktrees.support_cycle_count(current.worktree_id) == 1
+        assert current.status == "OPEN"
+        assert runtime.baselines.list_regions() == ()
+        assert runtime.query(None) == ()
+
+    assert len(runtime.memory.list_semantic_block_states(current_valid_only=False)) == 4 + len(recap_targets)
+    index = 5 + len(recap_targets)
+    target = recap_targets[-1]
+    runtime.process(
+        _evidence(
+            f"E{index}", index, f"matter-{target}", vectors[target - 1], recap=True,
+            new_information="a genuinely new relevant measured property",
+        )
+    )
+    merged = _single_worktree(runtime)
+    assert merged.status == "MERGED"
+    assert runtime.worktrees.support_cycle_count(merged.worktree_id) == 2
+    assert set(original_identities) < set(runtime.worktrees.support_identities(merged.worktree_id))
+    head = runtime.baselines.get_head(merged.region_id)
+    assert head is not None and head.revision_number == 1
+    assert head.selected_support == merged.selected_support
+    accepted = runtime.query(None)
+    assert len(accepted) == 1
+    assert accepted[0].supporting_semantic_block_ids == tuple(item.block_id for item in merged.selected_support)
+    assert accepted[0].supporting_semantic_block_state_ids == tuple(item.state_id for item in merged.selected_support)
+    runtime.close()
+
+
 def test_b4_pure_recap_does_not_advance_support_but_relevant_change_does(tmp_path: Path) -> None:
     """A state-version/provenance change is not a new qualifying support cycle."""
     corpus = _b4_corpus()
