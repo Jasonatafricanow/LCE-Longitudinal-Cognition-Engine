@@ -4,7 +4,7 @@
 
 - Repository/worktree: `C:\projects\w\lce-v1-close`
 - Test base: `ecf41377224881b51e242222c185acf191b324da`
-- Exact test commit: `69fe0bc` (`test: encode LCE V1 closure invariants`)
+- Exact test commit: `69fe0bc05bbc232b371f123628a8054340b63f70` (`test: encode LCE V1 closure invariants`)
 - Production source changed: **none**
 - New test surface: `tests/test_v1_closure_invariants.py`, `tests/test_v1_recovery_fault_matrix.py`
 
