@@ -1,9 +1,14 @@
 # LCE Research Map
 
-LCE's public research surface is intentionally small, offline, and synthetic.
-The experiments are not a hidden production pipeline and they do not promote
-candidate structure into canonical cognition. Their purpose is to make the
-boundaries behind LCE design decisions falsifiable and reviewable.
+LCE's public experiment surface is intentionally small, offline, and synthetic.
+The three experiments linked below are **selected reproducibility surfaces**, not
+the complete historical research sequence and not a hidden production
+pipeline. Their purpose is to make several boundaries behind LCE design
+decisions falsifiable and reviewable.
+
+For the full architecture-evolution narrative, start with
+[`docs/RESEARCH_OVERVIEW.md`](../RESEARCH_OVERVIEW.md). For claim-by-claim
+evidence and negative results, see [`FINDINGS.md`](FINDINGS.md).
 
 ## From Similarity to Longitudinal Structure
 
@@ -23,7 +28,7 @@ temporal falsification
 longitudinal structure
         |
         v
-LCE Core authority boundary
+bounded interpretation / authority boundary
 ```
 
 Each arrow is a research question, not an automatic authority escalation.
@@ -37,13 +42,13 @@ mistaken for meaning or truth?
 uses fixed synthetic vectors and emits `candidate_relation` records. Its
 contract deliberately stops before semantic or canonical claims.
 
-**Architecture consequence:** Vector similarity belongs to an external
-discovery substrate. It may propose IDs or relations, but LCE Core must
-receive authorized memory references rather than silently owning a vector
-index.
+**Architecture consequence:** Similarity is a discovery signal, not semantic or
+factual authority. In standalone V1, vectors are rebuildable derived artifacts
+over authorized Semantic Blocks; they cannot write themselves back as Raw
+Evidence or accepted Understanding.
 
-**Unresolved question:** Which additional evidence and review rules are needed
-before a candidate relation can support a longitudinal interpretation?
+**Unresolved question:** Which discovery signals and thresholds remain useful
+across different corpora without producing giant/noisy candidate regions?
 
 ## 2. Region Formation
 
@@ -55,11 +60,14 @@ uses deterministic neighbourhood overlap, a minimum region size, and explicit
 isolated/unassigned outputs. It does not force every item into a group.
 
 **Architecture consequence:** Candidate regions should remain inspectable and
-retain support information. A region is a useful research object, not a belief
-or a canonical baseline by itself.
+retain negative evidence. A region is a derived research object, not a belief,
+factual Memory item, or accepted Baseline by itself. The later historical
+research moved further toward overlapping local, multi-scale observations
+rather than one exclusive cluster ontology.
 
-**Unresolved question:** How should a later semantic process justify a durable
-longitudinal structure without erasing negative evidence or weak membership?
+**Unresolved question:** Which local structural observations provide useful
+higher-order candidates without collapsing dense semantic space into a giant
+region or noise floor?
 
 ## 3. Temporal Falsification
 
@@ -70,48 +78,74 @@ restricts visibility to events at or before a cutoff, rejects future IDs, and
 uses a shuffled-time negative control.
 
 **Architecture consequence:** No-future visibility is an evaluation prerequisite
-whenever a claim depends on temporal structure. A result that sees later events
-is not evidence that the structure was discoverable earlier.
+whenever a claim depends on temporal structure. V1 structure snapshots are
+cutoff-bound so future block states cannot leak into an earlier snapshot.
 
 **Unresolved question:** Which longitudinal signals remain stable under new
-cutoffs, reordered observations, and independent review?
+cutoffs, reordered observations, independent review, and different corpora?
 
-## 4. LCE Core Authority Boundary
+## 4. Authority Boundary
 
-**Question:** What should LCE Core own once external research has identified
-candidate inputs?
+The authority boundary evolved between the minimal Core V0 and standalone V1.
+That evolution is intentional and should not be collapsed into one historical
+claim.
 
-**Evidence:** The [external substrate boundary](external-substrate-vs-lce-core.md),
-Core contracts, and SQLite store make the boundary explicit:
+**Core V0:** accepted caller-selected Memory IDs through external ports and
+owned immutable Baseline revisions / HEAD. It did not own the later standalone
+compiler, Reference Memory, or local vector/structure pipeline.
+
+**Standalone V1:** adds a minimal replaceable Reference Memory substrate,
+semantic-stream compilation, rebuildable vectors and cutoff-bounded structures,
+bounded higher-order candidates, durable cognition Worktrees, conservative
+promotion, and deterministic Understanding reads.
+
+The V1 authority direction is:
 
 ```text
-raw memory / embeddings / neighbourhoods / regions
-  -> external inputs or candidate discovery
-
-authorized memory IDs
-  -> LCE Core consolidation
-  -> immutable baseline revisions and explicit head pointer
+canonical Raw Evidence / source validity
+        |
+        v
+Semantic Blocks
+        |
+        v
+derived vectors / structures / candidates
+        |
+        v
+bounded interpretation
+        |
+        v
+OPEN cognition Worktree
+        |
+        v
+conservative accepted Baseline revision
 ```
 
-Unknown memory references fail closed. Equivalent content does not create
-meaningless revision increments. Storage is rooted by the caller so separate
-runtimes remain isolated.
+Derived cognition never writes itself back as canonical Raw Evidence. An
+accepted Baseline is durable LCE understanding, not factual Memory or eternal
+objective truth.
 
-**Architecture consequence:** LCE Core is a deterministic consolidation and
-lineage boundary, not a general vector database, raw-memory owner, or current
-turn reasoning engine.
-
-**Unresolved question:** How should a future longitudinal compiler be evaluated
-without collapsing research candidates into current runtime authority?
+See [`LCE_V1_BOUNDARIES.md`](../architecture/LCE_V1_BOUNDARIES.md) and
+[`LCE_V1_RUNTIME.md`](../architecture/LCE_V1_RUNTIME.md).
 
 ## Current Status
 
-MR-side binding exists, but production activation remains disabled. Automatic
-longitudinal compilation is out of scope for the current Core. The public
-experiments therefore remain proposal-and-control surfaces until a later
-contract explicitly promotes a capability.
+Standalone LCE V1 is frozen as a bounded product pipeline. The release record
+reports 139 passing tests, closure/recovery gates, clean mypy/Ruff, and an
+exact-HEAD install/import/smoke verification. Those are engineering release
+gates, not scientific-validation claims.
 
-Run the research tests offline with:
+MR-side binding is optional and one-way; production invocation is not part of
+standalone V1 closure. Current-turn MR/Body reasoning, Persona, Intent,
+ActionPolicy, recursive cognition, embedding-quality optimization, threshold
+tuning, and higher-order precision remain outside or beyond the standalone V1
+boundary.
+
+The complete experiment-driven path and the distinction between exploratory
+research, engineering invariants, frozen boundaries, and open questions are
+covered in [`docs/RESEARCH_OVERVIEW.md`](../RESEARCH_OVERVIEW.md) and
+[`FINDINGS.md`](FINDINGS.md).
+
+Run the public research tests offline with:
 
 ```text
 python -m pytest tests/research -q
