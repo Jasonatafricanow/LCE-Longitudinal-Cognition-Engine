@@ -91,6 +91,44 @@ narrow architectural hypothesis
 
 This is a summary of the observed development pattern, not a claim that this exact methodology was documented prospectively at the start of the project. It is described in more detail in [`docs/RESEARCH_OVERVIEW.md`](docs/RESEARCH_OVERVIEW.md).
 
+## Architecture revalidation
+
+A second-order rule emerged from those corrections: **the current abstraction itself must periodically justify its continued existence**.
+
+The review is not limited to “is the implementation correct?” It asks three different questions:
+
+```text
+Implementation correction
+  -> Is the accepted design implemented incorrectly?
+
+Architecture correction
+  -> Is the implementation faithful, but the representation / authority / module boundary wrong?
+
+Problem correction
+  -> Even if implemented perfectly, would this design solve the problem we actually care about?
+```
+
+This matters in model-centric systems because some mechanisms are stable engineering requirements while others are temporary scaffolding around current model capability. LCE therefore tries to keep **authority, provenance, temporal semantics, verification, recovery, and anti-self-pollution** stable while treating extractors, prompts, thresholds, discovery algorithms, and model/provider choices as replaceable unless evidence shows they encode a deeper invariant.
+
+A useful test is:
+
+> If the underlying model became dramatically more capable tomorrow, which parts of this component would still be required for correctness, auditability, recoverability, or authority separation?
+
+The implementation is allowed to disappear. The constraint learned from its failure is often the more durable asset.
+
+A revalidation can end in one of four decisions:
+
+```text
+KEEP     — the abstraction still expresses a necessary constraint
+DEMOTE   — useful as a heuristic or observation, but not authority
+REPLACE  — the problem remains valid, but the abstraction is wrong
+DELETE   — the component mainly encodes obsolete scaffolding or a superseded problem
+```
+
+This is not a license for continuous redesign. Pivots require evidence: a falsifying experiment, repeated patch pressure, authority leakage, evaluation mismatch, real-use mismatch, or a meaningful change in model capability.
+
+See [`docs/ARCHITECTURE_REVALIDATION.md`](docs/ARCHITECTURE_REVALIDATION.md) for the full checkpoint, LCE examples, and the distinction between stable invariants and replaceable mechanisms.
+
 ## What V1 is
 
 LCE V1 is a **standalone, contract-first longitudinal cognition pipeline**.
@@ -130,6 +168,7 @@ The public synthetic experiments are **not** a replay of the complete historical
 Useful entry points:
 
 - Research narrative: [`docs/RESEARCH_OVERVIEW.md`](docs/RESEARCH_OVERVIEW.md)
+- Architecture revalidation method: [`docs/ARCHITECTURE_REVALIDATION.md`](docs/ARCHITECTURE_REVALIDATION.md)
 - Findings and negative results: [`docs/research/FINDINGS.md`](docs/research/FINDINGS.md)
 - Conceptual research map: [`docs/research/research-map.md`](docs/research/research-map.md)
 - Full decision evolution: [`docs/history/LCE_DECISION_EVOLUTION.md`](docs/history/LCE_DECISION_EVOLUTION.md)
