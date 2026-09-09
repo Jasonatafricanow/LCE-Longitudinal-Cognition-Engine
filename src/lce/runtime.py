@@ -318,13 +318,14 @@ class LceRuntime:
         payload = {
             "relation": candidate.relation_type,
             "structures": structures,
-            "blocks": tuple(
+            "blocks": tuple(sorted(
                 # State IDs retain exact immutable provenance, but a newer
                 # state with identical semantic/structural meaning is not
-                # new cognition support (for example, a pure recap).
+                # new cognition support (for example, a pure recap). Canonical
+                # block order here must not change selected provenance order.
                 (item.block_id, next((block.content for block in snapshot.block_states if block.block_id == item.block_id), ""))
                 for item in selected_support
-            ),
+            )),
         }
         return "support_" + hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()[:24]
 
