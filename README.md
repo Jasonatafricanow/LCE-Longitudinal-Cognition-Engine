@@ -66,6 +66,8 @@ The main findings are not feature claims. They are constraints learned from expe
 8. **Replay, recap, and repeated consumption must not manufacture support.** Durable state changes need semantic relevance, not merely a new version or ordering.
 9. **A green suite is only as strong as its oracle and fixtures.** Independent adversarial failures became permanent RED→GREEN regressions.
 10. **Language interpretation should consume bounded evidence, not search for evidence supporting its own interpretation.**
+11. **Temporal ordering is longitudinal evidence, not disposable metadata.** If temporal placement cannot be established reliably, LCE does not invent a reasoning trajectory.
+12. **Observed change may legitimately remain semantically UNKNOWN.** Detecting a persistent temporal/structural pattern does not automatically authorize a higher-order meaning.
 
 See [`docs/research/FINDINGS.md`](docs/research/FINDINGS.md) for evidence, non-claims, architecture consequences, and status for each finding.
 
@@ -129,6 +131,38 @@ This is not a license for continuous redesign. Pivots require evidence: a falsif
 
 See [`docs/ARCHITECTURE_REVALIDATION.md`](docs/ARCHITECTURE_REVALIDATION.md) for the full checkpoint, LCE examples, and the distinction between stable invariants and replaceable mechanisms.
 
+## Engineering challenge status
+
+Several issues that look like generic future recommendations already have explicit V1 answers. Others are deliberately left open. The distinction matters:
+
+| Challenge | V1 answer | Status |
+| --- | --- | --- |
+| **Cognitive IR** | Natural-language semantic payload inside deterministic revision/support/provenance/lifecycle contracts | **Implemented direction; universal ontology not claimed** |
+| **Belief revision** | Immutable Baseline revisions + OPEN/MERGED/DROPPED Worktrees + invalidation/rebuild/correction | **Mechanics implemented; universal contradiction oracle not claimed** |
+| **Batch vs nearline** | One `process()` ontology/state path with independently durable stages | **Core semantics implemented; latency/provisional-serving policy outside V1** |
+| **Evaluation** | no-future replay, negative controls, retained misses, adversarial RED→GREEN and recovery matrices | **Internal evaluation implemented; standardized external benchmark open** |
+| **Probabilistic vs deterministic authority** | models interpret bounded packages; deterministic runtime owns state/authority/recovery | **Implemented boundary** |
+| **External consumption** | deterministic accepted-Understanding read API | **Implemented; MCP/generic Agent adapters open** |
+| **Temporal sufficiency** | temporal order is part of longitudinal evidence; underdetermined placement cannot support a trajectory | **Frozen boundary** |
+| **Meaning under uncertainty** | ordered structure may remain an `UNKNOWN` derived candidate when higher-order meaning is not justified | **Frozen boundary** |
+
+The two `UNKNOWN` cases are intentionally different:
+
+```text
+Temporal UNKNOWN
+  -> we do not know where evidence belongs in the sequence
+  -> no longitudinal trajectory / emergence claim
+
+Semantic UNKNOWN
+  -> we can observe an ordered temporal/structural pattern
+  -> its higher-order meaning is not sufficiently justified
+  -> observation may remain; speculative meaning does not advance
+```
+
+LCE also deliberately rejects one tempting evaluation shortcut: **erase product-native chronology and demand that the system reconstruct the latent reasoning order from unordered evidence.** Once temporal order is removed, the task expands into open-ended causal/logical reconstruction. That may be an interesting separate research program, but it is not a required proof of longitudinal cognition.
+
+See [`docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md) for the detailed matrix, rationale, and evidence boundaries.
+
 ## What V1 is
 
 LCE V1 is a **standalone, contract-first longitudinal cognition pipeline**.
@@ -152,6 +186,8 @@ LCE V1 does **not** claim a solved general cognition model.
 
 It does not implement MR or Body integration, C10, Persona, Agent identity, Intent, ActionPolicy, RuntimeBinding, current-turn reasoning, or action execution. It does not make exclusive clustering, a complex knowledge graph, TDA/H1, recursive cognition, or embedding quality into canonical authority.
 
+It also does not claim to recover the uniquely correct reasoning trajectory from arbitrary unordered evidence. If temporal placement is underdetermined, LCE fails closed on the longitudinal claim rather than inventing an order.
+
 Read-time access is deterministic, model-free, and non-mutating. A query cannot promote a Worktree, write Memory, or manufacture factual support.
 
 See [`docs/architecture/LCE_V1_RUNTIME.md`](docs/architecture/LCE_V1_RUNTIME.md) and [`docs/architecture/LCE_V1_BOUNDARIES.md`](docs/architecture/LCE_V1_BOUNDARIES.md).
@@ -168,6 +204,7 @@ The public synthetic experiments are **not** a replay of the complete historical
 Useful entry points:
 
 - Research narrative: [`docs/RESEARCH_OVERVIEW.md`](docs/RESEARCH_OVERVIEW.md)
+- Engineering challenge/status matrix: [`docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md)
 - Architecture revalidation method: [`docs/ARCHITECTURE_REVALIDATION.md`](docs/ARCHITECTURE_REVALIDATION.md)
 - Findings and negative results: [`docs/research/FINDINGS.md`](docs/research/FINDINGS.md)
 - Conceptual research map: [`docs/research/research-map.md`](docs/research/research-map.md)
@@ -182,8 +219,8 @@ The repository deliberately keeps these categories separate:
 
 - **Exploratory research observations:** point-cloud failures, trend visibility, local structure behavior, multi-membership, higher-order signal quality.
 - **Engineering invariants:** source validity, selected immutable support, support qualification, idempotency, effect-aware recovery, non-mutating reads.
-- **Frozen V1 boundaries:** factual Memory authority stays outside derived LCE cognition; interpretation is bounded; recursive cognition and current-turn reasoning remain outside standalone V1.
-- **Future work:** embedding/model quality, threshold tuning, higher-order precision, future MR/Body integration, and performance optimization.
+- **Frozen V1 boundaries:** factual Memory authority stays outside derived LCE cognition; interpretation is bounded; temporal sufficiency gates longitudinal claims; Semantic UNKNOWN is a valid stop; recursive cognition and current-turn reasoning remain outside standalone V1.
+- **Future work:** embedding/model quality, threshold tuning, higher-order precision, standardized external evaluation, future MR/Body integration, protocol adapters, and performance optimization.
 
 ## Development
 
