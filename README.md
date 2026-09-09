@@ -20,6 +20,34 @@ current-turn model / Body = what reasons and acts now
 
 Those are intentionally different authorities.
 
+## Public evidence boundary
+
+LCE's historical empirical observations were produced from private longitudinal material. That source material may contain personal or otherwise non-public records and is **not required to be disclosed as a condition of open-sourcing the method or implementation**.
+
+> **Public reproducibility requires a reproducible method, not disclosure of private longitudinal evidence.**
+
+The repository therefore makes the implementation, authority contracts, evaluation discipline, synthetic boundary experiments, verification commands, and provider-agnostic replication surface public. It does **not** claim that the original private corpus can be reconstructed from this repository.
+
+A reader who wants additional empirical evidence can connect a public or appropriately sanitized longitudinal corpus and a real embedding model through the published replication surface. That is welcomed independent evidence, not a missing V1 release requirement.
+
+> **Third-party replication and external audit are additional evidence, not authority prerequisites for LCE V1.**
+
+Accordingly:
+
+```text
+private longitudinal evidence
+  -> may remain private
+
+public method / code / protocol / harness
+  -> must be inspectable and reproducible
+
+independent replication / third-party audit
+  -> welcome additional evidence
+  -> not required to legitimize or complete V1
+```
+
+The repository will not fabricate a pseudo-real corpus merely to fill an evidence column. Synthetic fixtures are labeled synthetic; private historical observations are labeled private; third-party evidence is recorded when it actually exists.
+
 ## Current V1 pipeline
 
 ```text
@@ -198,11 +226,11 @@ The repository contains multiple evidence surfaces that should not be conflated:
 
 - [`docs/history/`](docs/history/) preserves the broader research/productization sequence, including private-corpus historical observations, failed hypotheses, audit rejects, repair logic, and release closure;
 - [`research/experiments/`](research/experiments/) contains small public synthetic boundary experiments;
-- [`research/replication/`](research/replication/) provides a provider-agnostic harness for future public runs using precomputed real semantic vectors;
+- [`research/replication/`](research/replication/) provides a provider-agnostic surface through which a reviewer or user may run a public/sanitized corpus with precomputed real semantic vectors;
 - runtime/closure tests encode public engineering invariants;
-- [`docs/audit/`](docs/audit/) defines an external adversarial audit protocol that does not trust existing closure verdicts.
+- [`docs/audit/`](docs/audit/) defines a protocol for any external adversarial audit that is actually performed.
 
-The public synthetic experiments are **not** a replay of the complete historical research corpus. The semantic replication harness is available, but a protocol-compliant real public semantic replication is still explicitly **NOT YET ESTABLISHED**.
+The public synthetic experiments are **not** a replay of the complete historical research corpus. No public real-corpus semantic replication is bundled with V1, and no protocol-compliant third-party audit is currently recorded. Neither is a V1 completion requirement; both are optional additional evidence surfaces available to interested reviewers and users.
 
 See [`docs/PUBLIC_EVIDENCE_MATRIX.md`](docs/PUBLIC_EVIDENCE_MATRIX.md) for a finding-by-finding map across `PRIVATE-HISTORICAL`, `PUBLIC-SYNTHETIC`, `PUBLIC-SEMANTIC-REPLICATION`, `RUNTIME-REGRESSION`, and `EXTERNAL-ADVERSARIAL-AUDIT` evidence classes.
 
@@ -252,7 +280,7 @@ The repository deliberately keeps these categories separate:
 - **Exploratory research observations:** point-cloud failures, trend visibility, local structure behavior, multi-membership, higher-order signal quality.
 - **Engineering invariants:** source validity, selected immutable support, support qualification, idempotency, effect-aware recovery, non-mutating reads.
 - **Frozen V1 boundaries:** factual Memory authority stays outside derived LCE cognition; interpretation is bounded; temporal sufficiency gates longitudinal claims; Semantic UNKNOWN is a valid stop; recursive cognition and current-turn reasoning remain outside standalone V1.
-- **Public evidence debt:** real semantic replication on a public/sanitized corpus and protocol-compliant external adversarial audit reports are not yet established.
+- **Optional additional public evidence:** a reviewer or user may contribute a real semantic replication on a public/sanitized corpus or a protocol-compliant external adversarial audit. These are welcomed evidence, not outstanding V1 obligations.
 - **Future work:** embedding/model quality, threshold tuning, higher-order precision, standardized external evaluation, future MR/Body integration, protocol adapters, and performance optimization.
 
 ## Development
