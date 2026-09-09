@@ -6,7 +6,6 @@ from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.structure.discovery import SnapshotStructureDiscovery, StructureConfig
 
-
 BASE = datetime(2026, 4, 1, tzinfo=UTC)
 
 

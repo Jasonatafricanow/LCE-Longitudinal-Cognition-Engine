@@ -7,7 +7,7 @@ without deleting their canonical inputs.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Protocol, runtime_checkable
@@ -73,6 +73,8 @@ class SemanticBlock:
     compiler_version: str
     lineage_id: str
     metadata: Mapping[str, object] = field(default_factory=dict)
+    state_id: str | None = None
+    state_version: int = 1
 
     def __post_init__(self) -> None:
         _require_text(self.block_id, "block_id")
@@ -91,6 +93,10 @@ class SemanticBlock:
         _require_text(self.lineage_id, "lineage_id")
         if not isinstance(self.metadata, Mapping):
             raise TypeError("metadata must be a Mapping")
+        if self.state_id is not None:
+            _require_text(self.state_id, "state_id")
+        if not isinstance(self.state_version, int) or self.state_version < 1:
+            raise ValueError("state_version must be an integer >= 1")
 
 
 @dataclass(frozen=True, slots=True)
@@ -129,10 +135,126 @@ class CompilerCheckpoint:
 
 @runtime_checkable
 class ReferenceMemoryPort(Protocol):
-    """Minimal port that permits replacing local Reference Memory."""
+    """Compatibility evidence port for callers that only need raw evidence."""
 
     def add_evidence(self, item: RawEvidence) -> RawEvidence:
         ...
 
     def list_current_valid_evidence(self) -> tuple[RawEvidence, ...]:
+        ...
+
+
+@runtime_checkable
+class EvidencePort(ReferenceMemoryPort, Protocol):
+    """Canonical Raw Evidence operations consumed by the V1 pipeline."""
+
+    def get_evidence(self, evidence_id: str) -> RawEvidence:
+        ...
+
+    def invalidate(self, evidence_id: str, *, reason: str) -> None:
+        ...
+
+    def supersede(self, evidence_id: str, replacement_evidence_id: str) -> None:
+        ...
+
+
+@runtime_checkable
+class SemanticBlockPort(EvidencePort, Protocol):
+    """Semantic Block and immutable historical-state operations."""
+
+    def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
+        ...
+
+    def get_semantic_block(self, block_id: str) -> SemanticBlock:
+        ...
+
+    def get_semantic_block_state(self, state_id: str) -> SemanticBlock:
+        ...
+
+    def list_semantic_blocks(self, *, current_valid_only: bool = True) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def list_semantic_block_states(self, *, current_valid_only: bool = True) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def list_semantic_blocks_at_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def extend_semantic_block(
+        self,
+        block_id: str,
+        *,
+        content: str | None,
+        evidence_id: str,
+        occurred_at: datetime,
+    ) -> SemanticBlock:
+        ...
+
+
+@runtime_checkable
+class VectorProjectionPort(Protocol):
+    """Rebuildable vector projection operations."""
+
+    def rebuild_vector_index(
+        self,
+        embedder: Callable[[SemanticBlock], tuple[float, ...]],
+        *,
+        index_version: str,
+    ) -> None:
+        ...
+
+    def delete_vector_index(self) -> None:
+        ...
+
+    def get_vector(self, block_id: str, *, state_id: str | None = None) -> VectorProjection:
+        ...
+
+    def vector_projection_ids(self) -> tuple[str, ...]:
+        ...
+
+
+@runtime_checkable
+class CompilerProgressPort(Protocol):
+    """Durable compiler and downstream pipeline progress operations."""
+
+    def get_checkpoint(self, lineage_id: str) -> CompilerCheckpoint | None:
+        ...
+
+    def save_checkpoint(self, checkpoint: CompilerCheckpoint) -> None:
+        ...
+
+    def commit_compilation(
+        self,
+        *,
+        evidence_id: str,
+        lineage_id: str,
+        block_states: tuple[SemanticBlock, ...],
+        block_ids: tuple[str, ...],
+        decision: Mapping[str, object],
+        checkpoint: CompilerCheckpoint,
+    ) -> None:
+        ...
+
+    def compiled_block_ids(self, evidence_id: str) -> tuple[str, ...] | None:
+        ...
+
+    def mark_pending_failure(self, lineage_id: str, *, evidence_id: str, ordering_key: str) -> None:
+        ...
+
+    def get_pipeline_stage(self, evidence_id: str) -> str | None:
+        ...
+
+    def mark_pipeline_stage(self, evidence_id: str, stage: str, *, fingerprint: str | None = None) -> None:
+        ...
+
+
+@runtime_checkable
+class ReferenceMemorySubstratePort(
+    SemanticBlockPort, VectorProjectionPort, CompilerProgressPort, Protocol
+):
+    """Complete focused-port composition required by standalone LCE V1."""
+
+    def close(self) -> None:
         ...

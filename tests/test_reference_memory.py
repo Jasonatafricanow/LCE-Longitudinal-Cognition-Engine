@@ -4,7 +4,11 @@ from datetime import UTC, datetime
 
 import pytest
 
-from lce.reference_memory.contracts import RawEvidence, ReferenceMemoryPort, SemanticBlock
+from lce.reference_memory.contracts import (
+    RawEvidence,
+    ReferenceMemoryPort,
+    SemanticBlock,
+)
 from lce.reference_memory.sqlite import ReferenceMemoryStore
 
 

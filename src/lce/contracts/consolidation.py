@@ -38,6 +38,7 @@ class CandidateBaseline:
     content: str
     supporting_memory_ids: tuple[str, ...]
     model_trace: Mapping[str, object] = field(default_factory=dict)
+    supporting_state_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.content, str) or not self.content.strip():
@@ -51,6 +52,8 @@ class CandidateBaseline:
                 raise ValueError("each supporting_memory_id must be a non-empty string")
         if len(self.supporting_memory_ids) != len(set(self.supporting_memory_ids)):
             raise ValueError("CandidateBaseline.supporting_memory_ids contains duplicate memory IDs")
+        if len(self.supporting_state_ids) != len(set(self.supporting_state_ids)):
+            raise ValueError("CandidateBaseline.supporting_state_ids contains duplicate state IDs")
         validate_model_trace(self.model_trace)
 
 

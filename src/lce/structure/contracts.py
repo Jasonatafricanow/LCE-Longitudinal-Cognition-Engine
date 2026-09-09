@@ -6,6 +6,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
+from lce.reference_memory.contracts import SemanticBlock
+
 
 def _utc(value: datetime, name: str) -> None:
     if value.tzinfo != UTC:
@@ -50,10 +52,20 @@ class StructureSnapshot:
     structures: tuple[StructureObservation, ...]
     algorithm_version: str
     config: StructureConfig
+    block_states: tuple[SemanticBlock, ...] = ()
+    vectors: Mapping[str, tuple[float, ...]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         _utc(self.timestamp, "timestamp")
         _utc(self.cutoff, "cutoff")
+
+    @property
+    def visible_block_state_ids(self) -> tuple[str, ...]:
+        return tuple(
+            block.state_id or block.block_id
+            for block in self.block_states
+            if block.block_id in self.visible_block_ids
+        )
 
 
 @dataclass(frozen=True, slots=True)

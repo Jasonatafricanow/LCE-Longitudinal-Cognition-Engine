@@ -107,6 +107,7 @@ class Baseline:
     created_at: datetime
     previous_baseline_id: str | None = None
     model_trace: Mapping[str, object] = field(default_factory=dict)
+    supporting_state_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.baseline_id, str) or not self.baseline_id.strip():

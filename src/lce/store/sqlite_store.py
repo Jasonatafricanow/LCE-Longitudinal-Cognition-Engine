@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS baseline_revisions (
     previous_baseline_id TEXT,
     created_at           TEXT NOT NULL,
     model_trace_json     TEXT NOT NULL DEFAULT '{}',
+    supporting_state_ids_json TEXT NOT NULL DEFAULT '[]',
     UNIQUE (region_id, revision_number)
 );
 
@@ -84,6 +85,9 @@ class SqliteBaselineStore(BaselineStorePort):
     def _init_db(self) -> None:
         conn = self._get_connection()
         conn.executescript(_SCHEMA)
+        columns = {str(row[1]) for row in conn.execute("PRAGMA table_info(baseline_revisions)")}
+        if "supporting_state_ids_json" not in columns:
+            conn.execute("ALTER TABLE baseline_revisions ADD COLUMN supporting_state_ids_json TEXT NOT NULL DEFAULT '[]'")
 
     def get_head(self, region_id: str) -> Baseline | None:
         """Fetch current HEAD baseline via pointer join."""
@@ -92,7 +96,7 @@ class SqliteBaselineStore(BaselineStorePort):
         cursor.execute(
             """
             SELECT r.baseline_id, r.region_id, r.revision_number, r.content,
-                   r.content_hash, r.previous_baseline_id, r.created_at, r.model_trace_json
+                   r.content_hash, r.previous_baseline_id, r.created_at, r.model_trace_json, r.supporting_state_ids_json
             FROM baselines_head h
             JOIN baseline_revisions r ON h.baseline_id = r.baseline_id
             WHERE h.region_id = ?
@@ -114,6 +118,7 @@ class SqliteBaselineStore(BaselineStorePort):
             (baseline_id,),
         )
         mem_refs = tuple(r[0] for r in cursor.fetchall())
+        state_refs = tuple(json.loads(row[8]))
 
         model_trace: Mapping[str, object] = json.loads(row[7])
         created_at = datetime.fromisoformat(row[6])
@@ -128,6 +133,7 @@ class SqliteBaselineStore(BaselineStorePort):
             created_at=created_at,
             supporting_memory_ids=mem_refs,
             model_trace=model_trace,
+            supporting_state_ids=state_refs,
         )
 
     def save_revision(self, baseline: Baseline) -> None:
@@ -166,8 +172,8 @@ class SqliteBaselineStore(BaselineStorePort):
                 """
                 INSERT INTO baseline_revisions (
                     baseline_id, region_id, revision_number, content,
-                    content_hash, previous_baseline_id, created_at, model_trace_json
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    content_hash, previous_baseline_id, created_at, model_trace_json, supporting_state_ids_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     baseline.baseline_id,
@@ -178,6 +184,7 @@ class SqliteBaselineStore(BaselineStorePort):
                     baseline.previous_baseline_id,
                     baseline.created_at.isoformat(),
                     trace_json,
+                    json.dumps(baseline.supporting_state_ids),
                 ),
             )
             # 2. Insert memory references
@@ -219,7 +226,7 @@ class SqliteBaselineStore(BaselineStorePort):
 
         query = """
             SELECT baseline_id, region_id, revision_number, content,
-                   content_hash, previous_baseline_id, created_at, model_trace_json
+                   content_hash, previous_baseline_id, created_at, model_trace_json, supporting_state_ids_json
             FROM baseline_revisions
             WHERE region_id = ?
             ORDER BY revision_number DESC
@@ -245,6 +252,7 @@ class SqliteBaselineStore(BaselineStorePort):
                 (b_id,),
             )
             mem_refs = tuple(r[0] for r in cursor.fetchall())
+            state_refs = tuple(json.loads(row[8]))
             created_at = datetime.fromisoformat(row[6])
             model_trace: Mapping[str, object] = json.loads(row[7])
 
@@ -259,6 +267,7 @@ class SqliteBaselineStore(BaselineStorePort):
                     created_at=created_at,
                     supporting_memory_ids=mem_refs,
                     model_trace=model_trace,
+                    supporting_state_ids=state_refs,
                 )
             )
 

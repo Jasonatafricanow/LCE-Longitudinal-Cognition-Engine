@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from lce.contracts.external_memory import MemoryItemView, MemorySubstratePort
-from lce.reference_memory.sqlite import ReferenceMemoryStore
+from lce.reference_memory.contracts import SemanticBlockPort
 
 
 class SemanticBlockMemoryAdapter(MemorySubstratePort):
-    def __init__(self, memory: ReferenceMemoryStore) -> None:
+    def __init__(self, memory: SemanticBlockPort) -> None:
         self.memory = memory
 
     def get_by_ids(self, memory_ids: tuple[str, ...]) -> tuple[MemoryItemView, ...]:
@@ -24,7 +24,11 @@ class SemanticBlockMemoryAdapter(MemorySubstratePort):
                     memory_id=block.block_id,
                     content=block.content,
                     source_refs=block.raw_evidence_ids,
-                    retrieval_metadata={"kind": "semantic_block", "compiler_version": block.compiler_version},
+                    retrieval_metadata={
+                        "kind": "semantic_block",
+                        "compiler_version": block.compiler_version,
+                        "state_id": block.state_id,
+                    },
                 )
             )
         return tuple(items)

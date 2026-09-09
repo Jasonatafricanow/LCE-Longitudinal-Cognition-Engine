@@ -6,7 +6,7 @@ import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from lce.reference_memory.sqlite import ReferenceMemoryStore
+from lce.reference_memory.contracts import SemanticBlockPort
 from lce.store.interface import BaselineStorePort
 
 
@@ -27,7 +27,7 @@ class UnderstandingView:
 class AcceptedUnderstandingReadAPI:
     """Read-only, no-reasoning view over current-valid Baseline HEADs."""
 
-    def __init__(self, *, memory: ReferenceMemoryStore, baseline_store: BaselineStorePort) -> None:
+    def __init__(self, *, memory: SemanticBlockPort, baseline_store: BaselineStorePort) -> None:
         self.memory = memory
         self.baseline_store = baseline_store
 
@@ -42,9 +42,11 @@ class AcceptedUnderstandingReadAPI:
             blocks = []
             valid = True
             source_refs: set[str] = set()
+            state_refs = dict(zip(baseline.supporting_memory_ids, baseline.supporting_state_ids, strict=False))
             for block_id in baseline.supporting_memory_ids:
                 try:
-                    block = self.memory.get_semantic_block(block_id)
+                    state_id = state_refs.get(block_id)
+                    block = self.memory.get_semantic_block_state(state_id) if state_id else self.memory.get_semantic_block(block_id)
                 except KeyError:
                     valid = False
                     break
