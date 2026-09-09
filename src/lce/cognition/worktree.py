@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import sqlite3
 import uuid
-from collections.abc import Iterable
-from dataclasses import dataclass
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -29,6 +29,7 @@ class CognitionWorktree:
     merged_baseline_id: str | None = None
     applicability: str | None = None
     unresolved: str | None = None
+    interpretation_trace: Mapping[str, object] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
@@ -70,8 +71,17 @@ class CognitionWorktreeStore:
                 PRIMARY KEY(worktree_id, snapshot_id),
                 FOREIGN KEY(worktree_id) REFERENCES worktrees(worktree_id) ON DELETE CASCADE
             );
+            CREATE TABLE IF NOT EXISTS support_observations (
+                worktree_id TEXT NOT NULL,
+                support_identity TEXT NOT NULL,
+                PRIMARY KEY(worktree_id, support_identity),
+                FOREIGN KEY(worktree_id) REFERENCES worktrees(worktree_id) ON DELETE CASCADE
+            );
             """
         )
+        columns = {str(row[1]) for row in self.conn.execute("PRAGMA table_info(worktrees)")}
+        if "interpretation_trace_json" not in columns:
+            self.conn.execute("ALTER TABLE worktrees ADD COLUMN interpretation_trace_json TEXT NOT NULL DEFAULT '{}'")
         self.conn.commit()
 
     @staticmethod
@@ -88,6 +98,7 @@ class CognitionWorktreeStore:
         base_baseline: Baseline | None,
         applicability: str | None = None,
         unresolved: str | None = None,
+        interpretation_trace: Mapping[str, object] | None = None,
     ) -> CognitionWorktree:
         now = _now()
         item = CognitionWorktree(
@@ -103,14 +114,16 @@ class CognitionWorktreeStore:
             status="OPEN",
             applicability=applicability,
             unresolved=unresolved,
+            interpretation_trace=interpretation_trace or {},
         )
         if not item.supporting_block_ids:
             raise ValueError("a worktree requires at least one supporting Semantic Block")
         self.conn.execute(
-            "INSERT INTO worktrees VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO worktrees VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (item.worktree_id, item.region_id, item.base_baseline_id, item.base_revision, item.candidate_content,
              json.dumps(item.supporting_block_ids), json.dumps(item.supporting_structure_ids), item.created_at.isoformat(),
-             item.updated_at.isoformat(), item.status, 0, None, item.applicability, item.unresolved),
+             item.updated_at.isoformat(), item.status, 0, None, item.applicability, item.unresolved,
+             json.dumps(dict(item.interpretation_trace), ensure_ascii=False, sort_keys=True)),
         )
         self.conn.commit()
         return item
@@ -128,6 +141,7 @@ class CognitionWorktreeStore:
             merged_baseline_id=str(row[11]) if row[11] is not None else None,
             applicability=str(row[12]) if row[12] is not None else None,
             unresolved=str(row[13]) if row[13] is not None else None,
+            interpretation_trace=json.loads(str(row[14])) if row[14] is not None else {},
         )
 
     def get(self, worktree_id: str) -> CognitionWorktree:
@@ -176,14 +190,55 @@ class CognitionWorktreeStore:
         self.conn.commit()
         return self.get(worktree_id)
 
-    def record_support(self, worktree_id: str, *, snapshot_id: str) -> None:
+    def record_support(
+        self, worktree_id: str, *, snapshot_id: str, support_identity: str | None = None
+    ) -> bool:
         self.get(worktree_id)
-        self.conn.execute("INSERT OR IGNORE INTO support_cycles VALUES (?, ?)", (worktree_id, snapshot_id))
+        identity = support_identity or snapshot_id
+        before = self.conn.total_changes
+        self.conn.execute(
+            "INSERT OR IGNORE INTO support_observations VALUES (?, ?)", (worktree_id, identity)
+        )
         self.conn.commit()
+        return self.conn.total_changes > before
 
     def support_cycle_count(self, worktree_id: str) -> int:
-        row = self.conn.execute("SELECT COUNT(*) FROM support_cycles WHERE worktree_id = ?", (worktree_id,)).fetchone()
+        row = self.conn.execute("SELECT COUNT(*) FROM support_observations WHERE worktree_id = ?", (worktree_id,)).fetchone()
         return int(row[0]) if row else 0
+
+    def support_identities(self, worktree_id: str) -> tuple[str, ...]:
+        rows = self.conn.execute(
+            "SELECT support_identity FROM support_observations WHERE worktree_id = ? ORDER BY support_identity",
+            (worktree_id,),
+        ).fetchall()
+        return tuple(str(row[0]) for row in rows)
+
+    def update_candidate(
+        self,
+        worktree_id: str,
+        *,
+        candidate_content: str,
+        interpretation_trace: Mapping[str, object] | None = None,
+    ) -> CognitionWorktree:
+        item = self.get(worktree_id)
+        if item.status != "OPEN":
+            raise ValueError("only OPEN worktrees can change candidate content")
+        self.conn.execute(
+            "UPDATE worktrees SET candidate_content=?, interpretation_trace_json=?, updated_at=? WHERE worktree_id=?",
+            (candidate_content, json.dumps(dict(interpretation_trace or item.interpretation_trace), sort_keys=True),
+             _now().isoformat(), worktree_id),
+        )
+        self.conn.commit()
+        return self.get(worktree_id)
+
+    def clear_needs_rebuild(self, worktree_id: str) -> CognitionWorktree:
+        self.get(worktree_id)
+        self.conn.execute(
+            "UPDATE worktrees SET needs_rebuild=0, updated_at=? WHERE worktree_id=?",
+            (_now().isoformat(), worktree_id),
+        )
+        self.conn.commit()
+        return self.get(worktree_id)
 
     def set_status(self, worktree_id: str, status: str, *, merged_baseline_id: str | None = None) -> CognitionWorktree:
         if status not in {"OPEN", "MERGED", "DROPPED"}:

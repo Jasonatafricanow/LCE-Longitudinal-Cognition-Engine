@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from lce.cognition.worktree import CognitionWorktreeStore
-from lce.reference_memory.sqlite import ReferenceMemoryStore
+from lce.reference_memory.contracts import SemanticBlockPort
 from lce.store.interface import BaselineStorePort
 from lce.structure.discovery import SnapshotStructureDiscovery
 
@@ -26,12 +26,12 @@ class InvalidationResult:
 class DependencyInvalidator:
     def __init__(
         self,
-        memory: ReferenceMemoryStore,
+        memory: SemanticBlockPort,
         discovery: SnapshotStructureDiscovery,
         worktrees: CognitionWorktreeStore,
         baselines: BaselineStorePort,
     ) -> None:
-        self.memory: ReferenceMemoryStore = memory
+        self.memory: SemanticBlockPort = memory
         self.discovery: SnapshotStructureDiscovery = discovery
         self.worktrees: CognitionWorktreeStore = worktrees
         self.baselines = baselines

@@ -29,7 +29,7 @@ def test_standalone_batch_restart_nearline_merge_head_and_query(tmp_path: Path) 
     restarted.close()
 
 
-def test_correction_path_localizes_invalidation_and_replaces_served_head(tmp_path: Path) -> None:
+def test_invalidation_suppresses_unsupported_head_without_copying_old_text(tmp_path: Path) -> None:
     runtime = LceRuntime(tmp_path / "run", lineage_id="main")
     corpus = longitudinal_corpus()
     runtime.run_batch(corpus[:4])
@@ -39,7 +39,6 @@ def test_correction_path_localizes_invalidation_and_replaces_served_head(tmp_pat
     invalidated = runtime.invalidate_and_rebuild("E2")
     assert "E2" in invalidated.invalidated_evidence_id
     after = runtime.query(None)
-    assert after
-    assert all("E2" not in view.supporting_source_refs for view in after)
-    assert any("corrected" in view.content for view in after)
+    assert after == ()
+    assert all("corrected after invalidation" not in revision.content for region in runtime.baselines.list_regions() for revision in runtime.baselines.get_history(region).revisions)
     runtime.close()

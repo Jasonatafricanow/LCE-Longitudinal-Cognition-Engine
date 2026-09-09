@@ -11,7 +11,7 @@ from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 
-from lce.reference_memory.sqlite import ReferenceMemoryStore
+from lce.reference_memory.contracts import ReferenceMemorySubstratePort, SemanticBlock
 from lce.structure.contracts import (
     HigherOrderCandidate,
     StructureChange,
@@ -82,6 +82,22 @@ class SnapshotStore:
                 }
                 for item in snapshot.structures
             ],
+            "block_states": [
+                {
+                    "block_id": block.block_id,
+                    "content": block.content,
+                    "raw_evidence_ids": list(block.raw_evidence_ids),
+                    "occurred_start": block.occurred_start.isoformat(),
+                    "occurred_end": block.occurred_end.isoformat(),
+                    "compiler_version": block.compiler_version,
+                    "lineage_id": block.lineage_id,
+                    "metadata": dict(block.metadata),
+                    "state_id": block.state_id,
+                    "state_version": block.state_version,
+                }
+                for block in snapshot.block_states
+            ],
+            "vectors": {key: list(value) for key, value in snapshot.vectors.items()},
         }
         self.conn.execute(
             "INSERT OR REPLACE INTO snapshots VALUES (?, ?)",
@@ -107,6 +123,21 @@ class SnapshotStore:
             )
             for item in raw["structures"]
         )
+        block_states = tuple(
+            SemanticBlock(
+                block_id=item["block_id"],
+                content=item["content"],
+                raw_evidence_ids=tuple(item["raw_evidence_ids"]),
+                occurred_start=datetime.fromisoformat(item["occurred_start"]),
+                occurred_end=datetime.fromisoformat(item["occurred_end"]),
+                compiler_version=item["compiler_version"],
+                lineage_id=item["lineage_id"],
+                metadata=item["metadata"],
+                state_id=item.get("state_id"),
+                state_version=int(item.get("state_version", 1)),
+            )
+            for item in raw.get("block_states", [])
+        )
         return StructureSnapshot(
             snapshot_id=raw["snapshot_id"],
             timestamp=datetime.fromisoformat(raw["timestamp"]),
@@ -115,6 +146,8 @@ class SnapshotStore:
             structures=structures,
             algorithm_version=raw["algorithm_version"],
             config=config,
+            block_states=block_states,
+            vectors={key: tuple(float(value) for value in values) for key, values in raw.get("vectors", {}).items()},
         )
 
     def latest_before(self, cutoff: datetime, *, exclude_id: str) -> StructureSnapshot | None:
@@ -129,6 +162,12 @@ class SnapshotStore:
         snapshots = [self._decode(payload) for (payload,) in self.conn.execute("SELECT payload_json FROM snapshots")]
         return tuple(sorted(snapshots, key=lambda item: (item.cutoff, item.snapshot_id)))
 
+    def get(self, snapshot_id: str) -> StructureSnapshot:
+        row = self.conn.execute("SELECT payload_json FROM snapshots WHERE snapshot_id = ?", (snapshot_id,)).fetchone()
+        if row is None:
+            raise KeyError(snapshot_id)
+        return self._decode(row[0])
+
     def delete_all(self) -> None:
         self.conn.execute("DELETE FROM snapshots")
         self.conn.commit()
@@ -142,7 +181,7 @@ class SnapshotStructureDiscovery:
 
     def __init__(
         self,
-        memory: ReferenceMemoryStore,
+        memory: ReferenceMemorySubstratePort,
         snapshot_root: Path | str,
         *,
         config: StructureConfig | None = None,
@@ -154,11 +193,7 @@ class SnapshotStructureDiscovery:
     def create_snapshot(self, cutoff: datetime) -> StructureSnapshot:
         if cutoff.tzinfo != UTC:
             raise ValueError("cutoff must be UTC")
-        blocks = [
-            block
-            for block in self.memory.list_semantic_blocks(current_valid_only=True)
-            if block.occurred_end <= cutoff
-        ]
+        blocks = list(self.memory.list_semantic_blocks_at_cutoff(cutoff, current_valid_only=True))
         blocks.sort(key=lambda block: (block.occurred_start, block.block_id))
         visible_ids = tuple(block.block_id for block in blocks)
         identity = {
@@ -167,9 +202,22 @@ class SnapshotStructureDiscovery:
             "config": self.config.algorithm_version,
             "k": self.config.k_values,
             "min_similarity": self.config.min_similarity,
+            "higher_order_similarity": self.config.higher_order_similarity,
+            "states": tuple(block.state_id for block in blocks),
+            "vectors": tuple(
+                (
+                    block.block_id,
+                    self.memory.get_vector(block.block_id, state_id=block.state_id).values,
+                    self.memory.get_vector(block.block_id, state_id=block.state_id).index_version,
+                )
+                for block in blocks
+            ),
         }
         snapshot_id = "snap_" + hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:20]
-        vectors = {block.block_id: self.memory.get_vector(block.block_id).values for block in blocks}
+        vectors = {
+            block.block_id: self.memory.get_vector(block.block_id, state_id=block.state_id).values
+            for block in blocks
+        }
         block_by_id = {block.block_id: block for block in blocks}
         observations: list[StructureObservation] = []
         for k in self.config.k_values:
@@ -246,6 +294,8 @@ class SnapshotStructureDiscovery:
             structures=tuple(enriched),
             algorithm_version=self.config.algorithm_version,
             config=self.config,
+            block_states=tuple(blocks),
+            vectors=vectors,
         )
         self.snapshots.save(snapshot)
         return snapshot
@@ -288,14 +338,21 @@ class SnapshotStructureDiscovery:
                 reorganizations.append(StructureChange(old_id, relation_ids=related))
 
         linked: list[StructureChange] = []
-        ordered = list(current.structures)
-        for index, left in enumerate(ordered):
-            for right in ordered[index + 1:]:
-                if left.center_block_id == right.center_block_id:
+        current_groups = self._effective_groups(current)
+        previous_groups = self._effective_groups(previous)
+        previous_pairs = {
+            tuple(sorted((left_key, right_key)))
+            for index, (left_key, left) in enumerate(previous_groups)
+            for right_key, right in previous_groups[index + 1:]
+            if _jaccard(left.member_block_ids, right.member_block_ids) > 0.0
+        }
+        for index, (left_key, left) in enumerate(current_groups):
+            for right_key, right in current_groups[index + 1:]:
+                if _jaccard(left.member_block_ids, right.member_block_ids) <= 0.0:
                     continue
-                overlap = _jaccard(left.member_block_ids, right.member_block_ids)
-                if overlap > 0.0:
-                    linked.append(StructureChange(left.structure_id, relation_ids=(right.structure_id,)))
+                if tuple(sorted((left_key, right_key))) in previous_pairs:
+                    continue
+                linked.append(StructureChange(left.structure_id, relation_ids=(right.structure_id,)))
         return StructureDiff(
             previous_snapshot_id=previous.snapshot_id,
             current_snapshot_id=current.snapshot_id,
@@ -309,14 +366,12 @@ class SnapshotStructureDiscovery:
 
     def higher_order_candidates(self, snapshot: StructureSnapshot) -> tuple[HigherOrderCandidate, ...]:
         candidates: list[HigherOrderCandidate] = []
-        observations = [item for item in snapshot.structures if len(item.member_block_ids) >= 2]
-        for index, left in enumerate(observations):
-            for right in observations[index + 1:]:
-                if left.center_block_id == right.center_block_id:
-                    continue
+        groups = self._effective_groups(snapshot)
+        for index, (_left_key, left) in enumerate(groups):
+            for right_key, right in groups[index + 1:]:
                 shared = set(left.member_block_ids) & set(right.member_block_ids)
-                left_centroid = self._centroid(left.member_block_ids)
-                right_centroid = self._centroid(right.member_block_ids)
+                left_centroid = self._centroid(snapshot, left.member_block_ids)
+                right_centroid = self._centroid(snapshot, right.member_block_ids)
                 relation = _cosine(left_centroid, right_centroid)
                 if not shared and relation < self.config.higher_order_similarity:
                     continue
@@ -341,8 +396,29 @@ class SnapshotStructureDiscovery:
         unique = {candidate.candidate_id: candidate for candidate in candidates}
         return tuple(unique[key] for key in sorted(unique))
 
-    def _centroid(self, block_ids: Iterable[str]) -> tuple[float, ...]:
-        vectors = [self.memory.get_vector(block_id).values for block_id in block_ids]
+    @staticmethod
+    def _effective_key(observation: StructureObservation) -> str:
+        return "support:" + hashlib.sha256(
+            "|".join(sorted(set(observation.member_block_ids))).encode()
+        ).hexdigest()[:20]
+
+    def _effective_groups(self, snapshot: StructureSnapshot) -> list[tuple[str, StructureObservation]]:
+        grouped: dict[str, list[StructureObservation]] = defaultdict(list)
+        for observation in snapshot.structures:
+            if len(observation.member_block_ids) >= 2:
+                grouped[self._effective_key(observation)].append(observation)
+        return [
+            (key, min(items, key=lambda item: (-item.support_score, item.structure_id)))
+            for key, items in sorted(grouped.items())
+        ]
+
+    def _centroid(self, snapshot: StructureSnapshot, block_ids: Iterable[str]) -> tuple[float, ...]:
+        vectors = []
+        for block_id in block_ids:
+            if block_id in snapshot.vectors:
+                vectors.append(snapshot.vectors[block_id])
+            else:
+                vectors.append(self.memory.get_vector(block_id).values)
         return tuple(sum(vector[index] for vector in vectors) / len(vectors) for index in range(len(vectors[0])))
 
     def expand_candidate_to_blocks(self, candidate: HigherOrderCandidate) -> tuple[str, ...]:
@@ -350,8 +426,11 @@ class SnapshotStructureDiscovery:
 
     def expand_candidate_to_raw(self, candidate: HigherOrderCandidate) -> tuple[str, ...]:
         raw: set[str] = set()
+        snapshot = self.snapshots.get(candidate.snapshot_id)
+        state_by_id = {block.block_id: block for block in snapshot.block_states}
         for block_id in candidate.supporting_block_ids:
-            raw.update(self.memory.get_semantic_block(block_id).raw_evidence_ids)
+            block = state_by_id.get(block_id) or self.memory.get_semantic_block(block_id)
+            raw.update(block.raw_evidence_ids)
         return tuple(sorted(raw))
 
     def delete_derived_snapshots(self) -> None:
