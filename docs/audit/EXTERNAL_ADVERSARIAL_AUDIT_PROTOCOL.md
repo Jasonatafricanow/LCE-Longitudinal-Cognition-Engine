@@ -2,7 +2,17 @@
 
 Status: current public-review protocol
 
-The purpose of this protocol is not to obtain another friendly architecture summary. It is to challenge a frozen LCE implementation and its verification claims from outside the implementation loop.
+The purpose of this protocol is not to obtain another friendly architecture summary. It is to define how an external reviewer can challenge a frozen LCE implementation and its verification claims from outside the implementation loop.
+
+## 0. Scope and authority
+
+This protocol applies **when an external adversarial review is actually performed**. It is not a V1 release gate, certification requirement, or external authority prerequisite.
+
+> **Third-party replication and external audit are additional evidence, not authority prerequisites for LCE V1.**
+
+The repository exposes this protocol so future reviews can be recorded with better provenance, reproducibility, and disagreement handling. The maintainer is not required to recruit an external reviewer merely to make the project count as complete.
+
+Likewise, an external report does not become authoritative merely because it is external. Its weight comes from the quality of its frozen target, commands, fixtures, counterexamples, and preserved raw evidence.
 
 ## 1. Freeze the target
 
@@ -46,7 +56,7 @@ A different command is useful evidence, but it must not be described as reproduc
 
 ## 4. Mandatory challenge surfaces
 
-The audit must attempt to break at least these boundaries.
+For a report to claim conformance with this protocol, the audit must attempt to break at least these boundaries.
 
 ### A. Authority leakage
 
@@ -118,6 +128,8 @@ Each reviewed claim should use one of these verdicts:
 
 Avoid a single overall score that hides disagreement across surfaces.
 
+The vocabulary is deliberately symmetric: an auditor should not convert “not publicly reproduced” into “false,” just as the repository should not convert a private observation into “publicly verified.” Adversarial review must resist both self-confirmation and adversarial overcorrection.
+
 ## 7. Preserve disagreement
 
 If the audit disagrees with repository claims:
@@ -129,7 +141,7 @@ If the audit disagrees with repository claims:
 5. state whether the issue is implementation, documentation, environment/toolchain, test-oracle, or research-evidence scope;
 6. do not rewrite the report after maintainers respond. Add a separate resolution note if needed.
 
-The repository should be allowed to be wrong in public.
+The repository should be allowed to be wrong in public. The auditor should also distinguish carefully among `contradicted`, `unsupported`, `not publicly reproducible`, and `not attempted` rather than treating them as synonyms.
 
 ## 8. Independence labels
 
@@ -158,18 +170,22 @@ docs/audit/reports/YYYY-MM-DD-<reviewer>-<short-sha>.md
 
 Use [`REPORT_TEMPLATE.md`](REPORT_TEMPLATE.md). Supporting fixtures may be committed under `tests/audit/` or a report-specific subdirectory when they are safe and reproducible.
 
+The absence of a report simply means no protocol-compliant third-party audit is recorded in the repository. It does not imply an unmet V1 release condition.
+
 ## 10. Why this protocol exists
 
-LCE Finding F09 says a green suite is only as strong as its oracle and fixtures. That rule must apply to LCE's own closure evidence.
+LCE Finding F09 says a green suite is only as strong as its oracle and fixtures. That rule should apply to LCE's own closure evidence whenever an external challenge occurs.
 
-The next verification layer is therefore:
+A protocol-compliant external review can therefore add another verification layer:
 
 ```text
 implementation
 -> internal oracle
 -> reproducible public gate
--> external adversarial challenge
+-> optional external adversarial challenge
 -> disagreement investigation
 ```
 
 The external audit is not authority merely because it is external. Its value comes from frozen inputs, reproducible procedures, preserved counterexamples, and an oracle that was not designed solely to confirm the implementation being reviewed.
+
+This protocol exists to improve the quality of external evidence **if and when that evidence is contributed**, not to turn third-party approval into a prerequisite for the project.
