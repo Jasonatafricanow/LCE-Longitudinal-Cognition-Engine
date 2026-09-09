@@ -2,6 +2,8 @@
 
 LCE is a research-engineering project about **durable longitudinal understanding**.
 
+The following problem statement is a **retrospective synthesis of the repository's research direction**, not a claim that this wording appeared verbatim in the earliest notes.
+
 Long-running agent systems often recover history by retrieving old records and handing them back to a foundation model, which must reconstruct what changed, what persisted, and what matters again at each use. LCE explores a narrower alternative:
 
 > Can longitudinal understanding be formed, inspected, falsified, revised, and reused without turning model inference, vector similarity, or derived structure into factual authority?
@@ -75,7 +77,7 @@ LCE went through two qualitatively different correction loops.
 
 **Productization corrections changed the runtime correctness model.** Z0–R3 showed that even after the conceptual architecture looked coherent, provenance, support qualification, restart semantics, and test-oracle design could still violate the intended authority boundaries. Those failures were not patched as isolated bugs; they became explicit contracts and permanent regression cases.
 
-The recurring process was:
+As a **retrospective synthesis of the correction pattern visible in the repository**, the process can be summarized as:
 
 ```text
 narrow architectural hypothesis
@@ -87,7 +89,7 @@ narrow architectural hypothesis
   -> prevent derived cognition from becoming its own evidence
 ```
 
-This process is described in more detail in [`docs/RESEARCH_OVERVIEW.md`](docs/RESEARCH_OVERVIEW.md).
+This is a summary of the observed development pattern, not a claim that this exact methodology was documented prospectively at the start of the project. It is described in more detail in [`docs/RESEARCH_OVERVIEW.md`](docs/RESEARCH_OVERVIEW.md).
 
 ## What V1 is
 
