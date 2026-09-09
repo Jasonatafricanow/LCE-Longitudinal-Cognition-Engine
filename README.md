@@ -9,10 +9,17 @@ Raw Evidence -> Semantic Block -> vector space -> structures
 ```
 
 LCE does not require MR. Reference Memory is the included minimal local
-substrate and can be replaced through the Memory Port. Raw Evidence remains
+substrate and can be replaced by injecting a backend that implements the
+focused Reference Memory ports. Raw Evidence remains
 canonical and auditable; Semantic Blocks are the cognition points used for
 vector projection. Derived vectors, structures, higher-order candidates, and
 worktrees never become Raw Evidence.
+
+Semantic Block continuation creates immutable states. Structure snapshots bind
+their visible blocks and vectors to a cutoff, and a bounded interpreter sees
+only the exact candidate package resolved by LCE. Failed ordered inputs form a
+durable barrier; compiler replay does not imply downstream pipeline
+completion.
 
 The existing Baseline/HEAD Core remains the accepted revision authority. An
 OPEN cognition worktree is a proposal. Conservative promotion creates a new

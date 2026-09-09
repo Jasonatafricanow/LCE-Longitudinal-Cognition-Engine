@@ -8,7 +8,6 @@ from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.semantic.compiler import SemanticCompiler
 from lce.semantic.contracts import SemanticDecision, SemanticGroup
 
-
 BASE_TIME = datetime(2026, 2, 1, tzinfo=UTC)
 
 

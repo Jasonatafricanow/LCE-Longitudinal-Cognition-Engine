@@ -18,6 +18,11 @@ LCE owns:
 - OPEN/MERGED/DROPPED cognition worktrees;
 - accepted Understanding Baseline revisions and the read API.
 
+The runtime consumes these capabilities through focused Reference Memory
+ports. `ReferenceMemoryStore` is only the default standalone implementation;
+an injected backend may own the same canonical validity state elsewhere. LCE
+does not reinterpret invalidation as a truth decision.
+
 ## Explicit non-goals
 
 LCE V1 does not implement MR integration, Body integration, C10, Persona,

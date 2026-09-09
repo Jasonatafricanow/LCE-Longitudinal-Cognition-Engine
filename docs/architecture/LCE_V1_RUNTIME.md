@@ -21,13 +21,18 @@ not change.
 
 ## State and restart
 
-Reference Memory stores Raw Evidence, Semantic Blocks, compiler checkpoints,
-and idempotency records in SQLite. A provider failure happens before the
-checkpoint advances. Retrying the same stable evidence ID reuses the recorded
-block IDs and does not create duplicate blocks.
+The injected Reference Memory substrate stores Raw Evidence, immutable Semantic
+Block states, compiler checkpoints, stage progress, and idempotency records in
+the default SQLite implementation. A provider failure creates a durable
+earliest-input barrier; later material cannot cross it. Retrying the same
+stable evidence ID reuses the recorded block IDs and does not create duplicate
+blocks. Compiler completion and vector/snapshot/worktree/promotion completion
+are separate durable stages, so compiler replay resumes downstream work.
 
 Vectors and structure snapshots are derived artifacts. They can be deleted and
-rebuilt from current-valid Semantic Blocks and their occurrence times. A
+rebuilt from current-valid Semantic Block states and their occurrence times. A
+snapshot records the visible state and state-bound vector used for each point;
+its identity includes those inputs and the algorithm/config versions. A
 snapshot cutoff excludes blocks after that cutoff, so future material cannot
 leak into an earlier structure state.
 
@@ -40,9 +45,12 @@ snapshot diff reports membership growth/loss, stronger support, reconnection,
 reorganization, and linked observations.
 
 Higher-order candidates are bounded at one level: multiple existing structures
-may relate to one candidate. Candidates retain supporting structure IDs and
-can expand to Semantic Blocks and Raw Evidence. They are `UNKNOWN` derived
-proposals, never Evidence or accepted Understanding by themselves.
+may relate to one candidate. Equivalent center/k observations with the same
+effective member support are one local structure for higher-order purposes,
+while overlapping non-equivalent observations remain available. Candidates
+retain supporting structure IDs and can expand through the snapshot to
+Semantic Blocks and Raw Evidence. They are `UNKNOWN` derived proposals, never
+Evidence or accepted Understanding by themselves.
 
 ## Promotion and correction
 
@@ -54,5 +62,7 @@ Baseline revision.
 
 When Memory invalidates or supersedes evidence, LCE receives the dependency
 change, identifies affected blocks/snapshots/worktrees/Baselines, rebuilds the
-affected derived slice, and may create a correction worktree. It does not
-re-decide whether the source was factual.
+affected derived slice, and may create a correction worktree only after a new
+bounded interpretation has normal structural support. Until then the affected
+HEAD is not served. LCE does not copy old text, relax policy, or re-decide
+whether the source was factual.

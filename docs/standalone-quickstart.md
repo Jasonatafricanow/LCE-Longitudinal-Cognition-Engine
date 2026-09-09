@@ -33,3 +33,10 @@ the same `process(material)` path, persists checkpoints, and safely replays a
 stable evidence ID after restart. `query()` only returns accepted/current-valid
 Understandings; it does not call an LLM, change HEAD, or inspect OPEN
 worktrees as accepted cognition.
+
+To replace the local substrate, pass an implementation of the focused
+Reference Memory substrate contract as `LceRuntime(..., memory=backend)`. The
+backend must provide canonical evidence validity, immutable Semantic Block
+states, vector projection, compiler progress, and stage/idempotency methods;
+the included `InMemoryReferenceMemory` is a small independent contract test
+double.
