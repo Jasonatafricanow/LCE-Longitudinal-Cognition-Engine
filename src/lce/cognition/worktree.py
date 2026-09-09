@@ -32,6 +32,7 @@ class CognitionWorktree:
     unresolved: str | None = None
     interpretation_trace: Mapping[str, object] = field(default_factory=dict)
     selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
+    processing_input_id: str | None = None
 
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
@@ -73,7 +74,8 @@ class CognitionWorktreeStore:
                 applicability TEXT,
                 unresolved TEXT,
                 interpretation_trace_json TEXT NOT NULL DEFAULT '{}',
-                selected_support_json TEXT NOT NULL DEFAULT '[]'
+                selected_support_json TEXT NOT NULL DEFAULT '[]',
+                processing_input_id TEXT
             );
             CREATE TABLE IF NOT EXISTS support_cycles (
                 worktree_id TEXT NOT NULL,
@@ -94,6 +96,8 @@ class CognitionWorktreeStore:
             self.conn.execute("ALTER TABLE worktrees ADD COLUMN interpretation_trace_json TEXT NOT NULL DEFAULT '{}'")
         if "selected_support_json" not in columns:
             self.conn.execute("ALTER TABLE worktrees ADD COLUMN selected_support_json TEXT NOT NULL DEFAULT '[]'")
+        if "processing_input_id" not in columns:
+            self.conn.execute("ALTER TABLE worktrees ADD COLUMN processing_input_id TEXT")
         self.conn.commit()
 
     @staticmethod
@@ -112,6 +116,7 @@ class CognitionWorktreeStore:
         unresolved: str | None = None,
         interpretation_trace: Mapping[str, object] | None = None,
         selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
+        processing_input_id: str | None = None,
     ) -> CognitionWorktree:
         now = _now()
         selected = tuple(selected_support)
@@ -131,6 +136,7 @@ class CognitionWorktreeStore:
             unresolved=unresolved,
             interpretation_trace=interpretation_trace or {},
             selected_support=selected,
+            processing_input_id=processing_input_id,
         )
         if not item.supporting_block_ids:
             raise ValueError("a worktree requires at least one supporting Semantic Block")
@@ -140,15 +146,15 @@ class CognitionWorktreeStore:
                 worktree_id, region_id, base_baseline_id, base_revision, candidate_content,
                 supporting_block_ids_json, supporting_structure_ids_json, created_at, updated_at,
                 status, needs_rebuild, merged_baseline_id, applicability, unresolved,
-                interpretation_trace_json, selected_support_json
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                interpretation_trace_json, selected_support_json, processing_input_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (item.worktree_id, item.region_id, item.base_baseline_id, item.base_revision, item.candidate_content,
              json.dumps(item.supporting_block_ids), json.dumps(item.supporting_structure_ids), item.created_at.isoformat(),
              item.updated_at.isoformat(), item.status, 0, None, item.applicability, item.unresolved,
              json.dumps(dict(item.interpretation_trace), ensure_ascii=False, sort_keys=True),
              json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in item.selected_support],
-                        ensure_ascii=False, sort_keys=True)),
+                        ensure_ascii=False, sort_keys=True), item.processing_input_id),
         )
         self.conn.commit()
         return item
@@ -171,6 +177,7 @@ class CognitionWorktreeStore:
                 AuthorizedSelectedSupport(block_id=str(value["block_id"]), state_id=str(value["state_id"]))
                 for value in json.loads(str(row[15]))
             ) if len(row) > 15 and row[15] is not None else (),
+            processing_input_id=str(row[16]) if len(row) > 16 and row[16] is not None else None,
         )
 
     def get(self, worktree_id: str) -> CognitionWorktree:
@@ -193,6 +200,13 @@ class CognitionWorktreeStore:
         ).fetchone()
         return self._row_to_item(row) if row is not None else None
 
+    def find_by_region_and_input(self, region_id: str, processing_input_id: str) -> CognitionWorktree | None:
+        row = self.conn.execute(
+            "SELECT * FROM worktrees WHERE region_id = ? AND processing_input_id = ? ORDER BY updated_at DESC LIMIT 1",
+            (region_id, processing_input_id),
+        ).fetchone()
+        return self._row_to_item(row) if row is not None else None
+
     def update_support(
         self,
         worktree_id: str,
@@ -202,6 +216,7 @@ class CognitionWorktreeStore:
         add_structure_ids: tuple[str, ...] = (),
         remove_structure_ids: tuple[str, ...] = (),
         selected_support: tuple[AuthorizedSelectedSupport, ...] | None = None,
+        processing_input_id: str | None = None,
     ) -> CognitionWorktree:
         item = self.get(worktree_id)
         if item.status != "OPEN":
@@ -217,25 +232,31 @@ class CognitionWorktreeStore:
             raise ValueError("an OPEN worktree must retain at least one supporting block")
         now = _now()
         self.conn.execute(
-            "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, selected_support_json=?, updated_at=? WHERE worktree_id=?",
+            "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, selected_support_json=?, processing_input_id=COALESCE(?, processing_input_id), updated_at=? WHERE worktree_id=?",
             (json.dumps(self._tuple(blocks)), json.dumps(self._tuple(structures)),
              json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in selected],
-                        ensure_ascii=False, sort_keys=True), now.isoformat(), worktree_id),
+                        ensure_ascii=False, sort_keys=True), processing_input_id, now.isoformat(), worktree_id),
         )
         self.conn.commit()
         return self.get(worktree_id)
 
     def record_support(
-        self, worktree_id: str, *, snapshot_id: str, support_identity: str | None = None
+        self, worktree_id: str, *, snapshot_id: str, support_identity: str | None = None,
+        processing_input_id: str | None = None,
     ) -> bool:
         self.get(worktree_id)
         identity = support_identity or snapshot_id
-        before = self.conn.total_changes
-        self.conn.execute(
+        result = self.conn.execute(
             "INSERT OR IGNORE INTO support_observations VALUES (?, ?)", (worktree_id, identity)
         )
+        inserted = result.rowcount > 0
+        if processing_input_id is not None:
+            self.conn.execute(
+                "UPDATE worktrees SET processing_input_id=?, updated_at=? WHERE worktree_id=?",
+                (processing_input_id, _now().isoformat(), worktree_id),
+            )
         self.conn.commit()
-        return self.conn.total_changes > before
+        return inserted
 
     def support_cycle_count(self, worktree_id: str) -> int:
         row = self.conn.execute("SELECT COUNT(*) FROM support_observations WHERE worktree_id = ?", (worktree_id,)).fetchone()

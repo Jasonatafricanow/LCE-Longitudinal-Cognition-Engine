@@ -112,7 +112,13 @@ class LceRuntime:
         promotions: list[ConsolidationResult] = []
         self.memory.mark_pipeline_stage(material.evidence_id, "snapshot/discovery-evaluated", fingerprint=snapshot.snapshot_id)
         for candidate in candidates:
-            result = self._evaluate_candidate(candidate, snapshot, diff)
+            result = self._evaluate_candidate(
+                candidate,
+                snapshot,
+                diff,
+                replayed=compiler_result.replayed,
+                processing_input_id=material.evidence_id,
+            )
             if result is not None:
                 promotions.append(result)
         self.memory.mark_pipeline_stage(material.evidence_id, "worktree-support-evaluated", fingerprint=snapshot.snapshot_id)
@@ -152,9 +158,35 @@ class LceRuntime:
         candidate: HigherOrderCandidate,
         snapshot: StructureSnapshot,
         diff: StructureDiff | None,
+        *,
+        replayed: bool = False,
+        processing_input_id: str | None = None,
     ) -> ConsolidationResult | None:
         region_id = "higher-order:" + ":".join(candidate.supporting_structure_ids)
         head = self.baselines.get_head(region_id)
+
+        # A replay after compilation may be resuming a partially completed
+        # input.  Once this input has a committed worktree effect, the
+        # persisted candidate/support is authoritative for recovery; calling
+        # the bounded interpreter again could produce a different valid
+        # proposal because its package includes the previous baseline.
+        if replayed and processing_input_id is not None:
+            durable = self.worktrees.find_by_region_and_input(region_id, processing_input_id)
+            if durable is not None:
+                if durable.status != "OPEN":
+                    return None
+                reconciled = self.promoter.reconcile_committed(durable.worktree_id)
+                if reconciled is not None:
+                    return reconciled
+                support_identity = self._support_identity(candidate, snapshot, diff, durable.selected_support)
+                self.worktrees.record_support(
+                    durable.worktree_id,
+                    snapshot_id=snapshot.snapshot_id,
+                    support_identity=support_identity,
+                    processing_input_id=processing_input_id,
+                )
+                return self.promoter.evaluate(durable.worktree_id)
+
         existing = self.worktrees.find_open_by_region(region_id)
         if existing is not None:
             reconciled = self.promoter.reconcile_committed(existing.worktree_id)
@@ -200,6 +232,7 @@ class LceRuntime:
                 base_baseline=head,
                 interpretation_trace=interpretation.model_trace,
                 selected_support=selected_support,
+                processing_input_id=processing_input_id,
             )
         else:
             self.worktrees.update_support(
@@ -211,6 +244,7 @@ class LceRuntime:
                 add_block_ids=candidate.supporting_block_ids,
                 add_structure_ids=candidate.supporting_structure_ids,
                 selected_support=selected_support,
+                processing_input_id=processing_input_id,
             )
             if existing.candidate_content != content:
                 self.worktrees.update_candidate(
@@ -224,6 +258,7 @@ class LceRuntime:
             existing.worktree_id,
             snapshot_id=snapshot.snapshot_id,
             support_identity=support_identity,
+            processing_input_id=processing_input_id,
         )
         return self.promoter.evaluate(existing.worktree_id, interpretation=interpretation)
 

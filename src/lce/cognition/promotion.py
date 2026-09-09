@@ -223,9 +223,13 @@ class UnderstandingPromoter:
         if reconciled is not None:
             return reconciled
         if interpretation is None:
+            requested_block_ids = (
+                tuple(item.block_id for item in worktree.selected_support)
+                or worktree.supporting_block_ids
+            )
             interpretation = BoundedInterpretation(
                 content=worktree.candidate_content,
-                supporting_block_ids=worktree.supporting_block_ids,
+                supporting_block_ids=requested_block_ids,
                 model_trace=worktree.interpretation_trace,
                 selected_support=worktree.selected_support,
             )
