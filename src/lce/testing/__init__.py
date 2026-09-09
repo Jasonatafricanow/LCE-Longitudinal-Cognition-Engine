@@ -7,3 +7,6 @@ __all__ = [
     "FakeMemorySubstrate",
     "ScriptableFakeConsolidator",
 ]
+from lce.testing.reference_memory import InMemoryReferenceMemory
+
+__all__ = ["InMemoryReferenceMemory"]
