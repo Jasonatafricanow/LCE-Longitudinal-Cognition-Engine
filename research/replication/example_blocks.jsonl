@@ -1,0 +1,5 @@
+{"type":"metadata","schema_version":1,"corpus_id":"synthetic-example-only","embedding_provider":"fixture","embedding_model":"fixture-vector","embedding_version":"1","vector_dimension":3}
+{"type":"block","block_id":"E01","occurred_at":"2026-01-01T00:00:00+00:00","text":"Initial architecture assumption","vector":[1.0,0.0,0.0]}
+{"type":"block","block_id":"E02","occurred_at":"2026-01-03T00:00:00+00:00","text":"Related implementation observation","vector":[0.92,0.08,0.0]}
+{"type":"block","block_id":"E03","occurred_at":"2026-01-05T00:00:00+00:00","text":"Different research direction","vector":[0.0,1.0,0.0]}
+{"type":"block","block_id":"E04","occurred_at":"2026-01-07T00:00:00+00:00","text":"Later reconnection example","vector":[0.72,0.28,0.0]}
