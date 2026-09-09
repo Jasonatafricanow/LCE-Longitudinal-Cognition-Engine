@@ -13,16 +13,17 @@
 The new suite is intentionally run on the known-broken base before any production repair.
 
 - B4 pure-recap regression: expected **RED** because the current support identity includes the immutable state ID, so recap-only state history increments qualifying support and can promote.
-- B7 package-sensitive recovery matrix: expected **RED** on the six established points `set_status-after`, `worktree-support-evaluated-before`, `worktree-support-evaluated-after`, `promotion-evaluated-before`, `promotion-evaluated-after`, and `complete-before`.
+- B7 package-sensitive recovery matrix: expected **RED** on the established durable-state points `set_status-after`, `worktree-support-evaluated-before`, `worktree-support-evaluated-after`, `promotion-evaluated-before`, `promotion-evaluated-after`, and `complete-before`.
 - The package-sensitive fixture records calls and uses only `package.previous_baseline`; it performs no Memory retrieval and no external calls.
 
 Fresh base results before any production repair:
 
 - `python -m pytest tests/test_v1_closure_invariants.py -q`: **6 passed, 4 failed**; the four failures are recap/support-inflation assertions.
-- `python -m pytest tests/test_v1_recovery_fault_matrix.py -q --tb=no`: **19 passed, 13 failed**, including the two named B7 regressions; the 30-case matrix is **19/30 equivalent, 11/30 RED** under the required interpreter-call-count oracle.
-- The six durable-state B7 failures are the established recovery defects listed above. Five additional matrix RED cases are call-count-only differences at pre-completion retry points (`create-before/after`, `record_support-before/after`, `save_revision-before`), retained because invocation count is an explicit oracle field.
+- `python -m pytest tests/test_v1_recovery_fault_matrix.py -q --tb=no`: **20 passed, 12 failed**, including the two named B7 regressions; the 30-case matrix is **20/30 equivalent, 10/30 RED** under the corrected durable-effect call-count oracle.
+- The six durable-state B7 failures are the established recovery defects listed above. Four additional matrix RED cases are post-durable call-count differences (`create-after`, `record_support-before/after`, `save_revision-before`). `create-before` is pre-durable: its durable state must match, but a repeated interpreter call is allowed and is not counted as a closure blocker.
+- Hook-order classification: `create-before` raises before the worktree INSERT commits; `create-after` raises after it commits; both `record_support` hooks occur after the candidate worktree commit; and `save_revision-before` occurs after worktree/support persistence. Therefore only `create-before` is exempt from exact interpreter-call equality.
 - `python -m pytest tests/test_z0_blocker_repairs.py tests/test_z1_blocker_repairs.py tests/test_runtime_e2e.py -q --tb=short`: **21 passed**.
-- `python -m pytest -q --tb=no`: **118 passed, 17 failed**; all failures are in the new B4/B7 regression surface.
+- `python -m pytest -q --tb=no`: **119 passed, 16 failed**; all failures are in the new B4/B7 regression surface.
 - `python -m ruff check tests/test_v1_closure_invariants.py tests/test_v1_recovery_fault_matrix.py`: **All checks passed**.
 - `python -m mypy tests/test_v1_closure_invariants.py tests/test_v1_recovery_fault_matrix.py`: **Success: no issues found in 2 source files**.
 
