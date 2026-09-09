@@ -207,6 +207,58 @@ qualifying support identity = candidate-relevant semantic / structural change
 
 **Primary references.** [`LCE_DECISION_EVOLUTION.md`](../history/LCE_DECISION_EVOLUTION.md), sections 4–5 and 12; [`LCE_V1_RUNTIME.md`](../architecture/LCE_V1_RUNTIME.md).
 
+## F11 — Temporal ordering is part of longitudinal evidence, not disposable metadata
+
+**Finding.** LCE must separate semantic identity from time buckets without discarding temporal order itself. The order in which evidence became available is part of the evidence for a longitudinal trajectory.
+
+**Evidence.** BLOCK-03 showed that day boundaries are poor semantic boundaries, while TREND-04 required chronological replay and no-future cutoffs to make emergence claims falsifiable. INSPIRATION-05 and STRUCTURE-06R then used temporal prefixes/evolution to observe reconnection, growth, overlap, and reorganization. These results only make longitudinal sense relative to an ordered evidence sequence.
+
+**What it supports.** Timestamp/order, cutoff visibility, version ancestry, and other inspectable temporal relations are legitimate longitudinal signals. Removing them is not a neutral robustness test; it changes the task.
+
+**What it does not support.** It does not claim that timestamps determine semantic meaning, or that all input must contain a literal wall-clock timestamp. Relative order may be recovered from reliable version/event dependencies.
+
+**Architecture consequence.** LCE freezes a **Temporal Sufficiency Boundary**:
+
+```text
+reliable temporal placement
+  -> may support longitudinal trajectory claims
+
+temporal placement underdetermined
+  -> Temporal UNKNOWN
+  -> no emergence / transition / trajectory claim
+```
+
+Evidence with unresolved temporal placement may still be retained as ordinary evidence/reference when otherwise valid. LCE does not fill the missing sequence with a plausible reasoning story.
+
+**Status.** `frozen boundary`
+
+**Primary references.** [`LCE_DECISION_EVOLUTION.md`](../history/LCE_DECISION_EVOLUTION.md), sections 3–6; [`LCE_MASTER_TIMELINE.md`](../history/LCE_MASTER_TIMELINE.md), BLOCK-03 through STRUCTURE-06R; [`LCE_V1_BOUNDARIES.md`](../architecture/LCE_V1_BOUNDARIES.md); [`ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](../ENGINEERING_CHALLENGES_AND_BOUNDARIES.md).
+
+## F12 — Observed temporal structure may legitimately stop at semantic UNKNOWN
+
+**Finding.** Evidence may be sufficient to establish that a temporal/structural pattern exists without being sufficient to authorize a higher-order semantic interpretation of that pattern.
+
+**Evidence.** INSPIRATION-05 found persistent/reconnecting structure but also a giant region and a large sustained-trigger noise floor. STRUCTURE-06R found H1 without useful semantic signal, 3578/5825 `new_overlap` noise-floor events, only 2/6 reviewed structure pairs worth attention, four weak analogies, and no clear common pattern. Recursive cognition was not implemented.
+
+**What it supports.** Persistence, reconnection, growth, overlap, or other structural change can justify a bounded higher-order candidate while leaving its semantic meaning unresolved.
+
+**What it does not support.** It does not authorize the system to label every persistent pattern as a belief, personality trait, causal rule, or higher-order cognition. Nor does it imply that UNKNOWN patterns can never later become interpretable with new authorized support.
+
+**Architecture consequence.** LCE freezes a distinct **Semantic UNKNOWN** boundary:
+
+```text
+ordered temporal / structural observation
+  -> bounded candidate
+  -> semantic meaning insufficiently justified
+  -> UNKNOWN is a valid stopping point
+```
+
+Temporal UNKNOWN and Semantic UNKNOWN are different. Temporal UNKNOWN blocks the trajectory claim itself; Semantic UNKNOWN preserves an observed ordered pattern while blocking unsupported higher-order meaning.
+
+**Status.** `frozen boundary`
+
+**Primary references.** [`LCE_DECISION_EVOLUTION.md`](../history/LCE_DECISION_EVOLUTION.md), sections 5–8; [`LCE_MASTER_TIMELINE.md`](../history/LCE_MASTER_TIMELINE.md), INSPIRATION-05 and STRUCTURE-06R; [`LCE_V1_BOUNDARIES.md`](../architecture/LCE_V1_BOUNDARIES.md); [`ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](../ENGINEERING_CHALLENGES_AND_BOUNDARIES.md).
+
 # Negative-results index
 
 LCE's development record is intentionally not cleaned into a success-only story.
@@ -221,6 +273,8 @@ LCE's development record is intentionally not cleaned into a success-only story.
 | 263 sustained triggers / large noise floor | persistence alone was too permissive | bounded candidate formation before interpretation |
 | H1 had no useful semantic signal | mathematically attractive structure lacked cognition evidence | H1/TDA not promoted to core authority |
 | only 2/6 structure pairs worth attention | higher-order analogy precision was weak | bound higher-order cognition to one level; no recursive promotion |
+| unordered-time reconstruction would require inferred causal/logical order | the evaluation would broaden from longitudinal observation into open-ended reasoning | retain temporal order as evidence; fail closed when placement is underdetermined |
+| persistent structure lacks justified higher-order meaning | observation does not automatically grant interpretation authority | preserve Semantic UNKNOWN as a valid stop |
 | recap support inflation | provenance churn looked like new cognition | split provenance identity from support identity |
 | reference recovery `30/30` became package-sensitive `24/30` | test oracle did not cover legal interpreter behavior | effect-aware recovery + permanent adversarial matrix |
 | newest-only recap fixture missed ordering bug | regression fixture encoded a hidden assumption | oldest/middle/newest selected-order coverage |
@@ -233,7 +287,11 @@ These findings constrain V1 but do not settle all research questions.
 - production threshold tuning remains future work;
 - higher-order candidate precision remains incomplete;
 - cross-corpus generalization of local structural observations is not established here;
+- standardized external evaluation for longitudinal trajectory fidelity remains open;
+- protocol adapters such as MCP remain integration work rather than core cognition semantics;
 - future MR/Body integration is outside standalone V1 closure;
 - performance optimization is non-blocking future work.
 
-For the chronological architecture story, see [`docs/RESEARCH_OVERVIEW.md`](../RESEARCH_OVERVIEW.md). For the detailed decision record, see [`docs/history/LCE_DECISION_EVOLUTION.md`](../history/LCE_DECISION_EVOLUTION.md).
+The following are **not silently promoted to open V1 requirements**: reconstruction of a correct reasoning trajectory from arbitrary unordered evidence, recursive cognition, or a universal semantic contradiction oracle. Each would require a new research question and new evaluation authority before entering the core roadmap.
+
+For the chronological architecture story, see [`docs/RESEARCH_OVERVIEW.md`](../RESEARCH_OVERVIEW.md). For the current challenge/status matrix and the two UNKNOWN boundaries, see [`docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](../ENGINEERING_CHALLENGES_AND_BOUNDARIES.md). For the detailed decision record, see [`docs/history/LCE_DECISION_EVOLUTION.md`](../history/LCE_DECISION_EVOLUTION.md).
