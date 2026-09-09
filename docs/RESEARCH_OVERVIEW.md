@@ -2,6 +2,8 @@
 
 This document explains how LCE arrived at its current architecture. It is not a feature list and it does not present the final V1 design as inevitable.
 
+**Historical reading rule.** Sections 1–2 provide a retrospective synthesis of the problem that the later research and architecture came to address. The repository does not contain this exact Foundation-Model/repeated-reconstruction wording as a verbatim earliest design statement, so it is not backdated as one. Named experiments, measurements, decisions, and repair claims below are grounded in the preserved project record.
+
 The useful unit of analysis is:
 
 ```text
@@ -22,9 +24,9 @@ The common fallback is retrieval: find relevant old material, put it back into a
 
 > Which understandings have already been earned over time, and how can they remain inspectable, revisable, and reusable without being recomputed as free-form model inference on every turn?
 
-LCE was built around that problem.
+That question is the **current synthesis of the design problem** expressed by the repository's later architecture and research trajectory. It should not be read as a quotation or exact reconstruction of the earliest owner wording.
 
-The project therefore separates three responsibilities:
+The project ultimately separates three responsibilities:
 
 ```text
 Memory = what happened
@@ -382,7 +384,7 @@ Primary evidence: [`docs/history/LCE_DECISION_EVOLUTION.md`](history/LCE_DECISIO
 
 ## 11. How the correction loop changed the runtime contracts
 
-The recurring correction process visible in this repository is:
+The following is a **retrospective synthesis of the recurring correction pattern visible in the repository**. It is not presented as a prospectively documented methodology from the project's first day.
 
 ```text
 1. Form a narrow architectural hypothesis.
@@ -412,7 +414,7 @@ Examples:
 | package-sensitive restart duplicates cognition | recovery | effect-aware durable recovery |
 | green suite misses ordering bug | test authority | preserve adversarial RED→GREEN fixtures and vary selection order |
 
-The important pattern is not “the design kept changing.” It is that each change attempted to make the next failure class **less implicit**.
+The important pattern is not “the design kept changing.” It is that each correction attempted to make the next failure class **less implicit** and easier to audit.
 
 ## 12. What V1 finally freezes
 
