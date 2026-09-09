@@ -89,6 +89,8 @@ A system can accumulate increasingly rigorous schemas, provenance rules, prompts
 
 This level is especially important in model-centric systems because an architecture can quietly become a sophisticated wrapper around repeated model inference while claiming to provide durable cognition.
 
+A related failure mode is **problem expansion by constraint removal**: a project deliberately removes real information that its target product naturally has, then judges itself against a much more general task. That may be a valid new research program, but it is not automatically a better test of the original system.
+
 ## 3. What should stay stable and what should remain replaceable
 
 The method distinguishes **stable constraints** from **replaceable mechanisms**.
@@ -169,6 +171,7 @@ Architecture revalidation should be explicit when one or more of these condition
 6. **Negative research result** — an attractive abstraction fails under bounded experiments or negative controls.
 7. **Model capability shift** — a mechanism exists mainly because a previous model could not perform a task reliably.
 8. **Complexity without new explanatory power** — additional state, fields, prompts, or agents increase rigor without improving the system's actual objective.
+9. **Constraint-erasure scope expansion** — a proposed test removes legitimate product/domain information and thereby changes the task into a broader reasoning problem.
 
 A trigger does not automatically imply redesign. It means the current abstraction must justify itself again.
 
@@ -182,6 +185,7 @@ When a trigger appears, review the design in this order:
 - Is that failure still real?
 - Has the actual objective changed since the component was introduced?
 - If the component worked perfectly, would the user-visible or runtime problem disappear?
+- Is a proposed benchmark still testing the product problem, or has it removed a real domain constraint and created a different task?
 
 ### Abstraction
 
@@ -189,6 +193,7 @@ When a trigger appears, review the design in this order:
 - Is the component representing evidence, interpretation, authority, or projection — and are those roles mixed?
 - Does the abstraction explain the negative result, or only hide it?
 - Are several patches preserving an ontology that should instead be replaced?
+- Does an `UNKNOWN` represent missing temporal placement or missing semantic meaning, and are those two cases being kept separate?
 
 ### Capability
 
@@ -203,6 +208,7 @@ When a trigger appears, review the design in this order:
 - Are misses and negative results preserved?
 - Is the oracle strong enough to exercise all legal behaviors?
 - Does recovery produce the same durable cognition result after restart?
+- Are we measuring longitudinal cognition, or silently asking the system to solve unconstrained causal/logical reconstruction?
 
 ### Decision
 
@@ -252,6 +258,20 @@ The LCE history contains several concrete instances of this pattern.
 
 **Surviving constraint:** temporal order matters for longitudinal evaluation, while semantic continuity defines the cognition unit.
 
+### Chronological evidence -> do not erase time to prove a different intelligence capability
+
+**Mechanism under review:** using real temporal order as a first-class longitudinal signal.
+
+**Proposed challenge:** remove or scramble temporal placement and ask the system to recover the latent logical/reasoning trajectory from semantic content alone.
+
+**Why it was revalidated:** once time is removed, the system must infer premise/consequence, causal direction, likely reasoning order, and missing transitions from a much larger hypothesis space. That is no longer merely a harder version of the same longitudinal task; it becomes open-ended reasoning reconstruction.
+
+**Decision:** keep temporal ordering as evidence. Do not make unordered reasoning reconstruction a V1 proof obligation.
+
+**Rejected scope expansion:** treating product-native chronology as "cheating" and deleting it to force a more general intelligence benchmark.
+
+**Surviving constraint:** temporal ordering is evidence, not disposable metadata. If reliable temporal placement cannot be established, the system must stop the longitudinal claim rather than invent an order.
+
 ### Model-led trend discovery -> structural discovery before interpretation
 
 **Mechanism under review:** an LLM-led loop that could both propose a longitudinal direction and judge its own supporting evidence.
@@ -263,6 +283,18 @@ The LCE history contains several concrete instances of this pattern.
 **Discarded assumption:** a capable model should be allowed to search freely for the evidence that justifies its own interpretation.
 
 **Surviving constraint:** interpretation must consume a bounded evidence package and longitudinal evaluation must enforce no-future visibility.
+
+### Higher-order signal -> preserve semantic UNKNOWN
+
+**Mechanism under review:** automatically assigning high-level meaning to persistent or higher-order temporal structure.
+
+**Why it was revalidated:** STRUCTURE-06R retained weak H1 semantics, a large overlap noise floor, only 2/6 structure pairs worth attention, and no clear common pattern. Recursive cognition had no adequate evidence basis.
+
+**Decision:** demote structural persistence to bounded candidate evidence and allow `UNKNOWN` to remain terminal when higher-order meaning is not justified.
+
+**Discarded assumption:** persistent structure must have a nameable cognition meaning.
+
+**Surviving constraint:** observation authority and interpretation authority are distinct.
 
 ### Exclusive clustering -> overlapping local structures
 
@@ -299,6 +331,14 @@ giant component
   -> not merely "bad clustering"
   -> similarity is insufficient cognition authority
 
+unordered temporal evidence
+  -> not merely "harder trend detection"
+  -> removing chronology changes the task into open-ended reasoning reconstruction
+
+persistent structure with weak semantics
+  -> not merely "interpretation model too weak"
+  -> observed structure may legitimately remain Semantic UNKNOWN
+
 recap support inflation
   -> not merely "wrong counter"
   -> provenance identity and qualifying cognition-support identity are different
@@ -334,15 +374,16 @@ It does not mean:
 - every new model release requires replacing the stack;
 - novelty is preferable to stable code;
 - an elegant abstraction should be discarded without evidence;
-- implementation detail is unimportant.
+- implementation detail is unimportant;
+- removing more domain constraints automatically creates a better benchmark.
 
 Implementation detail remains critical. Z0–R3 exists precisely because correct high-level architecture can still fail through persistence, ordering, identity, and recovery details.
 
 The distinction is narrower:
 
-> **Do not confuse implementation effort with architectural necessity.**
+> **Do not confuse implementation effort with architectural necessity, and do not confuse a broader research question with a better test of the original one.**
 
-When evidence points to an implementation bug, fix the implementation. When evidence points to an abstraction error, change the abstraction. When the abstraction works but the system still does not solve the intended problem, restate the problem.
+When evidence points to an implementation bug, fix the implementation. When evidence points to an abstraction error, change the abstraction. When the abstraction works but the system still does not solve the intended problem, restate the problem. When a proposed test removes product-native evidence and expands the task into general reasoning, treat it as a new research question rather than silently moving the goalposts.
 
 ## 11. Practical checkpoint
 
@@ -358,6 +399,9 @@ Before freezing or extending a major component, ask:
 [ ] Are negative results and real misses preserved?
 [ ] Does repeated use create evidence or support that was not actually earned?
 [ ] Does restart/replay preserve the same durable result?
+[ ] Does this evaluation preserve legitimate product/domain constraints?
+[ ] If temporal placement is unknown, are we refusing the trajectory claim rather than inventing order?
+[ ] If temporal structure is visible but meaning is uncertain, are we preserving Semantic UNKNOWN rather than inventing ontology?
 [ ] Should the outcome be KEEP, DEMOTE, REPLACE, or DELETE?
 ```
 
@@ -365,6 +409,7 @@ The purpose of the checkpoint is not to make the architecture static. It is to e
 
 ## Related documents
 
+- [`ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](ENGINEERING_CHALLENGES_AND_BOUNDARIES.md) — current challenge/status matrix, temporal sufficiency, and the two UNKNOWN boundaries.
 - [`RESEARCH_OVERVIEW.md`](RESEARCH_OVERVIEW.md) — experiment-driven architecture evolution.
 - [`research/FINDINGS.md`](research/FINDINGS.md) — findings, evidence limits, and architecture consequences.
 - [`history/LCE_DECISION_EVOLUTION.md`](history/LCE_DECISION_EVOLUTION.md) — detailed problem -> evidence -> failed assumption -> decision history.
