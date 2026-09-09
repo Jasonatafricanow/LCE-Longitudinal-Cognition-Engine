@@ -6,6 +6,7 @@ Start with:
 
 - [`EXTERNAL_ADVERSARIAL_AUDIT_PROTOCOL.md`](EXTERNAL_ADVERSARIAL_AUDIT_PROTOCOL.md)
 - [`REPORT_TEMPLATE.md`](REPORT_TEMPLATE.md)
+- [`PRE_PROTOCOL_CLAUDE_REVIEW_TRIAGE.md`](PRE_PROTOCOL_CLAUDE_REVIEW_TRIAGE.md) — a preserved external review that motivated this track but does **not** satisfy the current protocol because its exact frozen SHA/raw reproduction bundle was not retained.
 
 A model-generated review may be useful as an **external adversarial review**, but it is not independent scientific validation. Reports should identify the reviewer/model, exact commit SHA, toolchain, commands, and any custom fixtures so another reader can reproduce the disagreement.
 
