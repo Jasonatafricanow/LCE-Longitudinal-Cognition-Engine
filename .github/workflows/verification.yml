@@ -1,0 +1,35 @@
+name: Public Verification
+
+on:
+  push:
+    branches:
+      - master
+      - verification/**
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-verification.txt
+
+      - name: Install package and pinned verification tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . -r requirements-verification.txt
+
+      - name: Run canonical public verification gate
+        run: python scripts/verify.py
