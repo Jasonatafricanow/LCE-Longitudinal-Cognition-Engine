@@ -194,15 +194,47 @@ See [`docs/architecture/LCE_V1_RUNTIME.md`](docs/architecture/LCE_V1_RUNTIME.md)
 
 ## Research evidence and reproducibility
 
-The repository contains two complementary evidence surfaces:
+The repository contains multiple evidence surfaces that should not be conflated:
 
-- [`research/`](research/) contains small, synthetic, reproducible boundary experiments for semantic neighbourhoods, transparent region construction, and temporal cutoff / no-future control.
-- [`docs/history/`](docs/history/) preserves the broader research and productization sequence, including failed hypotheses, experimental pivots, audit rejects, repair logic, and release closure.
+- [`docs/history/`](docs/history/) preserves the broader research/productization sequence, including private-corpus historical observations, failed hypotheses, audit rejects, repair logic, and release closure;
+- [`research/experiments/`](research/experiments/) contains small public synthetic boundary experiments;
+- [`research/replication/`](research/replication/) provides a provider-agnostic harness for future public runs using precomputed real semantic vectors;
+- runtime/closure tests encode public engineering invariants;
+- [`docs/audit/`](docs/audit/) defines an external adversarial audit protocol that does not trust existing closure verdicts.
 
-The public synthetic experiments are **not** a replay of the complete historical research corpus. They are deliberately small reproducibility surfaces for selected design boundaries.
+The public synthetic experiments are **not** a replay of the complete historical research corpus. The semantic replication harness is available, but a protocol-compliant real public semantic replication is still explicitly **NOT YET ESTABLISHED**.
+
+See [`docs/PUBLIC_EVIDENCE_MATRIX.md`](docs/PUBLIC_EVIDENCE_MATRIX.md) for a finding-by-finding map across `PRIVATE-HISTORICAL`, `PUBLIC-SYNTHETIC`, `PUBLIC-SEMANTIC-REPLICATION`, `RUNTIME-REGRESSION`, and `EXTERNAL-ADVERSARIAL-AUDIT` evidence classes.
+
+## Public verification gate
+
+The repository now has one canonical reproducibility command shared by local reviewers and GitHub Actions:
+
+```bash
+python -m pip install -e . -r requirements-verification.txt
+python scripts/verify.py
+```
+
+The pinned public toolchain is:
+
+```text
+pytest 9.1.1
+mypy 2.3.1
+Ruff 0.16.6
+```
+
+The gate intentionally reproduces the historical release claim `mypy src/lce`, not bare `mypy` over `src + tests`. Those are different verification surfaces.
+
+The first public RED→GREEN record is preserved in [`docs/VERIFICATION.md`](docs/VERIFICATION.md): the replication-harness contract first failed because `research.replication` did not yet exist, then the same CI gate passed after implementation with **142 tests**, `mypy src/lce` clean on 32 source files, and Ruff clean on `src tests`.
+
+This gate verifies software/runtime contracts. It does not establish semantic embedding quality, cross-corpus generalization, independent scientific validation, or external audit independence.
 
 Useful entry points:
 
+- Public verification contract: [`docs/VERIFICATION.md`](docs/VERIFICATION.md)
+- Public evidence matrix: [`docs/PUBLIC_EVIDENCE_MATRIX.md`](docs/PUBLIC_EVIDENCE_MATRIX.md)
+- External adversarial audit protocol: [`docs/audit/`](docs/audit/)
+- Semantic replication surface: [`research/replication/`](research/replication/)
 - Research narrative: [`docs/RESEARCH_OVERVIEW.md`](docs/RESEARCH_OVERVIEW.md)
 - Engineering challenge/status matrix: [`docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md`](docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md)
 - Architecture revalidation method: [`docs/ARCHITECTURE_REVALIDATION.md`](docs/ARCHITECTURE_REVALIDATION.md)
@@ -210,7 +242,7 @@ Useful entry points:
 - Conceptual research map: [`docs/research/research-map.md`](docs/research/research-map.md)
 - Full decision evolution: [`docs/history/LCE_DECISION_EVOLUTION.md`](docs/history/LCE_DECISION_EVOLUTION.md)
 - Full reconstructed timeline: [`docs/history/LCE_MASTER_TIMELINE.md`](docs/history/LCE_MASTER_TIMELINE.md)
-- Reproducible experiments: [`research/README.md`](research/README.md)
+- Reproducible research entry point: [`research/README.md`](research/README.md)
 - Portfolio-oriented case study: [`docs/portfolio/LCE_CASE_STUDY.md`](docs/portfolio/LCE_CASE_STUDY.md)
 
 ## Current limits and open work
@@ -220,6 +252,7 @@ The repository deliberately keeps these categories separate:
 - **Exploratory research observations:** point-cloud failures, trend visibility, local structure behavior, multi-membership, higher-order signal quality.
 - **Engineering invariants:** source validity, selected immutable support, support qualification, idempotency, effect-aware recovery, non-mutating reads.
 - **Frozen V1 boundaries:** factual Memory authority stays outside derived LCE cognition; interpretation is bounded; temporal sufficiency gates longitudinal claims; Semantic UNKNOWN is a valid stop; recursive cognition and current-turn reasoning remain outside standalone V1.
+- **Public evidence debt:** real semantic replication on a public/sanitized corpus and protocol-compliant external adversarial audit reports are not yet established.
 - **Future work:** embedding/model quality, threshold tuning, higher-order precision, standardized external evaluation, future MR/Body integration, protocol adapters, and performance optimization.
 
 ## Development
@@ -227,5 +260,7 @@ The repository deliberately keeps these categories separate:
 ```powershell
 python -m pytest -q
 ```
+
+For the reproducible public gate, prefer `python scripts/verify.py` after installing `requirements-verification.txt`.
 
 Standalone setup and the replaceable Reference Memory seam are documented in [`docs/standalone-quickstart.md`](docs/standalone-quickstart.md) and [`docs/reference-memory.md`](docs/reference-memory.md).
