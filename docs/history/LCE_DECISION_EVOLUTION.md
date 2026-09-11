@@ -454,7 +454,102 @@ semantically non-identical items; the project needed a longitudinal boundary;
 and no accepted Hot Start contract was found. This distinction is part of the
 history, not a footnote to be removed.
 
-## 19. Final decision boundary
+## 19. Why must a new algorithm not automatically become a new architectural abstraction?
+
+**Problem.** During the 2026-09-11 design discussion for possible structure-
+discovery experiments, three mathematical families were raised as candidate
+suppliers: persistent homology, Hodge-Laplacian analysis, and discrete Hodge
+decomposition. The first LLM response incorrectly escalated the appearance of
+new algorithms into a possible new topology subsystem, generic provider layer,
+and new structural contract.
+
+**Evidence.** The actual product chain had not changed:
+
+```text
+Semantic Blocks + vectors
+  → structure discovery
+  → StructureObservation / StructureSnapshot / StructureDiff
+  → HigherOrderCandidate
+  → bounded interpretation / re-verification
+```
+
+The current `SnapshotStructureDiscovery` is one supplier of the existing
+`structure` stage. A different mathematical detector would still consume the
+same upstream semantic/vector material and supply structural evidence to the
+same downstream cognition path. No new product responsibility, authority
+boundary, consumer, or lifecycle had been introduced by naming a new algorithm.
+
+The correction happened before implementation: the owner rejected the proposed
+architectural expansion and restated the intended abstraction as:
+
+```text
+Structure = stable product
+algorithm = replaceable / complementary supplier
+bounded interpreter = downstream consumer and semantic verifier
+```
+
+This discussion is design-process evidence, not evidence that any of the new
+algorithms are useful. Their usefulness remains an experimental question.
+
+**Failed assumption.** A new technical concept, algorithm, or mathematical
+object deserves a corresponding software abstraction or architectural layer.
+
+This is an especially plausible LLM failure mode because a model can produce a
+locally coherent implementation for an unnecessary concept: module, interface,
+configuration, state, persistence, tests, and documentation may all be
+internally consistent while increasing total system complexity.
+
+**Decision.** Treat a new algorithm first as a possible implementation of an
+existing responsibility. Before proposing a new abstraction, ask:
+
+```text
+Did the product responsibility actually change?
+Does the existing abstraction fail to express proven useful output?
+Would a new abstraction reduce total system complexity rather than organize
+an unnecessary expansion?
+```
+
+If the first answer is no, the default is to keep the new method inside the
+existing capability boundary. If usefulness has not yet been demonstrated,
+run the research before changing the architecture.
+
+The design rule is:
+
+> LLMs are strong expansion engines; architecture review must provide
+> compression pressure.
+
+This is not a claim that humans are categorically better architects than LLMs.
+It records a narrower observed risk: LLM proposals can over-materialize new
+concepts into software entities when the existing product abstraction is
+already sufficient.
+
+**Consequence.** Future LCE design review should distinguish three questions in
+order:
+
+```text
+new idea
+  → is this already an existing responsibility?
+      → yes: keep it inside the existing responsibility
+      → no / unknown: prove the mismatch before adding architecture
+  → design and test the algorithm
+  → only experimentally proven product-semantic mismatch may justify
+    a contract or architecture change
+```
+
+The review target is therefore not only whether a proposed abstraction is
+well-designed. The prior questions are more important:
+
+> Why must this abstraction exist?
+>
+> Did an architectural change actually occur?
+
+This warning mirrors an earlier LCE lesson at a different layer. STRUCTURE-06R
+showed that a mathematically visible H1 signal did not automatically justify a
+new cognition ontology. The 2026-09-11 design correction adds the software-side
+analogue: a mathematically interesting algorithm does not automatically justify
+a new software ontology.
+
+## 20. Final decision boundary
 
 The frozen V1 principle is:
 
