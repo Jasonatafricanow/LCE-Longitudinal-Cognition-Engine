@@ -52,6 +52,41 @@ retain supporting structure IDs and can expand through the snapshot to
 Semantic Blocks and Raw Evidence. They are `UNKNOWN` derived proposals, never
 Evidence or accepted Understanding by themselves.
 
+## Evidence-progressive path confirmation
+
+The runtime treats a candidate longitudinal path as a provisional hypothesis
+whose support can change as new authorized evidence arrives. First detection
+does not decide the path permanently.
+
+For an existing OPEN worktree, later snapshots may add or remove supporting
+Semantic Blocks and structures, change candidate interpretation, accumulate
+independent support identities, or mark the worktree for rebuild when source
+evidence becomes invalid. Promotion happens only after the current support
+satisfies policy; invalidated support cannot be grandfathered in.
+
+```text
+candidate at t0
+    -> OPEN worktree
+
+evidence at t1
+    -> update support / structure
+    -> remain OPEN
+
+evidence at t2
+    -> reconnection / repeated support / reversal / invalidation
+    -> revise, promote, or rebuild
+```
+
+This is **progressive confirmation at the current cutoff**, not retrospective
+future leakage. A snapshot at `t0` is still evaluated only with evidence visible
+at `t0`. Evidence arriving at `t1` may change the current judgment of the path,
+but it does not rewrite what was discoverable at `t0`.
+
+The durable architectural requirement is therefore broader than the current
+`CognitionWorktree` implementation: LCE must preserve provisional paths,
+explicit support provenance, later-evidence revalidation, and correction /
+rebuild semantics even if the concrete Worktree representation changes.
+
 ## Promotion and correction
 
 An OPEN worktree records candidate text, Baseline ancestry, supporting blocks,
