@@ -1,7 +1,8 @@
 """Lightweight snapshot-based multi-structure discovery."""
 
 from lce.structure.contracts import (
-    HigherOrderCandidate,\n    StructureRelationCandidate,
+    HigherOrderCandidate,
+    StructureRelationCandidate,
     StructureConfig,
     StructureDiff,
     StructureObservation,
@@ -10,7 +11,8 @@ from lce.structure.contracts import (
 from lce.structure.discovery import SnapshotStructureDiscovery
 
 __all__ = [
-    "StructureRelationCandidate",\n    "HigherOrderCandidate",
+    "StructureRelationCandidate",
+    "HigherOrderCandidate",
     "SnapshotStructureDiscovery",
     "StructureConfig",
     "StructureDiff",
