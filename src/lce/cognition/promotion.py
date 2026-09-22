@@ -19,7 +19,7 @@ from lce.reference_memory.contracts import (
     SemanticBlockPort,
 )
 from lce.store.interface import BaselineStorePort
-from lce.structure.contracts import StructureRelationCandidate, StructureObservation
+from lce.structure.contracts import StructureObservation, StructureRelationCandidate
 
 
 @runtime_checkable
