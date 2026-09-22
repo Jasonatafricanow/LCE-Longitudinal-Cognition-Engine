@@ -319,4 +319,6 @@ class DraftRevisionStore:
     def close(self) -> None:
         self.conn.close()
 
-# Backward-compatible names for existing callers and stored terminology.\nCognitionWorktree = DraftRevision\nCognitionWorktreeStore = DraftRevisionStore\n
+# Backward-compatible names for existing callers and stored terminology.
+CognitionWorktree = DraftRevision
+CognitionWorktreeStore = DraftRevisionStore
