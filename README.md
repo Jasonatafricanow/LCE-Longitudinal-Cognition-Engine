@@ -1,277 +1,158 @@
-# LCE V1 — Longitudinal Cognition Engine
+# LCE — Longitudinal Cognition Engine
 
-**A research-engineering system for durable longitudinal understanding.**
+LCE is a Python research system for building and revising longitudinal summaries from historical evidence.
 
-LCE investigates a narrower problem than "general memory":
-
-> Can an AI system form, inspect, falsify, revise, and reuse understanding across time without allowing model inference, vector similarity, or derived structure to become factual authority?
-
-The current architecture is the result of failed assumptions, bounded experiments, negative controls, adversarial review, and runtime repair. The research record is part of the project: rejected ideas are preserved because they explain why the current boundaries exist.
-
-## Portfolio role
+The current pipeline is deliberately split into several inspectable stages:
 
 ```text
-Historical evidence
-       |
-       v
-       LCE
- longitudinal structure
-       |
-       | derived cognition only
-       v
-optional consumer / Mind Runtime boundary
-
-Mind Runtime asks:
-"What state is authorized now?"
-
-LCE asks:
-"What structure is justified across this history?"
+source evidence
+   |
+   v
+semantic blocks
+   |
+   v
+vector projection
+   |
+   v
+local overlapping structures
+   |
+   v
+candidate relations / interpretations
+   |
+   v
+draft revision
+   |
+   v
+accepted revision
+   |
+   v
+read-only query API
 ```
 
-LCE is independent from [Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime). MR may consume LCE output through a narrow adapter, but LCE does not automatically acquire runtime authority.
+Each stage can be rebuilt or invalidated without rewriting the source evidence.
 
-## The problem
+## Current pipeline
 
-A long-running agent can retrieve old records and ask a foundation model to reconstruct what changed. That works, but it repeatedly spends model inference on the same longitudinal interpretation and makes several concepts easy to conflate:
+### 1. Semantic blocks
+
+Raw historical items are first compiled into semantic blocks under `src/lce/semantic/`.
+
+The compiler keeps block identity, source references, timestamps, and validity information so later stages can be traced back to the original evidence.
+
+### 2. Vector projection and local structure
+
+Vectors are rebuildable. They are used for neighborhood/structure discovery rather than stored as the source of truth.
+
+`src/lce/structure/` builds local, overlapping structures at several neighborhood sizes. A single block may participate in more than one local structure.
+
+### 3. Structure changes and relation candidates
+
+Snapshots and diffs record how local structures change across cutoffs.
+
+Candidate relations are derived from those structures and may remain `UNKNOWN`; the pipeline does not require every stable geometric pattern to receive a semantic interpretation.
+
+### 4. Draft and accepted revisions
+
+The current implementation stores provisional interpretations separately from accepted revisions.
+
+Existing code names these objects `CognitionWorktree` and `Baseline`; mechanically, they are:
 
 ```text
-what happened
-what is similar
-what changed
-what was inferred
-what is currently accepted
+draft candidate
+  -> support/recovery checks
+  -> accepted immutable revision
+  -> latest accepted revision for that region
 ```
 
-LCE separates these into different artifacts and different authorities.
+Accepted revisions keep explicit source support, revision numbers, hashes, and predecessor links.
 
-A useful shorthand is:
+### 5. Read API
 
-```text
-Memory = what happened
-LCE = what was learned longitudinally
-Current-turn model = what reasons and acts now
-```
+`src/lce/read_api.py` serves only accepted revisions whose supporting semantic blocks and underlying evidence are still valid.
 
-## How the research evolved
+Reads do not invoke a model or silently promote a draft.
 
-The project did not start with the final pipeline.
+## Why the pipeline changed
 
-### 1. Raw point clouds failed as cognition
+The research directory keeps experiments that failed or forced changes in representation.
 
-Early experiments treated raw text units plus semantic similarity as candidate cognition structure.
+### Raw text similarity
 
-They produced giant connected regions and mixed unrelated objects. The failure showed that semantic proximity at raw-text granularity was too weak a unit for longitudinal cognition.
+Early experiments connected raw text units directly by similarity. Large mixed regions formed too easily, so semantic segmentation moved before vector projection.
 
-**Correction:** raw text remains evidence; semantic segmentation happens before vector projection.
+### Fixed time buckets
 
-### 2. Time buckets failed as semantic boundaries
+Day/window grouping merged unrelated material and split coherent material. Time is still used for ordering and cutoffs, but it is not the primary semantic boundary.
 
-Grouping by day or fixed time window reduced implementation complexity but merged unrelated thoughts and split coherent ones.
+### Model-led trend discovery
 
-**Correction:** temporal order remains essential for longitudinal reasoning, but semantic continuity — not the clock — defines a cognition block.
+Using the same model to discover and judge a trend made evaluation circular. Temporal cutoffs, replay, and negative controls were added so later evidence cannot leak into earlier claims.
 
-### 3. Model-led trend discovery created circularity
+### Exclusive clustering
 
-A model that both searches for a trajectory and judges whether the trajectory exists can manufacture coherence.
+One-cluster-per-item lost legitimate multi-membership. The current structure discovery is local and overlapping.
 
-**Correction:** no-future cutoffs, replay, negative controls, and bounded evidence packages were introduced so later evidence cannot leak into earlier claims.
+### Green tests with weak oracles
 
-### 4. Global clustering hid multi-membership
+Productization exposed provenance, recovery, and repeated-support bugs that broad happy-path tests had missed. Recovery matrices, invalidation tests, and stricter source-support checks were added afterward.
 
-One exclusive cluster per item was too strong an assumption. Longitudinal evidence can belong to several local structures at different scales.
+## Research / verification tools
 
-**Correction:** derived structure became local, overlapping, and scale-dependent.
-
-### 5. Attractive higher-order signals were not automatically useful
-
-Some structural signals were mathematically real but semantically weak or unstable.
-
-**Correction:** higher-order structure remains observation until bounded evidence justifies interpretation. `UNKNOWN` is an acceptable outcome.
-
-### 6. Green tests still allowed authority bugs
-
-Productization exposed another class of failure: provenance inflation, repeated consumption manufacturing support, recovery faults, and test oracles that were too weak.
-
-**Correction:** immutable revisions, selected support identity, effect-aware recovery, adversarial regression fixtures, and explicit runtime contracts became part of V1.
-
-## Research method
-
-The recurring method is:
-
-```text
-narrow hypothesis
-    |
-    v
-bounded experiment / adversarial probe
-    |
-    v
-preserve misses and negative results
-    |
-    v
-classify failure:
-algorithm / representation / authority
-    |
-    v
-change the smallest abstraction that explains it
-    |
-    v
-encode the boundary as contract + regression
-```
-
-The implementation is allowed to change. The constraint learned from a failure is often the more durable result.
-
-## Key design decisions
-
-### Similarity discovers candidates, not cognition
-
-Embeddings and neighborhoods are useful search instruments. They do not create semantic or factual authority.
-
-### Semantic structure precedes vector structure
-
-The project pays for semantic segmentation before projection rather than asking geometry to recover all meaning later.
-
-### Longitudinal claims require temporal sufficiency
-
-If the order of evidence cannot be established, LCE does not invent a reasoning trajectory.
-
-### Derived structure is never its own evidence
-
-Regions, snapshots, higher-order candidates, Worktrees, and accepted Baselines remain derived cognition artifacts. They cannot recursively become factual Memory.
-
-### Read-time access is deterministic
-
-Reading accepted understanding does not invoke a model, promote a Worktree, or mutate evidence.
-
-### Uncertainty is a valid stop
-
-Two different unknowns remain explicit:
-
-```text
-Temporal UNKNOWN
-  -> order is not justified
-  -> no longitudinal trajectory claim
-
-Semantic UNKNOWN
-  -> ordered structure exists
-  -> higher-order meaning is not justified
-```
-
-## Current V1 pipeline
-
-```text
-Raw Evidence
-  -> Reference Memory validity / provenance
-  -> Semantic Blocks
-  -> rebuildable vectors
-  -> cutoff-bounded local structures
-  -> bounded higher-order candidates
-  -> OPEN cognition Worktree
-  -> conservative Baseline / HEAD promotion
-  -> deterministic accepted Understanding read
-```
-
-Each arrow is a transformation boundary, not an automatic promotion in authority.
-
-## Current V1 scope
-
-LCE V1 includes:
-
-- Semantic Blocks compiled from authorized evidence;
-- derived vectors and local structure snapshots;
-- overlapping local structure;
-- bounded higher-order candidates;
-- durable `OPEN / MERGED / DROPPED` cognition Worktrees;
-- immutable accepted Baseline revisions and HEAD;
-- invalidation / rebuild / correction mechanics;
-- deterministic accepted-Understanding reads;
-- no-future replay and negative controls;
-- recovery and adversarial regression suites;
-- a provider-agnostic semantic replication surface.
-
-It does not require Mind Runtime to operate as a standalone system.
-
-## Public evidence boundary
-
-Some historical observations were produced from private longitudinal material. That corpus is not published.
-
-The public repository instead exposes:
-
-- implementation and contracts;
-- synthetic boundary experiments;
-- research history and negative results;
-- verification tooling;
-- replication interfaces for public/sanitized corpora;
-- an external audit protocol.
-
-The principle is:
-
-> Public reproducibility requires a reproducible method; it does not require disclosure of private source material.
-
-No public real-corpus replication or protocol-compliant independent external audit is claimed unless one is actually recorded.
-
-## Verification
-
-The canonical public gate is:
+The public verification gate is:
 
 ```bash
 python -m pip install -e . -r requirements-verification.txt
 python scripts/verify.py
 ```
 
-The current public verification record documents 142 tests, strict mypy over `src/lce`, and Ruff checks over source/tests. These verify software and runtime contracts; they do not establish scientific generalization or universal embedding quality.
+The repository currently includes:
 
-Useful records:
+- 142-test verification coverage;
+- strict mypy checks over `src/lce`;
+- Ruff checks over source/tests;
+- temporal-cutoff experiments;
+- region/neighborhood experiments;
+- negative-control and replay fixtures;
+- invalidation/rebuild tests;
+- recovery fault matrices;
+- a semantic replication harness.
+
+Useful entry points:
 
 - [Research overview](docs/RESEARCH_OVERVIEW.md)
-- [Findings and negative results](docs/research/FINDINGS.md)
-- [Decision evolution](docs/history/LCE_DECISION_EVOLUTION.md)
-- [Master timeline](docs/history/LCE_MASTER_TIMELINE.md)
-- [Architecture revalidation](docs/ARCHITECTURE_REVALIDATION.md)
-- [Engineering challenges and boundaries](docs/ENGINEERING_CHALLENGES_AND_BOUNDARIES.md)
-- [Public evidence matrix](docs/PUBLIC_EVIDENCE_MATRIX.md)
+- [Findings / negative results](docs/research/FINDINGS.md)
+- [Decision history](docs/history/LCE_DECISION_EVOLUTION.md)
 - [Verification](docs/VERIFICATION.md)
-- [Portfolio case study](docs/portfolio/LCE_CASE_STUDY.md)
+- [Architecture boundaries](docs/architecture/LCE_V1_BOUNDARIES.md)
 
-## Boundaries and non-claims
+## Repository layout
 
-LCE V1 does **not** claim:
+```text
+src/lce/
+  semantic/            semantic block compilation
+  structure/           local structure discovery/snapshots/diffs
+  cognition/           draft revision + promotion code
+  contracts/           accepted revision/consolidation contracts
+  reference_memory/    source evidence access/validity
+  store/               SQLite-backed stores
+  read_api.py           accepted-revision reads
 
-- a solved general cognition model;
-- recovery of one uniquely correct reasoning trajectory from arbitrary unordered evidence;
-- automatic production authority inside MR;
-- universal embedding or clustering quality;
-- universal contradiction resolution;
-- independently validated scientific superiority.
+research/
+  experiments/         bounded research experiments
+  replication/         replay/replication helpers
 
-Its strongest claim is narrower: it implements and tests a disciplined boundary for longitudinal derived cognition without letting that derived cognition silently become factual truth.
+tests/                 runtime, recovery, invalidation, research tests
+docs/                  reports, decisions, research records
+```
+
+## Scope
+
+LCE does not claim to recover one uniquely correct reasoning trajectory from arbitrary history.
+
+It currently implements a testable pipeline for deriving, revising, invalidating, and reading longitudinal structures while preserving links back to source evidence.
+
+Some historical experiments used private longitudinal material; the public repository provides synthetic fixtures and replication interfaces instead of that private corpus.
 
 ## Stack
 
-Python 3.12+ · pytest · mypy · Ruff · deterministic runtime contracts · replaceable embedding/model surfaces
-
-## Architecture revalidation
-
-LCE periodically asks a second-order question:
-
-> If the underlying model became dramatically more capable tomorrow, which parts of this architecture would still be required for correctness, auditability, recovery, or authority separation?
-
-A component can therefore be:
-
-```text
-KEEP     — expresses a durable constraint
-DEMOTE   — useful heuristic, not authority
-REPLACE  — problem remains, abstraction is wrong
-DELETE   — obsolete scaffolding
-```
-
-This prevents current model limitations from being mistaken for permanent architecture.
-
-## Repository history
-
-The public repository preserves the research and productization record but does not publish the private longitudinal corpus used in some historical experiments.
-
-## Engineering philosophy
-
-The objective is not to make every hypothesis survive.
-
-A research architecture becomes stronger when failed ideas leave behind explicit constraints, and when attractive derived structure is allowed to remain uncertain instead of being promoted for narrative convenience.
+Python 3.12+ · SQLite · pytest · mypy · Ruff · replaceable embedding/model providers
