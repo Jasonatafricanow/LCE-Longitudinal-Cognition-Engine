@@ -64,6 +64,26 @@ Raw Evidence
 
 Each arrow is a transformation boundary, not an automatic increase in authority. Raw Evidence remains canonical evidence. Vectors, structures, candidates, Worktrees, and accepted Baselines remain derived cognition artifacts and cannot write themselves back as factual Memory.
 
+## Evidence-progressive path confirmation
+
+A core LCE invariant is that a longitudinal candidate path is **not accepted or rejected solely at the moment it is first generated**. It may remain provisional in an OPEN Worktree while later authorized evidence changes the amount, shape, or validity of its support.
+
+```text
+candidate path at cutoff t0
+  -> OPEN Worktree
+
+new authorized evidence at t1 ... tn
+  -> update / reconnect / weaken supporting structure
+  -> re-evaluate the same candidate path
+  -> keep OPEN, revise, promote, or rebuild/drop
+```
+
+Future evidence may therefore confirm a previously weak relation, reveal that separated observations belong to one trajectory, expose a reversal, or invalidate support that an earlier interpretation depended on. **The path is progressively confirmed by evidence accumulation; it is not frozen by its first interpretation.**
+
+This does **not** permit future leakage into an earlier cutoff. The claim at `t0` remains bounded by evidence available at `t0`; later evidence changes the system's current judgment at `t1...tn`, not what the earlier system was allowed to know. This preserves no-future evaluation while allowing longitudinal understanding to mature.
+
+The concrete Worktree class is an implementation mechanism for this invariant, not the invariant itself. A future implementation may replace Worktrees, but it must preserve evidence-progressive revalidation, explicit support, correction/rebuild semantics, and the separation between derived cognition and factual Memory.
+
 ## Why the architecture changed
 
 The research record is useful because several attractive ideas failed under inspection.
