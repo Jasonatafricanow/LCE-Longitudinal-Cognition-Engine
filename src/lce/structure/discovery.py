@@ -13,11 +13,11 @@ from pathlib import Path
 
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort, SemanticBlock
 from lce.structure.contracts import (
-    StructureRelationCandidate,
     StructureChange,
     StructureConfig,
     StructureDiff,
     StructureObservation,
+    StructureRelationCandidate,
     StructureSnapshot,
 )
 
