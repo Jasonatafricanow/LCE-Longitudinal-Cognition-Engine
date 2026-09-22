@@ -5,6 +5,7 @@ from lce.structure.contracts import (
     StructureConfig,
     StructureDiff,
     StructureObservation,
+    StructureRelationCandidate,
     StructureSnapshot,
 )
 from lce.structure.discovery import SnapshotStructureDiscovery
@@ -15,5 +16,6 @@ __all__ = [
     "StructureConfig",
     "StructureDiff",
     "StructureObservation",
+    "StructureRelationCandidate",
     "StructureSnapshot",
 ]

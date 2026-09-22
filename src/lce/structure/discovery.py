@@ -13,11 +13,11 @@ from pathlib import Path
 
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort, SemanticBlock
 from lce.structure.contracts import (
-    HigherOrderCandidate,
     StructureChange,
     StructureConfig,
     StructureDiff,
     StructureObservation,
+    StructureRelationCandidate,
     StructureSnapshot,
 )
 
@@ -364,8 +364,8 @@ class SnapshotStructureDiscovery:
             linked_structures=tuple(linked),
         )
 
-    def higher_order_candidates(self, snapshot: StructureSnapshot) -> tuple[HigherOrderCandidate, ...]:
-        candidates: list[HigherOrderCandidate] = []
+    def higher_order_candidates(self, snapshot: StructureSnapshot) -> tuple[StructureRelationCandidate, ...]:
+        candidates: list[StructureRelationCandidate] = []
         groups = self._effective_groups(snapshot)
         for index, (_left_key, left) in enumerate(groups):
             for right_key, right in groups[index + 1:]:
@@ -383,7 +383,7 @@ class SnapshotStructureDiscovery:
                     f"{snapshot.snapshot_id}|{'|'.join(structure_ids)}".encode()
                 ).hexdigest()[:20]
                 candidates.append(
-                    HigherOrderCandidate(
+                    StructureRelationCandidate(
                         candidate_id=candidate_id,
                         snapshot_id=snapshot.snapshot_id,
                         supporting_structure_ids=structure_ids,
@@ -421,10 +421,10 @@ class SnapshotStructureDiscovery:
                 vectors.append(self.memory.get_vector(block_id).values)
         return tuple(sum(vector[index] for vector in vectors) / len(vectors) for index in range(len(vectors[0])))
 
-    def expand_candidate_to_blocks(self, candidate: HigherOrderCandidate) -> tuple[str, ...]:
+    def expand_candidate_to_blocks(self, candidate: StructureRelationCandidate) -> tuple[str, ...]:
         return candidate.supporting_block_ids
 
-    def expand_candidate_to_raw(self, candidate: HigherOrderCandidate) -> tuple[str, ...]:
+    def expand_candidate_to_raw(self, candidate: StructureRelationCandidate) -> tuple[str, ...]:
         raw: set[str] = set()
         snapshot = self.snapshots.get(candidate.snapshot_id)
         state_by_id = {block.block_id: block for block in snapshot.block_states}

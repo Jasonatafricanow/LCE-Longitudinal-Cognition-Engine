@@ -89,7 +89,7 @@ class StructureDiff:
 
 
 @dataclass(frozen=True, slots=True)
-class HigherOrderCandidate:
+class StructureRelationCandidate:
     candidate_id: str
     snapshot_id: str
     supporting_structure_ids: tuple[str, ...]
@@ -98,3 +98,6 @@ class HigherOrderCandidate:
     strength: float
     status: str = "UNKNOWN"
     metadata: Mapping[str, object] = field(default_factory=dict)
+
+# Backward compatibility for the original public name.
+HigherOrderCandidate = StructureRelationCandidate

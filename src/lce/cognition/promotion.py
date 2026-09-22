@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
 from lce.cognition.block_adapter import SemanticBlockMemoryAdapter
-from lce.cognition.worktree import CognitionWorktree, CognitionWorktreeStore
+from lce.cognition.worktree import DraftRevision, DraftRevisionStore
 from lce.contracts.baseline import Baseline
 from lce.contracts.consolidation import CandidateBaseline, ConsolidationResult
 from lce.contracts.external_memory import MemoryItemView
@@ -19,12 +19,12 @@ from lce.reference_memory.contracts import (
     SemanticBlockPort,
 )
 from lce.store.interface import BaselineStorePort
-from lce.structure.contracts import HigherOrderCandidate, StructureObservation
+from lce.structure.contracts import StructureObservation, StructureRelationCandidate
 
 
 @runtime_checkable
 class PromotionPolicy(Protocol):
-    def should_promote(self, worktree: CognitionWorktree, support_cycles: int) -> bool:
+    def should_promote(self, worktree: DraftRevision, support_cycles: int) -> bool:
         ...
 
 
@@ -32,7 +32,7 @@ class PromotionPolicy(Protocol):
 class BoundedInterpretationPackage:
     """The complete, caller-resolved package visible to an interpreter."""
 
-    candidate: HigherOrderCandidate
+    candidate: StructureRelationCandidate
     structures: tuple[StructureObservation, ...]
     semantic_blocks: tuple[SemanticBlock, ...]
     authorized_source_refs: tuple[str, ...]
@@ -94,7 +94,7 @@ class ConservativePromotionPolicy:
     min_structures: int = 2
     min_support_cycles: int = 2
 
-    def should_promote(self, worktree: CognitionWorktree, support_cycles: int) -> bool:
+    def should_promote(self, worktree: DraftRevision, support_cycles: int) -> bool:
         return (
             len(worktree.supporting_block_ids) >= self.min_blocks
             and len(worktree.supporting_structure_ids) >= self.min_structures
@@ -153,7 +153,7 @@ class UnderstandingPromoter:
         *,
         memory: SemanticBlockPort,
         baseline_store: BaselineStorePort,
-        worktree_store: CognitionWorktreeStore,
+        worktree_store: DraftRevisionStore,
         policy: PromotionPolicy,
     ) -> None:
         self.memory = memory
@@ -180,7 +180,7 @@ class UnderstandingPromoter:
 
     def _resolve_selected_support(
         self,
-        worktree: CognitionWorktree,
+        worktree: DraftRevision,
         interpretation: BoundedInterpretation,
     ) -> tuple[AuthorizedSelectedSupport, ...]:
         requested_ids = interpretation.supporting_block_ids

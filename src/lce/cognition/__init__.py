@@ -8,7 +8,12 @@ from lce.cognition.promotion import (
     RuleBasedBoundedInterpreter,
     UnderstandingPromoter,
 )
-from lce.cognition.worktree import CognitionWorktree, CognitionWorktreeStore
+from lce.cognition.worktree import (
+    CognitionWorktree,
+    CognitionWorktreeStore,
+    DraftRevision,
+    DraftRevisionStore,
+)
 
 __all__ = [
     "BoundedInterpretation",
@@ -17,6 +22,8 @@ __all__ = [
     "CognitionWorktree",
     "CognitionWorktreeStore",
     "ConservativePromotionPolicy",
+    "DraftRevision",
+    "DraftRevisionStore",
     "RuleBasedBoundedInterpreter",
     "UnderstandingPromoter",
 ]
