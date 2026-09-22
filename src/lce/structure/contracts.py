@@ -99,4 +99,5 @@ class StructureRelationCandidate:
     status: str = "UNKNOWN"
     metadata: Mapping[str, object] = field(default_factory=dict)
 
-# Backward compatibility for the original public name.\nHigherOrderCandidate = StructureRelationCandidate\n
+# Backward compatibility for the original public name.
+HigherOrderCandidate = StructureRelationCandidate
