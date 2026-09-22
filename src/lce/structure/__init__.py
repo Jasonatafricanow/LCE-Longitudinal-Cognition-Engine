@@ -2,20 +2,20 @@
 
 from lce.structure.contracts import (
     HigherOrderCandidate,
-    StructureRelationCandidate,
     StructureConfig,
     StructureDiff,
     StructureObservation,
+    StructureRelationCandidate,
     StructureSnapshot,
 )
 from lce.structure.discovery import SnapshotStructureDiscovery
 
 __all__ = [
-    "StructureRelationCandidate",
     "HigherOrderCandidate",
     "SnapshotStructureDiscovery",
     "StructureConfig",
     "StructureDiff",
     "StructureObservation",
+    "StructureRelationCandidate",
     "StructureSnapshot",
 ]
