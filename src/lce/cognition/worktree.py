@@ -1,4 +1,4 @@
-"""Persistent OPEN/MERGED/DROPPED cognition worktrees."""
+"""Persistent draft revisions before acceptance."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from lce.reference_memory.contracts import AuthorizedSelectedSupport
 
 
 @dataclass(frozen=True, slots=True)
-class CognitionWorktree:
+class DraftRevision:
     worktree_id: str
     region_id: str
     base_baseline_id: str | None
@@ -36,7 +36,7 @@ class CognitionWorktree:
 
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
-            raise ValueError("worktree status must be OPEN, MERGED, or DROPPED")
+            raise ValueError("draft status must be OPEN, MERGED, or DROPPED")
         if not self.candidate_content.strip():
             raise ValueError("candidate_content must be non-empty")
         if len({item.block_id for item in self.selected_support}) != len(self.selected_support):
@@ -51,7 +51,7 @@ def _now() -> datetime:
     return datetime.now(UTC)
 
 
-class CognitionWorktreeStore:
+class DraftRevisionStore:
     def __init__(self, root: Path | str) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
@@ -117,11 +117,11 @@ class CognitionWorktreeStore:
         interpretation_trace: Mapping[str, object] | None = None,
         selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
         processing_input_id: str | None = None,
-    ) -> CognitionWorktree:
+    ) -> DraftRevision:
         now = _now()
         selected = tuple(selected_support)
         block_ids = self._tuple(supporting_block_ids)
-        item = CognitionWorktree(
+        item = DraftRevision(
             worktree_id=f"wt_{uuid.uuid4().hex}",
             region_id=region_id,
             base_baseline_id=base_baseline.baseline_id if base_baseline else None,
@@ -139,7 +139,7 @@ class CognitionWorktreeStore:
             processing_input_id=processing_input_id,
         )
         if not item.supporting_block_ids:
-            raise ValueError("a worktree requires at least one supporting Semantic Block")
+            raise ValueError("a draft requires at least one supporting Semantic Block")
         self.conn.execute(
             """
             INSERT INTO worktrees (
@@ -159,8 +159,8 @@ class CognitionWorktreeStore:
         self.conn.commit()
         return item
 
-    def _row_to_item(self, row: tuple[object, ...]) -> CognitionWorktree:
-        return CognitionWorktree(
+    def _row_to_item(self, row: tuple[object, ...]) -> DraftRevision:
+        return DraftRevision(
             worktree_id=str(row[0]), region_id=str(row[1]),
             base_baseline_id=str(row[2]) if row[2] is not None else None,
             base_revision=int(str(row[3])) if row[3] is not None else None,
@@ -180,27 +180,27 @@ class CognitionWorktreeStore:
             processing_input_id=str(row[16]) if len(row) > 16 and row[16] is not None else None,
         )
 
-    def get(self, worktree_id: str) -> CognitionWorktree:
+    def get(self, worktree_id: str) -> DraftRevision:
         row = self.conn.execute("SELECT * FROM worktrees WHERE worktree_id = ?", (worktree_id,)).fetchone()
         if row is None:
             raise KeyError(worktree_id)
         return self._row_to_item(row)
 
-    def list(self, *, status: str | None = None) -> tuple[CognitionWorktree, ...]:
+    def list(self, *, status: str | None = None) -> tuple[DraftRevision, ...]:
         if status is None:
             rows = self.conn.execute("SELECT * FROM worktrees ORDER BY created_at").fetchall()
         else:
             rows = self.conn.execute("SELECT * FROM worktrees WHERE status = ? ORDER BY created_at", (status,)).fetchall()
         return tuple(self._row_to_item(row) for row in rows)
 
-    def find_open_by_region(self, region_id: str) -> CognitionWorktree | None:
+    def find_open_by_region(self, region_id: str) -> DraftRevision | None:
         row = self.conn.execute(
             "SELECT * FROM worktrees WHERE region_id = ? AND status = 'OPEN' ORDER BY created_at LIMIT 1",
             (region_id,),
         ).fetchone()
         return self._row_to_item(row) if row is not None else None
 
-    def find_by_region_and_input(self, region_id: str, processing_input_id: str) -> CognitionWorktree | None:
+    def find_by_region_and_input(self, region_id: str, processing_input_id: str) -> DraftRevision | None:
         row = self.conn.execute(
             "SELECT * FROM worktrees WHERE region_id = ? AND processing_input_id = ? ORDER BY updated_at DESC LIMIT 1",
             (region_id, processing_input_id),
@@ -217,10 +217,10 @@ class CognitionWorktreeStore:
         remove_structure_ids: tuple[str, ...] = (),
         selected_support: tuple[AuthorizedSelectedSupport, ...] | None = None,
         processing_input_id: str | None = None,
-    ) -> CognitionWorktree:
+    ) -> DraftRevision:
         item = self.get(worktree_id)
         if item.status != "OPEN":
-            raise ValueError("only OPEN worktrees can change support")
+            raise ValueError("only OPEN drafts can change support")
         blocks = [value for value in item.supporting_block_ids if value not in remove_block_ids]
         structures = [value for value in item.supporting_structure_ids if value not in remove_structure_ids]
         blocks.extend(add_block_ids)
@@ -229,7 +229,7 @@ class CognitionWorktreeStore:
         if selected_support is not None:
             selected = tuple(selected_support)
         if not blocks:
-            raise ValueError("an OPEN worktree must retain at least one supporting block")
+            raise ValueError("an OPEN draft must retain at least one supporting block")
         now = _now()
         self.conn.execute(
             "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, selected_support_json=?, processing_input_id=COALESCE(?, processing_input_id), updated_at=? WHERE worktree_id=?",
@@ -275,10 +275,10 @@ class CognitionWorktreeStore:
         *,
         candidate_content: str,
         interpretation_trace: Mapping[str, object] | None = None,
-    ) -> CognitionWorktree:
+    ) -> DraftRevision:
         item = self.get(worktree_id)
         if item.status != "OPEN":
-            raise ValueError("only OPEN worktrees can change candidate content")
+            raise ValueError("only OPEN drafts can change candidate content")
         self.conn.execute(
             "UPDATE worktrees SET candidate_content=?, interpretation_trace_json=?, updated_at=? WHERE worktree_id=?",
             (candidate_content, json.dumps(dict(interpretation_trace or item.interpretation_trace), sort_keys=True),
@@ -287,7 +287,7 @@ class CognitionWorktreeStore:
         self.conn.commit()
         return self.get(worktree_id)
 
-    def clear_needs_rebuild(self, worktree_id: str) -> CognitionWorktree:
+    def clear_needs_rebuild(self, worktree_id: str) -> DraftRevision:
         self.get(worktree_id)
         self.conn.execute(
             "UPDATE worktrees SET needs_rebuild=0, updated_at=? WHERE worktree_id=?",
@@ -296,9 +296,9 @@ class CognitionWorktreeStore:
         self.conn.commit()
         return self.get(worktree_id)
 
-    def set_status(self, worktree_id: str, status: str, *, merged_baseline_id: str | None = None) -> CognitionWorktree:
+    def set_status(self, worktree_id: str, status: str, *, merged_baseline_id: str | None = None) -> DraftRevision:
         if status not in {"OPEN", "MERGED", "DROPPED"}:
-            raise ValueError("worktree status must be OPEN, MERGED, or DROPPED")
+            raise ValueError("draft status must be OPEN, MERGED, or DROPPED")
         self.get(worktree_id)
         self.conn.execute(
             "UPDATE worktrees SET status=?, merged_baseline_id=?, updated_at=? WHERE worktree_id=?",
@@ -307,7 +307,7 @@ class CognitionWorktreeStore:
         self.conn.commit()
         return self.get(worktree_id)
 
-    def mark_needs_rebuild(self, worktree_id: str) -> CognitionWorktree:
+    def mark_needs_rebuild(self, worktree_id: str) -> DraftRevision:
         self.get(worktree_id)
         self.conn.execute(
             "UPDATE worktrees SET needs_rebuild=1, updated_at=? WHERE worktree_id=?",
@@ -318,3 +318,5 @@ class CognitionWorktreeStore:
 
     def close(self) -> None:
         self.conn.close()
+
+# Backward-compatible names for existing callers and stored terminology.\nCognitionWorktree = DraftRevision\nCognitionWorktreeStore = DraftRevisionStore\n
