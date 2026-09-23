@@ -84,6 +84,16 @@ def validate_case(case_dict: dict[str, Any], schema: dict[str, Any] | None = Non
                         f"offsets [{m_span.char_start}:{m_span.char_end}] yield '{expected_m_text}', "
                         f"but mention text is '{m_span.text}'"
                     )
+                # Check strict containment inside unit source_span
+                if not (
+                    unit.source_span.char_start <= m_span.char_start
+                    and m_span.char_end <= unit.source_span.char_end
+                ):
+                    raise BenchmarkValidationError(
+                        f"Case '{case_id}' unit '{unit.annotation_id}' argument '{role_name}' "
+                        f"mention '{mention.mention_id}' [{m_span.char_start}:{m_span.char_end}] "
+                        f"is not strictly contained within unit source_span [{unit.source_span.char_start}:{unit.source_span.char_end}]"
+                    )
 
         # 5. Check graph admission for units
         if unit.evidence_status not in GRAPH_ADMISSIBLE_EVIDENCE_STATUSES:
@@ -96,7 +106,12 @@ def validate_case(case_dict: dict[str, Any], schema: dict[str, Any] | None = Non
             except ValueError:
                 pass  # Correctly rejected
 
-    # 6. Check relation spans and graph admission
+    # 6. Check relation spans, non-reflexive SAME_ENTITY, and graph admission
+    mention_map = {
+        mention.mention_id: mention
+        for u in doc.units
+        for mention in u.arguments.values()
+    }
     for rel in doc.relations:
         raw_id = rel.provenance.raw_evidence_id
         if raw_id in ev_map:
@@ -108,6 +123,20 @@ def validate_case(case_dict: dict[str, Any], schema: dict[str, Any] | None = Non
                         f"Case '{case_id}' relation '{rel.relation_id}' supporting_span mismatch: "
                         f"offsets [{s_span.char_start}:{s_span.char_end}] yield '{expected_span_text}', "
                         f"but span text is '{s_span.text}'"
+                    )
+
+        # Check SAME_ENTITY does not connect identical mention spans
+        if rel.relation_type == RelationType.SAME_ENTITY:
+            src_m = mention_map.get(rel.source_id)
+            tgt_m = mention_map.get(rel.target_id)
+            if src_m and tgt_m and src_m.source_span and tgt_m.source_span:
+                if (
+                    src_m.source_span.char_start == tgt_m.source_span.char_start
+                    and src_m.source_span.char_end == tgt_m.source_span.char_end
+                ):
+                    raise BenchmarkValidationError(
+                        f"Case '{case_id}' relation '{rel.relation_id}' SAME_ENTITY connects mention '{rel.source_id}' "
+                        f"reflexively to identical text span [{src_m.source_span.char_start}:{src_m.source_span.char_end}]"
                     )
 
         # Gating check
@@ -188,6 +217,33 @@ def validate_benchmark_files(benchmark_dir: Path | str | None = None) -> dict[st
         raise BenchmarkValidationError(f"Expected exactly 40 eval cases, got {len(eval_cases)}")
     if adversarial_count < 15:
         raise BenchmarkValidationError(f"Expected at least 15 adversarial traps in eval, got {adversarial_count}")
+
+    # Enforce all 17 families represented in Dev split
+    dev_families = {c["family"] for c in dev_cases}
+    expected_families = {
+        "asserted_vs_intended",
+        "possible_vs_occurred",
+        "holder_attribution",
+        "evidence_status_distinction",
+        "negation_scope",
+        "multi_unit_decomposition",
+        "same_entity_paraphrase",
+        "same_event_vs_similar",
+        "temporal_non_causal",
+        "explicit_causality",
+        "discourse_relations",
+        "longitudinal_shift",
+        "state_compatibility",
+        "nested_attitude",
+        "relative_temporal_anchoring",
+        "ambiguous_relations",
+        "no_relation_control",
+    }
+    missing_dev_families = expected_families - dev_families
+    if missing_dev_families:
+        raise BenchmarkValidationError(
+            f"Dev split is missing required case families: {missing_dev_families}"
+        )
 
     total_cases = len(dev_cases) + len(eval_cases)
     report = {

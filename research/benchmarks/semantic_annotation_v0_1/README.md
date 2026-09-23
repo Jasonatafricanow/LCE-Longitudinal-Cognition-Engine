@@ -45,28 +45,30 @@ Raw Evidence + Bounded Semantic Blocks
 
 ---
 
-## 3. Case Family Coverage Matrix
+## 3. Case Family Coverage Matrix (Revised v0.1.1)
 
-| Case Family | Dev Count | Eval Count | Description & Invariants Tested |
-| :--- | :---: | :---: | :--- |
-| `asserted_vs_intended` | 2 | 2 | Distinguishes completed/ongoing occurrences (`asserted`) from planned future commitments (`intended`). |
-| `possible_vs_occurred` | 2 | 2 | Distinguishes epistemic possibility (`possible`, "might") from factually occurred events (`asserted`). |
-| `holder_attribution` | 2 | 3 | Distinguishes first-person author belief (`direct_speaker`) from direct quotes (`direct_quote`) and reported hearsay (`indirect_report`). |
-| `evidence_status_distinction` | 2 | 2 | Explicit text vs strict logical entailment vs contextual inference (`explicit`, `entailed`, `inferred`). |
-| `negation_scope` | 2 | 2 | Syntactic negation vs lexical negation; attitude towards negative targets vs negative attitudes. |
-| `multi_unit_decomposition` | 2 | 2 | Multiple independent clauses inside a single Semantic Block segmented into separate atomic units. |
-| `same_entity_paraphrase` | 2 | 2 | Coreferent argument mentions across paraphrased spans connected via `SAME_ENTITY` using stable mention IDs. |
-| `same_event_vs_similar` | 2 | 2 | Strict event token coreference (`SAME_EVENT`) vs topical similarity without token identity (`NO_RELATION`). |
-| `temporal_non_causal` | 2 | 2 | Chronological sequence without causal connection (`BEFORE` with `NO_RELATION` for cause). |
-| `explicit_causality` | 2 | 2 | Direct causal relation supported by explicit lexical connectives (`CAUSE` with `supporting_spans`). |
-| `discourse_relations` | 0 | 4 | Structured logical discourse links: `CONDITION`, `PURPOSE`, `CONTRAST`, and `CONCESSION`. |
-| `longitudinal_shift` | 0 | 4 | Opposite states at non-overlapping times (e.g. 2022 vs 2026): modeled via `BEFORE` + opposite polarities, **never** `INCOMPATIBLE` or `REVISION`. |
-| `state_compatibility` | 0 | 3 | Contemporaneous state equivalence (`EQUIVALENT`) vs contemporaneous conflict (`INCOMPATIBLE` under overlapping time). |
-| `ambiguous_relations` | 0 | 4 | Underdetermined pairs where the only sound answer is `UNKNOWN`. Penalizes forced guessing. |
-| `no_relation_control` | 0 | 4 | Unrelated proposition pairs evaluated as `NO_RELATION`. |
-| `relative_temporal_anchoring` | 0 | 3 | Relative time resolution requiring explicit `reference_anchor`. |
-| `nested_attitude` | 0 | 3 | Shallow nested attitude: `modality: desired`, `epistemic_hedge: think`, `confidence: 1.0`. |
-| **Adversarial Traps** | **0** | **16** | Specific traps designed to catch over-helpful LLM hallucinations (see Section 4). |
+All 17 case families are represented in both splits, ensuring Dev provides full prompt-calibration coverage while Eval maintains frozen evaluation integrity:
+
+| Case Family | Dev Count | Eval Count | Total | Description & Invariants Tested |
+| :--- | :---: | :---: | :---: | :--- |
+| `asserted_vs_intended` | 2 | 1 | 3 | Distinguishes completed/ongoing occurrences (`asserted`) from planned future commitments (`intended`). |
+| `possible_vs_occurred` | 2 | 1 | 3 | Distinguishes epistemic possibility (`possible`, "might") from factually occurred events (`asserted`). |
+| `holder_attribution` | 1 | 4 | 5 | Distinguishes first-person author belief (`direct_speaker`) from direct quotes (`direct_quote`) and reported hearsay (`indirect_report`). |
+| `evidence_status_distinction` | 1 | 3 | 4 | Explicit text vs strict logical entailment vs contextual inference (`explicit`, `entailed`, `inferred`). |
+| `negation_scope` | 1 | 1 | 2 | Syntactic negation vs lexical negation; attitude towards negative targets vs negative attitudes. |
+| `multi_unit_decomposition` | 1 | 3 | 4 | Multiple independent clauses inside a single Semantic Block segmented into separate atomic units. |
+| `same_entity_paraphrase` | 1 | 1 | 2 | Coreferent argument mentions across paraphrased spans connected via `SAME_ENTITY` using stable mention IDs. |
+| `same_event_vs_similar` | 1 | 3 | 4 | Strict event token coreference (`SAME_EVENT`) vs topical similarity without token identity (`NO_RELATION`). |
+| `temporal_non_causal` | 1 | 4 | 5 | Chronological sequence without causal connection (`BEFORE` with `NO_RELATION` for cause). |
+| `explicit_causality` | 1 | 1 | 2 | Direct causal relation supported by explicit lexical connectives (`CAUSE` with `supporting_spans`). |
+| `discourse_relations` | 2 | 2 | 4 | Structured logical discourse links: `CONDITION`, `PURPOSE`, `CONTRAST`, and `CONCESSION`. |
+| `longitudinal_shift` | 1 | 3 | 4 | Opposite states at non-overlapping times (e.g. 2022 vs 2026): modeled via `BEFORE` + opposite polarities, **never** `INCOMPATIBLE` or `REVISION`. |
+| `state_compatibility` | 1 | 3 | 4 | Contemporaneous state equivalence (`EQUIVALENT`) vs contemporaneous conflict (`INCOMPATIBLE` under overlapping time). |
+| `nested_attitude` | 1 | 2 | 3 | Shallow nested attitude: `modality: desired`, `epistemic_hedge: think`, `confidence: 1.0`. |
+| `relative_temporal_anchoring` | 1 | 2 | 3 | Relative time resolution requiring explicit `reference_anchor`. |
+| `ambiguous_relations` | 1 | 3 | 4 | Underdetermined pairs where the only sound answer is `UNKNOWN` / `TEMPORAL_UNKNOWN`. |
+| `no_relation_control` | 1 | 3 | 4 | Unrelated proposition pairs evaluated as `NO_RELATION`. |
+| **Total** | **20** | **40** | **60** | **16 Adversarial Traps in Eval** |
 
 ---
 

@@ -131,8 +131,84 @@ def test_nested_attitude_semantics_in_benchmark() -> None:
     with open(eval_file, encoding="utf-8") as f:
         cases = [json.loads(line) for line in f]
 
-    case_25 = next(c for c in cases if c["case_id"] == "gold_eval_25")
-    u = case_25["gold_document"]["units"][0]
+    case_nested = next(c for c in cases if c.get("trap_description") and "modality=uncertain" in c["trap_description"])
+    u = case_nested["gold_document"]["units"][0]
     assert u["modality"] == ModalityType.DESIRED.value
     assert u["epistemic_hedge"] == EpistemicHedge.THINK.value
     assert u["confidence"] == 1.0
+
+
+def test_argument_spans_strictly_contained_in_unit_spans() -> None:
+    """Verify that every argument mention's source span is strictly contained within its unit's span."""
+    for split_file in ["dev.jsonl", "eval.jsonl"]:
+        path = BENCHMARK_DIR / split_file
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                case = json.loads(line)
+                doc = case["gold_document"]
+                for u in doc["units"]:
+                    u_start = u["source_span"]["char_start"]
+                    u_end = u["source_span"]["char_end"]
+                    for role, arg in u["arguments"].items():
+                        if arg.get("source_span"):
+                            m_start = arg["source_span"]["char_start"]
+                            m_end = arg["source_span"]["char_end"]
+                            assert u_start <= m_start and m_end <= u_end, (
+                                f"Case {case['case_id']} unit {u['annotation_id']} argument {role} "
+                                f"[{m_start}:{m_end}] lies outside unit span [{u_start}:{u_end}]"
+                            )
+
+
+def test_same_entity_not_self_referential() -> None:
+    """Verify that SAME_ENTITY relations never connect identical mention span offsets."""
+    for split_file in ["dev.jsonl", "eval.jsonl"]:
+        path = BENCHMARK_DIR / split_file
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                case = json.loads(line)
+                doc = case["gold_document"]
+                mention_map = {
+                    arg["mention_id"]: arg
+                    for u in doc["units"]
+                    for arg in u["arguments"].values()
+                }
+                for rel in doc["relations"]:
+                    if rel["relation_type"] == "SAME_ENTITY":
+                        src_m = mention_map[rel["source_id"]]
+                        tgt_m = mention_map[rel["target_id"]]
+                        if src_m.get("source_span") and tgt_m.get("source_span"):
+                            s_span = src_m["source_span"]
+                            t_span = tgt_m["source_span"]
+                            assert not (s_span["char_start"] == t_span["char_start"] and s_span["char_end"] == t_span["char_end"]), (
+                                f"Case {case['case_id']} SAME_ENTITY connects identical spans [{s_span['char_start']}:{s_span['char_end']}]"
+                            )
+
+
+def test_dev_split_covers_all_17_case_families() -> None:
+    """Verify that the 20-case dev split contains representative examples of all 17 families."""
+    dev_file = BENCHMARK_DIR / "dev.jsonl"
+    with open(dev_file, encoding="utf-8") as f:
+        cases = [json.loads(line) for line in f]
+
+    dev_families = {c["family"] for c in cases}
+    expected_families = {
+        "asserted_vs_intended",
+        "possible_vs_occurred",
+        "holder_attribution",
+        "evidence_status_distinction",
+        "negation_scope",
+        "multi_unit_decomposition",
+        "same_entity_paraphrase",
+        "same_event_vs_similar",
+        "temporal_non_causal",
+        "explicit_causality",
+        "discourse_relations",
+        "longitudinal_shift",
+        "state_compatibility",
+        "nested_attitude",
+        "relative_temporal_anchoring",
+        "ambiguous_relations",
+        "no_relation_control",
+    }
+    assert dev_families == expected_families, f"Missing families in Dev: {expected_families - dev_families}"
+
