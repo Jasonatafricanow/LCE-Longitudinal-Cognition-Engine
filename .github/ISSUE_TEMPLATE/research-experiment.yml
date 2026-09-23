@@ -1,0 +1,69 @@
+name: Research experiment
+description: Propose a bounded, falsifiable LCE research question.
+title: "[EXP] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep one issue to one research question. Negative results are valid outcomes.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Research question
+      description: What specific uncertainty should this experiment resolve?
+      placeholder: "Does method X add useful signal beyond baseline Y under condition Z?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: baseline
+    attributes:
+      label: Baseline
+      description: What simpler or current method must the proposal beat or distinguish itself from?
+    validations:
+      required: true
+
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Controlled fixture
+      description: Describe the smallest synthetic/controlled setup that can falsify the claim.
+    validations:
+      required: true
+
+  - type: textarea
+    id: metric
+    attributes:
+      label: Metrics
+      description: What will be measured? Prefer response curves / failure boundaries over one magic threshold.
+    validations:
+      required: true
+
+  - type: textarea
+    id: kill
+    attributes:
+      label: Failure boundary / kill criterion
+      description: What result would make us defer or reject the method?
+    validations:
+      required: true
+
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Expected artifact
+      description: Fixture, experiment script, table/plot, regression test, result card, or other reproducible output.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: discipline
+    attributes:
+      label: Research discipline
+      options:
+        - label: I will preserve negative controls and failed cases.
+          required: true
+        - label: I will not use private data as the first or only evidence.
+          required: true
+        - label: I will not treat a more complex algorithm as success unless it adds useful information.
+          required: true
