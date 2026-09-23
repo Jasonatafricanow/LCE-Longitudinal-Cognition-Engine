@@ -1,17 +1,18 @@
 # LCE Research Report: AGY Graph vs. Oracle Comparison Experiment (GitHub Issue #17)
 
-**Official Experiment Status:** **HIGH RETENTION (112.9% Retention)**  
+**Official Experiment Status:** **HIGH RETENTION (77.4% Audited Retention)**  
 **Core Hypothesis Tested:** Does an automated semantic parser (AGY Parser v0.1) produce graphs accurate enough to preserve the incremental longitudinal discovery value established by the Oracle Graph ($B$) over vector baselines ($A1$)?  
 
 ---
 
-## 1. Executive Summary & Core Discovery Findings
+## 1. Executive Summary & Audited Discovery Findings
 
 > [!IMPORTANT]
-> **LONGITUDINAL DISCOVERY RETENTION: 112.9%**  
-> - **Oracle Incremental Gain ($B$ vs $A1$):** +37.4% F1.
-> - **Predicted Incremental Gain ($\hat{B}$ vs $A1$):** +42.1% F1.
-> - **Value Retention Ratio:** **112.9%** of Oracle incremental discovery is retained under fully automated parsing.
+> **AUDITED ORACLE-VALUE RETENTION: 77.4% (Macro Pooled) / 69.0% (Mean Per-Fixture)**  
+> - **Qualified Evaluation Scope:** Computed strictly on the 4 fixtures where Oracle Graph delivers positive incremental discovery over vector baselines ($B > A1$: `F4`, `F6`, `F7`, `F8`).
+> - **Qualified Oracle Gain ($B - A1$):** +83.0% Mean Target F1.
+> - **Qualified Predicted Gain ($\hat{B} - A1$):** +64.3% Mean Target F1.
+> - **Audited Value Retention:** **77.4%** of Oracle incremental discovery is retained under fully automated parsing.
 > - **Held-Out Eval Node Fidelity:** **96.7%** F1 across 40 held-out cases.
 > - **Held-Out Eval Edge Fidelity:** **75.8%** F1.
 
@@ -23,7 +24,7 @@
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
 | **$A0$ Baseline** | Coarse Semantic Blocks | Raw Evidence | 62.5% | 52.5% | 54.2% | 1.38x | Upstream Segmentation Baseline |
 | **$A1$ Baseline** | Atomic Semantic Units | Gold Spans (Vector-only) | 37.5% | 31.2% | 33.3% | 0.88x | Fine-Grained Vectors (No Structure) |
-| **$\hat{B}$ Predicted Graph** | **Atomic Units + Predicted Graph** | **AGY Parser v0.1** | **87.5%** | **69.6%** | **75.5%** | 5.5x | **AUTOMATED DISCOVERY (+42.1% vs $A1$)** |
+| **$\hat{B}$ Predicted Graph** | **Atomic Units + Predicted Graph** | **AGY Parser v0.1** | **87.5%** | **69.6%** | **75.5%** | 5.5x | **AUTOMATED DISCOVERY (+42.2% vs $A1$)** |
 | **$B$ Oracle Graph** | Atomic Units + Oracle Graph | Gold Annotation | **87.5%** | **62.5%** | **70.7%** | 3.25x | **Upper Bound Benchmark (+37.4% vs $A1$)** |
 
 ---
@@ -66,7 +67,7 @@
 ## 5. Architectural Findings & Strategic Guidance for LCE Core
 
 1. **Feasibility of Automated Graph Cognition:**
-   - AGY Parser v0.1 successfully bridges the gap between raw unstructured evidence and structured graph reasoning, capturing **112.9%** of the Oracle Graph's discovery capability.
+   - AGY Parser v0.1 successfully bridges the gap between raw unstructured evidence and structured graph reasoning, capturing **77.4%** of the Oracle Graph's discovery capability on qualified targets where graph architecture delivers value.
    - Automated graph construction provides significant, quantifiable gains over vector-only methods without requiring human-in-the-loop annotation.
 
 2. **Causal Propagation Resilience:**
@@ -74,3 +75,17 @@
 
 3. **Parser Noise Vulnerabilities (Degradation Modes):**
    - Coreference argument linking across highly disparate lexical domains remains the most sensitive failure mode. Improving cross-domain mention linking will directly increase overall longitudinal discovery retention.
+
+---
+
+## 6. Reconciliation Audit & Failure-Mode Attribution (Frozen Results Audit)
+
+A rigorous forensic audit was conducted on the frozen parser cache without modifying models, prompts, or generators (see [`RECONCILIATION_AUDIT.md`](./RECONCILIATION_AUDIT.md)):
+
+1. **Audited Oracle-Win Retention:** Restricted exclusively to fixtures where Oracle Graph delivers positive gain over vectors ($B > A1$: `F4`, `F6`, `F7`, `F8`), the audited retention ratio is **77.4%** (Macro Pooled) / **69.0%** (Mean Per-Fixture).
+2. **F7 Multi-Hop Severance Trace:** The 4-hop causal chain broke between Sentence 2 (`u3`: storage cluster lost quorum) and Sentence 3 (`u5`: API gateway 503 errors). The parser misclassified cross-sentence causal propagation as `BEFORE` (`rel_06: u3 --BEFORE--> u5`), halting the DFS traversal in Channel B.1.
+3. **F8 Precision Dilution Trace:** Zero edge recall was lost (100% target recall preserved). The F1 drop from 75.0% to 57.1% was driven by precision dilution: the parser accurately identified a competing parallel causal branch (`ev_f8_2` dropped table caused cache invalidation) and an entity coreference trajectory, occupying Ranks 1 and 5 in the Top-5 retrieval window.
+4. **Candidate Bloat Attribution (3.25x -> 5.50x, net +18 candidates):**
+   - **77.8% (14 candidates):** Topology Amplification in Channel B.5 (undirected bridging) responding to chains of generic sequential `BEFORE` edges across distractor sentences.
+   - **16.7% (3 candidates):** Over-segmentation / clause duplication creating intermediate fragment paths.
+   - **11.1% (2 candidates):** False `SAME_ENTITY` coreference links on background entity mentions.
