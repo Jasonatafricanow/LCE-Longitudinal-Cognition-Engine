@@ -27,6 +27,7 @@ __pycache__/
 
 # Additional local tool caches
 .ruff_cache/
+.llm_cache/
 
 # LCE lab data boundary: keep experiment source visible, hide corpus and outputs.
 lab/**/input/
