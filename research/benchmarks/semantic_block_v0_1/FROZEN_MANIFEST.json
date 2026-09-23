@@ -1,0 +1,24 @@
+{
+  "benchmark_id": "semantic_block_v0_1",
+  "case_count": 54,
+  "dev_count": 42,
+  "files": {
+    "docs/research/semantic-block/.gitattributes": "f71695daa0af8a584347822467f66e369cb0c477bd52b511cb8f4a92d6e6d362",
+    "docs/research/semantic-block/ISSUE_19_AGY_EXECUTION_ORDER.md": "b0abd705baa270e2c3c763f049ee1fde85660bd0ea4880f55ab4c66694b88ede",
+    "docs/research/semantic-block/ISSUE_19_FROZEN_EXECUTION_PROTOCOL.md": "a2d7a8c735f08e4ed55822937234bc89801fbe0df48cfad8c60846d3f94c6b93",
+    "research/benchmarks/semantic_block_v0_1/.gitattributes": "a79691a93b46e49ce460c26ef22afcc03d6eca1e63bf2edbc20e96159510f6c9",
+    "research/benchmarks/semantic_block_v0_1/README.md": "a505ad4673d58b9b2b7727949d7cfafc7c958931105e444ae7ff3bb1cc4f21ff",
+    "research/benchmarks/semantic_block_v0_1/build_frozen_corpus.py": "5fdf716f7c4462cd113dc38f0485ba184994fb9a62677e59a3f2958950d9e5ff",
+    "research/benchmarks/semantic_block_v0_1/dev_cases.jsonl": "23bc836c2717b0dc89117b3a446f86b1271d48710a1e82dfc310cca21f14d117",
+    "research/benchmarks/semantic_block_v0_1/dev_gold.jsonl": "4415299d74fa81cef11497a670d563e0527427e6f56b6bc76b482f096fb4fbca",
+    "research/benchmarks/semantic_block_v0_1/heldout_cases.jsonl": "425a5f1e1f63668df7f9c89dc2b3de56f7634942523fd41d8625259f32bbc95a",
+    "research/benchmarks/semantic_block_v0_1/heldout_gold.jsonl": "9e263114749f3a03dbb89785ab29ff2699bfc1a64378773dda200918b6947e47",
+    "research/benchmarks/semantic_block_v0_1/validate_freeze.py": "902ef01ecf24abb8c4947a7d9618e77f19c7907b8f34d7ca18cad36893715ecb"
+  },
+  "frozen_on": "2026-09-24",
+  "gold_status": "single_author_frozen_unadjudicated",
+  "hash_algorithm": "sha256",
+  "heldout_count": 12,
+  "issue": "https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine/issues/19",
+  "source_head_before_freeze": "a9450a50c0c1bb665ae58b509647b6b364d23b2a"
+}
