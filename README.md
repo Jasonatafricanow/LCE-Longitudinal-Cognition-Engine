@@ -31,6 +31,27 @@ read-only query API
 
 Each stage can be rebuilt or invalidated without rewriting the source evidence.
 
+## Open research
+
+LCE is a research repository, not a claim that longitudinal cognition is a solved problem.
+
+> We do not know the right way to compile longitudinal cognition yet. This repository is where we test it.
+
+The preferred contribution unit is a **falsifiable research question**:
+
+```text
+question
+-> baseline
+-> controlled fixture
+-> metric
+-> failure boundary / kill criterion
+-> SUPPORTED / NOT SUPPORTED / INCONCLUSIVE
+```
+
+Negative results are first-class results. If a more complex method adds no useful information beyond a simpler baseline, the expected outcome is to record that result and remove the unnecessary method from the roadmap.
+
+Current public research tasks are indexed in [Open Research](docs/research/OPEN_RESEARCH.md). See [CONTRIBUTING.md](CONTRIBUTING.md) for the experiment and pull-request protocol.
+
 ## Current pipeline
 
 ### 1. Semantic blocks
