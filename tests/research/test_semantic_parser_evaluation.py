@@ -175,3 +175,13 @@ def test_frozen_benchmark_predictions_and_report_artifacts() -> None:
     assert "## 4. Adversarial Trap Resistance Breakdown" in report_text
     assert "## 5. Architectural Boundary & Freeze Declaration" in report_text
 
+    audit_report_file = BENCHMARK_DIR / "PARSER_INTEGRITY_AUDIT_REPORT.md"
+    assert audit_report_file.exists(), "PARSER_INTEGRITY_AUDIT_REPORT.md must exist"
+    audit_text = audit_report_file.read_text(encoding="utf-8")
+    assert "## 1. Executive Audit Verdict" in audit_text
+    assert "FINAL CERTIFICATION VERDICT: PASS" in audit_text
+    assert "## 3. Adversarial Trap Audit Ledger" in audit_text
+    assert "## 4. Graph Admission Eligibility Audit" in audit_text
+    assert "## 5. Case-by-Case Ledger Across All 40 Held-Out Eval Cases" in audit_text
+
+
