@@ -1,109 +1,234 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Jasonatafricanow/LCE/research/schemas/semantic_annotation_v0_1.json",
-  "title": "LCESemanticAnnotationDocumentV0_1",
-  "description": "Frozen research schema for LCE semantic annotation v0.1 (GitHub Issue #13).",
-  "type": "object",
-  "required": ["document_id", "cutoff_time", "units", "relations"],
-  "properties": {
-    "document_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "cutoff_time": {
-      "type": "string",
-      "description": "ISO 8601 UTC timestamp defining the cutoff boundary."
-    },
-    "units": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/SemanticUnit"
-      }
-    },
-    "relations": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/SemanticRelation"
-      }
-    },
-    "metadata": {
-      "type": "object"
-    }
-  },
-  "additionalProperties": false,
   "$defs": {
-    "SourceSpan": {
-      "type": "object",
-      "required": ["char_start", "char_end", "text"],
+    "ArgumentMention": {
+      "additionalProperties": false,
+      "description": "A grounded argument mention linked to a conservative semantic role.",
       "properties": {
-        "char_start": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "char_end": {
-          "type": "integer",
-          "minimum": 1
+        "role": {
+          "description": "Role from ROLE_VOCABULARY",
+          "title": "Role",
+          "type": "string"
         },
         "text": {
-          "type": "string",
-          "minLength": 1
+          "description": "Verbatim text or normalized argument string",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpan"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional exact span within raw evidence"
+        },
+        "entity_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional entity identifier or coreference key",
+          "title": "Entity Ref"
         }
       },
-      "additionalProperties": false
+      "required": [
+        "role",
+        "text"
+      ],
+      "title": "ArgumentMention",
+      "type": "object"
     },
-    "UnitProvenance": {
-      "type": "object",
-      "required": ["raw_evidence_id", "semantic_block_id"],
+    "AttributionMode": {
+      "enum": [
+        "direct_speaker",
+        "direct_quote",
+        "indirect_report",
+        "external_source",
+        "unknown"
+      ],
+      "title": "AttributionMode",
+      "type": "string"
+    },
+    "EvidenceStatus": {
+      "enum": [
+        "explicit",
+        "entailed",
+        "inferred",
+        "unknown"
+      ],
+      "title": "EvidenceStatus",
+      "type": "string"
+    },
+    "ModalityType": {
+      "enum": [
+        "asserted",
+        "possible",
+        "hypothetical",
+        "intended",
+        "desired",
+        "uncertain",
+        "unknown"
+      ],
+      "title": "ModalityType",
+      "type": "string"
+    },
+    "PolarityType": {
+      "enum": [
+        "positive",
+        "negative",
+        "unknown"
+      ],
+      "title": "PolarityType",
+      "type": "string"
+    },
+    "PredicateSpec": {
+      "additionalProperties": false,
+      "description": "Surface form, normalized predicate lemma/frame, and the reproducible normalization rule.",
+      "properties": {
+        "surface_predicate": {
+          "description": "Verbatim predicate/verb/expression from text",
+          "minLength": 1,
+          "title": "Surface Predicate",
+          "type": "string"
+        },
+        "normalized_predicate": {
+          "description": "Normalized lemma or standard frame label",
+          "minLength": 1,
+          "title": "Normalized Predicate",
+          "type": "string"
+        },
+        "normalization_rule": {
+          "description": "Explicit rule name or method (e.g. 'verb_lemma', 'shallow_nested_hedge', 'exact_match')",
+          "minLength": 1,
+          "title": "Normalization Rule",
+          "type": "string"
+        }
+      },
+      "required": [
+        "surface_predicate",
+        "normalized_predicate",
+        "normalization_rule"
+      ],
+      "title": "PredicateSpec",
+      "type": "object"
+    },
+    "RelationProvenance": {
+      "additionalProperties": false,
+      "description": "Independent grounding and provenance for a semantic relation.",
       "properties": {
         "raw_evidence_id": {
-          "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "title": "Raw Evidence Id",
+          "type": "string"
         },
         "semantic_block_id": {
-          "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "title": "Semantic Block Id",
+          "type": "string"
         }
       },
-      "additionalProperties": false
+      "required": [
+        "raw_evidence_id",
+        "semantic_block_id"
+      ],
+      "title": "RelationProvenance",
+      "type": "object"
     },
-    "TemporalAnchoring": {
-      "type": "object",
-      "required": ["value", "anchor_type"],
+    "RelationType": {
+      "enum": [
+        "SAME_ENTITY",
+        "SAME_EVENT",
+        "BEFORE",
+        "AFTER",
+        "OVERLAP",
+        "TEMPORAL_UNKNOWN",
+        "CAUSE",
+        "CONDITION",
+        "PURPOSE",
+        "CONTRAST",
+        "CONCESSION",
+        "EQUIVALENT",
+        "INCOMPATIBLE",
+        "NO_RELATION",
+        "UNKNOWN"
+      ],
+      "title": "RelationType",
+      "type": "string"
+    },
+    "SemanticRelation": {
+      "additionalProperties": false,
+      "description": "Typed relation linking two units or two argument mentions.",
       "properties": {
-        "value": {
-          "type": "string",
-          "minLength": 1
+        "relation_id": {
+          "minLength": 1,
+          "title": "Relation Id",
+          "type": "string"
         },
-        "anchor_type": {
-          "type": "string",
-          "enum": ["exact", "bounded_range", "relative", "unanchored"]
+        "source_id": {
+          "description": "Source endpoint: unit annotation_id (e.g. 'u1') or argument mention (e.g. 'u1:actor')",
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
         },
-        "source_expression": {
-          "type": ["string", "null"]
+        "target_id": {
+          "description": "Target endpoint: unit annotation_id (e.g. 'u2') or argument mention (e.g. 'u2:theme')",
+          "minLength": 1,
+          "title": "Target Id",
+          "type": "string"
+        },
+        "relation_type": {
+          "$ref": "#/$defs/RelationType"
+        },
+        "evidence_status": {
+          "$ref": "#/$defs/EvidenceStatus"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "provenance": {
+          "$ref": "#/$defs/RelationProvenance"
+        },
+        "supporting_spans": {
+          "items": {
+            "$ref": "#/$defs/SourceSpan"
+          },
+          "title": "Supporting Spans",
+          "type": "array"
         }
       },
-      "additionalProperties": false
+      "required": [
+        "relation_id",
+        "source_id",
+        "target_id",
+        "relation_type",
+        "evidence_status",
+        "confidence",
+        "provenance"
+      ],
+      "title": "SemanticRelation",
+      "type": "object"
     },
     "SemanticUnit": {
-      "type": "object",
-      "required": [
-        "annotation_id",
-        "provenance",
-        "source_span",
-        "kind",
-        "predicate",
-        "arguments",
-        "polarity",
-        "modality",
-        "holder",
-        "temporal_anchoring",
-        "evidence_status",
-        "confidence"
-      ],
+      "additionalProperties": false,
+      "description": "Atomic, source-grounded semantic unit (proposition, event, state, or attitude).",
       "properties": {
         "annotation_id": {
-          "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "title": "Annotation Id",
+          "type": "string"
         },
         "provenance": {
           "$ref": "#/$defs/UnitProvenance"
@@ -112,129 +237,224 @@
           "$ref": "#/$defs/SourceSpan"
         },
         "kind": {
-          "type": "string",
-          "enum": ["event", "state", "proposition", "attitude"]
+          "$ref": "#/$defs/UnitKind"
         },
         "predicate": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/PredicateSpec"
         },
         "arguments": {
-          "type": "object",
-          "propertyNames": {
-            "enum": [
-              "actor",
-              "experiencer",
-              "theme",
-              "target",
-              "stimulus",
-              "topic",
-              "place",
-              "reason",
-              "purpose",
-              "result",
-              "time"
-            ]
-          },
           "additionalProperties": {
-            "type": "string"
-          }
+            "$ref": "#/$defs/ArgumentMention"
+          },
+          "title": "Arguments",
+          "type": "object"
         },
         "polarity": {
-          "type": "string",
-          "enum": ["positive", "negative", "unknown"]
+          "$ref": "#/$defs/PolarityType"
         },
         "modality": {
-          "type": "string",
-          "enum": [
-            "asserted",
-            "possible",
-            "hypothetical",
-            "intended",
-            "desired",
-            "uncertain",
-            "unknown"
-          ]
+          "$ref": "#/$defs/ModalityType"
         },
-        "holder": {
-          "type": "string",
-          "enum": ["user", "quoted", "reported", "system", "unknown"]
+        "holder_ref": {
+          "description": "Entity reference of holder (e.g. 'user', 'Alice', 'VP', 'system', 'unknown')",
+          "minLength": 1,
+          "title": "Holder Ref",
+          "type": "string"
+        },
+        "attribution_mode": {
+          "$ref": "#/$defs/AttributionMode",
+          "description": "Mode of attribution (direct_speaker, direct_quote, indirect_report, external_source, unknown)"
         },
         "temporal_anchoring": {
           "$ref": "#/$defs/TemporalAnchoring"
         },
         "evidence_status": {
-          "type": "string",
-          "enum": ["explicit", "entailed", "inferred", "unknown"]
+          "$ref": "#/$defs/EvidenceStatus"
         },
         "confidence": {
-          "type": "number",
+          "maximum": 1.0,
           "minimum": 0.0,
-          "maximum": 1.0
+          "title": "Confidence",
+          "type": "number"
         }
       },
-      "additionalProperties": false
-    },
-    "SemanticRelation": {
-      "type": "object",
       "required": [
-        "relation_id",
-        "source_id",
-        "target_id",
-        "relation_type",
+        "annotation_id",
+        "provenance",
+        "source_span",
+        "kind",
+        "predicate",
+        "polarity",
+        "modality",
+        "holder_ref",
+        "attribution_mode",
+        "temporal_anchoring",
         "evidence_status",
         "confidence"
       ],
+      "title": "SemanticUnit",
+      "type": "object"
+    },
+    "SourceSpan": {
+      "additionalProperties": false,
+      "description": "Character offsets and verbatim text within a raw evidence source.",
       "properties": {
-        "relation_id": {
-          "type": "string",
-          "minLength": 1
+        "char_start": {
+          "description": "0-indexed start offset",
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
         },
-        "source_id": {
-          "type": "string",
-          "minLength": 1
+        "char_end": {
+          "description": "0-indexed end offset (exclusive)",
+          "minimum": 1,
+          "title": "Char End",
+          "type": "integer"
         },
-        "target_id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "relation_type": {
-          "type": "string",
-          "enum": [
-            "SAME_ENTITY",
-            "SAME_EVENT",
-            "BEFORE",
-            "AFTER",
-            "OVERLAP",
-            "TEMPORAL_UNKNOWN",
-            "CAUSE",
-            "CONDITION",
-            "PURPOSE",
-            "CONTRAST",
-            "CONCESSION",
-            "EQUIVALENT",
-            "INCOMPATIBLE",
-            "NO_RELATION",
-            "UNKNOWN"
-          ]
-        },
-        "evidence_status": {
-          "type": "string",
-          "enum": ["explicit", "entailed", "inferred", "unknown"]
-        },
-        "confidence": {
-          "type": "number",
-          "minimum": 0.0,
-          "maximum": 1.0
-        },
-        "provenance_spans": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/SourceSpan"
-          }
+        "text": {
+          "description": "Verbatim text span",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
         }
       },
-      "additionalProperties": false
+      "required": [
+        "char_start",
+        "char_end",
+        "text"
+      ],
+      "title": "SourceSpan",
+      "type": "object"
+    },
+    "TemporalAnchorType": {
+      "enum": [
+        "exact",
+        "bounded_range",
+        "relative",
+        "unanchored"
+      ],
+      "title": "TemporalAnchorType",
+      "type": "string"
+    },
+    "TemporalAnchoring": {
+      "additionalProperties": false,
+      "description": "Normalized temporal anchoring information with explicit reference anchor.",
+      "properties": {
+        "normalized_value": {
+          "description": "ISO date/range or 'unknown'",
+          "minLength": 1,
+          "title": "Normalized Value",
+          "type": "string"
+        },
+        "anchor_type": {
+          "$ref": "#/$defs/TemporalAnchorType"
+        },
+        "source_expression": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Verbatim temporal expression from span",
+          "title": "Source Expression"
+        },
+        "reference_anchor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reference time anchor for relative expressions (e.g. 'evidence:occurred_at', 'doc_time')",
+          "title": "Reference Anchor"
+        }
+      },
+      "required": [
+        "normalized_value",
+        "anchor_type"
+      ],
+      "title": "TemporalAnchoring",
+      "type": "object"
+    },
+    "UnitKind": {
+      "enum": [
+        "event",
+        "state",
+        "proposition",
+        "attitude"
+      ],
+      "title": "UnitKind",
+      "type": "string"
+    },
+    "UnitProvenance": {
+      "additionalProperties": false,
+      "description": "Mandatory upstream provenance linking back to raw evidence and boundary block.",
+      "properties": {
+        "raw_evidence_id": {
+          "minLength": 1,
+          "title": "Raw Evidence Id",
+          "type": "string"
+        },
+        "semantic_block_id": {
+          "minLength": 1,
+          "title": "Semantic Block Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "raw_evidence_id",
+        "semantic_block_id"
+      ],
+      "title": "UnitProvenance",
+      "type": "object"
     }
-  }
+  },
+  "additionalProperties": false,
+  "description": "A collection of semantic units and relations within a cutoff-bounded context.",
+  "properties": {
+    "document_id": {
+      "minLength": 1,
+      "title": "Document Id",
+      "type": "string"
+    },
+    "cutoff_time": {
+      "description": "ISO 8601 UTC cutoff timestamp",
+      "title": "Cutoff Time",
+      "type": "string"
+    },
+    "units": {
+      "items": {
+        "$ref": "#/$defs/SemanticUnit"
+      },
+      "title": "Units",
+      "type": "array"
+    },
+    "relations": {
+      "items": {
+        "$ref": "#/$defs/SemanticRelation"
+      },
+      "title": "Relations",
+      "type": "array"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "document_id",
+    "cutoff_time",
+    "units",
+    "relations"
+  ],
+  "title": "SemanticAnnotationDocument",
+  "type": "object"
 }

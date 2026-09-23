@@ -1,6 +1,6 @@
 # LCE Semantic Annotation Examples v0.1
 
-**Status:** Frozen Reference Examples (GitHub Issue #13)  
+**Status:** Frozen Reference Examples (GitHub Issue #13, Post-Review Revision)  
 **Scope:** Research Only — Pairs with [`ONTOLOGY_V0_1.md`](file:///c:/projects/LCE/docs/research/semantic_annotation/ONTOLOGY_V0_1.md) and [`ANNOTATION_GUIDELINE_V0_1.md`](file:///c:/projects/LCE/docs/research/semantic_annotation/ANNOTATION_GUIDELINE_V0_1.md).
 
 ---
@@ -14,22 +14,55 @@
   ```json
   {
     "annotation_id": "u_event_pos_01",
+    "provenance": {
+      "raw_evidence_id": "ev_001",
+      "semantic_block_id": "block_001"
+    },
+    "source_span": {
+      "char_start": 0,
+      "char_end": 46,
+      "text": "I submitted my resignation to Acme Corp yesterday"
+    },
     "kind": "event",
-    "predicate": "submit_resignation",
+    "predicate": {
+      "surface_predicate": "submitted my resignation",
+      "normalized_predicate": "submit_resignation",
+      "normalization_rule": "verb_lemma"
+    },
     "arguments": {
-      "actor": "I",
-      "target": "Acme Corp",
-      "time": "yesterday"
+      "actor": {
+        "role": "actor",
+        "text": "I",
+        "entity_ref": "user"
+      },
+      "target": {
+        "role": "target",
+        "text": "Acme Corp",
+        "entity_ref": "ent_acme"
+      },
+      "time": {
+        "role": "time",
+        "text": "yesterday"
+      }
     },
     "polarity": "positive",
     "modality": "asserted",
-    "holder": "user"
+    "holder_ref": "user",
+    "attribution_mode": "direct_speaker",
+    "temporal_anchoring": {
+      "normalized_value": "2026-09-22",
+      "anchor_type": "relative",
+      "source_expression": "yesterday",
+      "reference_anchor": "evidence:occurred_at"
+    },
+    "evidence_status": "explicit",
+    "confidence": 1.0
   }
   ```
 - **Negative Example:**  
   *Text:* `"I am an employee at Acme Corp."`  
-  *Incorrect:* `kind: "event"` (Reason: Being employed is a continuous status, not a dynamic occurrence).  
-  *Correct:* `kind: "state"`, `predicate: "employed_at"`.
+  *Incorrect:* `kind: "event"` (Reason: Being employed is a continuous status, not a dynamic transition).  
+  *Correct:* `kind: "state"`, `normalized_predicate: "employed_at"`.
 
 ---
 
@@ -40,20 +73,46 @@
   ```json
   {
     "annotation_id": "u_state_pos_01",
+    "provenance": {
+      "raw_evidence_id": "ev_001",
+      "semantic_block_id": "block_001"
+    },
+    "source_span": {
+      "char_start": 0,
+      "char_end": 51,
+      "text": "The database is currently running out of disk space"
+    },
     "kind": "state",
-    "predicate": "low_disk_space",
+    "predicate": {
+      "surface_predicate": "running out of disk space",
+      "normalized_predicate": "low_disk_space",
+      "normalization_rule": "standard_frame"
+    },
     "arguments": {
-      "theme": "The database"
+      "theme": {
+        "role": "theme",
+        "text": "The database",
+        "entity_ref": "ent_db"
+      }
     },
     "polarity": "positive",
     "modality": "asserted",
-    "holder": "user"
+    "holder_ref": "user",
+    "attribution_mode": "direct_speaker",
+    "temporal_anchoring": {
+      "normalized_value": "2026-09-23",
+      "anchor_type": "relative",
+      "source_expression": "currently",
+      "reference_anchor": "evidence:occurred_at"
+    },
+    "evidence_status": "explicit",
+    "confidence": 1.0
   }
   ```
 - **Negative Example:**  
   *Text:* `"The database crashed at 3 PM."`  
   *Incorrect:* `kind: "state"` (Reason: Crashing is an instantaneous change of state/event).  
-  *Correct:* `kind: "event"`, `predicate: "crash"`.
+  *Correct:* `kind: "event"`, `normalized_predicate: "crash"`.
 
 ---
 
@@ -64,21 +123,49 @@
   ```json
   {
     "annotation_id": "u_prop_pos_01",
+    "provenance": {
+      "raw_evidence_id": "ev_001",
+      "semantic_block_id": "block_001"
+    },
+    "source_span": {
+      "char_start": 0,
+      "char_end": 57,
+      "text": "Immutable append-only logs prevent write-skew anomalies"
+    },
     "kind": "proposition",
-    "predicate": "prevent_anomaly",
+    "predicate": {
+      "surface_predicate": "prevent",
+      "normalized_predicate": "prevent_anomaly",
+      "normalization_rule": "standard_frame"
+    },
     "arguments": {
-      "theme": "Immutable append-only logs",
-      "target": "write-skew anomalies"
+      "theme": {
+        "role": "theme",
+        "text": "Immutable append-only logs"
+      },
+      "target": {
+        "role": "target",
+        "text": "write-skew anomalies"
+      }
     },
     "polarity": "positive",
     "modality": "asserted",
-    "holder": "user"
+    "holder_ref": "user",
+    "attribution_mode": "direct_speaker",
+    "temporal_anchoring": {
+      "normalized_value": "unknown",
+      "anchor_type": "unanchored",
+      "source_expression": null,
+      "reference_anchor": null
+    },
+    "evidence_status": "explicit",
+    "confidence": 1.0
   }
   ```
 - **Negative Example:**  
-  *Text:* `"I am setting up an immutable append-only log."`  
-  *Incorrect:* `kind: "proposition"` (Reason: This is a specific action undertaken by an actor).  
-  *Correct:* `kind: "event"`, `predicate: "set_up"`.
+  *Text:* `"I configured an append-only log yesterday."`  
+  *Incorrect:* `kind: "proposition"` (Reason: Specific action performed by an actor at a date).  
+  *Correct:* `kind: "event"`, `normalized_predicate: "configure"`.
 
 ---
 
@@ -89,203 +176,237 @@
   ```json
   {
     "annotation_id": "u_att_pos_01",
+    "provenance": {
+      "raw_evidence_id": "ev_001",
+      "semantic_block_id": "block_001"
+    },
+    "source_span": {
+      "char_start": 0,
+      "char_end": 58,
+      "text": "I prefer writing Rust over Python for systems programming"
+    },
     "kind": "attitude",
-    "predicate": "prefer",
+    "predicate": {
+      "surface_predicate": "prefer",
+      "normalized_predicate": "prefer",
+      "normalization_rule": "verb_lemma"
+    },
     "arguments": {
-      "experiencer": "I",
-      "theme": "writing Rust",
-      "target": "Python",
-      "topic": "systems programming"
+      "experiencer": {
+        "role": "experiencer",
+        "text": "I",
+        "entity_ref": "user"
+      },
+      "theme": {
+        "role": "theme",
+        "text": "writing Rust"
+      },
+      "target": {
+        "role": "target",
+        "text": "Python"
+      },
+      "topic": {
+        "role": "topic",
+        "text": "systems programming"
+      }
     },
     "polarity": "positive",
     "modality": "asserted",
-    "holder": "user"
+    "holder_ref": "user",
+    "attribution_mode": "direct_speaker",
+    "temporal_anchoring": {
+      "normalized_value": "2026",
+      "anchor_type": "bounded_range",
+      "source_expression": null,
+      "reference_anchor": "evidence:occurred_at"
+    },
+    "evidence_status": "explicit",
+    "confidence": 1.0
   }
   ```
 - **Negative Example:**  
   *Text:* `"I wrote a Rust compiler last month."`  
-  *Incorrect:* `kind: "attitude"` (Reason: Writing a compiler is a concrete past action, not a mental stance or preference).  
-  *Correct:* `kind: "event"`, `predicate: "write"`.
+  *Incorrect:* `kind: "attitude"` (Reason: Concrete past action, not a mental valuation).  
+  *Correct:* `kind: "event"`, `normalized_predicate: "write"`.
 
 ---
 
-## 2. Argument Roles Examples
+## 2. Special Policy Examples
 
-### 2.1 `actor` vs `experiencer` vs `theme`
-- **Text:** `"Alice felt anxious when Bob dropped the production database."`
-  - *Clause 1:* `"Alice felt anxious"`
-    ```json
-    {
-      "annotation_id": "u_role_exp_01",
-      "kind": "attitude",
-      "predicate": "feel_anxious",
-      "arguments": {
-        "experiencer": "Alice"
+### 2.1 Shallow Nested Attitude Example
+- **Text:** `"I think I want to leave."`
+  *Annotation:*
+  ```json
+  {
+    "annotation_id": "u_nested_01",
+    "provenance": {
+      "raw_evidence_id": "ev_002",
+      "semantic_block_id": "block_002"
+    },
+    "source_span": {
+      "char_start": 0,
+      "char_end": 24,
+      "text": "I think I want to leave"
+    },
+    "kind": "attitude",
+    "predicate": {
+      "surface_predicate": "think I want to leave",
+      "normalized_predicate": "leave",
+      "normalization_rule": "shallow_nested_hedge"
+    },
+    "arguments": {
+      "actor": {
+        "role": "actor",
+        "text": "I",
+        "entity_ref": "user"
       }
-    }
-    ```
-    *Negative:* Do not label Alice as `actor` (she does not volitionally perform anxiety; she experiences it).
-  - *Clause 2:* `"Bob dropped the production database"`
+    },
+    "polarity": "positive",
+    "modality": "uncertain",
+    "holder_ref": "user",
+    "attribution_mode": "direct_speaker",
+    "temporal_anchoring": {
+      "normalized_value": "unknown",
+      "anchor_type": "unanchored"
+    },
+    "evidence_status": "explicit",
+    "confidence": 0.70
+  }
+  ```
+  *Negative Error:* Setting `modality: "desired"` without epistemic hedging. Silently converting belief-about-desire into unhedged desire is prohibited.
+
+### 2.2 Removal of Manufactured Result States
+- **Text:** `"I moved to London in 2021."`
+  - *Correct Annotation:* A single unit:
     ```json
     {
-      "annotation_id": "u_role_act_01",
+      "annotation_id": "u_move_01",
       "kind": "event",
-      "predicate": "drop_database",
+      "predicate": {
+        "surface_predicate": "moved",
+        "normalized_predicate": "move_to",
+        "normalization_rule": "verb_lemma"
+      },
       "arguments": {
-        "actor": "Bob",
-        "theme": "production database"
-      }
+        "actor": {"role": "actor", "text": "I", "entity_ref": "user"},
+        "target": {"role": "target", "text": "London", "entity_ref": "loc_london"},
+        "time": {"role": "time", "text": "in 2021"}
+      },
+      "temporal_anchoring": {
+        "normalized_value": "2021",
+        "anchor_type": "exact",
+        "source_expression": "in 2021"
+      },
+      "evidence_status": "explicit",
+      "confidence": 1.0
     }
     ```
-    *Negative:* Do not label `production database` as `target` or `actor` (it undergoes the drop without volition $\implies$ `theme`).
-
-### 2.2 `reason` vs `purpose` vs `result`
-- **Text:** `"I refactored the auth module to improve latency, which reduced p99 times to 15ms because caching was enabled."`
-  - `actor`: `"I"`
-  - `theme`: `"auth module"`
-  - `purpose`: `"to improve latency"` (intended goal)
-  - `result`: `"reduced p99 times to 15ms"` (actual outcome)
-  - `reason`: `"because caching was enabled"` (underlying explanation)
-  - *Negative:* Do not label `"to improve latency"` as `result` (it was the aim, not the observed post-facto metric).
+  - *Prohibited Negative Error:* Manufacturing a second synthetic unit `kind: "state", predicate: "live_in", arguments: {place: "London"}` and drawing a `CAUSE` relation to it. Transition events must not invent continuous result states without explicit bounded evidence.
 
 ---
 
-## 3. Polarity and Modality Examples
+## 3. Holder Identity and Attribution Mode
 
-### 3.1 Polarity (`positive`, `negative`, `unknown`)
-- **Positive:** `"We have enabled dual-factor authentication."` $\implies$ `polarity: positive`.
-- **Negative:** `"We do not support legacy RSA keys."` $\implies$ `polarity: negative`.
-- **Unknown:** `"Whether we retain the old cluster remains open."` $\implies$ `polarity: unknown`.
-- *Negative Example:*  
-  *Text:* `"I refused to sign the agreement."`  
-  *Incorrect:* `polarity: negative` (Reason: The action of refusing affirmatively occurred).  
-  *Correct:* `polarity: positive`, `predicate: "refuse_to_sign"`. (Alternatively, if predicate is `sign_agreement`, `polarity: negative`).
-
-### 3.2 Modality (`asserted`, `possible`, `hypothetical`, `intended`, `desired`, `uncertain`, `unknown`)
-- **Asserted:** `"The server restarted at midnight."` $\implies$ `modality: asserted`.
-- **Possible:** `"The outage might be caused by DNS misconfiguration."` $\implies$ `modality: possible`.
-- **Hypothetical:** `"If we migrate to Kubernetes, we would need three more SREs."` $\implies$ `modality: hypothetical`.
-- **Intended:** `"I will publish the RFC next Monday."` $\implies$ `modality: intended`.
-- **Desired:** `"I hope we can deprecate the v1 endpoints soon."` $\implies$ `modality: desired`.
-- **Uncertain:** `"I am not sure if the migration script finished."` $\implies$ `modality: uncertain`.
-- *Negative Example:*  
-  *Text:* `"I plan to leave the company."`  
-  *Incorrect:* `modality: desired` (Reason: Planning expresses a concrete intention/commitment, not merely a passive wish).  
-  *Correct:* `modality: intended`.
-
----
-
-## 4. Holder / Source Examples
-
-### 4.1 `user` vs `quoted` vs `reported`
-- **Text:** `"The VP claimed 'We will be profitable next quarter', but our team lead told me the runway is only four months."`
-  - *Unit 1 (Quoted):*
+- **Text:** `"The VP announced 'We will achieve profitability next quarter', but our director told me the runway is four months."`
+  - *Unit 1 (VP Quote):*
     ```json
     {
-      "annotation_id": "u_holder_quote_01",
+      "annotation_id": "u_vp_01",
       "kind": "proposition",
-      "predicate": "profitable",
-      "arguments": {"theme": "company", "time": "next quarter"},
-      "modality": "asserted",
-      "holder": "quoted"
+      "predicate": {
+        "surface_predicate": "achieve profitability",
+        "normalized_predicate": "profitable",
+        "normalization_rule": "standard_frame"
+      },
+      "arguments": {
+        "theme": {"role": "theme", "text": "We", "entity_ref": "company"},
+        "time": {"role": "time", "text": "next quarter"}
+      },
+      "holder_ref": "VP",
+      "attribution_mode": "direct_quote"
     }
     ```
-  - *Unit 2 (Reported):*
+  - *Unit 2 (Director Report):*
     ```json
     {
-      "annotation_id": "u_holder_rep_01",
+      "annotation_id": "u_dir_01",
       "kind": "state",
-      "predicate": "runway_duration",
-      "arguments": {"theme": "runway", "result": "four months"},
-      "modality": "asserted",
-      "holder": "reported"
+      "predicate": {
+        "surface_predicate": "runway is four months",
+        "normalized_predicate": "runway_duration",
+        "normalization_rule": "standard_frame"
+      },
+      "arguments": {
+        "theme": {"role": "theme", "text": "runway"},
+        "result": {"role": "result", "text": "four months"}
+      },
+      "holder_ref": "director",
+      "attribution_mode": "indirect_report"
     }
     ```
-  - *Negative Example:*  
-    *Incorrect:* Labeling Unit 1 with `holder: user` (Reason: The user is citing the VP, not asserting personal conviction of profitability).
 
 ---
 
-## 5. Evidence Status Examples
+## 4. Relations: Grounding, Control Gating, and Mention Endpoints
 
-### 5.1 `explicit` vs `entailed` vs `inferred`
-- **Text:** `"The CTO fired the director of infrastructure."`
-  - *Unit 1 (`explicit`):*
-    - Predicate: `fire`, Actor: `CTO`, Target: `director of infrastructure`. `evidence_status: explicit`.
-  - *Unit 2 (`entailed`):*
-    - Predicate: `terminate_employment`, Actor: `CTO`, Target: `director of infrastructure`. `evidence_status: entailed` (Strict logical consequence of being fired).
-  - *Unit 3 (`inferred`):*
-    - Predicate: `dissatisfied_with_performance`, Experiencer: `CTO`, Target: `director of infrastructure`. `evidence_status: inferred` (Plausible reason, but not stated).
-  - *Negative Example:*  
-    *Incorrect:* Labeling Unit 3 as `explicit` or `entailed`. (Inference must remain non-authoritative).
-
----
-
-## 6. Relation Ontology Examples
-
-### 6.1 `SAME_ENTITY` and `SAME_EVENT`
+### 4.1 `SAME_ENTITY` Over Argument Mentions
 - **Text:** `"Alice joined the security team in June. The security team welcomed her warmly."`
   - $U_1$: `join(Alice, security team)`
-  - $U_2$: `welcome(security team, Alice)`
-  - Relation: `SAME_ENTITY(U1.arguments.actor, U2.arguments.target)` (`Alice` $\equiv$ `her`).
-  - *Negative Example:*  
-    *Text:* `"We had our weekly sync on Monday. We had our weekly sync on Wednesday."`  
-    *Incorrect:* `U1 SAME_EVENT U2` (Reason: Distinct meeting tokens occurring on different days).  
-    *Correct:* `U1 NO_RELATION U2` (or `BEFORE(U1, U2)`).
+  - $U_2$: `welcome(security team, her)`
+  - Relation:
+    ```json
+    {
+      "relation_id": "rel_same_ent_01",
+      "source_id": "u1:actor",
+      "target_id": "u2:target",
+      "relation_type": "SAME_ENTITY",
+      "evidence_status": "explicit",
+      "confidence": 1.0,
+      "provenance": {
+        "raw_evidence_id": "ev_001",
+        "semantic_block_id": "block_001"
+      }
+    }
+    ```
+  *Negative Error:* Using `source_id: "u1", target_id: "u2"`. `SAME_ENTITY` must target argument mentions (`u1:actor`), not whole propositions.
 
-### 6.2 `BEFORE`, `AFTER`, `OVERLAP`, `TEMPORAL_UNKNOWN`
-- **Text:** `"I worked at Google from 2018 to 2021. Then I joined DeepMind."`
-  - $U_1$: `work_at(I, Google)` [2018–2021]
-  - $U_2$: `join(I, DeepMind)` [2021]
-  - Relation: `U1 BEFORE U2`
-- **Text:** `"While living in London, I wrote my first book."`
-  - $U_1$: `live_in(I, London)`
-  - $U_2$: `write(I, first book)`
-  - Relation: `U1 OVERLAP U2`
-- **Text:** `"Alice finished her report. Bob deployed the patch."` (No dates/order given)
-  - Relation: `U1 TEMPORAL_UNKNOWN U2`
+### 4.2 `INCOMPATIBLE` Requires Overlapping Temporal Validity
+- **Positive Example (Contemporaneous Conflict):**  
+  *Text (Same meeting, 2026-09-10):* `"The server is fully operational. The server is completely offline."`
+  - $U_1$: `operational(server)`, `time: 2026-09-10`
+  - $U_2$: `offline(server)`, `time: 2026-09-10`
+  - Relation: `u1 INCOMPATIBLE u2` (overlapping times, mutually exclusive states).
+- **Negative Example (Cross-Time Shift):**  
+  *Text 1 (2022):* `"I really want to work at BigCorp."`  
+  *Text 2 (2026):* `"I will never work at BigCorp again."`  
+  - $U_1$: `time: 2022`, `polarity: positive`, `modality: desired`.
+  - $U_2$: `time: 2026`, `polarity: negative`, `modality: intended`.
+  - *Correct Relations:*
+    - `u1 BEFORE u2`
+    - `u1:target SAME_ENTITY u2:target`
+  - *Prohibited Negative Error:* Labeling `u1 INCOMPATIBLE u2` or `u1 REVISION u2`. Because the temporal anchors do not overlap, this is a chronological difference from which downstream LCE infers cognitive change.
 
-### 6.3 `CAUSE`, `CONDITION`, `PURPOSE`, `CONTRAST`, `CONCESSION`
-- **`CAUSE`:** `"The disk filled up, causing the node to crash."`  
-  - $U_1$: `fill_up(disk)` $\xrightarrow{\text{CAUSE}}$ $U_2$: `crash(node)`.  
-  *Negative Example:* `"The disk filled up. Later the node crashed."` $\implies$ Annotate `BEFORE`, NOT `CAUSE` (unless connective is present).
-- **`CONDITION`:** `"If we exceed 10k QPS, we must shard the database."`  
-  - $U_1$: `exceed_qps(10k)` $\xrightarrow{\text{CONDITION}}$ $U_2$: `shard(database)`.
-- **`PURPOSE`:** `"We added indexes in order to speed up user lookup."`  
-  - $U_1$: `add_indexes(we)` $\xrightarrow{\text{PURPOSE}}$ $U_2$: `speed_up(user lookup)`.
-- **`CONTRAST`:** `"I enjoy backend systems, but frontend work drains me."`  
-  - $U_1$: `enjoy(backend)` $\xleftrightarrow{\text{CONTRAST}}$ $U_2$: `drain(frontend)`.
-- **`CONCESSION`:** `"Although the benchmark had flaws, we accepted the results."`  
-  - $U_1$: `have_flaws(benchmark)` $\xrightarrow{\text{CONCESSION}}$ $U_2$: `accept(results)`.
-
-### 6.4 `EQUIVALENT` vs `INCOMPATIBLE`
-- **`EQUIVALENT`:**  
-  *Text:* `"I started my own company."` vs (later span) `"I founded a startup."`  
-  - $U_1$: `start(user, company)` $\xleftrightarrow{\text{EQUIVALENT}}$ $U_2$: `found(user, startup)`.
-- **`INCOMPATIBLE`:**  
-  *Text 1 (2022):* `"I really want to work at a big tech firm."`  
-  *Text 2 (2026):* `"I will never work at a big tech firm again."`  
-  - $U_1$: `want(user, big_tech_work)`, `polarity: positive`, `time: 2022`
-  - $U_2$: `work_at(user, big_tech_firm)`, `polarity: negative`, `time: 2026`
-  - Relations: `U1 BEFORE U2`, `U1 INCOMPATIBLE U2`.
-
----
-
-## 7. Negative Invariants: Prohibited Downstream Cognition Labels
-
-Annotators and parsers must **never** output high-level longitudinal interpretations.
-
-| Attempted Incorrect Annotation | Why It Is Forbidden | Mandatory v0.1 Decomposition |
-| :--- | :--- | :--- |
-| `U1 REVISION U2` | "Revision" is a cognitive judgment of belief replacement across time. | `U1 BEFORE U2` and `U1 INCOMPATIBLE U2` with distinct temporal anchors. |
-| `U1 RECURRENCE U2` | "Recurrence" is a multi-session trajectory pattern. | `U1 BEFORE U2` and `U1 EQUIVALENT U2` with distinct temporal anchors. |
-| `user HAS_TRAJECTORY T` | "Trajectory" is a topological path in the structure graph. | Individual dated units linked with `BEFORE` / `CAUSE`. |
-| `U1 COGNITIVE_SHIFT U2`| "Cognitive shift" is an engine-level psychological thesis. | `U1 INCOMPATIBLE U2` (or `CONTRAST`) across time horizons. |
-| `P1 STABLE_PREFERENCE` | Stability requires longitudinal hypothesis evaluation. | Atomic unit with `kind: attitude`, `modality: desired`. |
+### 4.3 Control Labels Gated from Graph Persistence
+- For evaluation benchmarks, unlinked or indeterminate pairs emit:
+  ```json
+  {
+    "relation_id": "rel_ctrl_01",
+    "source_id": "u1",
+    "target_id": "u2",
+    "relation_type": "NO_RELATION",
+    "evidence_status": "explicit",
+    "confidence": 1.0,
+    "provenance": {
+      "raw_evidence_id": "ev_001",
+      "semantic_block_id": "block_001"
+    }
+  }
+  ```
+  *Rule:* This relation is retained in annotation files for inter-annotator evaluation, but calling `to_graph_edge()` fails with an error: control outcomes are never persisted into the typed graph.
 
 ---
 
-## 8. Complete Multi-Unit End-to-End Walkthrough
+## 5. Complete Multi-Unit End-to-End Walkthrough
 
 ### Raw Evidence Input
 ```text
@@ -313,23 +434,39 @@ riskier', but I joined a five-person AI lab last week anyway."
       },
       "source_span": {
         "char_start": 0,
-        "char_end": 37,
+        "char_end": 35,
         "text": "In 2022, I loved working at BigCorp"
       },
       "kind": "attitude",
-      "predicate": "love",
+      "predicate": {
+        "surface_predicate": "loved working",
+        "normalized_predicate": "love",
+        "normalization_rule": "verb_lemma"
+      },
       "arguments": {
-        "experiencer": "I",
-        "theme": "working at BigCorp",
-        "time": "2022"
+        "experiencer": {
+          "role": "experiencer",
+          "text": "I",
+          "entity_ref": "user"
+        },
+        "theme": {
+          "role": "theme",
+          "text": "working at BigCorp"
+        },
+        "time": {
+          "role": "time",
+          "text": "In 2022"
+        }
       },
       "polarity": "positive",
       "modality": "asserted",
-      "holder": "user",
+      "holder_ref": "user",
+      "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
-        "value": "2022",
+        "normalized_value": "2022",
         "anchor_type": "exact",
-        "source_expression": "In 2022"
+        "source_expression": "In 2022",
+        "reference_anchor": null
       },
       "evidence_status": "explicit",
       "confidence": 1.0
@@ -341,23 +478,36 @@ riskier', but I joined a five-person AI lab last week anyway."
         "semantic_block_id": "block_042"
       },
       "source_span": {
-        "char_start": 46,
-        "char_end": 74,
+        "char_start": 44,
+        "char_end": 70,
         "text": "the scale was exhilarating"
       },
       "kind": "attitude",
-      "predicate": "exhilarating",
+      "predicate": {
+        "surface_predicate": "exhilarating",
+        "normalized_predicate": "exhilarating",
+        "normalization_rule": "exact_match"
+      },
       "arguments": {
-        "stimulus": "the scale",
-        "experiencer": "I"
+        "stimulus": {
+          "role": "stimulus",
+          "text": "the scale"
+        },
+        "experiencer": {
+          "role": "experiencer",
+          "text": "I",
+          "entity_ref": "user"
+        }
       },
       "polarity": "positive",
       "modality": "asserted",
-      "holder": "user",
+      "holder_ref": "user",
+      "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
-        "value": "2022",
+        "normalized_value": "2022",
         "anchor_type": "relative",
-        "source_expression": "In 2022"
+        "source_expression": "In 2022",
+        "reference_anchor": "u1"
       },
       "evidence_status": "explicit",
       "confidence": 0.95
@@ -369,23 +519,36 @@ riskier', but I joined a five-person AI lab last week anyway."
         "semantic_block_id": "block_042"
       },
       "source_span": {
-        "char_start": 89,
-        "char_end": 125,
+        "char_start": 81,
+        "char_end": 113,
         "text": "by 2025 I completely burned out"
       },
       "kind": "event",
-      "predicate": "burn_out",
+      "predicate": {
+        "surface_predicate": "burned out",
+        "normalized_predicate": "burn_out",
+        "normalization_rule": "verb_lemma"
+      },
       "arguments": {
-        "actor": "I",
-        "time": "by 2025"
+        "actor": {
+          "role": "actor",
+          "text": "I",
+          "entity_ref": "user"
+        },
+        "time": {
+          "role": "time",
+          "text": "by 2025"
+        }
       },
       "polarity": "positive",
       "modality": "asserted",
-      "holder": "user",
+      "holder_ref": "user",
+      "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
-        "value": "2025",
+        "normalized_value": "2025",
         "anchor_type": "exact",
-        "source_expression": "by 2025"
+        "source_expression": "by 2025",
+        "reference_anchor": null
       },
       "evidence_status": "explicit",
       "confidence": 1.0
@@ -397,23 +560,37 @@ riskier', but I joined a five-person AI lab last week anyway."
         "semantic_block_id": "block_042"
       },
       "source_span": {
-        "char_start": 140,
-        "char_end": 194,
+        "char_start": 126,
+        "char_end": 173,
         "text": "I will never work for a giant corporation again"
       },
       "kind": "attitude",
-      "predicate": "work_at",
+      "predicate": {
+        "surface_predicate": "work",
+        "normalized_predicate": "work_at",
+        "normalization_rule": "standard_frame"
+      },
       "arguments": {
-        "actor": "I",
-        "target": "giant corporation"
+        "actor": {
+          "role": "actor",
+          "text": "I",
+          "entity_ref": "user"
+        },
+        "target": {
+          "role": "target",
+          "text": "giant corporation",
+          "entity_ref": "ent_corp"
+        }
       },
       "polarity": "negative",
       "modality": "intended",
-      "holder": "user",
+      "holder_ref": "user",
+      "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
-        "value": "2025/..",
+        "normalized_value": "2025/..",
         "anchor_type": "bounded_range",
-        "source_expression": "again"
+        "source_expression": "again",
+        "reference_anchor": "u3"
       },
       "evidence_status": "explicit",
       "confidence": 1.0
@@ -425,22 +602,31 @@ riskier', but I joined a five-person AI lab last week anyway."
         "semantic_block_id": "block_042"
       },
       "source_span": {
-        "char_start": 218,
-        "char_end": 244,
+        "char_start": 195,
+        "char_end": 221,
         "text": "Small startups are riskier"
       },
       "kind": "proposition",
-      "predicate": "risky",
+      "predicate": {
+        "surface_predicate": "are riskier",
+        "normalized_predicate": "risky",
+        "normalization_rule": "standard_frame"
+      },
       "arguments": {
-        "theme": "Small startups"
+        "theme": {
+          "role": "theme",
+          "text": "Small startups"
+        }
       },
       "polarity": "positive",
       "modality": "asserted",
-      "holder": "quoted",
+      "holder_ref": "mentor",
+      "attribution_mode": "direct_quote",
       "temporal_anchoring": {
-        "value": "unknown",
+        "normalized_value": "unknown",
         "anchor_type": "unanchored",
-        "source_expression": null
+        "source_expression": null,
+        "reference_anchor": null
       },
       "evidence_status": "explicit",
       "confidence": 1.0
@@ -452,24 +638,41 @@ riskier', but I joined a five-person AI lab last week anyway."
         "semantic_block_id": "block_042"
       },
       "source_span": {
-        "char_start": 254,
-        "char_end": 302,
+        "char_start": 231,
+        "char_end": 270,
         "text": "I joined a five-person AI lab last week"
       },
       "kind": "event",
-      "predicate": "join",
+      "predicate": {
+        "surface_predicate": "joined",
+        "normalized_predicate": "join",
+        "normalization_rule": "verb_lemma"
+      },
       "arguments": {
-        "actor": "I",
-        "target": "five-person AI lab",
-        "time": "last week"
+        "actor": {
+          "role": "actor",
+          "text": "I",
+          "entity_ref": "user"
+        },
+        "target": {
+          "role": "target",
+          "text": "five-person AI lab",
+          "entity_ref": "ent_lab"
+        },
+        "time": {
+          "role": "time",
+          "text": "last week"
+        }
       },
       "polarity": "positive",
       "modality": "asserted",
-      "holder": "user",
+      "holder_ref": "user",
+      "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
-        "value": "2026-09",
+        "normalized_value": "2026-09",
         "anchor_type": "relative",
-        "source_expression": "last week"
+        "source_expression": "last week",
+        "reference_anchor": "evidence:occurred_at"
       },
       "evidence_status": "explicit",
       "confidence": 1.0
@@ -482,7 +685,18 @@ riskier', but I joined a five-person AI lab last week anyway."
       "target_id": "u1",
       "relation_type": "CAUSE",
       "evidence_status": "explicit",
-      "confidence": 0.95
+      "confidence": 0.95,
+      "provenance": {
+        "raw_evidence_id": "ev_2026_09_15_01",
+        "semantic_block_id": "block_042"
+      },
+      "supporting_spans": [
+        {
+          "char_start": 36,
+          "char_end": 43,
+          "text": "because"
+        }
+      ]
     },
     {
       "relation_id": "rel_02",
@@ -490,31 +704,68 @@ riskier', but I joined a five-person AI lab last week anyway."
       "target_id": "u3",
       "relation_type": "BEFORE",
       "evidence_status": "explicit",
-      "confidence": 1.0
+      "confidence": 1.0,
+      "provenance": {
+        "raw_evidence_id": "ev_2026_09_15_01",
+        "semantic_block_id": "block_042"
+      },
+      "supporting_spans": []
     },
     {
       "relation_id": "rel_03",
-      "source_id": "u1",
-      "target_id": "u4",
-      "relation_type": "INCOMPATIBLE",
-      "evidence_status": "entailed",
-      "confidence": 0.95
-    },
-    {
-      "relation_id": "rel_04",
       "source_id": "u3",
       "target_id": "u4",
       "relation_type": "CAUSE",
       "evidence_status": "explicit",
-      "confidence": 0.9
+      "confidence": 0.9,
+      "provenance": {
+        "raw_evidence_id": "ev_2026_09_15_01",
+        "semantic_block_id": "block_042"
+      },
+      "supporting_spans": [
+        {
+          "char_start": 114,
+          "char_end": 125,
+          "text": "and decided"
+        }
+      ]
     },
     {
-      "relation_id": "rel_05",
+      "relation_id": "rel_04",
       "source_id": "u5",
       "target_id": "u6",
       "relation_type": "CONCESSION",
       "evidence_status": "explicit",
-      "confidence": 0.9
+      "confidence": 0.9,
+      "provenance": {
+        "raw_evidence_id": "ev_2026_09_15_01",
+        "semantic_block_id": "block_042"
+      },
+      "supporting_spans": [
+        {
+          "char_start": 223,
+          "char_end": 226,
+          "text": "but"
+        },
+        {
+          "char_start": 271,
+          "char_end": 277,
+          "text": "anyway"
+        }
+      ]
+    },
+    {
+      "relation_id": "rel_05",
+      "source_id": "u1:experiencer",
+      "target_id": "u3:actor",
+      "relation_type": "SAME_ENTITY",
+      "evidence_status": "explicit",
+      "confidence": 1.0,
+      "provenance": {
+        "raw_evidence_id": "ev_2026_09_15_01",
+        "semantic_block_id": "block_042"
+      },
+      "supporting_spans": []
     }
   ]
 }
