@@ -1,6 +1,6 @@
 """Canonical machine-readable schema and validation for LCE Semantic Annotation v0.1.
 
-Research-only specification (GitHub Issue #13).
+Research-only specification (GitHub Issue #13 Final Patch).
 This module serves as the single CANONICAL schema for v0.1 semantic annotation contracts.
 JSON Schemas under research/schemas/ are validated against or derived from this module.
 Does not modify production runtime or contracts.
@@ -9,7 +9,6 @@ Does not modify production runtime or contracts.
 from __future__ import annotations
 
 from enum import Enum
-import re
 from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -43,6 +42,15 @@ FORBIDDEN_LABELS: frozenset[str] = frozenset({
     "SUPERCEDES_LONG_TERM_BELIEF",
 })
 
+# Frozen deterministic predicate normalization lookup table for v0.1
+FROZEN_PREDICATE_MAP: dict[str, str] = {
+    "prefer writing": "prefer",
+    "loved working": "love",
+    "burned out": "burn_out",
+    "are riskier": "risky",
+    "running out of disk space": "low_disk_space",
+}
+
 
 class UnitKind(str, Enum):
     EVENT = "event"
@@ -67,6 +75,25 @@ class ModalityType(str, Enum):
     UNKNOWN = "unknown"
 
 
+class EpistemicHedge(str, Enum):
+    """Explicit outer epistemic hedging decoupled from the inner proposition/desire modality."""
+
+    NONE = "none"
+    THINK = "think"            # e.g. "I think", "I believe"
+    PROBABLE = "probable"      # e.g. "probably", "likely"
+    UNCERTAIN = "uncertain"    # e.g. "wonder if", "not sure if"
+    DOUBT = "doubt"            # e.g. "I doubt that"
+
+
+class PredicateNormalizationRule(str, Enum):
+    """Deterministic mechanical normalization rules permitted in v0.1."""
+
+    EXACT_SURFACE = "exact_surface"      # exact lowercase surface form
+    LEMMA = "lemma"                      # mechanical lowercased English base lemma
+    COMPOUND_LOWER = "compound_lower"    # lowercase with whitespace -> underscore
+    FROZEN_MAP = "frozen_map"            # lookup in explicit frozen FROZEN_PREDICATE_MAP
+
+
 class AttributionMode(str, Enum):
     DIRECT_SPEAKER = "direct_speaker"
     DIRECT_QUOTE = "direct_quote"
@@ -82,6 +109,13 @@ class EvidenceStatus(str, Enum):
     UNKNOWN = "unknown"
 
 
+# Graph admission: only explicit and entailed units/relations are eligible as positive graph nodes/edges
+GRAPH_ADMISSIBLE_EVIDENCE_STATUSES: frozenset[EvidenceStatus] = frozenset({
+    EvidenceStatus.EXPLICIT,
+    EvidenceStatus.ENTAILED,
+})
+
+
 class TemporalAnchorType(str, Enum):
     EXACT = "exact"
     BOUNDED_RANGE = "bounded_range"
@@ -90,24 +124,24 @@ class TemporalAnchorType(str, Enum):
 
 
 class RelationType(str, Enum):
-    # Identity (applies to argument mentions/referents)
+    # Identity (strictly links stable mention IDs)
     SAME_ENTITY = "SAME_ENTITY"
     SAME_EVENT = "SAME_EVENT"
 
-    # Temporal (applies to proposition/event units)
+    # Temporal (links proposition/event unit IDs)
     BEFORE = "BEFORE"
     AFTER = "AFTER"
     OVERLAP = "OVERLAP"
     TEMPORAL_UNKNOWN = "TEMPORAL_UNKNOWN"
 
-    # Logical / Discourse (applies to proposition/event units)
+    # Logical / Discourse (links proposition/event unit IDs)
     CAUSE = "CAUSE"
     CONDITION = "CONDITION"
     PURPOSE = "PURPOSE"
     CONTRAST = "CONTRAST"
     CONCESSION = "CONCESSION"
 
-    # State Compatibility (applies to proposition/state/attitude units with overlapping time)
+    # State Compatibility (links proposition/state/attitude unit IDs with overlapping time)
     EQUIVALENT = "EQUIVALENT"
     INCOMPATIBLE = "INCOMPATIBLE"
 
@@ -164,10 +198,11 @@ class RelationProvenance(BaseModel):
 
 
 class ArgumentMention(BaseModel):
-    """A grounded argument mention linked to a conservative semantic role."""
+    """A grounded argument mention with its own stable mention_id."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
+    mention_id: str = Field(min_length=1, description="Stable unique mention identifier, e.g. 'm_001'")
     role: str = Field(description="Role from ROLE_VOCABULARY")
     text: str = Field(min_length=1, description="Verbatim text or normalized argument string")
     source_span: SourceSpan | None = Field(default=None, description="Optional exact span within raw evidence")
@@ -199,7 +234,6 @@ class TemporalAnchoring(BaseModel):
     @model_validator(mode="after")
     def validate_relative_anchor(self) -> TemporalAnchoring:
         if self.anchor_type == TemporalAnchorType.RELATIVE and not self.reference_anchor:
-            # If relative, reference_anchor must be explicitly provided
             raise ValueError(
                 "Relative temporal anchor must specify 'reference_anchor' (e.g. 'evidence:occurred_at')"
             )
@@ -207,15 +241,14 @@ class TemporalAnchoring(BaseModel):
 
 
 class PredicateSpec(BaseModel):
-    """Surface form, normalized predicate lemma/frame, and the reproducible normalization rule."""
+    """Deterministic mechanical predicate normalization."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     surface_predicate: str = Field(min_length=1, description="Verbatim predicate/verb/expression from text")
-    normalized_predicate: str = Field(min_length=1, description="Normalized lemma or standard frame label")
-    normalization_rule: str = Field(
-        min_length=1,
-        description="Explicit rule name or method (e.g. 'verb_lemma', 'shallow_nested_hedge', 'exact_match')",
+    normalized_predicate: str = Field(min_length=1, description="Mechanically normalized predicate")
+    normalization_rule: PredicateNormalizationRule = Field(
+        description="Deterministic normalization rule (exact_surface, lemma, compound_lower, frozen_map)"
     )
 
     @field_validator("normalized_predicate")
@@ -227,6 +260,36 @@ class PredicateSpec(BaseModel):
                 f"Forbidden downstream cognition label '{pred}' cannot be used as a unit predicate."
             )
         return pred
+
+    @model_validator(mode="after")
+    def validate_normalization_mechanics(self) -> PredicateSpec:
+        surf_clean = self.surface_predicate.strip().lower()
+        if self.normalization_rule == PredicateNormalizationRule.EXACT_SURFACE:
+            if self.normalized_predicate != surf_clean:
+                raise ValueError(
+                    f"Rule 'exact_surface' requires normalized_predicate ('{self.normalized_predicate}') "
+                    f"to equal lowercase surface_predicate ('{surf_clean}')"
+                )
+        elif self.normalization_rule == PredicateNormalizationRule.COMPOUND_LOWER:
+            expected = surf_clean.replace(" ", "_")
+            if self.normalized_predicate != expected:
+                raise ValueError(
+                    f"Rule 'compound_lower' requires normalized_predicate ('{self.normalized_predicate}') "
+                    f"to equal '{expected}'"
+                )
+        elif self.normalization_rule == PredicateNormalizationRule.FROZEN_MAP:
+            if surf_clean in FROZEN_PREDICATE_MAP:
+                expected = FROZEN_PREDICATE_MAP[surf_clean]
+                if self.normalized_predicate != expected:
+                    raise ValueError(
+                        f"Rule 'frozen_map' requires normalized_predicate to equal '{expected}' "
+                        f"for surface '{surf_clean}', got '{self.normalized_predicate}'"
+                    )
+            else:
+                raise ValueError(
+                    f"Surface predicate '{surf_clean}' is not in FROZEN_PREDICATE_MAP: {list(FROZEN_PREDICATE_MAP.keys())}"
+                )
+        return self
 
 
 class SemanticUnit(BaseModel):
@@ -242,6 +305,10 @@ class SemanticUnit(BaseModel):
     arguments: dict[str, ArgumentMention] = Field(default_factory=dict)
     polarity: PolarityType
     modality: ModalityType
+    epistemic_hedge: EpistemicHedge = Field(
+        default=EpistemicHedge.NONE,
+        description="Outer epistemic hedging (e.g. 'think', 'probable') decoupled from inner matrix modality",
+    )
     holder_ref: str = Field(
         min_length=1,
         description="Entity reference of holder (e.g. 'user', 'Alice', 'VP', 'system', 'unknown')",
@@ -260,20 +327,49 @@ class SemanticUnit(BaseModel):
             raise ValueError(f"Forbidden label '{k.value}' cannot be used as unit kind.")
         return k
 
+    @property
+    def is_graph_eligible(self) -> bool:
+        """Only explicit and entailed units are eligible as positive graph nodes in v0.1/#16/#17."""
+        return self.evidence_status in GRAPH_ADMISSIBLE_EVIDENCE_STATUSES
+
+    def to_graph_node(self) -> dict[str, Any]:
+        """Serialize as an authoritative graph node. Fails if evidence_status is audit-only (inferred/unknown)."""
+        if not self.is_graph_eligible:
+            raise ValueError(
+                f"Unit '{self.annotation_id}' with evidence_status='{self.evidence_status.value}' "
+                "is audit-only and MUST NOT become a positive graph node in v0.1/#16/#17."
+            )
+        return {
+            "annotation_id": self.annotation_id,
+            "kind": self.kind.value,
+            "predicate": self.predicate.normalized_predicate,
+            "polarity": self.polarity.value,
+            "modality": self.modality.value,
+            "epistemic_hedge": self.epistemic_hedge.value,
+            "holder_ref": self.holder_ref,
+            "attribution_mode": self.attribution_mode.value,
+            "temporal_anchoring": {
+                "normalized_value": self.temporal_anchoring.normalized_value,
+                "anchor_type": self.temporal_anchoring.anchor_type.value,
+            },
+            "evidence_status": self.evidence_status.value,
+            "confidence": self.confidence,
+        }
+
 
 class SemanticRelation(BaseModel):
-    """Typed relation linking two units or two argument mentions."""
+    """Typed relation linking two units or two stable mention IDs."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     relation_id: str = Field(min_length=1)
     source_id: str = Field(
         min_length=1,
-        description="Source endpoint: unit annotation_id (e.g. 'u1') or argument mention (e.g. 'u1:actor')",
+        description="Source endpoint: unit annotation_id (e.g. 'u1') or stable mention_id (e.g. 'm_001')",
     )
     target_id: str = Field(
         min_length=1,
-        description="Target endpoint: unit annotation_id (e.g. 'u2') or argument mention (e.g. 'u2:theme')",
+        description="Target endpoint: unit annotation_id (e.g. 'u2') or stable mention_id (e.g. 'm_002')",
     )
     relation_type: RelationType
     evidence_status: EvidenceStatus
@@ -292,14 +388,22 @@ class SemanticRelation(BaseModel):
 
     @property
     def is_graph_edge(self) -> bool:
-        """Control labels (NO_RELATION, UNKNOWN, TEMPORAL_UNKNOWN) are not valid graph edges."""
-        return self.relation_type not in CONTROL_RELATION_TYPES
+        """Graph admission freeze: only explicit and entailed non-control relations are positive graph edges."""
+        return (
+            self.relation_type not in CONTROL_RELATION_TYPES
+            and self.evidence_status in GRAPH_ADMISSIBLE_EVIDENCE_STATUSES
+        )
 
     def to_graph_edge(self) -> dict[str, Any]:
-        """Serialize as an authoritative graph edge. Fails if relation is a control outcome."""
-        if not self.is_graph_edge:
+        """Serialize as an authoritative graph edge. Fails if control label or audit-only (inferred/unknown)."""
+        if self.relation_type in CONTROL_RELATION_TYPES:
             raise ValueError(
                 f"Control label '{self.relation_type.value}' cannot be serialized as a positive graph edge."
+            )
+        if self.evidence_status not in GRAPH_ADMISSIBLE_EVIDENCE_STATUSES:
+            raise ValueError(
+                f"Relation '{self.relation_id}' with evidence_status='{self.evidence_status.value}' "
+                "is audit-only and MUST NOT become a positive graph edge in v0.1/#16/#17."
             )
         return {
             "relation_id": self.relation_id,
@@ -329,12 +433,22 @@ class SemanticAnnotationDocument(BaseModel):
 
     @model_validator(mode="after")
     def validate_document_semantics(self) -> SemanticAnnotationDocument:
-        # 1. Check unit uniqueness
+        # 1. Check unit uniqueness and collect stable mention IDs
         unit_map: dict[str, SemanticUnit] = {}
+        mention_map: dict[str, ArgumentMention] = {}
+
         for u in self.units:
             if u.annotation_id in unit_map:
                 raise ValueError(f"Duplicate unit annotation_id: '{u.annotation_id}'")
             unit_map[u.annotation_id] = u
+
+            for role_name, arg_mention in u.arguments.items():
+                m_id = arg_mention.mention_id
+                if m_id in mention_map:
+                    raise ValueError(
+                        f"Duplicate mention_id '{m_id}' found in unit '{u.annotation_id}' argument '{role_name}'"
+                    )
+                mention_map[m_id] = arg_mention
 
         # 2. Check relation uniqueness and endpoints
         rel_ids: set[str] = set()
@@ -343,13 +457,25 @@ class SemanticAnnotationDocument(BaseModel):
                 raise ValueError(f"Duplicate relation_id: '{r.relation_id}'")
             rel_ids.add(r.relation_id)
 
-            # Validate endpoints according to relation type
             if r.relation_type == RelationType.SAME_ENTITY:
-                # SAME_ENTITY must target argument mentions, e.g. "u1:actor"
-                self._validate_argument_endpoint(r.source_id, unit_map, r.relation_id, "source_id")
-                self._validate_argument_endpoint(r.target_id, unit_map, r.relation_id, "target_id")
+                # SAME_ENTITY must strictly connect stable mention IDs
+                if ":" in r.source_id or ":" in r.target_id:
+                    raise ValueError(
+                        f"SAME_ENTITY relation '{r.relation_id}' must connect stable mention IDs, "
+                        f"not '<unit_id>:<role>' pseudo-identifiers. Got source='{r.source_id}', target='{r.target_id}'"
+                    )
+                if r.source_id not in mention_map:
+                    raise ValueError(
+                        f"SAME_ENTITY relation '{r.relation_id}' source_id '{r.source_id}' "
+                        f"not found in document mention IDs: {sorted(mention_map.keys())}"
+                    )
+                if r.target_id not in mention_map:
+                    raise ValueError(
+                        f"SAME_ENTITY relation '{r.relation_id}' target_id '{r.target_id}' "
+                        f"not found in document mention IDs: {sorted(mention_map.keys())}"
+                    )
             else:
-                # Other relations target proposition unit IDs directly
+                # Other relations connect unit annotation IDs
                 if r.source_id not in unit_map:
                     raise ValueError(
                         f"Relation '{r.relation_id}' source_id '{r.source_id}' not found in units"
@@ -363,7 +489,6 @@ class SemanticAnnotationDocument(BaseModel):
             if r.relation_type == RelationType.INCOMPATIBLE:
                 u_src = unit_map[r.source_id]
                 u_tgt = unit_map[r.target_id]
-                # If both units have exact different temporal anchors, they are cross-time shifts, not INCOMPATIBLE!
                 t_src = u_src.temporal_anchoring
                 t_tgt = u_tgt.temporal_anchoring
                 if (
@@ -379,28 +504,3 @@ class SemanticAnnotationDocument(BaseModel):
                     )
 
         return self
-
-    @staticmethod
-    def _validate_argument_endpoint(
-        endpoint: str,
-        unit_map: dict[str, SemanticUnit],
-        rel_id: str,
-        endpoint_name: str,
-    ) -> None:
-        """Validate an argument mention endpoint formatted as 'unit_id:role'."""
-        if ":" not in endpoint:
-            raise ValueError(
-                f"SAME_ENTITY relation '{rel_id}' {endpoint_name} '{endpoint}' must specify an argument "
-                "mention in format '<unit_id>:<role>' (e.g. 'u1:actor'). Proposition IDs cannot be SAME_ENTITY."
-            )
-        u_id, role = endpoint.split(":", 1)
-        if u_id not in unit_map:
-            raise ValueError(
-                f"Relation '{rel_id}' {endpoint_name} '{endpoint}' references non-existent unit '{u_id}'"
-            )
-        unit = unit_map[u_id]
-        if role not in unit.arguments:
-            raise ValueError(
-                f"Relation '{rel_id}' {endpoint_name} '{endpoint}' references role '{role}' "
-                f"which does not exist on unit '{u_id}' (available roles: {list(unit.arguments.keys())})"
-            )

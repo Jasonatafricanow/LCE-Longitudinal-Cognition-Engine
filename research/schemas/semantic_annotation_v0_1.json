@@ -2,8 +2,14 @@
   "$defs": {
     "ArgumentMention": {
       "additionalProperties": false,
-      "description": "A grounded argument mention linked to a conservative semantic role.",
+      "description": "A grounded argument mention with its own stable mention_id.",
       "properties": {
+        "mention_id": {
+          "description": "Stable unique mention identifier, e.g. 'm_001'",
+          "minLength": 1,
+          "title": "Mention Id",
+          "type": "string"
+        },
         "role": {
           "description": "Role from ROLE_VOCABULARY",
           "title": "Role",
@@ -42,6 +48,7 @@
         }
       },
       "required": [
+        "mention_id",
         "role",
         "text"
       ],
@@ -57,6 +64,18 @@
         "unknown"
       ],
       "title": "AttributionMode",
+      "type": "string"
+    },
+    "EpistemicHedge": {
+      "description": "Explicit outer epistemic hedging decoupled from the inner proposition/desire modality.",
+      "enum": [
+        "none",
+        "think",
+        "probable",
+        "uncertain",
+        "doubt"
+      ],
+      "title": "EpistemicHedge",
       "type": "string"
     },
     "EvidenceStatus": {
@@ -91,9 +110,20 @@
       "title": "PolarityType",
       "type": "string"
     },
+    "PredicateNormalizationRule": {
+      "description": "Deterministic mechanical normalization rules permitted in v0.1.",
+      "enum": [
+        "exact_surface",
+        "lemma",
+        "compound_lower",
+        "frozen_map"
+      ],
+      "title": "PredicateNormalizationRule",
+      "type": "string"
+    },
     "PredicateSpec": {
       "additionalProperties": false,
-      "description": "Surface form, normalized predicate lemma/frame, and the reproducible normalization rule.",
+      "description": "Deterministic mechanical predicate normalization.",
       "properties": {
         "surface_predicate": {
           "description": "Verbatim predicate/verb/expression from text",
@@ -102,16 +132,14 @@
           "type": "string"
         },
         "normalized_predicate": {
-          "description": "Normalized lemma or standard frame label",
+          "description": "Mechanically normalized predicate",
           "minLength": 1,
           "title": "Normalized Predicate",
           "type": "string"
         },
         "normalization_rule": {
-          "description": "Explicit rule name or method (e.g. 'verb_lemma', 'shallow_nested_hedge', 'exact_match')",
-          "minLength": 1,
-          "title": "Normalization Rule",
-          "type": "string"
+          "$ref": "#/$defs/PredicateNormalizationRule",
+          "description": "Deterministic normalization rule (exact_surface, lemma, compound_lower, frozen_map)"
         }
       },
       "required": [
@@ -167,7 +195,7 @@
     },
     "SemanticRelation": {
       "additionalProperties": false,
-      "description": "Typed relation linking two units or two argument mentions.",
+      "description": "Typed relation linking two units or two stable mention IDs.",
       "properties": {
         "relation_id": {
           "minLength": 1,
@@ -175,13 +203,13 @@
           "type": "string"
         },
         "source_id": {
-          "description": "Source endpoint: unit annotation_id (e.g. 'u1') or argument mention (e.g. 'u1:actor')",
+          "description": "Source endpoint: unit annotation_id (e.g. 'u1') or stable mention_id (e.g. 'm_001')",
           "minLength": 1,
           "title": "Source Id",
           "type": "string"
         },
         "target_id": {
-          "description": "Target endpoint: unit annotation_id (e.g. 'u2') or argument mention (e.g. 'u2:theme')",
+          "description": "Target endpoint: unit annotation_id (e.g. 'u2') or stable mention_id (e.g. 'm_002')",
           "minLength": 1,
           "title": "Target Id",
           "type": "string"
@@ -254,6 +282,11 @@
         },
         "modality": {
           "$ref": "#/$defs/ModalityType"
+        },
+        "epistemic_hedge": {
+          "$ref": "#/$defs/EpistemicHedge",
+          "default": "none",
+          "description": "Outer epistemic hedging (e.g. 'think', 'probable') decoupled from inner matrix modality"
         },
         "holder_ref": {
           "description": "Entity reference of holder (e.g. 'user', 'Alice', 'VP', 'system', 'unknown')",

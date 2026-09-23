@@ -1,6 +1,6 @@
 # LCE Semantic Annotation Examples v0.1
 
-**Status:** Frozen Reference Examples (GitHub Issue #13, Post-Review Revision)  
+**Status:** Frozen Reference Examples (GitHub Issue #13, Final Patch)  
 **Scope:** Research Only — Pairs with [`ONTOLOGY_V0_1.md`](file:///c:/projects/LCE/docs/research/semantic_annotation/ONTOLOGY_V0_1.md) and [`ANNOTATION_GUIDELINE_V0_1.md`](file:///c:/projects/LCE/docs/research/semantic_annotation/ANNOTATION_GUIDELINE_V0_1.md).
 
 ---
@@ -26,27 +26,31 @@
     "kind": "event",
     "predicate": {
       "surface_predicate": "submitted my resignation",
-      "normalized_predicate": "submit_resignation",
-      "normalization_rule": "verb_lemma"
+      "normalized_predicate": "submitted_my_resignation",
+      "normalization_rule": "compound_lower"
     },
     "arguments": {
       "actor": {
+        "mention_id": "m_u1_act",
         "role": "actor",
         "text": "I",
         "entity_ref": "user"
       },
       "target": {
+        "mention_id": "m_u1_tgt",
         "role": "target",
         "text": "Acme Corp",
         "entity_ref": "ent_acme"
       },
       "time": {
+        "mention_id": "m_u1_time",
         "role": "time",
         "text": "yesterday"
       }
     },
     "polarity": "positive",
     "modality": "asserted",
+    "epistemic_hedge": "none",
     "holder_ref": "user",
     "attribution_mode": "direct_speaker",
     "temporal_anchoring": {
@@ -86,10 +90,11 @@
     "predicate": {
       "surface_predicate": "running out of disk space",
       "normalized_predicate": "low_disk_space",
-      "normalization_rule": "standard_frame"
+      "normalization_rule": "frozen_map"
     },
     "arguments": {
       "theme": {
+        "mention_id": "m_db_1",
         "role": "theme",
         "text": "The database",
         "entity_ref": "ent_db"
@@ -97,6 +102,7 @@
     },
     "polarity": "positive",
     "modality": "asserted",
+    "epistemic_hedge": "none",
     "holder_ref": "user",
     "attribution_mode": "direct_speaker",
     "temporal_anchoring": {
@@ -109,132 +115,12 @@
     "confidence": 1.0
   }
   ```
-- **Negative Example:**  
-  *Text:* `"The database crashed at 3 PM."`  
-  *Incorrect:* `kind: "state"` (Reason: Crashing is an instantaneous change of state/event).  
-  *Correct:* `kind: "event"`, `normalized_predicate: "crash"`.
 
 ---
 
-### 1.3 `proposition`
-- **Positive Example:**  
-  *Text:* `"Immutable append-only logs prevent write-skew anomalies."`  
-  *Annotation:*
-  ```json
-  {
-    "annotation_id": "u_prop_pos_01",
-    "provenance": {
-      "raw_evidence_id": "ev_001",
-      "semantic_block_id": "block_001"
-    },
-    "source_span": {
-      "char_start": 0,
-      "char_end": 57,
-      "text": "Immutable append-only logs prevent write-skew anomalies"
-    },
-    "kind": "proposition",
-    "predicate": {
-      "surface_predicate": "prevent",
-      "normalized_predicate": "prevent_anomaly",
-      "normalization_rule": "standard_frame"
-    },
-    "arguments": {
-      "theme": {
-        "role": "theme",
-        "text": "Immutable append-only logs"
-      },
-      "target": {
-        "role": "target",
-        "text": "write-skew anomalies"
-      }
-    },
-    "polarity": "positive",
-    "modality": "asserted",
-    "holder_ref": "user",
-    "attribution_mode": "direct_speaker",
-    "temporal_anchoring": {
-      "normalized_value": "unknown",
-      "anchor_type": "unanchored",
-      "source_expression": null,
-      "reference_anchor": null
-    },
-    "evidence_status": "explicit",
-    "confidence": 1.0
-  }
-  ```
-- **Negative Example:**  
-  *Text:* `"I configured an append-only log yesterday."`  
-  *Incorrect:* `kind: "proposition"` (Reason: Specific action performed by an actor at a date).  
-  *Correct:* `kind: "event"`, `normalized_predicate: "configure"`.
-
----
-
-### 1.4 `attitude`
-- **Positive Example:**  
-  *Text:* `"I prefer writing Rust over Python for systems programming."`  
-  *Annotation:*
-  ```json
-  {
-    "annotation_id": "u_att_pos_01",
-    "provenance": {
-      "raw_evidence_id": "ev_001",
-      "semantic_block_id": "block_001"
-    },
-    "source_span": {
-      "char_start": 0,
-      "char_end": 58,
-      "text": "I prefer writing Rust over Python for systems programming"
-    },
-    "kind": "attitude",
-    "predicate": {
-      "surface_predicate": "prefer",
-      "normalized_predicate": "prefer",
-      "normalization_rule": "verb_lemma"
-    },
-    "arguments": {
-      "experiencer": {
-        "role": "experiencer",
-        "text": "I",
-        "entity_ref": "user"
-      },
-      "theme": {
-        "role": "theme",
-        "text": "writing Rust"
-      },
-      "target": {
-        "role": "target",
-        "text": "Python"
-      },
-      "topic": {
-        "role": "topic",
-        "text": "systems programming"
-      }
-    },
-    "polarity": "positive",
-    "modality": "asserted",
-    "holder_ref": "user",
-    "attribution_mode": "direct_speaker",
-    "temporal_anchoring": {
-      "normalized_value": "2026",
-      "anchor_type": "bounded_range",
-      "source_expression": null,
-      "reference_anchor": "evidence:occurred_at"
-    },
-    "evidence_status": "explicit",
-    "confidence": 1.0
-  }
-  ```
-- **Negative Example:**  
-  *Text:* `"I wrote a Rust compiler last month."`  
-  *Incorrect:* `kind: "attitude"` (Reason: Concrete past action, not a mental valuation).  
-  *Correct:* `kind: "event"`, `normalized_predicate: "write"`.
-
----
-
-## 2. Special Policy Examples
-
-### 2.1 Shallow Nested Attitude Example
-- **Text:** `"I think I want to leave."`
+### 1.3 `attitude` and Nested Epistemic Hedging
+- **Positive Example (Nested Attitude):**  
+  *Text:* `"I think I want to leave."`  
   *Annotation:*
   ```json
   {
@@ -250,115 +136,52 @@
     },
     "kind": "attitude",
     "predicate": {
-      "surface_predicate": "think I want to leave",
+      "surface_predicate": "leave",
       "normalized_predicate": "leave",
-      "normalization_rule": "shallow_nested_hedge"
+      "normalization_rule": "exact_surface"
     },
     "arguments": {
       "actor": {
+        "mention_id": "m_user_leave",
         "role": "actor",
         "text": "I",
         "entity_ref": "user"
       }
     },
     "polarity": "positive",
-    "modality": "uncertain",
+    "modality": "desired",
+    "epistemic_hedge": "think",
     "holder_ref": "user",
     "attribution_mode": "direct_speaker",
     "temporal_anchoring": {
       "normalized_value": "unknown",
-      "anchor_type": "unanchored"
+      "anchor_type": "unanchored",
+      "source_expression": null,
+      "reference_anchor": null
     },
     "evidence_status": "explicit",
-    "confidence": 0.70
+    "confidence": 1.0
   }
   ```
-  *Negative Error:* Setting `modality: "desired"` without epistemic hedging. Silently converting belief-about-desire into unhedged desire is prohibited.
-
-### 2.2 Removal of Manufactured Result States
-- **Text:** `"I moved to London in 2021."`
-  - *Correct Annotation:* A single unit:
-    ```json
-    {
-      "annotation_id": "u_move_01",
-      "kind": "event",
-      "predicate": {
-        "surface_predicate": "moved",
-        "normalized_predicate": "move_to",
-        "normalization_rule": "verb_lemma"
-      },
-      "arguments": {
-        "actor": {"role": "actor", "text": "I", "entity_ref": "user"},
-        "target": {"role": "target", "text": "London", "entity_ref": "loc_london"},
-        "time": {"role": "time", "text": "in 2021"}
-      },
-      "temporal_anchoring": {
-        "normalized_value": "2021",
-        "anchor_type": "exact",
-        "source_expression": "in 2021"
-      },
-      "evidence_status": "explicit",
-      "confidence": 1.0
-    }
-    ```
-  - *Prohibited Negative Error:* Manufacturing a second synthetic unit `kind: "state", predicate: "live_in", arguments: {place: "London"}` and drawing a `CAUSE` relation to it. Transition events must not invent continuous result states without explicit bounded evidence.
+  *Analysis:*
+  - `modality` is preserved as `desired` (capturing the desire stance).
+  - `epistemic_hedge` explicitly preserves the outer hedging (`think`).
+  - `confidence` is `1.0` (annotation accuracy is high; no arbitrary confidence reduction).
 
 ---
 
-## 3. Holder Identity and Attribution Mode
+## 2. Relations: Mention-Based `SAME_ENTITY` and Graph Admission
 
-- **Text:** `"The VP announced 'We will achieve profitability next quarter', but our director told me the runway is four months."`
-  - *Unit 1 (VP Quote):*
-    ```json
-    {
-      "annotation_id": "u_vp_01",
-      "kind": "proposition",
-      "predicate": {
-        "surface_predicate": "achieve profitability",
-        "normalized_predicate": "profitable",
-        "normalization_rule": "standard_frame"
-      },
-      "arguments": {
-        "theme": {"role": "theme", "text": "We", "entity_ref": "company"},
-        "time": {"role": "time", "text": "next quarter"}
-      },
-      "holder_ref": "VP",
-      "attribution_mode": "direct_quote"
-    }
-    ```
-  - *Unit 2 (Director Report):*
-    ```json
-    {
-      "annotation_id": "u_dir_01",
-      "kind": "state",
-      "predicate": {
-        "surface_predicate": "runway is four months",
-        "normalized_predicate": "runway_duration",
-        "normalization_rule": "standard_frame"
-      },
-      "arguments": {
-        "theme": {"role": "theme", "text": "runway"},
-        "result": {"role": "result", "text": "four months"}
-      },
-      "holder_ref": "director",
-      "attribution_mode": "indirect_report"
-    }
-    ```
-
----
-
-## 4. Relations: Grounding, Control Gating, and Mention Endpoints
-
-### 4.1 `SAME_ENTITY` Over Argument Mentions
+### 2.1 `SAME_ENTITY` Connecting Stable Mention IDs
 - **Text:** `"Alice joined the security team in June. The security team welcomed her warmly."`
-  - $U_1$: `join(Alice, security team)`
-  - $U_2$: `welcome(security team, her)`
+  - $U_1$: `join` with argument `actor` (mention `m_alice_1`).
+  - $U_2$: `welcome` with argument `target` (mention `m_alice_2`).
   - Relation:
     ```json
     {
       "relation_id": "rel_same_ent_01",
-      "source_id": "u1:actor",
-      "target_id": "u2:target",
+      "source_id": "m_alice_1",
+      "target_id": "m_alice_2",
       "relation_type": "SAME_ENTITY",
       "evidence_status": "explicit",
       "confidence": 1.0,
@@ -368,45 +191,31 @@
       }
     }
     ```
-  *Negative Error:* Using `source_id: "u1", target_id: "u2"`. `SAME_ENTITY` must target argument mentions (`u1:actor`), not whole propositions.
+  *Negative Error:* Using `source_id: "u1:actor", target_id: "u2:target"`. Pseudo-identifiers with colons are rejected. Mention IDs must be stable and explicit.
 
-### 4.2 `INCOMPATIBLE` Requires Overlapping Temporal Validity
-- **Positive Example (Contemporaneous Conflict):**  
-  *Text (Same meeting, 2026-09-10):* `"The server is fully operational. The server is completely offline."`
-  - $U_1$: `operational(server)`, `time: 2026-09-10`
-  - $U_2$: `offline(server)`, `time: 2026-09-10`
-  - Relation: `u1 INCOMPATIBLE u2` (overlapping times, mutually exclusive states).
-- **Negative Example (Cross-Time Shift):**  
-  *Text 1 (2022):* `"I really want to work at BigCorp."`  
-  *Text 2 (2026):* `"I will never work at BigCorp again."`  
-  - $U_1$: `time: 2022`, `polarity: positive`, `modality: desired`.
-  - $U_2$: `time: 2026`, `polarity: negative`, `modality: intended`.
-  - *Correct Relations:*
-    - `u1 BEFORE u2`
-    - `u1:target SAME_ENTITY u2:target`
-  - *Prohibited Negative Error:* Labeling `u1 INCOMPATIBLE u2` or `u1 REVISION u2`. Because the temporal anchors do not overlap, this is a chronological difference from which downstream LCE infers cognitive change.
-
-### 4.3 Control Labels Gated from Graph Persistence
-- For evaluation benchmarks, unlinked or indeterminate pairs emit:
-  ```json
-  {
-    "relation_id": "rel_ctrl_01",
-    "source_id": "u1",
-    "target_id": "u2",
-    "relation_type": "NO_RELATION",
-    "evidence_status": "explicit",
-    "confidence": 1.0,
-    "provenance": {
-      "raw_evidence_id": "ev_001",
-      "semantic_block_id": "block_001"
+### 2.2 Frozen Graph Admission (Inferred is Audit-Only)
+- **Example:**  
+  *Text:* `"The database server rebooted. All connections were terminated."`
+  - Relation:
+    ```json
+    {
+      "relation_id": "rel_inferred_cause",
+      "source_id": "u1",
+      "target_id": "u2",
+      "relation_type": "CAUSE",
+      "evidence_status": "inferred",
+      "confidence": 0.85,
+      "provenance": {
+        "raw_evidence_id": "ev_001",
+        "semantic_block_id": "block_001"
+      }
     }
-  }
-  ```
-  *Rule:* This relation is retained in annotation files for inter-annotator evaluation, but calling `to_graph_edge()` fails with an error: control outcomes are never persisted into the typed graph.
+    ```
+  *Graph Policy:* This relation is retained in the benchmark record for annotator audit. Calling `to_graph_edge()` fails with an error: inferred relations **MUST NOT** be admitted into positive graphs in v0.1/#16/#17. Only `explicit` and `entailed` relations are admitted.
 
 ---
 
-## 5. Complete Multi-Unit End-to-End Walkthrough
+## 3. Complete Multi-Unit End-to-End Walkthrough
 
 ### Raw Evidence Input
 ```text
@@ -441,25 +250,29 @@ riskier', but I joined a five-person AI lab last week anyway."
       "predicate": {
         "surface_predicate": "loved working",
         "normalized_predicate": "love",
-        "normalization_rule": "verb_lemma"
+        "normalization_rule": "frozen_map"
       },
       "arguments": {
         "experiencer": {
+          "mention_id": "m1_user_exp",
           "role": "experiencer",
           "text": "I",
           "entity_ref": "user"
         },
         "theme": {
+          "mention_id": "m1_theme",
           "role": "theme",
           "text": "working at BigCorp"
         },
         "time": {
+          "mention_id": "m1_time",
           "role": "time",
           "text": "In 2022"
         }
       },
       "polarity": "positive",
       "modality": "asserted",
+      "epistemic_hedge": "none",
       "holder_ref": "user",
       "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
@@ -486,14 +299,16 @@ riskier', but I joined a five-person AI lab last week anyway."
       "predicate": {
         "surface_predicate": "exhilarating",
         "normalized_predicate": "exhilarating",
-        "normalization_rule": "exact_match"
+        "normalization_rule": "exact_surface"
       },
       "arguments": {
         "stimulus": {
+          "mention_id": "m2_stimulus",
           "role": "stimulus",
           "text": "the scale"
         },
         "experiencer": {
+          "mention_id": "m2_user_exp",
           "role": "experiencer",
           "text": "I",
           "entity_ref": "user"
@@ -501,6 +316,7 @@ riskier', but I joined a five-person AI lab last week anyway."
       },
       "polarity": "positive",
       "modality": "asserted",
+      "epistemic_hedge": "none",
       "holder_ref": "user",
       "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
@@ -527,21 +343,24 @@ riskier', but I joined a five-person AI lab last week anyway."
       "predicate": {
         "surface_predicate": "burned out",
         "normalized_predicate": "burn_out",
-        "normalization_rule": "verb_lemma"
+        "normalization_rule": "frozen_map"
       },
       "arguments": {
         "actor": {
+          "mention_id": "m3_user_act",
           "role": "actor",
           "text": "I",
           "entity_ref": "user"
         },
         "time": {
+          "mention_id": "m3_time",
           "role": "time",
           "text": "by 2025"
         }
       },
       "polarity": "positive",
       "modality": "asserted",
+      "epistemic_hedge": "none",
       "holder_ref": "user",
       "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
@@ -567,16 +386,18 @@ riskier', but I joined a five-person AI lab last week anyway."
       "kind": "attitude",
       "predicate": {
         "surface_predicate": "work",
-        "normalized_predicate": "work_at",
-        "normalization_rule": "standard_frame"
+        "normalized_predicate": "work",
+        "normalization_rule": "exact_surface"
       },
       "arguments": {
         "actor": {
+          "mention_id": "m4_user_act",
           "role": "actor",
           "text": "I",
           "entity_ref": "user"
         },
         "target": {
+          "mention_id": "m4_target",
           "role": "target",
           "text": "giant corporation",
           "entity_ref": "ent_corp"
@@ -584,6 +405,7 @@ riskier', but I joined a five-person AI lab last week anyway."
       },
       "polarity": "negative",
       "modality": "intended",
+      "epistemic_hedge": "none",
       "holder_ref": "user",
       "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
@@ -610,16 +432,18 @@ riskier', but I joined a five-person AI lab last week anyway."
       "predicate": {
         "surface_predicate": "are riskier",
         "normalized_predicate": "risky",
-        "normalization_rule": "standard_frame"
+        "normalization_rule": "frozen_map"
       },
       "arguments": {
         "theme": {
+          "mention_id": "m5_startups",
           "role": "theme",
           "text": "Small startups"
         }
       },
       "polarity": "positive",
       "modality": "asserted",
+      "epistemic_hedge": "none",
       "holder_ref": "mentor",
       "attribution_mode": "direct_quote",
       "temporal_anchoring": {
@@ -645,27 +469,31 @@ riskier', but I joined a five-person AI lab last week anyway."
       "kind": "event",
       "predicate": {
         "surface_predicate": "joined",
-        "normalized_predicate": "join",
-        "normalization_rule": "verb_lemma"
+        "normalized_predicate": "joined",
+        "normalization_rule": "exact_surface"
       },
       "arguments": {
         "actor": {
+          "mention_id": "m6_user_act",
           "role": "actor",
           "text": "I",
           "entity_ref": "user"
         },
         "target": {
+          "mention_id": "m6_target",
           "role": "target",
           "text": "five-person AI lab",
           "entity_ref": "ent_lab"
         },
         "time": {
+          "mention_id": "m6_time",
           "role": "time",
           "text": "last week"
         }
       },
       "polarity": "positive",
       "modality": "asserted",
+      "epistemic_hedge": "none",
       "holder_ref": "user",
       "attribution_mode": "direct_speaker",
       "temporal_anchoring": {
@@ -756,8 +584,8 @@ riskier', but I joined a five-person AI lab last week anyway."
     },
     {
       "relation_id": "rel_05",
-      "source_id": "u1:experiencer",
-      "target_id": "u3:actor",
+      "source_id": "m1_user_exp",
+      "target_id": "m3_user_act",
       "relation_type": "SAME_ENTITY",
       "evidence_status": "explicit",
       "confidence": 1.0,

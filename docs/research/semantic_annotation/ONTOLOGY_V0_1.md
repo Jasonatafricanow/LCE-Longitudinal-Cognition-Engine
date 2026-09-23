@@ -1,6 +1,6 @@
 # LCE Semantic Annotation Ontology v0.1
 
-**Status:** Frozen Research Contract (GitHub Issue #13, Post-Review Revision)  
+**Status:** Frozen Research Contract (GitHub Issue #13, Final Patch)  
 **Scope:** Research Only — Does not modify production runtime or contracts  
 **Audience:** Human annotators, synthetic annotation pipeline authors, semantic parser implementers  
 
@@ -70,10 +70,11 @@ Every `SemanticUnit` must provide the following fields:
 | `provenance` | `UnitProvenance` | Mandatory links to upstream source: `raw_evidence_id` and `semantic_block_id`. |
 | `source_span` | `SourceSpan` | Bounded character offsets (`char_start`, `char_end`) and verbatim `text`. |
 | `kind` | `UnitKind` | Coarse category: `event`, `state`, `proposition`, `attitude`. |
-| `predicate` | `PredicateSpec` | Reproducible predicate representation: `surface_predicate`, `normalized_predicate`, and `normalization_rule`. |
-| `arguments` | `map<role, ArgumentMention>` | Conservative semantic roles mapping defined role names to grounded argument mentions. |
+| `predicate` | `PredicateSpec` | Deterministic mechanical predicate: `surface_predicate`, `normalized_predicate`, and `normalization_rule`. |
+| `arguments` | `map<role, ArgumentMention>` | Conservative semantic roles mapping role names to grounded mentions with stable `mention_id`. |
 | `polarity` | `PolarityType` | Truth/affirmation status: `positive`, `negative`, `unknown`. |
-| `modality` | `ModalityType` | Epistemic/intentional mode: `asserted`, `possible`, `hypothetical`, `intended`, `desired`, `uncertain`, `unknown`. |
+| `modality` | `ModalityType` | Inner proposition/desire mode: `asserted`, `possible`, `hypothetical`, `intended`, `desired`, `uncertain`, `unknown`. |
+| `epistemic_hedge` | `EpistemicHedge` | Decoupled outer epistemic hedge: `none`, `think`, `probable`, `uncertain`, `doubt`. |
 | `holder_ref` | `string` | Referent of the proposition holder (e.g. `"user"`, `"VP"`, `"Alice"`, `"system"`, `"unknown"`). |
 | `attribution_mode` | `AttributionMode` | Attribution mechanism: `direct_speaker`, `direct_quote`, `indirect_report`, `external_source`, `unknown`. |
 | `temporal_anchoring` | `TemporalAnchoring` | Normalized temporal value, `anchor_type`, `source_expression`, and `reference_anchor`. |
@@ -97,67 +98,55 @@ Every `SemanticUnit` must provide the following fields:
 
 ---
 
-### 4.2 Semantic Roles (`arguments`)
+### 4.2 Semantic Roles & Argument Mentions (`arguments`)
 
-Semantic roles in v0.1 are intentionally conservative and borrow from standard semantic-role frameworks (PropBank, VerbNet, UMR) rather than inventing domain-specific labels:
-
-- **`actor`**: The volitional entity initiating, driving, or executing an action or event.
-- **`experiencer`**: The cognitive or sentient entity experiencing a psychological state, feeling, perception, or attitude.
-- **`theme`**: The entity undergoing an action, moving, changing state, or being described, without initiating volition.
-- **`target`**: The entity, person, institution, or proposition toward which an action or attitude is directed.
-- **`stimulus`**: The external event, entity, or circumstance that evokes an experience, reaction, or mental state.
-- **`topic`**: The general subject matter, domain, or theme of a proposition, discussion, or thought.
-- **`place`**: The physical, virtual, or geographical location where an event or state occurs.
-- **`reason`**: The stated justification, explanation, or motivation for an event, state, or attitude.
-- **`purpose`**: The intended outcome, goal, or objective behind an action.
-- **`result`**: The actual consequence, subsequent state, or product resulting from an event.
-- **`time`**: An explicit temporal phrase or anchor within the text span (e.g. "in October 2024").
+Arguments are modeled as `ArgumentMention` instances with stable unique identifiers:
+- `mention_id`: Stable identifier (e.g. `"m_001"`, `"m_alice_1"`).
+- `role`: One of the 11 conservative roles:
+  - `actor`, `experiencer`, `theme`, `target`, `stimulus`, `topic`, `place`, `reason`, `purpose`, `result`, `time`.
+- `text`: Verbatim argument substring.
+- `source_span`: Character span of the mention within the raw evidence.
+- `entity_ref`: Optional local entity identifier (e.g. `"ent_user"`, `"ent_bigcorp"`).
 
 *Role Policy:* Roles must only be annotated when directly supported by the source text. Omit unstated roles; **never** invent arguments from world knowledge.
 
 ---
 
-### 4.3 Holder Identity vs. Attribution Mode
+### 4.3 Nested Attitude Semantics: Modality vs. Epistemic Hedging
 
-To avoid conflating *who* holds a proposition with *how* it was conveyed in text, v0.1 decouples them into two orthogonal fields:
+To prevent conflating desire with certainty, and to eliminate arbitrary confidence penalties, v0.1 decouples inner attitude modality from outer epistemic qualification:
 
-1. **`holder_ref`**: A string indicating the referent who holds the belief, state, or action:
-   - `"user"`: The first-person author/speaker.
-   - Named entity / role: E.g. `"Alice"`, `"VP"`, `"mentor"`, `"team_lead"`.
-   - `"system"`: Automated engine or log source.
-   - `"unknown"`: Unattributable source.
-2. **`attribution_mode`**:
-   - **`direct_speaker`**: Author asserts it directly in their own voice.
-   - **`direct_quote`**: Directly quoted verbatim speech/text (e.g. enclosed in quotes).
-   - **`indirect_report`**: Indirect reporting or hearsay (e.g. "Bob told me that...").
-   - **`external_source`**: Document, system log, or prompt context.
-   - **`unknown`**: Attribution mode cannot be resolved.
+1. **`modality`**: Captures the matrix mode of the core proposition or attitude:
+   - `asserted`: Unqualified factual claim.
+   - `desired`: Want, desire, aspiration, or preference.
+   - `intended`: Plan, decision, or future commitment.
+   - `possible`: Possibility ("might", "may").
+   - `hypothetical`: Conditional or counterfactual ("would if").
+   - `uncertain`: Inherently uncertain matrix proposition.
+   - `unknown`: Undetermined.
+2. **`epistemic_hedge`**: Captures outer epistemic qualification:
+   - `none`: Unhedged assertion (default).
+   - `think`: Outer belief/opinion hedge ("I think", "I believe").
+   - `probable`: Likelihood hedge ("probably", "likely").
+   - `uncertain`: Direct epistemic doubt ("wonder if", "not sure if").
+   - `doubt`: Negative epistemic hedge ("I doubt that").
 
----
-
-### 4.4 Temporal Anchoring (`temporal_anchoring`)
-
-- `normalized_value`: Standardized ISO 8601 string (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SSZ`), date range, or `"unknown"`.
-- `anchor_type`:
-  - `exact`: Precise calendar date or timestamp explicitly stated.
-  - `bounded_range`: Bounded temporal window (e.g. "Q3 2023", "Summer 2024").
-  - `relative`: Expressed relative to a reference time (e.g. "yesterday", "next week").
-  - `unanchored`: Timeless proposition or unanchorable statement.
-- `source_expression`: Verbatim temporal phrase from the span (e.g. "last Tuesday").
-- `reference_anchor`: For relative anchors, the explicit base anchor (e.g. `"evidence:occurred_at"`, `"doc_time"`). If unresolved, it remains explicit rather than guessed.
+*Example:* `"I think I want to leave."`  
+- `modality`: `desired` (preserving the desire modal dimension).
+- `epistemic_hedge`: `think` (preserving the epistemic qualification explicitly).
+- `confidence`: `1.0` (annotation confidence measures mapping accuracy, not semantic loss).
 
 ---
 
-### 4.5 Predicate Normalization (`PredicateSpec`)
+### 4.4 Predicate Normalization (`PredicateSpec`)
 
-To ensure evaluation does not fail due to unconstrained synonym choices:
-- `surface_predicate`: The verbatim verb, adjective, or predicate phrase from the source text.
-- `normalized_predicate`: Standardized lemma or canonical frame label.
-- `normalization_rule`: The deterministic rule applied:
-  - `"verb_lemma"`: English lemmatization (e.g. `"resigned"` $\implies$ `"resign"`).
-  - `"standard_frame"`: Canonical frame (e.g. `"love"`, `"like"` $\implies$ `"prefer"` or `"desire"`).
-  - `"shallow_nested_hedge"`: Policy for flattened nested attitudes.
-  - `"exact_match"`: Surface matches normalized lemma.
+To ensure gold scoring is 100% reproducible across annotators and automated parsers, open-ended synonym rewriting (e.g. `want ≈ desire ≈ wish`) is **strictly forbidden** in v0.1.
+
+Normalization is restricted to deterministic mechanical rules (`PredicateNormalizationRule`):
+- **`exact_surface`**: Normalized predicate must strictly equal the lowercase surface form.
+- **`lemma`**: Mechanical lowercased English base lemma (no synonym substitution).
+- **`compound_lower`**: Lowercase with whitespace replaced by underscores (e.g. `"drop database"` $\implies$ `"drop_database"`).
+- **`frozen_map`**: Verified against an explicit, frozen lookup table ([`FROZEN_PREDICATE_MAP`](file:///c:/projects/LCE/research/semantic_annotation/schema.py)).
 
 ---
 
@@ -170,8 +159,8 @@ Relations link two semantic endpoints. Every relation must be **independently gr
 | Field | Type | Description |
 | :--- | :--- | :--- |
 | `relation_id` | `string` | Unique identifier (e.g. `"rel_001"`). |
-| `source_id` | `string` | Source endpoint (`unit_id` or argument mention `unit_id:role`). |
-| `target_id` | `string` | Target endpoint (`unit_id` or argument mention `unit_id:role`). |
+| `source_id` | `string` | Source endpoint: unit `annotation_id` or argument `mention_id`. |
+| `target_id` | `string` | Target endpoint: unit `annotation_id` or argument `mention_id`. |
 | `relation_type` | `RelationType` | The relation label. |
 | `evidence_status` | `EvidenceStatus` | Grounding of the relation itself: `explicit`, `entailed`, `inferred`, `unknown`. |
 | `confidence` | `float` | Annotator confidence in the relation ($0.0 \le c \le 1.0$). |
@@ -180,52 +169,24 @@ Relations link two semantic endpoints. Every relation must be **independently gr
 
 ---
 
-### 5.2 Relation Ontology Categories
+### 5.2 Identity Relations: Mention-Based `SAME_ENTITY`
 
-#### 1. Identity Relations (Argument Mention Endpoints)
-- **`SAME_ENTITY`**: Links two argument mentions (format: `<unit_id>:<role>`, e.g. `u1:actor SAME_ENTITY u2:target`). Denotes coreference between participant mentions. It is **never** drawn between two proposition unit IDs.
-- **`SAME_EVENT`**: Links two event units (`u1 SAME_EVENT u2`) denoting the identical real-world event occurrence with identical participants and spatio-temporal bounds.
-
-#### 2. Temporal Relations (Unit Endpoints)
-- **`BEFORE`**: `source_id` concluded before `target_id` began.
-- **`AFTER`**: `source_id` began after `target_id` concluded.
-- **`OVERLAP`**: The durations of `source_id` and `target_id` intersect.
-- **`TEMPORAL_UNKNOWN`**: Both units have temporal extent, but relative order is indeterminate. (Control label; never persisted as graph edge).
-
-#### 3. Logical / Discourse Relations (Unit Endpoints)
-- **`CAUSE`**: `source_id` explicitly caused or produced `target_id`. Requires explicit connective or clear causal discourse framing.
-- **`CONDITION`**: `source_id` is a conditional premise for `target_id` ("if P, then Q").
-- **`PURPOSE`**: `target_id` is the goal of action `source_id` ("P in order to Q").
-- **`CONTRAST`**: Antithetical viewpoints or contrasting states without mutual exclusion.
-- **`CONCESSION`**: `target_id` holds unexpectedly despite `source_id` ("although P, Q").
-
-#### 4. State Compatibility Relations (Unit Endpoints)
-- **`EQUIVALENT`**: `source_id` and `target_id` express semantically equivalent propositions/states over the same scope.
-- **`INCOMPATIBLE`**: `source_id` and `target_id` assert mutually exclusive states/attitudes about the same subject, dimension, and scope **with overlapping temporal validity**.  
-  *Crucial Temporal Invariant:* Opposite states or attitudes occurring at **distinct, non-overlapping times** (e.g., 2022 preference vs 2026 preference) are **not** `INCOMPATIBLE`. They are modeled as distinct units with distinct temporal anchors and a `BEFORE` temporal ordering. Downstream LCE infers revision/shift. `INCOMPATIBLE` is reserved strictly for contemporaneous/overlapping mutual exclusion.
-
-#### 5. Control Outcomes (Evaluation Only)
-- **`NO_RELATION`**: Evaluated pair has no semantic, temporal, or logical relation.
-- **`UNKNOWN`**: Indeterminate from available context.
-- **Rule of Graph Gating:** Control labels (`NO_RELATION`, `UNKNOWN`, `TEMPORAL_UNKNOWN`) are evaluation outcomes and **must never be serialized as positive graph edges**.
+- **`SAME_ENTITY`**: Strictly connects two stable `mention_id`s (`source_id="m_001", target_id="m_002"`). It denotes coreference between participant mentions.  
+  *Strict Invariant:* `SAME_ENTITY` must **never** connect proposition unit IDs or `<unit_id>:<role>` pseudo-identifiers.
+- **`SAME_EVENT`**: Connects two event unit IDs (`source_id="u1", target_id="u2"`) denoting the identical real-world event occurrence with identical participants and spatio-temporal bounds.
 
 ---
 
-## 6. Explicitly Forbidden Downstream Labels (Negative Invariants)
+### 5.3 Frozen Graph Admission: Inferred Annotations Are Audit-Only
 
-The semantic parser must **never** output cognitive or longitudinal interpretation labels:
-
-`REVISION`, `RECURRENCE`, `TRAJECTORY`, `STABLE_PREFERENCE`, `COGNITIVE_SHIFT`, `LONG_TERM_BELIEF`, `LONG_TERM_IDENTITY`, `SUPPORTS_LONGITUDINAL_COGNITION`, `SUPERCEDES_LONG_TERM_BELIEF`.
-
-Attempting to serialize these labels in `kind`, `predicate`, or `relation_type` triggers strict validation errors.
+To ensure empirical validity and prevent ungrounded graph hallucination in Issues #16 and #17:
+- **`explicit` and `entailed`** are the **only** evidence statuses eligible for admission into the typed graph.
+- **`inferred` and `unknown`** units and relations are **audit-only**. They are retained for annotator review and error tracking, but **MUST NOT** become positive graph nodes or edges. Calling `to_graph_node()` or `to_graph_edge()` on an inferred element triggers a strict runtime error.
+- **Control labels** (`NO_RELATION`, `UNKNOWN`, `TEMPORAL_UNKNOWN`) are evaluation outcomes and **MUST NEVER** be serialized as positive graph edges.
 
 ---
 
-## 7. Shallow Nested-Attitude Policy
+### 5.4 State Compatibility Invariant
 
-v0.1 employs a shallow propositional schema (no nested AST):
-- When an attitude embeds another attitude/thought (e.g. *"I think I want to leave"*):
-  1. The inner attitude is extracted: `kind: attitude`, `predicate: leave`.
-  2. If hedged with epistemic doubt ("think", "wonder"), the epistemic uncertainty is preserved by setting `modality: uncertain` and lowering confidence ($c \le 0.70$).
-  3. The normalization rule is recorded as `"shallow_nested_hedge"`.
-  4. The annotator must **never** silently promote a hedged belief-about-desire into an unhedged `desired` modality.
+- **`INCOMPATIBLE`**: Requires matching subject, dimension, and scope **with overlapping temporal validity**.
+- *Cross-time changes:* If two opposite preferences or states occur at distinct, non-overlapping times (e.g. 2022 preference vs. 2026 preference), they are **not** `INCOMPATIBLE`. They are modeled as two distinct units with distinct temporal anchors and a `BEFORE` temporal ordering. Downstream LCE infers revision/change.

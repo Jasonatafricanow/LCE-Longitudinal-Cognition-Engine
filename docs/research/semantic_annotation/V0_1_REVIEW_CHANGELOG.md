@@ -2,96 +2,94 @@
 
 **Document:** `V0_1_REVIEW_CHANGELOG.md`  
 **Issue:** GitHub Issue #13  
-**Status:** Frozen Revision  
-**Reference Commit:** Revising initial draft on branch `research/semantic-annotation-ontology`
+**Status:** Frozen Revision & Final Patch Complete  
+**Reference Branch:** `research/semantic-annotation-ontology`
 
-This document provides a point-by-point mapping of the 11 review recommendations to the concrete modifications made in the schema, ontology, guidelines, examples, and test suite.
+This document records all modifications made to v0.1: Part 1 maps the initial 11 post-implementation review recommendations, and Part 2 maps the 4 final patch requirements.
 
 ---
 
+## Part 1: Initial Review Points (1–11)
+
 ### 1. Split Holder Identity from Attribution Mode
-- **Problem:** Previous draft used `holder: user | quoted | reported | system | unknown`, conflating *who holds the stance* with *how it is syntactically/discursively conveyed*.
-- **Change:**
-  - Replaced categorical `holder` with two orthogonal fields:
-    - `holder_ref: str` (e.g. `"user"`, `"Alice"`, `"VP"`, `"system"`, `"unknown"`).
-    - `attribution_mode: AttributionMode` (`direct_speaker`, `direct_quote`, `indirect_report`, `external_source`, `unknown`).
-  - Updated in `research/semantic_annotation/schema.py`, `ONTOLOGY_V0_1.md`, and `ANNOTATION_GUIDELINE_V0_1.md`.
+- Replaced categorical `holder` with two orthogonal fields:
+  - `holder_ref: str` (e.g. `"user"`, `"Alice"`, `"VP"`, `"system"`, `"unknown"`).
+  - `attribution_mode: AttributionMode` (`direct_speaker`, `direct_quote`, `indirect_report`, `external_source`, `unknown`).
 
 ### 2. Fix `INCOMPATIBLE` Temporal Semantics
-- **Problem:** Cross-time opposite statements (e.g. 2022 preference vs. 2026 preference) were previously allowed to receive an `INCOMPATIBLE` edge, conflating longitudinal shift with local incompatibility.
-- **Change:**
-  - Added strict temporal validity constraint: `INCOMPATIBLE` requires matching subject, dimension, and scope **with overlapping temporal validity**.
-  - Cross-time opposite statements must be represented as distinct dated units with opposite polarity/value and a `BEFORE` temporal ordering. Downstream LCE infers belief revision.
-  - Added validation in `SemanticAnnotationDocument.validate_document_semantics()` that rejects `INCOMPATIBLE` between units with non-overlapping exact temporal anchors.
+- Added strict temporal validity constraint: `INCOMPATIBLE` requires matching subject, dimension, and scope **with overlapping temporal validity**.
+- Cross-time opposite statements are modeled as distinct dated units with opposite polarity/value and a `BEFORE` temporal ordering. Downstream LCE infers belief revision.
 
 ### 3. Ground Every Positive Relation Independently
-- **Problem:** Relations relied solely on unit-level status and lacked independent provenance and grounding.
-- **Change:**
-  - `SemanticRelation` now requires:
-    - `provenance: RelationProvenance` (`raw_evidence_id`, `semantic_block_id`).
-    - `evidence_status: EvidenceStatus` (`explicit`, `entailed`, `inferred`, `unknown`).
-    - `confidence: float` ($0.0 \le c \le 1.0$).
-    - `supporting_spans: list[SourceSpan]` (pointing to connective phrases such as "because", "although").
+- `SemanticRelation` now requires its own:
+  - `provenance: RelationProvenance` (`raw_evidence_id`, `semantic_block_id`).
+  - `evidence_status: EvidenceStatus` (`explicit`, `entailed`, `inferred`, `unknown`).
+  - `confidence: float` ($0.0 \le c \le 1.0$).
+  - `supporting_spans: list<SourceSpan>`.
 
 ### 4. Keep Control Labels Out of the Graph
-- **Problem:** Control outcomes (`NO_RELATION`, `UNKNOWN`, `TEMPORAL_UNKNOWN`) risk polluting downstream graph indexes if serialized as graph edges.
-- **Change:**
-  - Explicitly defined `CONTROL_RELATION_TYPES = {NO_RELATION, UNKNOWN, TEMPORAL_UNKNOWN}`.
-  - Added property `is_graph_edge` and method `to_graph_edge()` on `SemanticRelation`. Attempting to serialize a control outcome as a graph edge raises a `ValueError`.
-  - Documented in guideline that control outcomes are solely for inter-annotator evaluation and benchmark scoring.
+- Defined `CONTROL_RELATION_TYPES = {NO_RELATION, UNKNOWN, TEMPORAL_UNKNOWN}`.
+- Added `is_graph_edge` property and `to_graph_edge()` serialization guard that raises a `ValueError` if called on any control label.
 
-### 5. Make `SAME_ENTITY` Representable Over Argument Mentions
-- **Problem:** `SAME_ENTITY` previously targeted proposition IDs, making argument-level entity coreference impossible to distinguish from event coreference.
-- **Change:**
-  - Introduced `ArgumentMention` model with `role`, `text`, optional `source_span`, and optional `entity_ref`.
-  - `SAME_ENTITY` endpoints are strictly validated to target argument mentions in format `<unit_id>:<role>` (e.g. `u1:actor SAME_ENTITY u2:target`), and verified to exist on the respective units.
-  - `SAME_EVENT` remains the relation between proposition/event unit IDs.
+### 5. Make `SAME_ENTITY` Representable Over Mentions
+- Introduced `ArgumentMention` model with `role`, `text`, optional `source_span`, and optional `entity_ref`.
+- (Refined further in Final Patch: see Part 2 Item 1).
 
 ### 6. Strengthen Temporal Anchoring
-- **Problem:** Relative temporal anchors lacked explicit reference grounding, risking ambiguity.
-- **Change:**
-  - `TemporalAnchoring` now records:
-    - `normalized_value: str` (ISO 8601 string or `"unknown"`).
-    - `anchor_type: TemporalAnchorType` (`exact`, `bounded_range`, `relative`, `unanchored`).
-    - `source_expression: str | None` (verbatim temporal phrase).
-    - `reference_anchor: str | None` (the reference time or unit, e.g. `"evidence:occurred_at"`).
-  - Validation requires `reference_anchor` whenever `anchor_type == RELATIVE`.
+- `TemporalAnchoring` records `normalized_value`, `anchor_type`, `source_expression`, and `reference_anchor`.
+- Relative anchors must explicitly specify their reference anchor (e.g. `"evidence:occurred_at"`).
 
 ### 7. Remove Unsupported State Manufacture
-- **Problem:** Guideline previously contained an example decomposing `"I moved to London"` into an event `move_to` and a manufactured state `live_in` linked by `CAUSE`.
-- **Change:**
-  - Removed and deleted the manufactured state example across all documentation.
-  - Added an explicit negative invariant in `ANNOTATION_GUIDELINE_V0_1.md` and `EXAMPLES_V0_1.md`: Transition events must never be used to invent unstated continuous result states without explicit bounded textual evidence.
-  - Prohibited using `CAUSE` as a generic event-to-result filler.
+- Removed and deleted the manufactured state example across all documentation.
+- Added explicit negative invariant: Transition events (e.g. "I moved to London") must never invent unstated continuous result states (e.g. "I live in London") without explicit bounded evidence.
 
-### 8. Specify Shallow Nested-Attitude Handling
-- **Problem:** Complex attitudes (e.g. `"I think I want to leave"`) lacked a deterministic shallow compression policy.
-- **Change:**
-  - Defined explicit shallow flattening rule: extract the matrix attitude (`leave`), preserve the epistemic hedge by setting `modality: uncertain`, lower confidence to $\le 0.70$, and record `normalization_rule: "shallow_nested_hedge"`.
-  - Prohibited silently promoting a hedged belief-about-desire into an unhedged `desired` modality.
+### 8. Specify Nested-Attitude Handling
+- (Refined in Final Patch: see Part 2 Item 2).
 
 ### 9. Make Predicate Normalization Reproducible
-- **Problem:** Free-form predicate normalization risked arbitrary annotator divergence (e.g. `"want"` vs `"desire"`).
-- **Change:**
-  - Introduced `PredicateSpec` containing:
-    - `surface_predicate: str` (verbatim text).
-    - `normalized_predicate: str` (canonical lemma/frame).
-    - `normalization_rule: str` (documented rule name, e.g. `"verb_lemma"`, `"standard_frame"`, `"shallow_nested_hedge"`, `"exact_match"`).
+- Introduced `PredicateSpec` containing `surface_predicate`, `normalized_predicate`, and `normalization_rule`.
+- (Refined in Final Patch: see Part 2 Item 3).
 
 ### 10. Correct Research-Stage Numbering
-- **Problem:** Stage numbers were misaligned in early draft text.
-- **Change:**
-  - Corrected stage pipeline to:
-    - **#13:** Annotation contract (frozen ontology, guideline, schema).
-    - **#14:** Gold benchmark dataset creation.
-    - **#15:** AGY semantic parser benchmark and freeze.
-    - **#16:** Oracle typed graph representation experiment.
-    - **#17:** AGY graph vs. Oracle comparison experiment.
-  - Updated pipeline diagrams in `ONTOLOGY_V0_1.md` and `ANNOTATION_GUIDELINE_V0_1.md`.
+- Standardized stage pipeline: #13 (Annotation Contract) $\to$ #14 (Gold Benchmark) $\to$ #15 (AGY Parser Benchmark & Freeze) $\to$ #16 (Oracle Typed Graph) $\to$ #17 (AGY Graph vs. Oracle).
 
 ### 11. Prevent Dual-Schema Drift
-- **Problem:** Having separate manual Pydantic and JSON Schema files risks divergence over time.
+- Designated Pydantic schema in `research/semantic_annotation/schema.py` as canonical source of truth.
+- Derived `research/schemas/semantic_annotation_v0_1.json` directly from Pydantic and added automated parity test `test_schema_parity()`.
+
+---
+
+## Part 2: Final Patch Requirements
+
+### 1. Stable `mention_id` for Argument Mentions & Mention-Based `SAME_ENTITY`
+- **Requirement:** Give every argument/entity mention its own stable `mention_id`; `SAME_ENTITY` must connect mention IDs, not `<unit_id>:<role>` pseudo-identifiers.
 - **Change:**
-  - Designated Python Pydantic schema in `research/semantic_annotation/schema.py` as the canonical definition.
-  - Automatically exported `research/schemas/semantic_annotation_v0_1.json` via `model_json_schema()`.
-  - Added explicit parity regression test `test_schema_parity()` in `tests/research/test_semantic_annotation_schema.py` verifying identical enum members, required fields, and rejection of forbidden cognition labels.
+  - Added required `mention_id: str` (e.g. `"m_001"`, `"m_alice_1"`) to `ArgumentMention`.
+  - Document-level validation collects all `mention_id`s across all units and enforces global uniqueness.
+  - `SAME_ENTITY` relations strictly require `source_id` and `target_id` to be valid, existing `mention_id`s. Any attempt to use `<unit_id>:<role>` strings or non-existent mention IDs triggers a `ValidationError`.
+
+### 2. Nested-Attitude Semantics: Decouple Epistemic Hedge from Modality
+- **Requirement:** Do not collapse "I think I want to leave" into `modality=uncertain`, and do not use arbitrary annotation-confidence reduction to encode lost semantics. Preserve desire separately from epistemic hedging with the smallest explicit schema extension necessary.
+- **Change:**
+  - Introduced `EpistemicHedge` enum on `SemanticUnit`: `NONE = "none"`, `THINK = "think"`, `PROBABLE = "probable"`, `UNCERTAIN = "uncertain"`, `DOUBT = "doubt"`.
+  - "I think I want to leave" is now annotated with:
+    - `modality: ModalityType.DESIRED` (preserving the desire modal dimension!).
+    - `epistemic_hedge: EpistemicHedge.THINK` (preserving the outer epistemic qualification explicitly and independently).
+    - `confidence: 1.0` (annotation confidence measures annotator mapping accuracy, not semantic loss).
+
+### 3. Deterministic Mechanical Predicate Normalization
+- **Requirement:** Restrict predicate normalization v0.1 to deterministic mechanical normalization. No open-ended synonym/frame canonicalization such as `want ≈ desire ≈ wish` unless backed by an explicit frozen mapping. Gold scoring must be reproducible.
+- **Change:**
+  - Restricted `normalization_rule` to `PredicateNormalizationRule` enum:
+    - `EXACT_SURFACE`: normalized predicate must match lowercase surface form.
+    - `LEMMA`: mechanical English base lemma.
+    - `COMPOUND_LOWER`: lowercase with whitespace converted to underscores.
+    - `FROZEN_MAP`: strictly verified against explicit `FROZEN_PREDICATE_MAP` table.
+  - Model validator in `PredicateSpec` programmatically enforces that unlisted synonyms fail validation unless registered in the frozen map.
+
+### 4. Frozen Graph Admission: Inferred Annotations Are Audit-Only
+- **Requirement:** Freeze graph admission: `inferred` annotations/relations are audit-only and MUST NOT become positive graph edges in v0.1/#16/#17. Only `explicit` and `entailed` are eligible.
+- **Change:**
+  - Formalized `GRAPH_ADMISSIBLE_EVIDENCE_STATUSES = {EXPLICIT, ENTAILED}`.
+  - On `SemanticUnit`: added `is_graph_eligible` property; `to_graph_node()` raises `ValueError` if `evidence_status` is `inferred` or `unknown`.
+  - On `SemanticRelation`: updated `is_graph_edge` property and `to_graph_edge()` method; any relation with `inferred` or `unknown` evidence status raises `ValueError` on serialization.
