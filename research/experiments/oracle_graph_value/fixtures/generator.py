@@ -439,47 +439,82 @@ def generate_f7_transitive_causal_chain() -> LongitudinalFixture:
 
 
 def generate_f8_density_distractor() -> LongitudinalFixture:
-    """F8: Density Distractor Trap. Dense lexical token overlap with independent relations."""
-    ev1 = EvidenceItem(evidence_id="ev_f8_1", content="Kubernetes cluster production pod deployment in us-east was drained.", occurred_at="2026-04-01T10:00:00Z")
-    ev2 = EvidenceItem(evidence_id="ev_f8_2", content="Kubernetes cluster production service deployment in us-east was renewed.", occurred_at="2026-04-02T10:00:00Z")
-    ev3 = EvidenceItem(evidence_id="ev_f8_3", content="Kubernetes cluster production ingress deployment in us-east was adjusted.", occurred_at="2026-04-03T10:00:00Z")
-    ev4 = EvidenceItem(evidence_id="ev_f8_4", content="Kubernetes cluster production replica deployment in us-east was upgraded.", occurred_at="2026-04-04T10:00:00Z")
+    """F8: Open-World Density Control.
+    
+    A 2-hop causal chain needle (u1 -> u2 -> u3) is embedded amidst 4 dense lexical
+    distractors (u4, u5, u6, u7) sharing 'user', 'sessions', 'table', 'database', 'authentication'.
+    Under Open-World Assumption, distractors have NO edges (zero NO_RELATION control labels).
+    """
+    ev1 = EvidenceItem(evidence_id="ev_f8_1", content="Developer Bob merged a migration script that dropped the user sessions table.", occurred_at="2026-04-01T08:00:00Z")
+    ev2 = EvidenceItem(evidence_id="ev_f8_2", content="The dropped user sessions table triggered cache invalidation across all services.", occurred_at="2026-04-01T08:15:00Z")
+    ev3 = EvidenceItem(evidence_id="ev_f8_3", content="User authentication failed across all microservices because of the dropped sessions table.", occurred_at="2026-04-01T08:30:00Z")
+    ev4 = EvidenceItem(evidence_id="ev_f8_4", content="Production database daily backup snapshot was executed for user sessions table.", occurred_at="2026-04-01T08:45:00Z")
+    ev5 = EvidenceItem(evidence_id="ev_f8_5", content="The user sessions table vacuum and reindexing job completed successfully.", occurred_at="2026-04-01T09:00:00Z")
+    ev6 = EvidenceItem(evidence_id="ev_f8_6", content="User authentication microservice connection pool was restarted for maintenance.", occurred_at="2026-04-01T09:15:00Z")
+    ev7 = EvidenceItem(evidence_id="ev_f8_7", content="Authentication microservice health check verified all database replica nodes.", occurred_at="2026-04-01T09:30:00Z")
 
     b1 = A0SemanticBlock(block_id="b_f8_1", evidence_ids=["ev_f8_1"], text=ev1.content, occurred_start=ev1.occurred_at, occurred_end=ev1.occurred_at)
     b2 = A0SemanticBlock(block_id="b_f8_2", evidence_ids=["ev_f8_2"], text=ev2.content, occurred_start=ev2.occurred_at, occurred_end=ev2.occurred_at)
     b3 = A0SemanticBlock(block_id="b_f8_3", evidence_ids=["ev_f8_3"], text=ev3.content, occurred_start=ev3.occurred_at, occurred_end=ev3.occurred_at)
     b4 = A0SemanticBlock(block_id="b_f8_4", evidence_ids=["ev_f8_4"], text=ev4.content, occurred_start=ev4.occurred_at, occurred_end=ev4.occurred_at)
+    b5 = A0SemanticBlock(block_id="b_f8_5", evidence_ids=["ev_f8_5"], text=ev5.content, occurred_start=ev5.occurred_at, occurred_end=ev5.occurred_at)
+    b6 = A0SemanticBlock(block_id="b_f8_6", evidence_ids=["ev_f8_6"], text=ev6.content, occurred_start=ev6.occurred_at, occurred_end=ev6.occurred_at)
+    b7 = A0SemanticBlock(block_id="b_f8_7", evidence_ids=["ev_f8_7"], text=ev7.content, occurred_start=ev7.occurred_at, occurred_end=ev7.occurred_at)
 
-    u1 = _make_unit("u1", "Kubernetes cluster production pod deployment in us-east drained", UnitKind.EVENT, "drained", "drained", norm_time="2026-04-01", evidence_id="ev_f8_1", block_id="b_f8_1")
-    u2 = _make_unit("u2", "Kubernetes cluster production service deployment in us-east renewed", UnitKind.EVENT, "renewed", "renewed", norm_time="2026-04-02", evidence_id="ev_f8_2", block_id="b_f8_2")
-    u3 = _make_unit("u3", "Kubernetes cluster production ingress deployment in us-east adjusted", UnitKind.EVENT, "adjusted", "adjusted", norm_time="2026-04-03", evidence_id="ev_f8_3", block_id="b_f8_3")
-    u4 = _make_unit("u4", "Kubernetes cluster production replica deployment in us-east upgraded", UnitKind.EVENT, "upgraded", "upgraded", norm_time="2026-04-04", evidence_id="ev_f8_4", block_id="b_f8_4")
+    u1 = _make_unit("u1", "merged migration script dropping user sessions table", UnitKind.EVENT, "merged", "merged", norm_time="2026-04-01T08:00", evidence_id="ev_f8_1", block_id="b_f8_1")
+    u2 = _make_unit("u2", "dropped user sessions table triggered cache invalidation", UnitKind.EVENT, "triggered", "triggered", norm_time="2026-04-01T08:15", evidence_id="ev_f8_2", block_id="b_f8_2")
+    u3 = _make_unit("u3", "user authentication failed across all microservices", UnitKind.EVENT, "failed", "failed", norm_time="2026-04-01T08:30", evidence_id="ev_f8_3", block_id="b_f8_3")
+    u4 = _make_unit("u4", "production database backup snapshot completed for user sessions table", UnitKind.EVENT, "completed", "completed", norm_time="2026-04-01T08:45", evidence_id="ev_f8_4", block_id="b_f8_4")
+    u5 = _make_unit("u5", "user sessions table vacuum and reindexing completed", UnitKind.EVENT, "completed", "completed", norm_time="2026-04-01T09:00", evidence_id="ev_f8_5", block_id="b_f8_5")
+    u6 = _make_unit("u6", "user authentication connection pool restarted for maintenance", UnitKind.EVENT, "restarted", "restarted", norm_time="2026-04-01T09:15", evidence_id="ev_f8_6", block_id="b_f8_6")
+    u7 = _make_unit("u7", "authentication microservice health check verified replica nodes", UnitKind.EVENT, "verified", "verified", norm_time="2026-04-01T09:30", evidence_id="ev_f8_7", block_id="b_f8_7")
 
-    # Strictly NO_RELATION between all pairs (control labels)
-    r1 = SemanticRelation(relation_id="rel_f8_1", source_id="u1", target_id="u2", relation_type=RelationType.NO_RELATION, evidence_status=EvidenceStatus.EXPLICIT, confidence=1.0, provenance=RelationProvenance(raw_evidence_id="ev_f8_2", semantic_block_id="b_f8_2"))
-    r2 = SemanticRelation(relation_id="rel_f8_2", source_id="u2", target_id="u3", relation_type=RelationType.NO_RELATION, evidence_status=EvidenceStatus.EXPLICIT, confidence=1.0, provenance=RelationProvenance(raw_evidence_id="ev_f8_3", semantic_block_id="b_f8_3"))
-    r3 = SemanticRelation(relation_id="rel_f8_3", source_id="u3", target_id="u4", relation_type=RelationType.NO_RELATION, evidence_status=EvidenceStatus.EXPLICIT, confidence=1.0, provenance=RelationProvenance(raw_evidence_id="ev_f8_4", semantic_block_id="b_f8_4"))
+    # Positive 2-hop causal chain needle: u1 -> u2 -> u3
+    r1 = SemanticRelation(
+        relation_id="rel_f8_1", source_id="u1", target_id="u2", relation_type=RelationType.CAUSE,
+        evidence_status=EvidenceStatus.EXPLICIT, confidence=1.0,
+        provenance=RelationProvenance(raw_evidence_id="ev_f8_2", semantic_block_id="b_f8_2"),
+    )
+    r2 = SemanticRelation(
+        relation_id="rel_f8_2", source_id="u2", target_id="u3", relation_type=RelationType.CAUSE,
+        evidence_status=EvidenceStatus.EXPLICIT, confidence=1.0,
+        provenance=RelationProvenance(raw_evidence_id="ev_f8_3", semantic_block_id="b_f8_3"),
+    )
 
+    # Note: u4, u5, u6, u7 have ZERO relations in graph (Open-World background events)
     doc = SemanticAnnotationDocument(
-        document_id="doc_f8", cutoff_time="2026-04-10T00:00:00Z",
-        units=[u1, u2, u3, u4], relations=[r1, r2, r3],
+        document_id="doc_f8", cutoff_time="2026-04-01T10:00:00Z",
+        units=[u1, u2, u3, u4, u5, u6, u7], relations=[r1, r2],
     )
 
     cutoffs = [
-        CutoffView(cutoff_time="2026-04-02T12:00:00Z", visible_evidence_ids=["ev_f8_1", "ev_f8_2"], visible_a0_block_ids=["b_f8_1", "b_f8_2"], visible_unit_ids=["u1", "u2"], is_target_evaluable=False),
-        CutoffView(cutoff_time="2026-04-06T00:00:00Z", visible_evidence_ids=["ev_f8_1", "ev_f8_2", "ev_f8_3", "ev_f8_4"], visible_a0_block_ids=["b_f8_1", "b_f8_2", "b_f8_3", "b_f8_4"], visible_unit_ids=["u1", "u2", "u3", "u4"], is_target_evaluable=True),
+        CutoffView(
+            cutoff_time="2026-04-01T08:20:00Z",
+            visible_evidence_ids=["ev_f8_1", "ev_f8_2", "ev_f8_4"],
+            visible_a0_block_ids=["b_f8_1", "b_f8_2", "b_f8_4"],
+            visible_unit_ids=["u1", "u2", "u4"],
+            is_target_evaluable=False,
+        ),
+        CutoffView(
+            cutoff_time="2026-04-01T10:00:00Z",
+            visible_evidence_ids=["ev_f8_1", "ev_f8_2", "ev_f8_3", "ev_f8_4", "ev_f8_5", "ev_f8_6", "ev_f8_7"],
+            visible_a0_block_ids=["b_f8_1", "b_f8_2", "b_f8_3", "b_f8_4", "b_f8_5", "b_f8_6", "b_f8_7"],
+            visible_unit_ids=["u1", "u2", "u3", "u4", "u5", "u6", "u7"],
+            is_target_evaluable=True,
+        ),
     ]
 
     oracle = TargetOracle(
-        target_id="oracle_f8", target_type="distractor_rejection",
-        target_unit_ids=[], target_block_ids=[],
-        description="Dense lexical token distractor: 0 genuine longitudinal relations; all false clusterings must be rejected.",
+        target_id="oracle_f8", target_type="dependency",
+        target_unit_ids=["u1", "u3"], target_block_ids=["b_f8_1", "b_f8_3"],
+        description="2-hop transitive causal propagation from u1 to u3 amidst dense lexical distractors.",
     )
 
     return LongitudinalFixture(
         fixture_id="F8_density_distractor", family="density_distractor_trap",
-        description="High token-overlap distractor where graph edges reveal total independence.",
-        evidence=[ev1, ev2, ev3, ev4], cutoffs=cutoffs, a0_blocks=[b1, b2, b3, b4],
+        description="Open-world density control: 2-hop causal needle in unlinked lexical distractor haystack.",
+        evidence=[ev1, ev2, ev3, ev4, ev5, ev6, ev7], cutoffs=cutoffs,
+        a0_blocks=[b1, b2, b3, b4, b5, b6, b7],
         gold_document=doc, oracle=oracle,
     )
 

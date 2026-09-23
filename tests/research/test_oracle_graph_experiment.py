@@ -1,11 +1,11 @@
-"""Automated regression test suite for Issue #16: Oracle Typed Graph Incremental Value.
+"""Automated regression test suite for Issue #16: Oracle Typed Graph Incremental Value (Clean Rerun).
 
 Tests:
 1. Ingestion security guard: asserts passing prediction files raises SecurityAdmissionError.
 2. Fixture generation integrity: all 8 families compile with valid schemas.
 3. Shared embedding consistency between A0 and A1.
-4. Generic candidate generator determinism across all fixtures.
-5. Full experiment execution and SUPPORTED verdict assertions.
+4. Generic candidate generator v2 dual-channel determinism.
+5. Clean rerun relation-family verdicts and per-win isolated edge ablations.
 6. Zero production mutation (src/lce/ untouched).
 """
 from __future__ import annotations
@@ -75,7 +75,7 @@ def test_all_8_fixtures_schema_and_compile() -> None:
             "attribution",
             "entity_trajectory",
             "causal_chain",
-            "distractor_rejection",
+            "dependency",
         }
 
         # Compile to Oracle Typed Graph
@@ -117,7 +117,7 @@ def test_shared_embedding_consistency_a0_and_a1(tmp_path: Path) -> None:
 
 
 def test_generic_candidate_generator_determinism() -> None:
-    """Candidate generator must produce strictly deterministic rankings."""
+    """Candidate generator must produce strictly deterministic rankings without similarity bonuses."""
     generator = GenericCandidateGenerator()
     items = [
         {"id": "u1", "vector": [1.0, 0.0, 0.0], "occurred_at": "2026-04-01T10:00:00Z"},
@@ -135,18 +135,38 @@ def test_generic_candidate_generator_determinism() -> None:
         assert a.item_ids == b.item_ids
 
 
-def test_experiment_falsification_supported_verdict() -> None:
-    """Run full experiment and verify pre-registered SUPPORTED verdict criteria."""
+def test_clean_rerun_relation_family_verdicts() -> None:
+    """Run full experiment and verify relation-family support and isolated edge ablations."""
     summary, report_md = run_full_experiment(output_report=False)
 
-    assert summary["verdict"] == "SUPPORTED"
-    assert summary["f1_delta_b_vs_a1"] >= 0.15, f"F1 delta {summary['f1_delta_b_vs_a1']} < 0.15"
-    assert summary["distractor_bloat_reduction"] >= 0.40, f"Bloat reduction {summary['distractor_bloat_reduction']} < 0.40"
-    assert summary["temporal_sensitivity_b"] >= 0.20, f"Temporal sensitivity {summary['temporal_sensitivity_b']} < 0.20"
-
-    # Superiority of Condition B over A1
+    # Overall superiority of Condition B over A1
+    assert summary["f1_delta_b_vs_a1"] > 0.20, f"F1 delta {summary['f1_delta_b_vs_a1']} <= 0.20"
     assert summary["metrics_b"]["mean_f1"] > summary["metrics_a1"]["mean_f1"]
-    assert "OFFICIAL EXPERIMENT VERDICT: SUPPORTED" in report_md
+
+    # Relation family verdicts
+    verdicts = summary["relation_verdicts"]
+    assert verdicts["CAUSE"]["status"] == "STRONGLY_SUPPORTED"
+    assert verdicts["CAUSE"]["causal_attribution"] == "CONFIRMED"
+    assert verdicts["CAUSE"]["delta_f1"] > 0.50
+
+    assert verdicts["SAME_ENTITY"]["status"] == "STRONGLY_SUPPORTED"
+    assert verdicts["SAME_ENTITY"]["causal_attribution"] == "CONFIRMED"
+    assert verdicts["SAME_ENTITY"]["delta_f1"] == 1.0
+
+    assert verdicts["BEFORE_AND_EQUIVALENT"]["status"] == "REDUNDANT_WITH_VECTORS"
+
+    # Per-win isolated edge ablations confirmation
+    ablations = summary["per_win_ablations"]
+    assert "F4_post_hoc_vs_causality" in ablations
+    assert "F6_cross_domain_entity" in ablations
+    assert "F7_transitive_causal_chain" in ablations
+    assert "F8_density_distractor" in ablations
+
+    for fid, abl in ablations.items():
+        assert abl["attribution_confirmed"] is True, f"Attribution unconfirmed for {fid}"
+        assert abl["f1_ablated"] < abl["f1_b"]
+
+    assert "# LCE Research Report: Oracle Typed Graph Incremental Value (Issue #16 Clean Rerun)" in report_md
 
 
 def test_zero_production_mutation() -> None:

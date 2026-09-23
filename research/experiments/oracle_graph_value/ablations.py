@@ -38,12 +38,30 @@ def run_b_condition(
             "holder": u.holder_ref,
         })
 
-    # 3. Execute generic candidate generator with graph enabled and ablations applied
-    gen = generator or GenericCandidateGenerator(
+    # 3. Execute candidate generator with graph enabled and ablations applied
+    abl = ablate_edge_types or set()
+    gen = GenericCandidateGenerator(
         enable_graph_edges=True,
-        ablate_edge_types=ablate_edge_types or set(),
+        ablate_edge_types=abl,
+        sim_threshold=generator.sim_threshold if generator else 0.50,
+        max_candidates=generator.max_candidates if generator else 15,
     )
     return gen.generate(items, graph=graph)
+
+
+def run_isolated_edge_ablation(
+    fixture: LongitudinalFixture,
+    embedder: EmbeddingPipeline,
+    edge_type: str,
+    generator: GenericCandidateGenerator | None = None,
+) -> list[CandidateProposal]:
+    """Execute Condition B with exactly one edge type ablated for causal attribution."""
+    return run_b_condition(
+        fixture=fixture,
+        embedder=embedder,
+        ablate_edge_types={edge_type},
+        generator=generator,
+    )
 
 
 def run_all_ablations(

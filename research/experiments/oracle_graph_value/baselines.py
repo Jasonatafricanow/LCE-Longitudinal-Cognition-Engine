@@ -17,7 +17,11 @@ def run_a0_baseline(
     generator: GenericCandidateGenerator | None = None,
 ) -> list[CandidateProposal]:
     """Execute Baseline A0: coarse semantic-boundary vector baseline."""
-    gen = generator or GenericCandidateGenerator(enable_graph_edges=False)
+    gen = GenericCandidateGenerator(
+        enable_graph_edges=False,
+        sim_threshold=generator.sim_threshold if generator else 0.50,
+        max_candidates=generator.max_candidates if generator else 15,
+    )
 
     # Get visible blocks at the latest cutoff
     final_cutoff = fixture.cutoffs[-1]
@@ -44,7 +48,11 @@ def run_a1_baseline(
     generator: GenericCandidateGenerator | None = None,
 ) -> list[CandidateProposal]:
     """Execute Baseline A1: gold atomic semantic units, vector-only (no typed relations)."""
-    gen = generator or GenericCandidateGenerator(enable_graph_edges=False)
+    gen = GenericCandidateGenerator(
+        enable_graph_edges=False,
+        sim_threshold=generator.sim_threshold if generator else 0.50,
+        max_candidates=generator.max_candidates if generator else 15,
+    )
 
     # Get visible atomic units at the latest cutoff
     final_cutoff = fixture.cutoffs[-1]

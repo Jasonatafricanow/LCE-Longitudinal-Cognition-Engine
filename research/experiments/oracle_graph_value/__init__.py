@@ -7,8 +7,8 @@ from research.experiments.oracle_graph_value.candidate_generator import (
 )
 from research.experiments.oracle_graph_value.embeddings import EmbeddingPipeline, cosine_similarity
 from research.experiments.oracle_graph_value.evaluator import (
+    analyze_relation_family_support,
     compute_aggregate_metrics,
-    evaluate_falsification_verdict,
     evaluate_fixture_proposals,
 )
 from research.experiments.oracle_graph_value.fixtures import (
@@ -27,7 +27,7 @@ __all__ = [
     "cosine_similarity",
     "evaluate_fixture_proposals",
     "compute_aggregate_metrics",
-    "evaluate_falsification_verdict",
+    "analyze_relation_family_support",
     "LongitudinalFixture",
     "generate_all_fixtures",
 ]
