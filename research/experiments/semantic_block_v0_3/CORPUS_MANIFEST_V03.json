@@ -1,0 +1,46 @@
+{
+  "corpus_id": "semantic-block-v0.3-draft-2026-09-25",
+  "status": "DRAFT_SINGLE_AUTHOR_UNADJUDICATED",
+  "authority": {
+    "semantic_block_definition": "docs/architecture/SEMANTIC_BLOCK_DESIGN_FREEZE_2026-09-25.md",
+    "experiment_protocol": "docs/research/SEMANTIC_BLOCK_V03_FIDELITY_GRANULARITY_EXPERIMENT.md"
+  },
+  "counts": {
+    "core_cases": 48,
+    "draft_gold_records": 48,
+    "equivalence_groups": 8,
+    "hard_negative_groups": 8,
+    "temporal_fork_groups": 4,
+    "temporal_branch_records": 12,
+    "retrieval_queries": 24,
+    "dev_core": 32,
+    "held_out_core": 16,
+    "dev_temporal_branches": 6,
+    "held_out_temporal_branches": 6
+  },
+  "git_blob_sha": {
+    "cases_v0_3.jsonl": "98db57077d02386fada4e0619edefa05d11644ea",
+    "gold_v0_3.jsonl": "40320f6aabc0375ab658f98f4332546ec73f2c64",
+    "contrast_groups_v0_3.json": "0ccf4188063cc210b4fcee17cdbe22b0a546dba5",
+    "temporal_forks_v0_3.jsonl": "bb6a77f99f606418b13e97aa4b9ad90b8b016dc8",
+    "retrieval_queries_v0_3.jsonl": "c2a18fa7ebc49b8c09a1ecc22d7ad38d4f0e2b35",
+    "split_manifest_v0_3.json": "cf09f018c71fe0a59c7b59ce9de17b9ceea82f7e",
+    "ADJUDICATION_GUIDE.md": "f303ad78f480547699efa88294244c4a929af81e",
+    "README.md": "a5b81dd6c2bfc5626e5813419a6d42a2f6e09a17"
+  },
+  "validation": {
+    "case_gold_ids_match": true,
+    "split_unique": true,
+    "split_covers_all_core_cases": true,
+    "contrast_case_ids_valid": true,
+    "equivalence_groups_not_split": true,
+    "json_parse_valid": true
+  },
+  "limitations": [
+    "Draft cases and gold were authored in one pass and are not independently adjudicated.",
+    "Held-out shares semantic families with dev and must not be described as unseen-family evaluation.",
+    "No compiler output has been scored against this corpus yet.",
+    "Blob SHAs identify this draft snapshot only; adjudication must create new gold files rather than silently mutate benchmark authority."
+  ],
+  "next_gate": "Independent blind adjudication, then freeze adjudicated gold/probe hashes before any held-out compiler run."
+}
