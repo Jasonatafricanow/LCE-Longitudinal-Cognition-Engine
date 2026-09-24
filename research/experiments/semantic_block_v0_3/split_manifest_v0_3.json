@@ -1,0 +1,89 @@
+{
+  "status": "draft_single_author_unadjudicated",
+  "core": {
+    "dev": [
+      "V3-001",
+      "V3-003",
+      "V3-004",
+      "V3-005",
+      "V3-008",
+      "V3-009",
+      "V3-010",
+      "V3-011",
+      "V3-014",
+      "V3-016",
+      "V3-017",
+      "V3-019",
+      "V3-020",
+      "V3-022",
+      "V3-023",
+      "V3-026",
+      "V3-027",
+      "V3-029",
+      "V3-030",
+      "V3-031",
+      "V3-032",
+      "V3-033",
+      "V3-034",
+      "V3-035",
+      "V3-036",
+      "V3-037",
+      "V3-038",
+      "V3-040",
+      "V3-041",
+      "V3-044",
+      "V3-045",
+      "V3-046"
+    ],
+    "held_out": [
+      "V3-002",
+      "V3-006",
+      "V3-007",
+      "V3-012",
+      "V3-013",
+      "V3-015",
+      "V3-018",
+      "V3-021",
+      "V3-024",
+      "V3-025",
+      "V3-028",
+      "V3-039",
+      "V3-042",
+      "V3-043",
+      "V3-047",
+      "V3-048"
+    ],
+    "counts": {
+      "dev": 32,
+      "held_out": 16,
+      "total": 48
+    }
+  },
+  "temporal_forks": {
+    "dev": [
+      "TF-01-FLIGHT",
+      "TF-02-REPORT"
+    ],
+    "held_out": [
+      "TF-03-INVENTORY",
+      "TF-04-PICKUP"
+    ],
+    "branch_record_counts": {
+      "dev": 6,
+      "held_out": 6,
+      "total": 12
+    }
+  },
+  "leakage_rules": [
+    "All explicitly designated equivalence-group siblings are kept in the same split.",
+    "All explicitly designated hard-negative-group members used for paired evaluation are kept in one split.",
+    "Families are intentionally shared across dev and held-out; this is NOT unseen-family evaluation.",
+    "Compiler prompts may be tuned only on dev.",
+    "Held-out outputs are one-shot for a frozen compiler/configuration.",
+    "Future dialogue from temporal forks must never be visible at the prefix compile cutoff."
+  ],
+  "held_out_notes": [
+    "Held-out contains three major semantic contrast clusters: layoff attribution/commitment, Beijing travel status/obligation/conditional, and outage sarcasm/literal statement.",
+    "Held-out temporal forks test inventory and pickup obligations under divergent later outcomes."
+  ]
+}
