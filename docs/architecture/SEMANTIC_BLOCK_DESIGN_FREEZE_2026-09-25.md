@@ -269,7 +269,78 @@ Therefore:
 - deciding future usefulness;
 - rewriting prior true states because later reality changed.
 
-## 12. Frozen acceptance tests
+## 12. Structure must preserve reconstructability and useful granularity
+
+SemanticBlock is not successful merely because it is faithful in an informal reading. Its structured form must be sufficient for a downstream consumer to recover the original meaning to functional equivalence without rereading the Raw Evidence.
+
+The core reconstruction test is:
+
+> Hide the original dialogue. Give the consumer only the SemanticBlock representation. Can it reconstruct what was meant, who committed to what, what remained unknown, and what was merely possible, intended, reported, questioned, corrected, or otherwise qualified?
+
+Reconstruction does not require verbatim wording. It requires preservation of the original semantic distinctions that matter to later reasoning.
+
+However, perfect reconstruction alone is not enough. The trivial solution would be to preserve everything as one raw text blob or one giant undivided block. That would avoid semantic loss but would defeat the purpose of structured cognition.
+
+Therefore SemanticBlock must satisfy both:
+
+1. **semantic reconstructability** — enough structure to recover the original meaning faithfully;
+2. **useful granularity** — enough decomposition to support selective recall, comparison, and downstream use without rereading the full Raw Evidence.
+
+Granularity must be tested contrastively.
+
+### A. Similar meaning, different surface form
+
+Two utterances that express materially the same meaning with different language structure should produce structurally compatible or nearby SemanticBlocks.
+
+Example:
+
+- “我明天得去北京。”
+- “北京那边我明天非去不可。”
+
+The wording differs, but a downstream consumer or retriever should be able to recognize the same underlying current requirement or plan.
+
+### B. Similar surface form, different meaning
+
+Two utterances with nearly identical lexical structure but materially different meaning must remain structurally separable.
+
+Example:
+
+- “我明天必须去北京。”
+- “我明天可能去北京。”
+- “我明天想去北京。”
+- “我明天会不会去北京？”
+- “我朋友说明天要去北京。”
+
+The shared words must not cause the system to collapse obligation, possibility, desire, question, and reported speech into one representation.
+
+### C. Retrieval must be able to wake the meaning back up
+
+The structured representation is useful only if later retrieval can recover the relevant SemanticBlock because of its semantic structure.
+
+The intended direction is:
+
+    structured SemanticBlock
+        -> selective retrieval / structural match
+        -> downstream consumer
+        -> faithful reconstruction of the original meaning
+
+This does not require every SemanticBlock to be linked to every other block. It requires that when a later goal, query, or structural candidate is semantically relevant, the block contains enough structured signal to be recalled without full-corpus rereading.
+
+The target is therefore neither:
+
+    raw text preserved almost unchanged
+
+nor:
+
+    meaning atomized into many tiny fields that no longer reconstruct the whole
+
+The target is:
+
+> the smallest structured representation that preserves the full local meaning while exposing enough semantic granularity for later selective recall and comparison.
+
+Raw Evidence remains available for provenance and audit, but raw text must not be used as a hidden shortcut in reconstructability tests.
+
+## 13. Frozen acceptance tests
 
 A candidate SemanticBlock should be rejected or reconsidered if any of the following are true:
 
@@ -281,8 +352,13 @@ A candidate SemanticBlock should be rejected or reconsidered if any of the follo
 6. **Temporal overreach** — a current plan, requirement, or belief is rewritten as a future outcome that has not yet occurred.
 7. **Premature trajectory** — downstream relationships or future conclusions are inserted into a time-local block before the evidence exists.
 8. **Schema substitution** — field completeness is treated as semantic correctness even when the combined meaning is wrong.
+9. **Non-reconstructability** — a downstream consumer cannot recover the original meaning from the SemanticBlock alone.
+10. **Trivial non-structure** — reconstruction succeeds only because the representation retained the Raw Evidence nearly verbatim or avoided meaningful decomposition.
+11. **Granularity collapse** — semantically different but lexically similar inputs collapse into effectively the same structure.
+12. **Surface sensitivity** — semantically equivalent inputs with different phrasing become structurally incompatible without a semantic reason.
+13. **Retrieval failure** — a semantically relevant later query or structural candidate cannot recover the block from its structured representation without rereading the entire Raw Evidence corpus.
 
-## 13. Change control
+## 14. Change control
 
 This design is frozen.
 
