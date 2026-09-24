@@ -103,7 +103,7 @@ class BenchmarkLLMClient:
         data_bytes = json.dumps(payload).encode("utf-8")
         headers = {"Content-Type": "application/json"}
 
-        max_retries = 10
+        max_retries = 20
         base_delay = 2.0
         last_error = None
 
@@ -180,8 +180,9 @@ class BenchmarkLLMClient:
                 raise RuntimeError(f"HTTPError {e.code}: {err_body}") from e
             except Exception as e:
                 last_error = e
-                print(f"Transient exception ({type(e).__name__}: {e}), waiting 5s before retry (attempt {attempt+1}/{max_retries})...")
-                time.sleep(5.0)
+                delay = min(25.0, 3.0 * (1.25 ** attempt))
+                print(f"Transient exception ({type(e).__name__}: {e}), waiting {delay:.1f}s before retry (attempt {attempt+1}/{max_retries})...")
+                time.sleep(delay)
 
         raise RuntimeError(f"Exceeded max retries: {last_error}")
 
@@ -208,7 +209,7 @@ def embed_texts(texts: list[str], cache_dir: Path | str | None = None) -> list[l
                 except Exception:
                     pass
 
-        max_retries = 10
+        max_retries = 20
         last_error = None
         vec = None
         for attempt in range(max_retries):
@@ -237,8 +238,9 @@ def embed_texts(texts: list[str], cache_dir: Path | str | None = None) -> list[l
                 raise RuntimeError(f"HTTPError {e.code}: {err_body}") from e
             except Exception as e:
                 last_error = e
-                print(f"Transient embedding exception ({type(e).__name__}: {e}), waiting 5s before retry (attempt {attempt+1}/{max_retries})...")
-                time.sleep(5.0)
+                delay = min(25.0, 3.0 * (1.25 ** attempt))
+                print(f"Transient embedding exception ({type(e).__name__}: {e}), waiting {delay:.1f}s before retry (attempt {attempt+1}/{max_retries})...")
+                time.sleep(delay)
 
         if vec is None:
             raise RuntimeError(f"Exceeded max retries for embedding: {last_error}")
