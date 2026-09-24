@@ -103,7 +103,7 @@ class BenchmarkLLMClient:
         data_bytes = json.dumps(payload).encode("utf-8")
         headers = {"Content-Type": "application/json"}
 
-        max_retries = 20
+        max_retries = 35
         base_delay = 2.0
         last_error = None
 
@@ -180,7 +180,7 @@ class BenchmarkLLMClient:
                 raise RuntimeError(f"HTTPError {e.code}: {err_body}") from e
             except Exception as e:
                 last_error = e
-                delay = min(25.0, 3.0 * (1.25 ** attempt))
+                delay = min(30.0, 5.0 * (1.15 ** attempt))
                 print(f"Transient exception ({type(e).__name__}: {e}), waiting {delay:.1f}s before retry (attempt {attempt+1}/{max_retries})...")
                 time.sleep(delay)
 
@@ -209,7 +209,7 @@ def embed_texts(texts: list[str], cache_dir: Path | str | None = None) -> list[l
                 except Exception:
                     pass
 
-        max_retries = 20
+        max_retries = 35
         last_error = None
         vec = None
         for attempt in range(max_retries):
@@ -238,7 +238,7 @@ def embed_texts(texts: list[str], cache_dir: Path | str | None = None) -> list[l
                 raise RuntimeError(f"HTTPError {e.code}: {err_body}") from e
             except Exception as e:
                 last_error = e
-                delay = min(25.0, 3.0 * (1.25 ** attempt))
+                delay = min(30.0, 5.0 * (1.15 ** attempt))
                 print(f"Transient embedding exception ({type(e).__name__}: {e}), waiting {delay:.1f}s before retry (attempt {attempt+1}/{max_retries})...")
                 time.sleep(delay)
 
