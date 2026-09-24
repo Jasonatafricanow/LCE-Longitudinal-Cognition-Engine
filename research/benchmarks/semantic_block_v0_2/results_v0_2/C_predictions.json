@@ -1,0 +1,2288 @@
+[
+  {
+    "case_id": "V2-001",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-001_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-001_s1",
+        "state_id": "V2-001_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Pavel says the north gate is open.",
+        "predicate": "open",
+        "kind": "proposition",
+        "participants": {
+          "subject": "north gate"
+        },
+        "holder": "Pavel",
+        "utterer": "user",
+        "attribution_mode": "indirect_report",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-001-E1",
+            "char_start": 32,
+            "char_end": 66,
+            "text": "Pavel says the north gate is open."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-001",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-001_s2",
+        "state_id": "V2-001_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Iris has not checked the gate.",
+        "predicate": "check",
+        "kind": "event",
+        "participants": {
+          "agent": "Iris",
+          "object": "north gate"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-001-E1",
+            "char_start": 68,
+            "char_end": 98,
+            "text": "Iris has not checked the gate."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-001",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2104,
+    "completion_tokens": 500,
+    "total_tokens": 2604,
+    "latency_ms": 111548.33520005923
+  },
+  {
+    "case_id": "V2-002",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-002_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-002_s1",
+        "state_id": "V2-002_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Niko checked the north gate.",
+        "predicate": "check",
+        "kind": "event",
+        "participants": {
+          "agent": "Niko",
+          "object": "north gate"
+        },
+        "holder": "Niko",
+        "utterer": "user",
+        "attribution_mode": "direct_quote",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-002-E1",
+            "char_start": 32,
+            "char_end": 56,
+            "text": "I checked the north gate"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-002",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-002_s2",
+        "state_id": "V2-002_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The north gate is closed.",
+        "predicate": "be_closed",
+        "kind": "state",
+        "participants": {
+          "subject": "north gate"
+        },
+        "holder": "Niko",
+        "utterer": "user",
+        "attribution_mode": "direct_quote",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-002-E1",
+            "char_start": 58,
+            "char_end": 70,
+            "text": "it is closed"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-002",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2094,
+    "completion_tokens": 495,
+    "total_tokens": 2589,
+    "latency_ms": 85067.06750002922
+  },
+  {
+    "case_id": "V2-003",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-003_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-003_s1",
+        "state_id": "V2-003_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The backup did not start.",
+        "predicate": "start",
+        "kind": "event",
+        "participants": {
+          "subject": "backup"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-003-E1",
+            "char_start": 60,
+            "char_end": 85,
+            "text": "The backup never started."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-003",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-003_s2",
+        "state_id": "V2-003_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "If the backup had started, the import might have completed.",
+        "predicate": "cause_import_completion",
+        "kind": "proposition",
+        "participants": {
+          "cause": "backup start",
+          "effect": "import completion"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "possible",
+        "epistemic_hedge": "uncertain",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-003-E1",
+            "char_start": 0,
+            "char_end": 59,
+            "text": "If the backup had started, the import might have completed."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-003",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2095,
+    "completion_tokens": 506,
+    "total_tokens": 2601,
+    "latency_ms": 143701.56889996724
+  },
+  {
+    "case_id": "V2-004",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-004_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-004_s1",
+        "state_id": "V2-004_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The backup started on 2026-05-01.",
+        "predicate": "start_backup",
+        "kind": "event",
+        "participants": {
+          "agent": "backup"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-004-E1",
+            "char_start": 0,
+            "char_end": 28,
+            "text": "The backup started on May 1."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-004",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-004_s2",
+        "state_id": "V2-004_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The import failed on 2026-05-01.",
+        "predicate": "fail_import",
+        "kind": "event",
+        "participants": {
+          "agent": "import"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-004-E1",
+            "char_start": 29,
+            "char_end": 62,
+            "text": "The import still failed that day."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-004",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2105,
+    "completion_tokens": 509,
+    "total_tokens": 2614,
+    "latency_ms": 65570.2178000356
+  },
+  {
+    "case_id": "V2-005",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-005_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-005_s1",
+        "state_id": "V2-005_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The certificate expired before the outage.",
+        "predicate": "expire",
+        "kind": "event",
+        "participants": {
+          "subject": "certificate"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E1",
+            "char_start": 0,
+            "char_end": 41,
+            "text": "The certificate expired before the outage"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-005",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-005_s2",
+        "state_id": "V2-005_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The certificate expiry did not cause the outage.",
+        "predicate": "not_cause_outage",
+        "kind": "proposition",
+        "participants": {
+          "cause": "certificate expiry",
+          "effect": "outage"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E1",
+            "char_start": 47,
+            "char_end": 74,
+            "text": "the expiry did not cause it"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-005",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-005_s3",
+        "state_id": "V2-005_s3",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "A routing loop saturated the gateway.",
+        "predicate": "saturate",
+        "kind": "event",
+        "participants": {
+          "agent": "routing loop",
+          "patient": "gateway"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E2",
+            "char_start": 0,
+            "char_end": 37,
+            "text": "A routing loop saturated the gateway."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-005",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-005_s4",
+        "state_id": "V2-005_s4",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The API timed out.",
+        "predicate": "timeout",
+        "kind": "event",
+        "participants": {
+          "subject": "API"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E3",
+            "char_start": 13,
+            "char_end": 31,
+            "text": "the API timed out."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-005",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-005_s5",
+        "state_id": "V2-005_s5",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The timeout caused checkout retries to fail.",
+        "predicate": "cause_retry_failure",
+        "kind": "event",
+        "participants": {
+          "cause": "timeout",
+          "effect": "checkout retries failure"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E4",
+            "char_start": 0,
+            "char_end": 44,
+            "text": "The timeout caused checkout retries to fail."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-005",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-005_s6",
+        "state_id": "V2-005_s6",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "A technician signed in before the drill started.",
+        "predicate": "sign_in",
+        "kind": "event",
+        "participants": {
+          "agent": "technician"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E5",
+            "char_start": 0,
+            "char_end": 48,
+            "text": "A technician signed in before the drill started."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-005",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s1",
+        "target_state_id": "V2-005_s2",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-005-E1",
+          "char_start": 24,
+          "char_end": 30,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "CAUSE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s3",
+        "target_state_id": "V2-005_s4",
+        "basis": "explicit_connective",
+        "cue_span": {
+          "evidence_id": "V2-005-E3",
+          "char_start": 0,
+          "char_end": 11,
+          "text": "As a result"
+        },
+        "traversal_allowed": true
+      },
+      {
+        "type": "CAUSE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s4",
+        "target_state_id": "V2-005_s5",
+        "basis": "explicit_connective",
+        "cue_span": {
+          "evidence_id": "V2-005-E4",
+          "char_start": 12,
+          "char_end": 18,
+          "text": "caused"
+        },
+        "traversal_allowed": true
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 3520,
+    "completion_tokens": 1650,
+    "total_tokens": 5170,
+    "latency_ms": 28723.532399977557
+  },
+  {
+    "case_id": "V2-006",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-006_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-006_s1",
+        "state_id": "V2-006_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The certificate expired before the outage.",
+        "predicate": "expire",
+        "kind": "event",
+        "participants": {
+          "subject": "certificate"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E1",
+            "char_start": 0,
+            "char_end": 42,
+            "text": "The certificate expired before the outage."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-006",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-006_s2",
+        "state_id": "V2-006_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "No cause for the outage has been established.",
+        "predicate": "establish_cause",
+        "kind": "proposition",
+        "participants": {
+          "object": "cause"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E1",
+            "char_start": 43,
+            "char_end": 73,
+            "text": "No cause has been established."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-006",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-006_s3",
+        "state_id": "V2-006_s3",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The API timed out after the outage.",
+        "predicate": "timeout",
+        "kind": "event",
+        "participants": {
+          "subject": "API"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E2",
+            "char_start": 0,
+            "char_end": 35,
+            "text": "The API timed out after the outage."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-006",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-006_s4",
+        "state_id": "V2-006_s4",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Checkout retries failed.",
+        "predicate": "fail",
+        "kind": "event",
+        "participants": {
+          "subject": "checkout retries"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E3",
+            "char_start": 0,
+            "char_end": 30,
+            "text": "Checkout retries failed later."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-006",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-006_s5",
+        "state_id": "V2-006_s5",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "A technician signed in before the drill started.",
+        "predicate": "sign_in",
+        "kind": "event",
+        "participants": {
+          "subject": "technician"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E4",
+            "char_start": 0,
+            "char_end": 48,
+            "text": "A technician signed in before the drill started."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-006",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s1",
+        "target_state_id": "V2-006_s2",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E1",
+          "char_start": 24,
+          "char_end": 30,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s5",
+        "target_state_id": "V2-006_s2",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E1",
+          "char_start": 24,
+          "char_end": 30,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 3146,
+    "completion_tokens": 1315,
+    "total_tokens": 4461,
+    "latency_ms": 34770.01110004494
+  },
+  {
+    "case_id": "V2-007",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-007_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-007_s1",
+        "state_id": "V2-007_s1",
+        "state_available_at": "2026-05-10T12:00:00Z",
+        "canonical_content": "The safety policy requires Jo to sign the inspection by May 8.",
+        "predicate": "require_signature",
+        "kind": "proposition",
+        "participants": {
+          "agent": "Jo",
+          "requirement": "inspection_signature",
+          "deadline": "2026-05-08"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-08",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-007-E1",
+            "char_start": 0,
+            "char_end": 62,
+            "text": "The safety policy requires Jo to sign the inspection by May 8."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-007",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-007_s2",
+        "state_id": "V2-007_s2",
+        "state_available_at": "2026-05-10T12:00:00Z",
+        "canonical_content": "Jo has not signed the inspection.",
+        "predicate": "sign_inspection",
+        "kind": "event",
+        "participants": {
+          "agent": "Jo"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-09",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-007-E1",
+            "char_start": 63,
+            "char_end": 84,
+            "text": "Jo has not signed it."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-007",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2104,
+    "completion_tokens": 529,
+    "total_tokens": 2633,
+    "latency_ms": 62658.032200008165
+  },
+  {
+    "case_id": "V2-008",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-008_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-008_s1",
+        "state_id": "V2-008_s1",
+        "state_available_at": "2026-05-10T12:00:00Z",
+        "canonical_content": "Jo signed the inspection on May 8.",
+        "predicate": "sign",
+        "kind": "event",
+        "participants": {
+          "agent": "Jo",
+          "object": "inspection"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-08",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-008-E1",
+            "char_start": 0,
+            "char_end": 34,
+            "text": "Jo signed the inspection on May 8."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-008",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-008_s2",
+        "state_id": "V2-008_s2",
+        "state_available_at": "2026-05-10T12:00:00Z",
+        "canonical_content": "The policy required a signature by May 8.",
+        "predicate": "require_signature",
+        "kind": "proposition",
+        "participants": {
+          "policy": "policy",
+          "deadline": "2026-05-08"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-08",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-008-E1",
+            "char_start": 35,
+            "char_end": 80,
+            "text": "The policy required a signature by that date."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-008",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2096,
+    "completion_tokens": 521,
+    "total_tokens": 2617,
+    "latency_ms": 168709.8726000404
+  },
+  {
+    "case_id": "V2-009",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-009_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-009_s1",
+        "state_id": "V2-009_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Five sensors reported healthy at noon on 2026-05-01.",
+        "predicate": "report_healthy",
+        "kind": "event",
+        "participants": {
+          "subject": "five sensors"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-009-E1",
+            "char_start": 0,
+            "char_end": 38,
+            "text": "Five sensors reported healthy at noon."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-009",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-009_s2",
+        "state_id": "V2-009_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "All sensors except S4 lost signal by the evening of 2026-05-01.",
+        "predicate": "lose_signal",
+        "kind": "event",
+        "participants": {
+          "subject": "sensors except S4"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-009-E1",
+            "char_start": 39,
+            "char_end": 76,
+            "text": "All except S4 lost signal by evening."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-009",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2117,
+    "completion_tokens": 523,
+    "total_tokens": 2640,
+    "latency_ms": 16136.912199959625
+  },
+  {
+    "case_id": "V2-010",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-010_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-010_s1",
+        "state_id": "V2-010_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Sensor S4 lost signal on 2026-05-01.",
+        "predicate": "lose_signal",
+        "kind": "event",
+        "participants": {
+          "subject": "S4"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-010-E1",
+            "char_start": 5,
+            "char_end": 19,
+            "text": "S4 lost signal"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-010",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-010_s2",
+        "state_id": "V2-010_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The other four sensors remained healthy on 2026-05-01.",
+        "predicate": "remain_healthy",
+        "kind": "state",
+        "participants": {
+          "subject": "other four sensors"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-010-E1",
+            "char_start": 32,
+            "char_end": 71,
+            "text": "the other four sensors remained healthy"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-010",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2110,
+    "completion_tokens": 514,
+    "total_tokens": 2624,
+    "latency_ms": 305073.2397999964
+  },
+  {
+    "case_id": "V2-011",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-011_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-011_s1",
+        "state_id": "V2-011_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The pump stopped on Monday April 27, 2026.",
+        "predicate": "stop",
+        "kind": "event",
+        "participants": {
+          "subject": "pump"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04-27",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-011-E1",
+            "char_start": 0,
+            "char_end": 35,
+            "text": "The pump stopped on Monday April 27"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-011",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-011_s2",
+        "state_id": "V2-011_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The pump stopped on Tuesday April 28, 2026.",
+        "predicate": "stop",
+        "kind": "event",
+        "participants": {
+          "subject": "pump"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04-28",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-011-E1",
+            "char_start": 36,
+            "char_end": 65,
+            "text": "and again on Tuesday April 28"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-011",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-011_s1",
+        "target_state_id": "V2-011_s2",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-011-E1",
+          "char_start": 40,
+          "char_end": 48,
+          "text": "again on"
+        },
+        "traversal_allowed": false
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 2119,
+    "completion_tokens": 573,
+    "total_tokens": 2692,
+    "latency_ms": 137992.62169998838
+  },
+  {
+    "case_id": "V2-012",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-012_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-012_s1",
+        "state_id": "V2-012_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The April 28 alert repeated the April 27 pump stop.",
+        "predicate": "repeat_alert",
+        "kind": "event",
+        "participants": {
+          "subject": "April 28 alert",
+          "object": "April 27 pump stop"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-012-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "The April 28 alert repeated the April 27 pump stop"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-012",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-012_s2",
+        "state_id": "V2-012_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "There was only one pump stop.",
+        "predicate": "exist_single_stop",
+        "kind": "state",
+        "participants": {
+          "entity": "pump stop"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-012-E1",
+            "char_start": 52,
+            "char_end": 76,
+            "text": "there was only one stop."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-012",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2109,
+    "completion_tokens": 524,
+    "total_tokens": 2633,
+    "latency_ms": 909033.5333000403
+  },
+  {
+    "case_id": "V2-013",
+    "cutoff": "2026-02-01T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-013_2026-02-01T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-013_s1",
+        "state_id": "V2-013_s1",
+        "state_available_at": "2026-01-11T12:00:00Z",
+        "canonical_content": "Pier 2 was open on January 10, 2026.",
+        "predicate": "be_open",
+        "kind": "state",
+        "participants": {
+          "subject": "pier 2"
+        },
+        "holder": "Tariq",
+        "utterer": "user",
+        "attribution_mode": "indirect_report",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-01-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "Tariq's report said pier 2 was open on January 10."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-013",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1437,
+    "completion_tokens": 271,
+    "total_tokens": 1708,
+    "latency_ms": 205314.9586999789
+  },
+  {
+    "case_id": "V2-013",
+    "cutoff": "2026-04-01T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-013_2026-04-01T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-013_s1",
+        "state_id": "V2-013_s1",
+        "state_available_at": "2026-01-11T12:00:00Z",
+        "canonical_content": "Tariq's report said pier 2 was open on January 10.",
+        "predicate": "report_open",
+        "kind": "proposition",
+        "participants": {
+          "reporter": "Tariq",
+          "subject": "pier 2",
+          "status": "open"
+        },
+        "holder": "Tariq",
+        "utterer": "user",
+        "attribution_mode": "indirect_report",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-01-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "Tariq's report said pier 2 was open on January 10."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-013",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-013_s2",
+        "state_id": "V2-013_s2",
+        "state_available_at": "2026-03-11T12:00:00Z",
+        "canonical_content": "Tariq withdrew his January report.",
+        "predicate": "withdraw_report",
+        "kind": "event",
+        "participants": {
+          "actor": "Tariq",
+          "object": "January report"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-03-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E2",
+            "char_start": 0,
+            "char_end": 33,
+            "text": "Tariq withdrew his January report"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-013",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-013_s3",
+        "state_id": "V2-013_s3",
+        "state_available_at": "2026-03-11T12:00:00Z",
+        "canonical_content": "Pier 2 had been closed on January 10.",
+        "predicate": "close",
+        "kind": "state",
+        "participants": {
+          "subject": "pier 2",
+          "status": "closed"
+        },
+        "holder": "Tariq",
+        "utterer": "user",
+        "attribution_mode": "indirect_report",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-01-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E2",
+            "char_start": 35,
+            "char_end": 72,
+            "text": "pier 2 had been closed on January 10."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-013",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [
+      {
+        "type": "CAUSE",
+        "direction": "directed",
+        "source_state_id": "V2-013_s2",
+        "target_state_id": "V2-013_s3",
+        "basis": "explicit_connective",
+        "cue_span": {
+          "evidence_id": "V2-013-E2",
+          "char_start": 33,
+          "char_end": 34,
+          "text": ":"
+        },
+        "traversal_allowed": true
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 2354,
+    "completion_tokens": 862,
+    "total_tokens": 3216,
+    "latency_ms": 242825.91839996167
+  },
+  {
+    "case_id": "V2-014",
+    "cutoff": "2026-03-01T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-014_2026-03-01T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-014_s1",
+        "state_id": "V2-014_s1",
+        "state_available_at": "2026-02-11T12:00:00Z",
+        "canonical_content": "The February inspection reported twelve cracks in pier 2.",
+        "predicate": "report_cracks",
+        "kind": "event",
+        "participants": {
+          "subject": "February inspection",
+          "object": "twelve cracks",
+          "location": "pier 2"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-02",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E1",
+            "char_start": 0,
+            "char_end": 57,
+            "text": "The February inspection reported twelve cracks in pier 2."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-014",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1430,
+    "completion_tokens": 273,
+    "total_tokens": 1703,
+    "latency_ms": 153297.46329999762
+  },
+  {
+    "case_id": "V2-014",
+    "cutoff": "2026-05-01T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-014_2026-05-01T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-014_s1",
+        "state_id": "V2-014_s1",
+        "state_available_at": "2026-02-11T12:00:00Z",
+        "canonical_content": "The February inspection reported twelve cracks in pier 2.",
+        "predicate": "report_cracks",
+        "kind": "event",
+        "participants": {
+          "location": "pier 2",
+          "count": "12"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-02",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E1",
+            "char_start": 0,
+            "char_end": 57,
+            "text": "The February inspection reported twelve cracks in pier 2."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-014",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-014_s2",
+        "state_id": "V2-014_s2",
+        "state_available_at": "2026-04-11T12:00:00Z",
+        "canonical_content": "The inspector retracted the crack count in April.",
+        "predicate": "retract_count",
+        "kind": "event",
+        "participants": {
+          "actor": "inspector"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E2",
+            "char_start": 0,
+            "char_end": 48,
+            "text": "The inspector retracted the crack count in April"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-014",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-014_s3",
+        "state_id": "V2-014_s3",
+        "state_available_at": "2026-04-11T12:00:00Z",
+        "canonical_content": "Because the sensor was miscalibrated, the crack count is unknown.",
+        "predicate": "cause_unknown_count",
+        "kind": "event",
+        "participants": {
+          "cause": "sensor miscalibration",
+          "effect": "unknown crack count"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E2",
+            "char_start": 50,
+            "char_end": 104,
+            "text": "the sensor was miscalibrated and the count is unknown."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-014",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [
+      {
+        "type": "CAUSE",
+        "direction": "directed",
+        "source_state_id": "V2-014_s3",
+        "target_state_id": "V2-014_s2",
+        "basis": "explicit_connective",
+        "cue_span": null,
+        "traversal_allowed": true
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 2338,
+    "completion_tokens": 829,
+    "total_tokens": 3167,
+    "latency_ms": 208794.2326000193
+  },
+  {
+    "case_id": "V2-015",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-015_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-015_s1",
+        "state_id": "V2-015_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The manager estimated the outage at about two and a half hours.",
+        "predicate": "estimate_outage",
+        "kind": "proposition",
+        "participants": {
+          "agent": "manager",
+          "target": "outage",
+          "duration": "2.5 hours"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "unresolved",
+        "uncertainty": "actor_ambiguous",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-015-E1",
+            "char_start": 0,
+            "char_end": 62,
+            "text": "The manager estimated the outage at about two and a half hours"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-015",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-015_s2",
+        "state_id": "V2-015_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The log records 152 minutes for the outage.",
+        "predicate": "record_duration",
+        "kind": "event",
+        "participants": {
+          "source": "log",
+          "duration": "152 minutes"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-015-E1",
+            "char_start": 64,
+            "char_end": 91,
+            "text": "the log records 152 minutes"
+          }
+        ],
+        "lineage_id": "lineage_c_V2-015",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2113,
+    "completion_tokens": 544,
+    "total_tokens": 2657,
+    "latency_ms": 81662.93709998718
+  },
+  {
+    "case_id": "V2-016",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-016_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-016_s1",
+        "state_id": "V2-016_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The timer shows 150 milliseconds, not 150 seconds.",
+        "predicate": "show_duration",
+        "kind": "state",
+        "participants": {
+          "subject": "timer",
+          "value": "150 milliseconds"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-016-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "The timer shows 150 milliseconds, not 150 seconds."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-016",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1435,
+    "completion_tokens": 275,
+    "total_tokens": 1710,
+    "latency_ms": 29821.57939998433
+  },
+  {
+    "case_id": "V2-017",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-017_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-017_s1",
+        "state_id": "V2-017_s1",
+        "state_available_at": "2026-05-06T12:00:00Z",
+        "canonical_content": "Mina lent Tao the scanner on 2026-05-03.",
+        "predicate": "lend",
+        "kind": "event",
+        "participants": {
+          "lender": "Mina",
+          "borrower": "Tao",
+          "object": "scanner"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-03",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-017-E1",
+            "char_start": 0,
+            "char_end": 35,
+            "text": "Mina lent Tao the scanner on May 3."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-017",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-017_s2",
+        "state_id": "V2-017_s2",
+        "state_available_at": "2026-05-06T12:00:00Z",
+        "canonical_content": "Tao returned the scanner to Mina on 2026-05-04.",
+        "predicate": "return",
+        "kind": "event",
+        "participants": {
+          "actor": "Tao",
+          "recipient": "Mina",
+          "object": "scanner"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-04",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-017-E1",
+            "char_start": 36,
+            "char_end": 69,
+            "text": "Tao returned it to Mina on May 4."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-017",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-017_s1",
+        "target_state_id": "V2-017_s2",
+        "basis": "explicit_temporal",
+        "cue_span": null,
+        "traversal_allowed": false
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 2119,
+    "completion_tokens": 613,
+    "total_tokens": 2732,
+    "latency_ms": 1040987.3830999713
+  },
+  {
+    "case_id": "V2-018",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-018_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-018_s1",
+        "state_id": "V2-018_s1",
+        "state_available_at": "2026-05-06T12:00:00Z",
+        "canonical_content": "Mina borrowed Tao's scanner on 2026-05-03.",
+        "predicate": "borrow",
+        "kind": "event",
+        "participants": {
+          "borrower": "Mina",
+          "owner": "Tao",
+          "object": "scanner"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-03",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-018-E1",
+            "char_start": 0,
+            "char_end": 37,
+            "text": "Mina borrowed Tao's scanner on May 3."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-018",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-018_s2",
+        "state_id": "V2-018_s2",
+        "state_available_at": "2026-05-06T12:00:00Z",
+        "canonical_content": "Mina returned the scanner to Tao on 2026-05-04.",
+        "predicate": "return",
+        "kind": "event",
+        "participants": {
+          "actor": "Mina",
+          "recipient": "Tao",
+          "object": "scanner"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-04",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-018-E1",
+            "char_start": 38,
+            "char_end": 71,
+            "text": "Mina returned it to Tao on May 4."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-018",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2123,
+    "completion_tokens": 555,
+    "total_tokens": 2678,
+    "latency_ms": 19581.448299984913
+  },
+  {
+    "case_id": "V2-019",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-019_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-019_s1",
+        "state_id": "V2-019_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The staging gateway was disabled by the deployment bot.",
+        "predicate": "disable",
+        "kind": "event",
+        "participants": {
+          "agent": "deployment bot",
+          "patient": "staging gateway"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-019-E1",
+            "char_start": 0,
+            "char_end": 83,
+            "text": "The staging gateway was disabled by the deployment bot, according to the audit log."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-019",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1435,
+    "completion_tokens": 266,
+    "total_tokens": 1701,
+    "latency_ms": 28729.8667000141
+  },
+  {
+    "case_id": "V2-020",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-020_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-020_s1",
+        "state_id": "V2-020_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The staging gateway was disabled during deployment.",
+        "predicate": "disable_gateway",
+        "kind": "event",
+        "participants": {
+          "subject": "staging gateway"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-020-E1",
+            "char_start": 0,
+            "char_end": 51,
+            "text": "The staging gateway was disabled during deployment."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-020",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-020_s2",
+        "state_id": "V2-020_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The audit log does not identify who disabled the staging gateway.",
+        "predicate": "identify_actor",
+        "kind": "proposition",
+        "participants": {
+          "agent": "audit log",
+          "target": "UNKNOWN"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "unresolved",
+        "uncertainty": "actor_ambiguous",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-020-E1",
+            "char_start": 52,
+            "char_end": 95,
+            "text": "The audit log does not identify who did it."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-020",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2099,
+    "completion_tokens": 514,
+    "total_tokens": 2613,
+    "latency_ms": 99652.68380002817
+  },
+  {
+    "case_id": "V2-021",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-021_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-021_s1",
+        "state_id": "V2-021_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The cache or the scheduler dropped the job.",
+        "predicate": "drop_job",
+        "kind": "event",
+        "participants": {
+          "agent": "cache or scheduler",
+          "patient": "job"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "uncertain",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "unresolved",
+        "uncertainty": "actor_ambiguous",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-021-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "Either the cache or the scheduler dropped the job."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-021",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-021_s2",
+        "state_id": "V2-021_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The trace cannot distinguish between the cache and the scheduler.",
+        "predicate": "cannot_distinguish",
+        "kind": "proposition",
+        "participants": {
+          "instrument": "trace",
+          "target": "cache or scheduler"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-021-E1",
+            "char_start": 51,
+            "char_end": 85,
+            "text": "The trace cannot distinguish them."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-021",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2096,
+    "completion_tokens": 522,
+    "total_tokens": 2618,
+    "latency_ms": 64685.78860000707
+  },
+  {
+    "case_id": "V2-022",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-022_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-022_s1",
+        "state_id": "V2-022_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The cache dropped the job.",
+        "predicate": "drop_job",
+        "kind": "event",
+        "participants": {
+          "agent": "cache",
+          "patient": "job"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-022-E1",
+            "char_start": 0,
+            "char_end": 26,
+            "text": "The cache dropped the job."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-022",
+        "compiler_version": "arm-c-recommended-v1"
+      },
+      {
+        "block_id": "V2-022_s2",
+        "state_id": "V2-022_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The scheduler was running normally.",
+        "predicate": "run_normally",
+        "kind": "state",
+        "participants": {
+          "subject": "scheduler"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-022-E1",
+            "char_start": 27,
+            "char_end": 62,
+            "text": "The scheduler was running normally."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-022",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 2,
+    "prompt_tokens": 2079,
+    "completion_tokens": 493,
+    "total_tokens": 2572,
+    "latency_ms": 528744.5922000334
+  },
+  {
+    "case_id": "V2-023",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-023_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-023_s1",
+        "state_id": "V2-023_s1",
+        "state_available_at": "2026-05-02T00:00:00Z",
+        "canonical_content": "Lian posted the alert from Tokyo at 23:30 UTC on May 1, 2026.",
+        "predicate": "post_alert",
+        "kind": "event",
+        "participants": {
+          "agent": "Lian",
+          "location": "Tokyo",
+          "object": "alert"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-023-E1",
+            "char_start": 0,
+            "char_end": 56,
+            "text": "At 23:30 UTC on May 1, Lian posted the alert from Tokyo."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-023",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1439,
+    "completion_tokens": 295,
+    "total_tokens": 1734,
+    "latency_ms": 55245.54609996267
+  },
+  {
+    "case_id": "V2-024",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "manifest_id": "manifest_C_V2-024_2026-05-20T00:00:00Z",
+    "blocks": [
+      {
+        "block_id": "V2-024_s1",
+        "state_id": "V2-024_s1",
+        "state_available_at": "2026-05-02T00:00:00Z",
+        "canonical_content": "Lian posted the alert at 00:30 Tokyo time on May 2, 2026.",
+        "predicate": "post_alert",
+        "kind": "event",
+        "participants": {
+          "actor": "Lian",
+          "action": "post",
+          "object": "alert"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-024-E1",
+            "char_start": 0,
+            "char_end": 52,
+            "text": "At 00:30 Tokyo time on May 2, Lian posted the alert."
+          }
+        ],
+        "lineage_id": "lineage_c_V2-024",
+        "compiler_version": "arm-c-recommended-v1"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1438,
+    "completion_tokens": 293,
+    "total_tokens": 1731,
+    "latency_ms": 355435.7398999855
+  }
+]

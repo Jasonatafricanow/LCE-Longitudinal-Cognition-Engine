@@ -1,0 +1,1956 @@
+[
+  {
+    "case_id": "V2-001",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 15,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 1,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s2: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 1,
+        "total": 2
+      },
+      "holder": {
+        "correct": 1,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-002",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 1,
+    "pred_state_count": 2,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 6,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 0,
+        "total": 1
+      },
+      "holder": {
+        "correct": 1,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-003",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 1,
+    "pred_state_count": 2,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 5,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 1,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 0,
+        "total": 1
+      },
+      "modality": {
+        "correct": 0,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-004",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 14,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user",
+      "silent_holder_flip in s2: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 2,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-005",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 5,
+    "pred_state_count": 6,
+    "aligned_state_count": 5,
+    "account_exact_matches": 0,
+    "required_fields_total": 65,
+    "required_fields_correct": 33,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 2,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user",
+      "silent_holder_flip in s2: user/narrator -> user",
+      "silent_holder_flip in s3: user/narrator -> user",
+      "silent_holder_flip in s4: user/narrator -> user",
+      "silent_holder_flip in s5: user/narrator -> user",
+      "invalid_relation_endpoint in relation V2-005_s1->V2-005_s2"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 3,
+        "total": 5
+      },
+      "predicate_kind": {
+        "correct": 1,
+        "total": 5
+      },
+      "participants": {
+        "correct": 1,
+        "total": 5
+      },
+      "holder": {
+        "correct": 0,
+        "total": 5
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 5
+      },
+      "attribution_mode": {
+        "correct": 5,
+        "total": 5
+      },
+      "polarity": {
+        "correct": 5,
+        "total": 5
+      },
+      "modality": {
+        "correct": 5,
+        "total": 5
+      },
+      "epistemic_hedge": {
+        "correct": 5,
+        "total": 5
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 5
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 5
+      },
+      "availability": {
+        "correct": 5,
+        "total": 5
+      },
+      "provenance": {
+        "correct": 3,
+        "total": 5
+      }
+    }
+  },
+  {
+    "case_id": "V2-006",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 4,
+    "pred_state_count": 5,
+    "aligned_state_count": 4,
+    "account_exact_matches": 0,
+    "required_fields_total": 52,
+    "required_fields_correct": 30,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user",
+      "silent_holder_flip in s2: user/narrator -> user",
+      "silent_holder_flip in s3: user/narrator -> user",
+      "silent_holder_flip in s4: user/narrator -> user",
+      "invalid_relation_endpoint in relation V2-006_s1->V2-006_s2",
+      "invalid_relation_endpoint in relation V2-006_s5->V2-006_s2"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 3,
+        "total": 4
+      },
+      "predicate_kind": {
+        "correct": 2,
+        "total": 4
+      },
+      "participants": {
+        "correct": 2,
+        "total": 4
+      },
+      "holder": {
+        "correct": 0,
+        "total": 4
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 4
+      },
+      "attribution_mode": {
+        "correct": 4,
+        "total": 4
+      },
+      "polarity": {
+        "correct": 4,
+        "total": 4
+      },
+      "modality": {
+        "correct": 4,
+        "total": 4
+      },
+      "epistemic_hedge": {
+        "correct": 4,
+        "total": 4
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 4
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 4
+      },
+      "availability": {
+        "correct": 4,
+        "total": 4
+      },
+      "provenance": {
+        "correct": 3,
+        "total": 4
+      }
+    }
+  },
+  {
+    "case_id": "V2-007",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 13,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: safety policy -> user",
+      "silent_holder_flip in s2: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 0,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 1,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-008",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 16,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user",
+      "silent_holder_flip in s2: policy -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 2,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 1,
+        "total": 2
+      },
+      "participants": {
+        "correct": 1,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 1,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-009",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 20,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 1,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 1,
+        "total": 2
+      },
+      "participants": {
+        "correct": 0,
+        "total": 2
+      },
+      "holder": {
+        "correct": 2,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 2,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-010",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 1,
+    "pred_state_count": 2,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 5,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 0,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-011",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 16,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 1,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user",
+      "silent_holder_flip in s2: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 2,
+        "total": 2
+      },
+      "participants": {
+        "correct": 2,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-012",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 1,
+    "pred_state_count": 2,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 6,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 1,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-013",
+    "cutoff": "2026-02-01T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 1,
+    "pred_state_count": 1,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 7,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 0,
+        "total": 1
+      },
+      "holder": {
+        "correct": 1,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-013",
+    "cutoff": "2026-04-01T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 2,
+    "pred_state_count": 3,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 14,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "invalid_relation_endpoint in relation V2-013_s2->V2-013_s3"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 1,
+        "total": 2
+      },
+      "holder": {
+        "correct": 2,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-014",
+    "cutoff": "2026-03-01T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 1,
+    "pred_state_count": 1,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 6,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: February inspection report -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 0,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 0,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 1,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-014",
+    "cutoff": "2026-05-01T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 2,
+    "pred_state_count": 3,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 10,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: February inspection report -> user",
+      "silent_holder_flip in s2: inspector -> user",
+      "invalid_relation_endpoint in relation V2-014_s3->V2-014_s2"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 0,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 0,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 1,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-015",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 8,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: manager -> user",
+      "silent_holder_flip in s2: log -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 2,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 1,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 0,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 0,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-016",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 1,
+    "pred_state_count": 1,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 6,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 1,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 0,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-017",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 1,
+    "required_fields_total": 26,
+    "required_fields_correct": 24,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 1,
+    "relations_fp": 0,
+    "relations_fn": 1,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 2,
+        "total": 2
+      },
+      "participants": {
+        "correct": 2,
+        "total": 2
+      },
+      "holder": {
+        "correct": 2,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 1,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 2,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-018",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 1,
+    "required_fields_total": 26,
+    "required_fields_correct": 24,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 2,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 2,
+        "total": 2
+      },
+      "participants": {
+        "correct": 2,
+        "total": 2
+      },
+      "holder": {
+        "correct": 2,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 2,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 1,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 2,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-019",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 1,
+    "pred_state_count": 1,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 6,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: audit log -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 1,
+        "total": 1
+      },
+      "participants": {
+        "correct": 1,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 0,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 0,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-020",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 1,
+    "pred_state_count": 2,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 5,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 0,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 0,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-021",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": false,
+    "gold_state_count": 1,
+    "pred_state_count": 2,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 6,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 0,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 1
+      },
+      "participants": {
+        "correct": 0,
+        "total": 1
+      },
+      "holder": {
+        "correct": 0,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-022",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 2,
+    "pred_state_count": 2,
+    "aligned_state_count": 2,
+    "account_exact_matches": 0,
+    "required_fields_total": 26,
+    "required_fields_correct": 16,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [
+      "silent_holder_flip in s1: user/narrator -> user",
+      "silent_holder_flip in s2: user/narrator -> user"
+    ],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 2,
+        "total": 2
+      },
+      "predicate_kind": {
+        "correct": 0,
+        "total": 2
+      },
+      "participants": {
+        "correct": 2,
+        "total": 2
+      },
+      "holder": {
+        "correct": 0,
+        "total": 2
+      },
+      "utterer": {
+        "correct": 0,
+        "total": 2
+      },
+      "attribution_mode": {
+        "correct": 2,
+        "total": 2
+      },
+      "polarity": {
+        "correct": 2,
+        "total": 2
+      },
+      "modality": {
+        "correct": 2,
+        "total": 2
+      },
+      "epistemic_hedge": {
+        "correct": 2,
+        "total": 2
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 2
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 2
+      },
+      "availability": {
+        "correct": 2,
+        "total": 2
+      },
+      "provenance": {
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  {
+    "case_id": "V2-023",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 1,
+    "pred_state_count": 1,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 12,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 1,
+        "total": 1
+      },
+      "participants": {
+        "correct": 1,
+        "total": 1
+      },
+      "holder": {
+        "correct": 1,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 1,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 1
+      }
+    }
+  },
+  {
+    "case_id": "V2-024",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "C",
+    "exact_block_count": true,
+    "gold_state_count": 1,
+    "pred_state_count": 1,
+    "aligned_state_count": 1,
+    "account_exact_matches": 0,
+    "required_fields_total": 13,
+    "required_fields_correct": 11,
+    "abstentions_justified": 0,
+    "abstentions_unjustified": 0,
+    "relations_tp": 0,
+    "relations_fp": 0,
+    "relations_fn": 0,
+    "forbidden_violations": [],
+    "hard_failures": [],
+    "field_breakdown": {
+      "canonical_content": {
+        "correct": 1,
+        "total": 1
+      },
+      "predicate_kind": {
+        "correct": 1,
+        "total": 1
+      },
+      "participants": {
+        "correct": 1,
+        "total": 1
+      },
+      "holder": {
+        "correct": 1,
+        "total": 1
+      },
+      "utterer": {
+        "correct": 1,
+        "total": 1
+      },
+      "attribution_mode": {
+        "correct": 1,
+        "total": 1
+      },
+      "polarity": {
+        "correct": 1,
+        "total": 1
+      },
+      "modality": {
+        "correct": 1,
+        "total": 1
+      },
+      "epistemic_hedge": {
+        "correct": 1,
+        "total": 1
+      },
+      "valid_time_precision": {
+        "correct": 0,
+        "total": 1
+      },
+      "entity_status_uncertainty": {
+        "correct": 0,
+        "total": 1
+      },
+      "availability": {
+        "correct": 1,
+        "total": 1
+      },
+      "provenance": {
+        "correct": 1,
+        "total": 1
+      }
+    }
+  }
+]

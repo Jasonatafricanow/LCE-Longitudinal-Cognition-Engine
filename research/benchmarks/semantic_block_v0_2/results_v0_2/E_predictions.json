@@ -1,0 +1,2006 @@
+[
+  {
+    "case_id": "V2-001",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "72c0c524eada64dee6c8b253aad90acece7edb8b4c36b13840e87e045d4f8d03",
+    "blocks": [
+      {
+        "block_id": "V2-001_s1",
+        "state_id": "V2-001_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Pavel says the north gate is open.",
+        "predicate": "open",
+        "kind": "proposition",
+        "participants": {
+          "subject": "north gate"
+        },
+        "holder": "Pavel",
+        "utterer": "user",
+        "attribution_mode": "direct_quote",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-001-E1",
+            "char_start": 32,
+            "char_end": 66,
+            "text": "Pavel says the north gate is open."
+          }
+        ],
+        "lineage_id": "route-e-V2-001-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-001_s2",
+        "state_id": "V2-001_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Iris has not checked the gate.",
+        "predicate": "check",
+        "kind": "event",
+        "participants": {
+          "agent": "Iris",
+          "object": "gate"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-001-E1",
+            "char_start": 68,
+            "char_end": 98,
+            "text": "Iris has not checked the gate."
+          }
+        ],
+        "lineage_id": "route-e-V2-001-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1468,
+    "completion_tokens": 497,
+    "total_tokens": 1965,
+    "latency_ms": 4756.267399992794
+  },
+  {
+    "case_id": "V2-002",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "1094f1e43299cf1ebef277650a9f7576ba432a6941f38a949d88603ded6744ba",
+    "blocks": [
+      {
+        "block_id": "V2-002_s1",
+        "state_id": "V2-002_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Niko checked the north gate.",
+        "predicate": "check",
+        "kind": "event",
+        "participants": {
+          "agent": "Niko",
+          "object": "north gate"
+        },
+        "holder": "Niko",
+        "utterer": "user",
+        "attribution_mode": "direct_quote",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-002-E1",
+            "char_start": 32,
+            "char_end": 56,
+            "text": "I checked the north gate"
+          }
+        ],
+        "lineage_id": "route-e-V2-002-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-002_s2",
+        "state_id": "V2-002_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The north gate is closed.",
+        "predicate": "be_closed",
+        "kind": "state",
+        "participants": {
+          "subject": "north gate"
+        },
+        "holder": "Niko",
+        "utterer": "user",
+        "attribution_mode": "direct_quote",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-002-E1",
+            "char_start": 58,
+            "char_end": 70,
+            "text": "it is closed"
+          }
+        ],
+        "lineage_id": "route-e-V2-002-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1463,
+    "completion_tokens": 554,
+    "total_tokens": 2017,
+    "latency_ms": 11175.155200005975
+  },
+  {
+    "case_id": "V2-003",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "c1336b248bc916c9906ab964769dc72346fe5462ef9209fd282d653b3d53ad8e",
+    "blocks": [
+      {
+        "block_id": "V2-003_s1",
+        "state_id": "V2-003_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The backup never started.",
+        "predicate": "start",
+        "kind": "event",
+        "participants": {
+          "subject": "backup"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-003-E1",
+            "char_start": 60,
+            "char_end": 85,
+            "text": "The backup never started."
+          }
+        ],
+        "lineage_id": "route-e-V2-003-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-003_s2",
+        "state_id": "V2-003_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The import might have completed.",
+        "predicate": "complete",
+        "kind": "event",
+        "participants": {
+          "subject": "import"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "possible",
+        "epistemic_hedge": "uncertain",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-003-E1",
+            "char_start": 27,
+            "char_end": 58,
+            "text": "the import might have completed"
+          }
+        ],
+        "lineage_id": "route-e-V2-003-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1461,
+    "completion_tokens": 539,
+    "total_tokens": 2000,
+    "latency_ms": 11602.431699982844
+  },
+  {
+    "case_id": "V2-004",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "b67dac24a30378248a9748d86b29309d931d1ebb74d981397ff56f7f29674df7",
+    "blocks": [],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1459,
+    "completion_tokens": 490,
+    "total_tokens": 1949,
+    "latency_ms": 16373.044300009497
+  },
+  {
+    "case_id": "V2-005",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "f00dbb97dbba010bfc4c699df44b09af08de6dd882aad5a341746c6ce35c4a4c",
+    "blocks": [
+      {
+        "block_id": "V2-005_s1",
+        "state_id": "V2-005_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The certificate expired.",
+        "predicate": "expire",
+        "kind": "event",
+        "participants": {
+          "subject": "certificate"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E1",
+            "char_start": 0,
+            "char_end": 23,
+            "text": "The certificate expired"
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-005_s2",
+        "state_id": "V2-005_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The outage occurred.",
+        "predicate": "outage",
+        "kind": "event",
+        "participants": {
+          "subject": "system"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E1",
+            "char_start": 31,
+            "char_end": 41,
+            "text": "the outage"
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s2",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-005_s3",
+        "state_id": "V2-005_s3",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "A routing loop saturated the gateway.",
+        "predicate": "saturate_gateway",
+        "kind": "event",
+        "participants": {
+          "subject": "routing loop",
+          "object": "gateway"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E2",
+            "char_start": 0,
+            "char_end": 37,
+            "text": "A routing loop saturated the gateway."
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s3",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-005_s4",
+        "state_id": "V2-005_s4",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The API timed out.",
+        "predicate": "timeout",
+        "kind": "event",
+        "participants": {
+          "subject": "API"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E3",
+            "char_start": 13,
+            "char_end": 31,
+            "text": "the API timed out."
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s4",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-005_s5",
+        "state_id": "V2-005_s5",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Checkout retries failed.",
+        "predicate": "fail",
+        "kind": "event",
+        "participants": {
+          "subject": "checkout retries"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E4",
+            "char_start": 19,
+            "char_end": 44,
+            "text": "checkout retries to fail."
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s5",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-005_s6",
+        "state_id": "V2-005_s6",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "A technician signed in.",
+        "predicate": "sign_in",
+        "kind": "event",
+        "participants": {
+          "subject": "technician"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E5",
+            "char_start": 0,
+            "char_end": 22,
+            "text": "A technician signed in"
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s6",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-005_s7",
+        "state_id": "V2-005_s7",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The drill started.",
+        "predicate": "start_drill",
+        "kind": "event",
+        "participants": {
+          "subject": "drill"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-005-E5",
+            "char_start": 30,
+            "char_end": 48,
+            "text": "the drill started."
+          }
+        ],
+        "lineage_id": "route-e-V2-005-s7",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s1",
+        "target_state_id": "V2-005_s2",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-005-E1",
+          "char_start": 24,
+          "char_end": 30,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "CAUSE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s3",
+        "target_state_id": "V2-005_s4",
+        "basis": "explicit_connective",
+        "cue_span": {
+          "evidence_id": "V2-005-E3",
+          "char_start": 0,
+          "char_end": 11,
+          "text": "As a result"
+        },
+        "traversal_allowed": true
+      },
+      {
+        "type": "CAUSE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s4",
+        "target_state_id": "V2-005_s5",
+        "basis": "explicit_connective",
+        "cue_span": {
+          "evidence_id": "V2-005-E4",
+          "char_start": 12,
+          "char_end": 18,
+          "text": "caused"
+        },
+        "traversal_allowed": true
+      },
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-005_s6",
+        "target_state_id": "V2-005_s7",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-005-E5",
+          "char_start": 23,
+          "char_end": 29,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 3168,
+    "completion_tokens": 2137,
+    "total_tokens": 5305,
+    "latency_ms": 43148.432400019374
+  },
+  {
+    "case_id": "V2-006",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "0e986837193d7d48b7c426d7e3ca2bc0ca7f82b23d31f61890bfa04fee28c7ab",
+    "blocks": [
+      {
+        "block_id": "V2-006_s1",
+        "state_id": "V2-006_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The certificate expired.",
+        "predicate": "expire",
+        "kind": "event",
+        "participants": {
+          "subject": "certificate"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E1",
+            "char_start": 0,
+            "char_end": 23,
+            "text": "The certificate expired"
+          }
+        ],
+        "lineage_id": "route-e-V2-006-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-006_s2",
+        "state_id": "V2-006_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The outage occurred.",
+        "predicate": "outage",
+        "kind": "event",
+        "participants": {
+          "subject": "system"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E1",
+            "char_start": 31,
+            "char_end": 41,
+            "text": "the outage"
+          }
+        ],
+        "lineage_id": "route-e-V2-006-s2",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-006_s3",
+        "state_id": "V2-006_s3",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The API timed out.",
+        "predicate": "timeout",
+        "kind": "event",
+        "participants": {
+          "subject": "API"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E2",
+            "char_start": 0,
+            "char_end": 17,
+            "text": "The API timed out"
+          }
+        ],
+        "lineage_id": "route-e-V2-006-s3",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-006_s4",
+        "state_id": "V2-006_s4",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Checkout retries failed.",
+        "predicate": "fail",
+        "kind": "event",
+        "participants": {
+          "subject": "checkout_retries"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E3",
+            "char_start": 0,
+            "char_end": 23,
+            "text": "Checkout retries failed"
+          }
+        ],
+        "lineage_id": "route-e-V2-006-s4",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-006_s5",
+        "state_id": "V2-006_s5",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "A technician signed in.",
+        "predicate": "login",
+        "kind": "event",
+        "participants": {
+          "subject": "technician"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E4",
+            "char_start": 0,
+            "char_end": 22,
+            "text": "A technician signed in"
+          }
+        ],
+        "lineage_id": "route-e-V2-006-s5",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-006_s6",
+        "state_id": "V2-006_s6",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The drill started.",
+        "predicate": "start_drill",
+        "kind": "event",
+        "participants": {
+          "subject": "drill"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-006-E4",
+            "char_start": 30,
+            "char_end": 47,
+            "text": "the drill started"
+          }
+        ],
+        "lineage_id": "route-e-V2-006-s6",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s1",
+        "target_state_id": "V2-006_s2",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E1",
+          "char_start": 24,
+          "char_end": 30,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s1",
+        "target_state_id": "V2-006_s3",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E2",
+          "char_start": 18,
+          "char_end": 23,
+          "text": "after"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s2",
+        "target_state_id": "V2-006_s3",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E2",
+          "char_start": 18,
+          "char_end": 23,
+          "text": "after"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s3",
+        "target_state_id": "V2-006_s4",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E3",
+          "char_start": 24,
+          "char_end": 29,
+          "text": "later"
+        },
+        "traversal_allowed": false
+      },
+      {
+        "type": "BEFORE",
+        "direction": "directed",
+        "source_state_id": "V2-006_s5",
+        "target_state_id": "V2-006_s6",
+        "basis": "explicit_temporal",
+        "cue_span": {
+          "evidence_id": "V2-006-E4",
+          "char_start": 23,
+          "char_end": 29,
+          "text": "before"
+        },
+        "traversal_allowed": false
+      }
+    ],
+    "call_count": 2,
+    "prompt_tokens": 3073,
+    "completion_tokens": 1882,
+    "total_tokens": 4955,
+    "latency_ms": 123937.75989999995
+  },
+  {
+    "case_id": "V2-007",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "ee090f545baec549d10da666e3523c1d1010af0fee2c5e68d64e0018d1be809d",
+    "blocks": [
+      {
+        "block_id": "V2-007_s2",
+        "state_id": "V2-007_s2",
+        "state_available_at": "2026-05-10T12:00:00Z",
+        "canonical_content": "Jo has not signed the inspection.",
+        "predicate": "sign",
+        "kind": "event",
+        "participants": {
+          "actor": "Jo"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-09",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-007-E1",
+            "char_start": 63,
+            "char_end": 84,
+            "text": "Jo has not signed it."
+          }
+        ],
+        "lineage_id": "route-e-V2-007-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1464,
+    "completion_tokens": 506,
+    "total_tokens": 1970,
+    "latency_ms": 11595.567799988203
+  },
+  {
+    "case_id": "V2-008",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "d4635ae9aff841564b32fa453762040cd58d29a3b97f6073cbe6a5158e5de52e",
+    "blocks": [],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1462,
+    "completion_tokens": 495,
+    "total_tokens": 1957,
+    "latency_ms": 16923.53919998277
+  },
+  {
+    "case_id": "V2-009",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "9dd77b361fbad8579e203d93f93cec184bd9c8d16d37f0870c79a497c2225eb1",
+    "blocks": [
+      {
+        "block_id": "V2-009_s1",
+        "state_id": "V2-009_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Five sensors reported healthy at noon.",
+        "predicate": "report_healthy",
+        "kind": "event",
+        "participants": {
+          "subject": "five sensors"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-009-E1",
+            "char_start": 0,
+            "char_end": 38,
+            "text": "Five sensors reported healthy at noon."
+          }
+        ],
+        "lineage_id": "route-e-V2-009-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-009_s2",
+        "state_id": "V2-009_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "All sensors except S4 lost signal by evening.",
+        "predicate": "lose_signal",
+        "kind": "event",
+        "participants": {
+          "subject": "sensors except S4"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-009-E1",
+            "char_start": 39,
+            "char_end": 76,
+            "text": "All except S4 lost signal by evening."
+          }
+        ],
+        "lineage_id": "route-e-V2-009-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1460,
+    "completion_tokens": 556,
+    "total_tokens": 2016,
+    "latency_ms": 16636.55039999867
+  },
+  {
+    "case_id": "V2-010",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "2e2296b92ea1a2ee32d04cdb5ba62c5cfdbde34bc262e68c24773aa109bac4cc",
+    "blocks": [
+      {
+        "block_id": "V2-010_s1",
+        "state_id": "V2-010_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "Sensor S4 lost signal on 2026-05-01.",
+        "predicate": "lose_signal",
+        "kind": "event",
+        "participants": {
+          "subject": "S4"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-010-E1",
+            "char_start": 5,
+            "char_end": 19,
+            "text": "S4 lost signal"
+          }
+        ],
+        "lineage_id": "route-e-V2-010-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-010_s2",
+        "state_id": "V2-010_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The other four sensors remained healthy on 2026-05-01.",
+        "predicate": "remain_healthy",
+        "kind": "state",
+        "participants": {
+          "subject": "other four sensors"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-010-E1",
+            "char_start": 32,
+            "char_end": 71,
+            "text": "the other four sensors remained healthy"
+          }
+        ],
+        "lineage_id": "route-e-V2-010-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1459,
+    "completion_tokens": 510,
+    "total_tokens": 1969,
+    "latency_ms": 23144.536899984814
+  },
+  {
+    "case_id": "V2-011",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "08e727b156ad8432cfc410d0beed6ed79b39242dfab799d54ed5cf054756ebb2",
+    "blocks": [
+      {
+        "block_id": "V2-011_s1",
+        "state_id": "V2-011_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The pump stopped on Monday April 27.",
+        "predicate": "stop",
+        "kind": "event",
+        "participants": {
+          "subject": "pump"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04-27",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-011-E1",
+            "char_start": 0,
+            "char_end": 35,
+            "text": "The pump stopped on Monday April 27"
+          }
+        ],
+        "lineage_id": "route-e-V2-011-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-011_s2",
+        "state_id": "V2-011_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The pump stopped on Tuesday April 28.",
+        "predicate": "stop",
+        "kind": "event",
+        "participants": {
+          "subject": "pump"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04-28",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-011-E1",
+            "char_start": 40,
+            "char_end": 65,
+            "text": "again on Tuesday April 28"
+          }
+        ],
+        "lineage_id": "route-e-V2-011-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1468,
+    "completion_tokens": 557,
+    "total_tokens": 2025,
+    "latency_ms": 5036.572800017893
+  },
+  {
+    "case_id": "V2-012",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "4da0e7e552353fa52acabdf4d3909142ae023d9cd8ad206c6a99934de9de04e3",
+    "blocks": [
+      {
+        "block_id": "V2-012_s1",
+        "state_id": "V2-012_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The April 28 alert repeated the April 27 pump stop.",
+        "predicate": "repeat_alert",
+        "kind": "event",
+        "participants": {
+          "subject": "April 28 alert",
+          "object": "April 27 pump stop"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04-28",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-012-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "The April 28 alert repeated the April 27 pump stop"
+          }
+        ],
+        "lineage_id": "route-e-V2-012-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-012_s2",
+        "state_id": "V2-012_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "There was only one pump stop.",
+        "predicate": "exist_single_stop",
+        "kind": "state",
+        "participants": {
+          "subject": "pump stop"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-012-E1",
+            "char_start": 52,
+            "char_end": 75,
+            "text": "there was only one stop"
+          }
+        ],
+        "lineage_id": "route-e-V2-012-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1465,
+    "completion_tokens": 518,
+    "total_tokens": 1983,
+    "latency_ms": 23101.36569995666
+  },
+  {
+    "case_id": "V2-013",
+    "cutoff": "2026-02-01T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "3b00a387fa47ee641ef6c5be153d5cffab953ccd0963175cfa3a46871c05ed87",
+    "blocks": [
+      {
+        "block_id": "V2-013_s1",
+        "state_id": "V2-013_s1",
+        "state_available_at": "2026-01-11T12:00:00Z",
+        "canonical_content": "Pier 2 was open on January 10, 2026.",
+        "predicate": "be_open",
+        "kind": "state",
+        "participants": {
+          "subject": "pier 2"
+        },
+        "holder": "Tariq",
+        "utterer": "user",
+        "attribution_mode": "indirect_report",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-01-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E1",
+            "char_start": 20,
+            "char_end": 49,
+            "text": "pier 2 was open on January 10"
+          }
+        ],
+        "lineage_id": "route-e-V2-013-s1",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1462,
+    "completion_tokens": 270,
+    "total_tokens": 1732,
+    "latency_ms": 18011.29709999077
+  },
+  {
+    "case_id": "V2-013",
+    "cutoff": "2026-04-01T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "f0a57820a8d5af1c455c1d8343da8265843c5f6cf1e51e2aef7c38af4139abfa",
+    "blocks": [
+      {
+        "block_id": "V2-013_s1",
+        "state_id": "V2-013_s1",
+        "state_available_at": "2026-01-11T12:00:00Z",
+        "canonical_content": "Tariq's report said pier 2 was open on January 10.",
+        "predicate": "report_open",
+        "kind": "proposition",
+        "participants": {
+          "agent": "Tariq",
+          "object": "pier 2"
+        },
+        "holder": "Tariq",
+        "utterer": "user",
+        "attribution_mode": "indirect_report",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-01-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "Tariq's report said pier 2 was open on January 10."
+          }
+        ],
+        "lineage_id": "route-e-V2-013-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-013_s2",
+        "state_id": "V2-013_s2",
+        "state_available_at": "2026-03-11T12:00:00Z",
+        "canonical_content": "Tariq withdrew his January report.",
+        "predicate": "withdraw_report",
+        "kind": "event",
+        "participants": {
+          "agent": "Tariq"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-03-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E2",
+            "char_start": 0,
+            "char_end": 33,
+            "text": "Tariq withdrew his January report"
+          }
+        ],
+        "lineage_id": "route-e-V2-013-s2",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-013_s3",
+        "state_id": "V2-013_s3",
+        "state_available_at": "2026-03-11T12:00:00Z",
+        "canonical_content": "Pier 2 had been closed on January 10.",
+        "predicate": "close",
+        "kind": "state",
+        "participants": {
+          "object": "pier 2"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-01-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-013-E2",
+            "char_start": 35,
+            "char_end": 72,
+            "text": "pier 2 had been closed on January 10."
+          }
+        ],
+        "lineage_id": "route-e-V2-013-s3",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1608,
+    "completion_tokens": 770,
+    "total_tokens": 2378,
+    "latency_ms": 11549.921999976505
+  },
+  {
+    "case_id": "V2-014",
+    "cutoff": "2026-03-01T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "eb8fdb2184938f701d411f40f0dd73a3bd714b6787d883daef70d19ab6c90357",
+    "blocks": [
+      {
+        "block_id": "V2-014_s1",
+        "state_id": "V2-014_s1",
+        "state_available_at": "2026-02-11T12:00:00Z",
+        "canonical_content": "The February inspection reported twelve cracks in pier 2.",
+        "predicate": "report_cracks",
+        "kind": "event",
+        "participants": {
+          "subject": "February inspection",
+          "object": "twelve cracks",
+          "location": "pier 2"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-02-10",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E1",
+            "char_start": 0,
+            "char_end": 57,
+            "text": "The February inspection reported twelve cracks in pier 2."
+          }
+        ],
+        "lineage_id": "route-e-V2-014-s1",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1455,
+    "completion_tokens": 282,
+    "total_tokens": 1737,
+    "latency_ms": 5027.5724999955855
+  },
+  {
+    "case_id": "V2-014",
+    "cutoff": "2026-05-01T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "a187815de14bc6b93efe816389fbc4ad7f13ab3dd8aa80701488c4c4370e4ed3",
+    "blocks": [
+      {
+        "block_id": "V2-014_s1",
+        "state_id": "V2-014_s1",
+        "state_available_at": "2026-02-11T12:00:00Z",
+        "canonical_content": "The February inspection reported twelve cracks in pier 2.",
+        "predicate": "report_cracks",
+        "kind": "event",
+        "participants": {
+          "subject": "inspection",
+          "location": "pier 2",
+          "quantity": "twelve"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-02",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E1",
+            "char_start": 0,
+            "char_end": 57,
+            "text": "The February inspection reported twelve cracks in pier 2."
+          }
+        ],
+        "lineage_id": "route-e-V2-014-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-014_s2",
+        "state_id": "V2-014_s2",
+        "state_available_at": "2026-04-11T12:00:00Z",
+        "canonical_content": "The inspector retracted the crack count in April.",
+        "predicate": "retract_count",
+        "kind": "event",
+        "participants": {
+          "agent": "inspector"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E2",
+            "char_start": 0,
+            "char_end": 48,
+            "text": "The inspector retracted the crack count in April"
+          }
+        ],
+        "lineage_id": "route-e-V2-014-s2",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-014_s3",
+        "state_id": "V2-014_s3",
+        "state_available_at": "2026-04-11T12:00:00Z",
+        "canonical_content": "The sensor was miscalibrated.",
+        "predicate": "miscalibrate",
+        "kind": "state",
+        "participants": {
+          "subject": "sensor"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E2",
+            "char_start": 50,
+            "char_end": 78,
+            "text": "the sensor was miscalibrated"
+          }
+        ],
+        "lineage_id": "route-e-V2-014-s3",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-014_s4",
+        "state_id": "V2-014_s4",
+        "state_available_at": "2026-04-11T12:00:00Z",
+        "canonical_content": "The crack count is unknown.",
+        "predicate": "unknown_count",
+        "kind": "state",
+        "participants": {
+          "subject": "crack count"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-04",
+        "time_precision": "month",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-014-E2",
+            "char_start": 83,
+            "char_end": 103,
+            "text": "the count is unknown"
+          }
+        ],
+        "lineage_id": "route-e-V2-014-s4",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1602,
+    "completion_tokens": 1036,
+    "total_tokens": 2638,
+    "latency_ms": 30026.267700013705
+  },
+  {
+    "case_id": "V2-015",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "95490a9617aa2b71e5582ff76c9168e58aa2127ee4629c05e05c8a9b39803f9d",
+    "blocks": [
+      {
+        "block_id": "V2-015_s1",
+        "state_id": "V2-015_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The manager estimated the outage at about two and a half hours.",
+        "predicate": "estimate_outage",
+        "kind": "event",
+        "participants": {
+          "agent": "manager",
+          "target": "outage"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "unresolved",
+        "uncertainty": "actor_ambiguous",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-015-E1",
+            "char_start": 0,
+            "char_end": 62,
+            "text": "The manager estimated the outage at about two and a half hours"
+          }
+        ],
+        "lineage_id": "route-e-V2-015-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-015_s2",
+        "state_id": "V2-015_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The log records 152 minutes for the outage.",
+        "predicate": "record_duration",
+        "kind": "state",
+        "participants": {
+          "source": "log",
+          "duration": "152 minutes"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-015-E1",
+            "char_start": 64,
+            "char_end": 91,
+            "text": "the log records 152 minutes"
+          }
+        ],
+        "lineage_id": "route-e-V2-015-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1466,
+    "completion_tokens": 530,
+    "total_tokens": 1996,
+    "latency_ms": 11542.730699991807
+  },
+  {
+    "case_id": "V2-016",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "ba3379e0ae374fbc4cbabf03e840876d3a9fe86562b8bc02ecd5056dfaae3604",
+    "blocks": [
+      {
+        "block_id": "V2-016_s1",
+        "state_id": "V2-016_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The timer shows 150 milliseconds, not 150 seconds.",
+        "predicate": "show_timer_value",
+        "kind": "state",
+        "participants": {
+          "subject": "timer"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-016-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "The timer shows 150 milliseconds, not 150 seconds."
+          }
+        ],
+        "lineage_id": "route-e-V2-016-s1",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1460,
+    "completion_tokens": 272,
+    "total_tokens": 1732,
+    "latency_ms": 9653.219199972227
+  },
+  {
+    "case_id": "V2-017",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "00a08a7484eef8ceea69e12af385e53d0de58eeb923b0eeb6599361e79b6f3bb",
+    "blocks": [],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1465,
+    "completion_tokens": 594,
+    "total_tokens": 2059,
+    "latency_ms": 4942.891300015617
+  },
+  {
+    "case_id": "V2-018",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "19da7828a8cae4427176af9c6dfa576f52fbe0aaea127778c82008774657511a",
+    "blocks": [],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1466,
+    "completion_tokens": 597,
+    "total_tokens": 2063,
+    "latency_ms": 50331.958000024315
+  },
+  {
+    "case_id": "V2-019",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "e78e2a52ca2b3f6c489d0d6c05e307642b4ab20803fb38bb71afc14465cfe266",
+    "blocks": [
+      {
+        "block_id": "V2-019_s1",
+        "state_id": "V2-019_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The staging gateway was disabled by the deployment bot.",
+        "predicate": "disable",
+        "kind": "event",
+        "participants": {
+          "subject": "deployment bot",
+          "object": "staging gateway"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-019-E1",
+            "char_start": 0,
+            "char_end": 54,
+            "text": "The staging gateway was disabled by the deployment bot"
+          }
+        ],
+        "lineage_id": "route-e-V2-019-s1",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1460,
+    "completion_tokens": 266,
+    "total_tokens": 1726,
+    "latency_ms": 7051.6848000115715
+  },
+  {
+    "case_id": "V2-020",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "e831a538cff8d926e84a7b7ba7342ac57208cab51e5064bbef4678163857548e",
+    "blocks": [
+      {
+        "block_id": "V2-020_s1",
+        "state_id": "V2-020_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The staging gateway was disabled during deployment.",
+        "predicate": "disable_gateway",
+        "kind": "event",
+        "participants": {
+          "subject": "staging gateway"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-020-E1",
+            "char_start": 0,
+            "char_end": 51,
+            "text": "The staging gateway was disabled during deployment."
+          }
+        ],
+        "lineage_id": "route-e-V2-020-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-020_s2",
+        "state_id": "V2-020_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The audit log does not identify who disabled the staging gateway.",
+        "predicate": "identify_actor",
+        "kind": "state",
+        "participants": {
+          "agent": "audit log",
+          "target": "UNKNOWN"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "unresolved",
+        "uncertainty": "actor_ambiguous",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-020-E1",
+            "char_start": 52,
+            "char_end": 95,
+            "text": "The audit log does not identify who did it."
+          }
+        ],
+        "lineage_id": "route-e-V2-020-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1462,
+    "completion_tokens": 510,
+    "total_tokens": 1972,
+    "latency_ms": 17115.976200031582
+  },
+  {
+    "case_id": "V2-021",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "e983a24e5f04284c24f8cce9ded013ede956d20ff1776caef1cbf34a33d9d44c",
+    "blocks": [
+      {
+        "block_id": "V2-021_s1",
+        "state_id": "V2-021_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The cache or the scheduler dropped the job.",
+        "predicate": "drop_job",
+        "kind": "event",
+        "participants": {
+          "subject": "UNKNOWN"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "uncertain",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "unresolved",
+        "uncertainty": "actor_ambiguous",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-021-E1",
+            "char_start": 0,
+            "char_end": 50,
+            "text": "Either the cache or the scheduler dropped the job."
+          }
+        ],
+        "lineage_id": "route-e-V2-021-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-021_s2",
+        "state_id": "V2-021_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The trace cannot distinguish between the cache and the scheduler.",
+        "predicate": "cannot_distinguish",
+        "kind": "state",
+        "participants": {
+          "subject": "trace"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "negative",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-02",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-021-E1",
+            "char_start": 51,
+            "char_end": 85,
+            "text": "The trace cannot distinguish them."
+          }
+        ],
+        "lineage_id": "route-e-V2-021-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1460,
+    "completion_tokens": 500,
+    "total_tokens": 1960,
+    "latency_ms": 39179.63229998713
+  },
+  {
+    "case_id": "V2-022",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "7a3362477cec65a84f317b1c345aa691a651e032bc6416aa33cd204c19597a10",
+    "blocks": [
+      {
+        "block_id": "V2-022_s1",
+        "state_id": "V2-022_s1",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The cache dropped the job.",
+        "predicate": "drop_job",
+        "kind": "event",
+        "participants": {
+          "subject": "cache",
+          "object": "job"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-022-E1",
+            "char_start": 0,
+            "char_end": 26,
+            "text": "The cache dropped the job."
+          }
+        ],
+        "lineage_id": "route-e-V2-022-s1",
+        "compiler_version": "route-e-v0.2"
+      },
+      {
+        "block_id": "V2-022_s2",
+        "state_id": "V2-022_s2",
+        "state_available_at": "2026-05-02T12:00:00Z",
+        "canonical_content": "The scheduler was running normally.",
+        "predicate": "run_normally",
+        "kind": "state",
+        "participants": {
+          "subject": "scheduler"
+        },
+        "holder": "user",
+        "utterer": "user",
+        "attribution_mode": "direct_speaker",
+        "polarity": "positive",
+        "modality": "asserted",
+        "epistemic_hedge": "none",
+        "valid_time": "2026-05-01",
+        "time_precision": "day",
+        "entity_status": "resolved",
+        "uncertainty": "none",
+        "independent_support_count": 1,
+        "source_spans": [
+          {
+            "evidence_id": "V2-022-E1",
+            "char_start": 27,
+            "char_end": 62,
+            "text": "The scheduler was running normally."
+          }
+        ],
+        "lineage_id": "route-e-V2-022-s2",
+        "compiler_version": "route-e-v0.2"
+      }
+    ],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1456,
+    "completion_tokens": 490,
+    "total_tokens": 1946,
+    "latency_ms": 34783.98720000405
+  },
+  {
+    "case_id": "V2-023",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "9b553a571c5aaf8e9ae59c69b8b961f087b74b7a54a17a5b36e4a372a1f3e166",
+    "blocks": [],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1464,
+    "completion_tokens": 281,
+    "total_tokens": 1745,
+    "latency_ms": 6862.630999996327
+  },
+  {
+    "case_id": "V2-024",
+    "cutoff": "2026-05-20T00:00:00Z",
+    "arm_id": "E",
+    "manifest_id": "45ec8dbdaf8bba40f9c9b651e57934ac4d0aab08237c6ec5449f04cc5496315f",
+    "blocks": [],
+    "relations": [],
+    "call_count": 1,
+    "prompt_tokens": 1463,
+    "completion_tokens": 270,
+    "total_tokens": 1733,
+    "latency_ms": 71479.22570002265
+  }
+]

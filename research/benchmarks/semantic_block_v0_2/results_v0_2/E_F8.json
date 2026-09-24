@@ -1,0 +1,190 @@
+[
+  {
+    "probe_id": "U03-positive-V2-005",
+    "case_id": "V2-005",
+    "arm_id": "E",
+    "pass_gate": true,
+    "extraction_path_pass": true,
+    "retrieval_budget_pass": true,
+    "before_bridge_detected": false,
+    "alignment": {
+      "V2-005_s3": "s2",
+      "V2-005_s5": "s4",
+      "V2-005_s1": "s1",
+      "V2-005_s6": "s5",
+      "V2-005_s4": "s3"
+    },
+    "missing_gold_states": [],
+    "missing_required_edges": [],
+    "wrong_direction_edges": [],
+    "forbidden_direct_edges": [],
+    "invalid_relation_endpoints": [],
+    "unmatched_to_gold_relation_endpoints": [],
+    "invalid_relation_cues": [],
+    "cause_paths": {
+      "s4": [
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "s3": [
+        "s2",
+        "s3"
+      ]
+    },
+    "traces": [
+      {
+        "seed_gold_state_id": "s2",
+        "method": "vector_only",
+        "candidate_ids": [
+          "V2-005_s3",
+          "V2-005_s4",
+          "V2-005_s2"
+        ],
+        "candidate_gold_state_ids": [
+          "s2",
+          "s3",
+          null
+        ],
+        "candidate_scores": {
+          "V2-005_s3": 1.0,
+          "V2-005_s4": 0.657618494182306,
+          "V2-005_s2": 0.6463698033219808
+        },
+        "graph_proposed_ids": [],
+        "graph_proposal_paths": {},
+        "graph_proposal_relation_ids": {},
+        "candidate_count": 3,
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "relevant_gold_count": 2
+      },
+      {
+        "seed_gold_state_id": "s2",
+        "method": "vector_plus_cause_graph",
+        "candidate_ids": [
+          "V2-005_s3",
+          "V2-005_s4",
+          "V2-005_s5"
+        ],
+        "candidate_gold_state_ids": [
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "candidate_scores": {
+          "V2-005_s3": 1.0,
+          "V2-005_s4": 0.657618494182306,
+          "V2-005_s5": 0.6429511810280051
+        },
+        "graph_proposed_ids": [
+          "V2-005_s4",
+          "V2-005_s5"
+        ],
+        "graph_proposal_paths": {
+          "V2-005_s4": [
+            "s2",
+            "s3"
+          ],
+          "V2-005_s5": [
+            "s2",
+            "s3",
+            "s4"
+          ]
+        },
+        "graph_proposal_relation_ids": {
+          "V2-005_s4": [
+            "CAUSE:V2-005_s3->V2-005_s4:1"
+          ],
+          "V2-005_s5": [
+            "CAUSE:V2-005_s3->V2-005_s4:1",
+            "CAUSE:V2-005_s4->V2-005_s5:2"
+          ]
+        },
+        "candidate_count": 3,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "relevant_gold_count": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "probe_id": "U03-negative-V2-006",
+    "case_id": "V2-006",
+    "arm_id": "E",
+    "pass_gate": true,
+    "extraction_path_pass": true,
+    "retrieval_budget_pass": true,
+    "before_bridge_detected": false,
+    "alignment": {
+      "V2-006_s1": "s1",
+      "V2-006_s4": "s3",
+      "V2-006_s5": "s4",
+      "V2-006_s3": "s2"
+    },
+    "missing_gold_states": [],
+    "missing_required_edges": [],
+    "wrong_direction_edges": [],
+    "forbidden_direct_edges": [],
+    "invalid_relation_endpoints": [],
+    "unmatched_to_gold_relation_endpoints": [],
+    "invalid_relation_cues": [],
+    "cause_paths": {},
+    "traces": [
+      {
+        "seed_gold_state_id": "s1",
+        "method": "vector_only",
+        "candidate_ids": [
+          "V2-006_s1",
+          "V2-006_s2",
+          "V2-006_s3"
+        ],
+        "candidate_gold_state_ids": [
+          "s1",
+          null,
+          "s2"
+        ],
+        "candidate_scores": {
+          "V2-006_s1": 1.0,
+          "V2-006_s2": 0.6838354625578839,
+          "V2-006_s3": 0.6639877568702437
+        },
+        "graph_proposed_ids": [],
+        "graph_proposal_paths": {},
+        "graph_proposal_relation_ids": {},
+        "candidate_count": 3,
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "relevant_gold_count": 2
+      },
+      {
+        "seed_gold_state_id": "s1",
+        "method": "vector_plus_cause_graph",
+        "candidate_ids": [
+          "V2-006_s1",
+          "V2-006_s2",
+          "V2-006_s3"
+        ],
+        "candidate_gold_state_ids": [
+          "s1",
+          null,
+          "s2"
+        ],
+        "candidate_scores": {
+          "V2-006_s1": 1.0,
+          "V2-006_s2": 0.6838354625578839,
+          "V2-006_s3": 0.6639877568702437
+        },
+        "graph_proposed_ids": [],
+        "graph_proposal_paths": {},
+        "graph_proposal_relation_ids": {},
+        "candidate_count": 3,
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "relevant_gold_count": 2
+      }
+    ],
+    "errors": []
+  }
+]

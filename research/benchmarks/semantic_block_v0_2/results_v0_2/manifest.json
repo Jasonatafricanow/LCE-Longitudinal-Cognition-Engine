@@ -1,0 +1,29 @@
+{
+  "input_sha256": "44fcc4a8247106033edc31874eb9ecc8ce292270bee5db3956123b77189d6041",
+  "gold_sha256": "7d43bda833d521968893b6a97032c1326e1adb3a3a9121763bc739b41e6ec1a8",
+  "probe_sha256": "3df68318302822129827b8fdbe7dcd53aab3d30b362dec17ce18059edf84af83",
+  "arms": [
+    "B",
+    "C",
+    "E"
+  ],
+  "gold_path": "C:\\projects\\semantic_block_v0_2_adjudication\\gold_v0_2.jsonl",
+  "score_criteria": "unchanged semantic_block_v0_1 scorer compatibility view",
+  "model": "gemini-3.1-flash-lite",
+  "embedding_model": "gemini-embedding-001",
+  "seed": 42,
+  "temperature": 0.0,
+  "prompt_sha256": {
+    "B_semantic": "23b94fdb06a2573bcc7391a9763ca463677225dc7855daa588d850a73721b36c",
+    "C_semantic": "78e8b8d52f339ec8487a139a27daeed7213b73a144f632062f675a799943457d",
+    "C_linker": "0d479caa650264e65a9cb3d554398dc90e7858cf5e78d1c1454a746d52f1af5a",
+    "E_semantic_equals_B": "23b94fdb06a2573bcc7391a9763ca463677225dc7855daa588d850a73721b36c",
+    "E_linker": "78fcb12db6eb5824a3f5937a338d89e63b78bc7ca99d9bdb677b08e1dfabd96f"
+  },
+  "route_source_sha256": {
+    "B": "ed632d7f421b6c86f0e244d6572b132485ed2da504dd36df21001a9dcdb9900e",
+    "C": "5522e7260149768815ce78975ca702b726907a32540807610c2dfdda73270438",
+    "E": "9d8c163fdf26276ef340993f6aec3a7b6f794aa0be56774c4c85f678b28ccb0b",
+    "F8_v0_2": "f0dbc08c239d41cb07f6f99fc53b10461d6aee31e81ada7cc0c2f4618c962526"
+  }
+}

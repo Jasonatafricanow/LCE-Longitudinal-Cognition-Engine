@@ -1,0 +1,742 @@
+[
+  {
+    "first_pass_sha256": "7092e36b8c171d5cceb3795fde1fda84db7537926d92acb3ee455e9b2859bdb6",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "78c28fd55e5164b0f2bd9edeccaaa010834f0e0111e5fa6399ffa85e75f9b9fd",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "CAUSE",
+        "admitted": false,
+        "reason": "missing_or_wrong_type_relation_cue"
+      }
+    ],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "f39c47b5e8ecaa898835ab89554f7d3804b74cd761562dcb5caec07a3d2dc412",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "CAUSE",
+        "admitted": false,
+        "reason": "missing_or_wrong_type_relation_cue"
+      }
+    ],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "7d20ccc44ef0ab73f206241b6bd4a1375a28393e9d13a04cb8128f06a688b6a1",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      },
+      {
+        "state_key": "s2",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "d3ef51a107978202e43ba8fe86097036f055194ddab3fe46736e7e806b9c606d",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s3",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s4",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s5",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s6",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s7",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s3",
+        "target_state_key": "s4",
+        "relation_type": "CAUSE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s4",
+        "target_state_key": "s5",
+        "relation_type": "CAUSE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s6",
+        "target_state_key": "s7",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s3",
+        "target_state_key": "s4",
+        "relation_type": "CAUSE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s4",
+        "target_state_key": "s5",
+        "relation_type": "CAUSE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s6",
+        "target_state_key": "s7",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      }
+    ],
+    "linker_called": true,
+    "linker_cached": false,
+    "linker_candidate_count": 4
+  },
+  {
+    "first_pass_sha256": "c827663247f0a0e35744bbad533ea81952f4b8d30be4f6c942620f915d11d62c",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s3",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s4",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s5",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s6",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s3",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s2",
+        "target_state_key": "s3",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s3",
+        "target_state_key": "s4",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s5",
+        "target_state_key": "s6",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "screened_source_cued_candidate"
+      },
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s3",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s2",
+        "target_state_key": "s3",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s3",
+        "target_state_key": "s4",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      },
+      {
+        "source_state_key": "s5",
+        "target_state_key": "s6",
+        "relation_type": "BEFORE",
+        "admitted": true,
+        "reason": "admitted_screened_relation"
+      }
+    ],
+    "linker_called": true,
+    "linker_cached": false,
+    "linker_candidate_count": 5
+  },
+  {
+    "first_pass_sha256": "a44d7deb33a9e8c824b15f178e2d4eaf50276784c12af6cc9510023af02debf5",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "8f40ea757990e92acd6544a47dab3cb87321246ad33f6b630fce58f8c1903153",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      },
+      {
+        "state_key": "s2",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "1bf5f275f6ec04bbddb6b441191c0f4adc5be66551a9d6d2fe8e18cbcfbc2127",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "BEFORE",
+        "admitted": false,
+        "reason": "missing_or_wrong_type_relation_cue"
+      }
+    ],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "ed383edb8dfc2ce88bdda7c891ee2fecb6ba0fec7da60d1be90a0e166644eb57",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "52a7315896dd3b28d842e091550344f05d43814b2ab25d17df3515dd63324712",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s1",
+        "target_state_key": "s2",
+        "relation_type": "BEFORE",
+        "admitted": false,
+        "reason": "missing_or_wrong_type_relation_cue"
+      }
+    ],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "32b871512cb60f50a5791e0021fc17afb8ec2d9ebd31a7205a86051edfea35eb",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "e3a9ef64f6bc8d0b421dc8f9eb5b4b47c2b00fbfb5b864d19240c9fd83afe3ae",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "ead88fd9c88a38413fda013fb4c7812bc6cbb887374da8614482650a520c4a49",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s3",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "ee27dcedc946d7892057b0de0c3affc19c96fdf6133d6f7f37cfd5a45018d080",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "a3782f6b9649d800d0a56ecf0c2f63964b580687f7e41408391cadf407e02575",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s3",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s4",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [
+      {
+        "source_state_key": "s3",
+        "target_state_key": "s4",
+        "relation_type": "CAUSE",
+        "admitted": false,
+        "reason": "missing_or_wrong_type_relation_cue"
+      }
+    ],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "6c0e22519ec90b03fcf7b01342f581308ec14a8968029a46f27ef8b8990c86d9",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "dc6fbd878b7bbe8176f04351be20728a519c0fb78277f44406d2078120a628a2",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "437c61367076134d80ad29e3d99253915757fe5b2ab171adfead6277d92d6816",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      },
+      {
+        "state_key": "s2",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "36f8fcfb93443f4813e1f2c65564e0134581a57bca6fd936ef3f3be65c84f845",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      },
+      {
+        "state_key": "s2",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "865ae5fbf5ba16cc7743c6a33b6686a5c532b08b1643085c9c22b33444973d53",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "f9c6380ba7bd239002457d460691d7b25e256054b178bc63192fe896c0467b08",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "da43f6e4d702a2a633e2dcd646545a802c5e6be891ab1e3cd1eeb568902d1794",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "0b39b6e714700e03569f5533196b7d1955e8255dad15a091ac776553edf8903a",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": true,
+        "reasons": []
+      },
+      {
+        "state_key": "s2",
+        "admitted": true,
+        "reasons": []
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "2c85b6a5dfc8c5e827478726a6bc60cab542d8e47464e15f4a3d04b8b2697bd8",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  },
+  {
+    "first_pass_sha256": "8347e7199ef542cc4c731f584efd27e27d287ad3d1ecd5a3ce185bee58a0c4b0",
+    "first_pass_cached": true,
+    "gate_decisions": [
+      {
+        "state_key": "s1",
+        "admitted": false,
+        "reasons": [
+          "modal_or_conditional_marker_promoted_to_asserted"
+        ]
+      }
+    ],
+    "relation_decisions": [],
+    "linker_called": false,
+    "linker_cached": false,
+    "linker_candidate_count": 0
+  }
+]
