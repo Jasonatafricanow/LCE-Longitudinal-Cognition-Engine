@@ -3,6 +3,11 @@
 Reference Memory is the small standalone substrate shipped with LCE V1. It is
 an implementation option, not an LCE requirement.
 
+**SemanticBlock definition authority:** see
+[`docs/architecture/SEMANTIC_BLOCK_DESIGN_FREEZE_2026-09-25.md`](architecture/SEMANTIC_BLOCK_DESIGN_FREEZE_2026-09-25.md).
+Reference Memory stores SemanticBlocks but does not redefine their semantic
+responsibility boundary.
+
 It provides stable Raw Evidence IDs, immutable source content, UTC occurrence
 ordering, provenance, validity/invalidation, supersede links, an audit event
 history, canonical Semantic Block storage, and a rebuildable vector projection.
