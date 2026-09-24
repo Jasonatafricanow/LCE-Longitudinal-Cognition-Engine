@@ -1,0 +1,11 @@
+{
+  "annotator": "A",
+  "sha256": {
+    "ANNOTATIONS_BLANK.jsonl": "b2531a07b88ba1b3429b63bb41ee40d2abdc741eb5f58ed27104a2e74672e13f",
+    "ANNOTATION_TEMPLATE.json": "2f5a90917a2fa0b93ba6c01bee4efb7a887b45f617d89b54a81eba1d4327af7b",
+    "ANNOTATOR_INSTRUCTIONS.md": "f691b833a384f8232bd484a8fa9f0f09baaa53c5e5fd392dec8dfc6f1ee3c572",
+    "CASES.jsonl": "458ade38d27bcde3a8e6b1f83f6dd9ad5473291d53218b97c463c1a0189f1337",
+    "SEMANTIC_BLOCK_DEFINITION.md": "b3c1aeff9ae035a64b00e590af582f88085fe808836348cc2fb00b4a4ed6b6b4"
+  },
+  "status": "INPUTS_ONLY_NO_GOLD"
+}

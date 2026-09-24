@@ -1,0 +1,4653 @@
+{
+  "by_family": {
+    "B01": {
+      "b_correct": 38.0,
+      "c_correct": 38.0,
+      "cutoffs": 3,
+      "denominator": 39,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B02": {
+      "b_correct": 49.0,
+      "c_correct": 48.0,
+      "cutoffs": 3,
+      "denominator": 52,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B03": {
+      "b_correct": 111.0,
+      "c_correct": 114.0,
+      "cutoffs": 3,
+      "denominator": 117,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B04": {
+      "b_correct": 61.0,
+      "c_correct": 68.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B05": {
+      "b_correct": 32.0,
+      "c_correct": 36.0,
+      "cutoffs": 3,
+      "denominator": 39,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B06": {
+      "b_correct": 72.0,
+      "c_correct": 73.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B07": {
+      "b_correct": 67.0,
+      "c_correct": 59.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B08": {
+      "b_correct": 71.0,
+      "c_correct": 72.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B09": {
+      "b_correct": 80.0,
+      "c_correct": 89.0,
+      "cutoffs": 6,
+      "denominator": 91,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B10": {
+      "b_correct": 58.0,
+      "c_correct": 60.0,
+      "cutoffs": 3,
+      "denominator": 65,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B11": {
+      "b_correct": 56.0,
+      "c_correct": 62.0,
+      "cutoffs": 3,
+      "denominator": 65,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B12": {
+      "b_correct": 76.0,
+      "c_correct": 81.0,
+      "cutoffs": 6,
+      "denominator": 91,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B13": {
+      "b_correct": 75.0,
+      "c_correct": 74.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B14": {
+      "b_correct": 71.0,
+      "c_correct": 72.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B15": {
+      "b_correct": 63.0,
+      "c_correct": 65.0,
+      "cutoffs": 3,
+      "denominator": 78,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B16": {
+      "b_correct": 80.0,
+      "c_correct": 82.0,
+      "cutoffs": 6,
+      "denominator": 91,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B17": {
+      "b_correct": 223.0,
+      "c_correct": 127.0,
+      "cutoffs": 3,
+      "denominator": 234,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    },
+    "B18": {
+      "b_correct": 50.0,
+      "c_correct": 49.0,
+      "cutoffs": 6,
+      "denominator": 52,
+      "dropped_units": 0,
+      "semantic_field_mutations": 0
+    }
+  },
+  "case_cutoffs": [
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B01-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B01",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "69d6f7f27cece87d06ee3703d1f1702c9260e929284f95fea0f9113990f1bf8a",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B01-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B01",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "7300769ce1942d413beed594ae384167982ee619c6f41914540504d5bdcfe2f6",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B01-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B01",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "7725fd9017bb20f2b4a1d2f05d67c03230b337d088f618db639e95df5faae4a7",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B02-C_s1",
+          "canonical_content": "Because the queue lost quorum, the API returned 503.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B02-C",
+          "modality": "asserted",
+          "participants": {
+            "object": "API",
+            "subject": "queue"
+          },
+          "polarity": "positive",
+          "predicate": "cause_api_503",
+          "source_spans": [
+            {
+              "char_end": 52,
+              "char_start": 0,
+              "evidence_id": "B02-C-E1",
+              "text": "Because the queue lost quorum, the API returned 503."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B02-C_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B02-C_s1",
+          "canonical_content": "Because the queue lost quorum, the API returned 503.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B02-C",
+          "modality": "asserted",
+          "participants": {
+            "cause": "queue quorum loss",
+            "effect": "API 503"
+          },
+          "polarity": "positive",
+          "predicate": "cause_api_503",
+          "source_spans": [
+            {
+              "char_end": 52,
+              "char_start": 0,
+              "evidence_id": "B02-C-E1",
+              "text": "Because the queue lost quorum, the API returned 503."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B02-C_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s1",
+          "canonical_content": "Because the queue lost quorum, the API returned 503.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "cause": "queue quorum loss",
+            "effect": "API 503"
+          },
+          "polarity": "positive",
+          "predicate": "cause_api_503",
+          "source_spans": [
+            {
+              "evidence_id": "B02-C-E1",
+              "text": "Because the queue lost quorum, the API returned 503."
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B02-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B02",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "0e34d08d3a801e31d0a741210559781ce084dc204f5b2d9b3d8af117b4c7d92d",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B02-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B02",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "95addef2dc72f43f7de22c1666070a907c99c75dcf02975f80da650787aea6a5",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9615384615384616,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 1,
+      "b_state_count": 2,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B02-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B02",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "be973f0e1993c700a20a76a4c03136a00155b1832600e8e43bbecf0719e2553a",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9487179487179487,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 3,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 3,
+      "case_id": "B03-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B03",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -2,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 3,
+      "proposal_cache_key": "1c0e5df0ba24b3c61b4dd1a0ac9422a206bc587d4c884a94a0ed9b821dd527ba",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9487179487179487,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 1,
+      "b_state_count": 3,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 3,
+      "case_id": "B03-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B03",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 2,
+        "predicate_kind": 1,
+        "provenance": -2,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 3,
+      "proposal_cache_key": "193f7eff22c2556571d633c791c1438f7ca58880413f7b3006e7faf831684a2a",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8076923076923077,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B04-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B04",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": -1,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "2a55a5486533d2444a13ce2788f9fed7ba1cd689a03aff5eed2529f44584a055",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.7692307692307693,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -4,
+      "b_state_count": 2,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B04-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B04",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": -2,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": -2,
+        "utterer": 1,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "f76dc49b88bc8ed84d4abffc14627f7fc11a7dcb51dd3fac74749ddb671a6bbc",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.7692307692307693,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 2,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B05-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B05",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": -1,
+        "entity_status_uncertainty": -1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 1,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "39a49e3d975a1ca86893b64e9d6bf1afd611d9ce429e2f94a9a5d2d9c76ddf60",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.6923076923076923,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 1,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B05-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B05",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": -1,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "274b8895c9f4d94ecf6d9be6f5a81ff7547682b59c981a621c33203269b243c2",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B06-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B06",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "138782f00bb634c8917d15198129ae4f3f1c2ae7caef75785e68c2f30a5dfac4",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B06-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B06",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -2,
+        "provenance": 1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "069491f2d223d75c81475822504b7b49886ce458ae315c7af20a100d2c0964f9",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B06-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B06",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "f65517c445b0e22d056f5751cb4cbee2fe2b3964b5fc2138271ab0aeb55d27d0",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8846153846153846,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.8846153846153846,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B07-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B07",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "c660c7435f5f180e37a483baaeed9142aaf96a7296cbdfd23420e5bd80f7855d",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8076923076923077,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -4,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B07-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B07",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": -1,
+        "entity_status_uncertainty": -1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": -1,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "6342d65d782dd46c4ec42d0facfddad6b28019115a74f3861912c0016a3445ca",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B08-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B08",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "997050a03d9049c7db982dfb0bf4d6fd448887a9602b702fbf3e1c88eea7da67",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B08-P_s1",
+          "canonical_content": "Cedar's work queue stopped.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B08-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "polarity": "positive",
+          "predicate": "stop",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 0,
+              "evidence_id": "B08-P-E1",
+              "text": "Cedar's work queue stopped."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B08-P_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B08-P_s2",
+          "canonical_content": "The Cedar job dispatcher resumed operation.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B08-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "polarity": "positive",
+          "predicate": "resume",
+          "source_spans": [
+            {
+              "char_end": 43,
+              "char_start": 0,
+              "evidence_id": "B08-P-E2",
+              "text": "The Cedar job dispatcher resumed operation."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B08-P_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B08-P_s1",
+          "canonical_content": "Cedar's work queue stopped.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B08-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "polarity": "positive",
+          "predicate": "stop",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 0,
+              "evidence_id": "B08-P-E1",
+              "text": "Cedar's work queue stopped."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B08-P_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B08-P_s2",
+          "canonical_content": "The Cedar job dispatcher resumed operation.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B08-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "polarity": "positive",
+          "predicate": "resume",
+          "source_spans": [
+            {
+              "char_end": 43,
+              "char_start": 0,
+              "evidence_id": "B08-P-E2",
+              "text": "The Cedar job dispatcher resumed operation."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B08-P_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s1",
+          "canonical_content": "Cedar's work queue stopped.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "polarity": "positive",
+          "predicate": "stop",
+          "source_spans": [
+            {
+              "evidence_id": "B08-P-E1",
+              "text": "Cedar's work queue stopped."
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s2",
+          "canonical_content": "The Cedar job dispatcher resumed operation.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "polarity": "positive",
+          "predicate": "resume",
+          "source_spans": [
+            {
+              "evidence_id": "B08-P-E2",
+              "text": "The Cedar job dispatcher resumed operation."
+            }
+          ],
+          "state_key": "s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B08-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B08",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "381f3f5017f485083744f828643e005fc3fe282282f406125d711e06e0f66c5e",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B09-C",
+      "cutoff": "2026-04-03T00:00:00Z",
+      "family": "B09",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "0c31e6e81f1955c56474f4a9ae532a6ed39e487ca9eecc0a39f935599500ff16",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [
+        "invalid_relation_endpoint in relation B09-C_s1->B09-C_s2"
+      ],
+      "b_minus_c_correct": -2,
+      "b_state_count": 2,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B09-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B09",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": -1,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "902d61f3e90498dee7492d57785b12e85f55a2eb848f21facc015a66861b9990",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B09-P",
+      "cutoff": "2026-04-03T00:00:00Z",
+      "family": "B09",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "6ae44159f07971f1a0a2a8b72935d229361b2b21ab2e1fb6e2a29ab7a2ab66ec",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.6923076923076923,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -4,
+      "b_state_count": 2,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B09-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B09",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": -1,
+        "canonical_content": -1,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "aa59fe01269e4e4c926834e30442b346c9b1430b413788940b345410914a26aa",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B09-N",
+      "cutoff": "2026-04-03T00:00:00Z",
+      "family": "B09",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "0e57e035e5a7161bc4da675609b0d0b9e871d0a43d43e1592e5525f8aabac2f8",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8846153846153846,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 3,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B09-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B09",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": -1,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "ddfc5a554e7149f6464f577802e58a10d5f2e972a9a64cd9ad0237ccd5014526",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B10-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B10",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": -1,
+        "polarity": -1,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "18dea14812eec9686fa25ce8a6baa32a4e1910123dda8dd8461035a39cda8a98",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.8846153846153846,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B10-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B10",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": -1,
+        "predicate_kind": 0,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 1
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "5ba674c87c947990d6d4021f5a9fe8c7625577b054170a39d224bd378a8899f8",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B10-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B10",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 1,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": -1,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "f8dfd897562489e2d176744d10a474b4ea00b00ff3c7348a24cf0e7f7da0e312",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 2,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B11-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B11",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -2,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "37992b30d6a40961e97a6b0ffc8a65bca4a62a67e6b1e672a8224145aa69e2e9",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8076923076923077,
+      "b_blocks": [],
+      "b_hard_failures": [
+        "silent_holder_flip in s1: Mira -> user"
+      ],
+      "b_minus_c_correct": -4,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B11-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B11",
+      "field_delta_b_minus_c": {
+        "attribution_mode": -1,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": -1,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -2,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "fab2c9b4260d622f57b1f0f18d1ce672e03d0202634cba3bd7fca46c9eba1724",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B12-C",
+      "cutoff": "2026-04-03T00:00:00Z",
+      "family": "B12",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "67e3f3be66e1c99e91a35df81b60750c619ebe5b43fae2a98007b72b29bd8049",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.6153846153846154,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 3,
+      "c_accuracy": 0.7692307692307693,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [
+        "invalid_relation_endpoint in relation B12-C_s1->B12-C_s2"
+      ],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B12-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B12",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": -1,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": -1
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "01292f43bbea2c0b3355dacb5603cc764482eeff66fab9ea6b7ef6f30f319247",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B12-P",
+      "cutoff": "2026-04-03T00:00:00Z",
+      "family": "B12",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": -1,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "9e8538c4fc74c7d32b59ae47a3f895c0737c1267fbf7c3d646881d5eb68e4ccc",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.6153846153846154,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 2,
+      "c_accuracy": 0.7692307692307693,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [
+        "invalid_relation_endpoint in relation B12-P_s1->B12-P_s2"
+      ],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B12-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B12",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": -1,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": -1
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "809f76566fda3cd637e369074fe84a4261e9308decc09f46601bc275fe2ddcad",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B12-N",
+      "cutoff": "2026-04-03T00:00:00Z",
+      "family": "B12",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "8b02a671bd8848014ac0932af4789014f000971761f5933bf577a6b36f9ea6d4",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9615384615384616,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B12-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B12",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "f8f7a550a326071053336a9eb549541852cd6d61bd6460f9ecb3c4e759784324",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 1,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B13-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B13",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "0cd7446ff92d3a5e1a8c89bb52f98bf44cafe2de15ade359bd1ed1a07b916e2c",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8846153846153846,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.8846153846153846,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B13-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B13",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "f77e608d2ac1c6435730d82637c1610e8e57239547bf0a3a0ea37ffc8a7dda88",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9615384615384616,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B14-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B14",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "d81f75710fe2750ee873ff5afe5ae64471226cad1c7377147e47452d66ec5250",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8076923076923077,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B14-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B14",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": -1,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "7bcc373739687e4f02b30096fbac17ea553fc2c0c20e52d51e5c3c7e9b868d41",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 3,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [
+        "invalid_relation_endpoint in relation B15-C_s3->B15-C_s2"
+      ],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 3,
+      "case_id": "B15-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B15",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "30d517de527dc4c760f6242cf6d172c73fefe246fa1bfa08d7488668e940c27a",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.7692307692307693,
+      "b_blocks": [],
+      "b_hard_failures": [
+        "invalid_relation_endpoint in relation B15-P_s3->B15-P_s2"
+      ],
+      "b_minus_c_correct": -1,
+      "b_state_count": 3,
+      "c_accuracy": 0.8076923076923077,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [
+        "invalid_relation_endpoint in relation B15-P_s3->B15-P_s2"
+      ],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 3,
+      "case_id": "B15-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B15",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": 1
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "4dd14538a694cebd7a2bdf4976dc79d15da0ea86952ba6f5aa45c213ad2f9a02",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9230769230769231,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B16-C",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "family": "B16",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "b1e1b4856973e96a1dd27c4238173ed93bb4204cd2b4a40d76d4036a00014db3",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.6923076923076923,
+      "b_blocks": [],
+      "b_hard_failures": [
+        "invalid_relation_endpoint in relation B16-C_s2->B16-C_s1"
+      ],
+      "b_minus_c_correct": -4,
+      "b_state_count": 2,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B16-C",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "family": "B16",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": -1,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": -1,
+        "provenance": -1,
+        "utterer": 0,
+        "valid_time_precision": -1
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "56143827120e93cf1c60dfb0ccd1f66d38336b33b21a405500c1537fac3643e5",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B16-P",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "family": "B16",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "ea157c8a3ad4c7ca8b58dcd49f3614da8d6b8bacc66df3e24e5f2ed16e3b8a3f",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.6923076923076923,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.6923076923076923,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B16-P",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "family": "B16",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "9e0e20adca83f20f0ece05cbabf5ec118b98204a2d01cda0916bc553cb06b77d",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9743589743589743,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s1",
+          "canonical_content": "A logged in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "actor": "A"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 11,
+              "char_start": 0,
+              "evidence_id": "B17-C-E1",
+              "text": "A logged in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s2",
+          "canonical_content": "B logged in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "actor": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 30,
+              "char_start": 19,
+              "evidence_id": "B17-C-E1",
+              "text": "B logged in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s3",
+          "canonical_content": "C logged in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "actor": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 30,
+              "char_start": 19,
+              "evidence_id": "B17-C-E2",
+              "text": "C logged in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s3",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s4",
+          "canonical_content": "X failed.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "subject": "X"
+          },
+          "polarity": "positive",
+          "predicate": "fail",
+          "source_spans": [
+            {
+              "char_end": 8,
+              "char_start": 0,
+              "evidence_id": "B17-C-E3",
+              "text": "X failed"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s4",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s5",
+          "canonical_content": "Y stopped.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "subject": "Y"
+          },
+          "polarity": "positive",
+          "predicate": "stop",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 18,
+              "evidence_id": "B17-C-E3",
+              "text": "Y to stop"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s5",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s6",
+          "canonical_content": "Z stalled.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "subject": "Z"
+          },
+          "polarity": "positive",
+          "predicate": "stall",
+          "source_spans": [
+            {
+              "char_end": 29,
+              "char_start": 19,
+              "evidence_id": "B17-C-E4",
+              "text": "Z to stall"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s6",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 34,
+      "b_state_count": 6,
+      "c_accuracy": 0.5384615384615384,
+      "c_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s1",
+          "canonical_content": "A logged in before B logged in.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "char_end": 31,
+              "char_start": 0,
+              "evidence_id": "B17-C-E1",
+              "text": "A logged in before B logged in."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s1",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s2",
+          "canonical_content": "B logged in before C logged in.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "char_end": 31,
+              "char_start": 0,
+              "evidence_id": "B17-C-E2",
+              "text": "B logged in before C logged in."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s2",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s3",
+          "canonical_content": "X failed, causing Y to stop.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "cause": "X failure",
+            "effect": "Y stop"
+          },
+          "polarity": "positive",
+          "predicate": "cause_y_stop",
+          "source_spans": [
+            {
+              "char_end": 28,
+              "char_start": 0,
+              "evidence_id": "B17-C-E3",
+              "text": "X failed, causing Y to stop."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s3",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-C_s4",
+          "canonical_content": "Y stopped, causing Z to stall.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-C",
+          "modality": "asserted",
+          "participants": {
+            "cause": "Y stop",
+            "effect": "Z stall"
+          },
+          "polarity": "positive",
+          "predicate": "cause_z_stall",
+          "source_spans": [
+            {
+              "char_end": 30,
+              "char_start": 0,
+              "evidence_id": "B17-C-E4",
+              "text": "Y stopped, causing Z to stall."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-C_s4",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s1",
+          "canonical_content": "A logged in before B logged in.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-C-E1",
+              "text": "A logged in before B logged in."
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s2",
+          "canonical_content": "B logged in before C logged in.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-C-E2",
+              "text": "B logged in before C logged in."
+            }
+          ],
+          "state_key": "s2",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s3",
+          "canonical_content": "X failed, causing Y to stop.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "cause": "X failure",
+            "effect": "Y stop"
+          },
+          "polarity": "positive",
+          "predicate": "cause_y_stop",
+          "source_spans": [
+            {
+              "evidence_id": "B17-C-E3",
+              "text": "X failed, causing Y to stop."
+            }
+          ],
+          "state_key": "s3",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s4",
+          "canonical_content": "Y stopped, causing Z to stall.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "cause": "Y stop",
+            "effect": "Z stall"
+          },
+          "polarity": "positive",
+          "predicate": "cause_z_stall",
+          "source_spans": [
+            {
+              "evidence_id": "B17-C-E4",
+              "text": "Y stopped, causing Z to stall."
+            }
+          ],
+          "state_key": "s4",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_relations": [
+        {
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "char_end": 18,
+            "char_start": 12,
+            "evidence_id": "B17-C-E1",
+            "text": "before"
+          },
+          "direction": "directed",
+          "source_state_id": "B17-C_s1",
+          "target_state_id": "B17-C_s2",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        },
+        {
+          "basis": "explicit_connective",
+          "cue_span": {
+            "char_end": 17,
+            "char_start": 10,
+            "evidence_id": "B17-C-E3",
+            "text": "causing"
+          },
+          "direction": "directed",
+          "source_state_id": "B17-C_s3",
+          "target_state_id": "B17-C_s4",
+          "traversal_allowed": true,
+          "type": "CAUSE"
+        }
+      ],
+      "c_state_count": 4,
+      "case_id": "B17-C",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B17",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 2,
+        "availability": 2,
+        "canonical_content": 4,
+        "entity_status_uncertainty": 6,
+        "epistemic_hedge": 2,
+        "holder": 2,
+        "modality": 2,
+        "participants": 2,
+        "polarity": 2,
+        "predicate_kind": 2,
+        "provenance": 4,
+        "utterer": 2,
+        "valid_time_precision": 2
+      },
+      "gold_state_count": 6,
+      "proposal_cache_key": "afb9aca733bf927d7fbdfd16812d633b291bd68e42caff61210024308501593e",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9102564102564102,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s1",
+          "canonical_content": "A signed in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "actor": "A"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 11,
+              "char_start": 0,
+              "evidence_id": "B17-P-E1",
+              "text": "A signed in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s2",
+          "canonical_content": "B signed in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "actor": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 33,
+              "char_start": 21,
+              "evidence_id": "B17-P-E1",
+              "text": "B signing in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s3",
+          "canonical_content": "C signed in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "actor": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 33,
+              "char_start": 21,
+              "evidence_id": "B17-P-E2",
+              "text": "C signing in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s3",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s4",
+          "canonical_content": "X broke.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "X"
+          },
+          "polarity": "positive",
+          "predicate": "break",
+          "source_spans": [
+            {
+              "char_end": 7,
+              "char_start": 0,
+              "evidence_id": "B17-P-E3",
+              "text": "X broke"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s4",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s5",
+          "canonical_content": "Y stopped.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "Y"
+          },
+          "polarity": "positive",
+          "predicate": "stop",
+          "source_spans": [
+            {
+              "char_end": 26,
+              "char_start": 20,
+              "evidence_id": "B17-P-E3",
+              "text": "Y stop"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s5",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s6",
+          "canonical_content": "Z stalled.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "subject": "Z"
+          },
+          "polarity": "positive",
+          "predicate": "stall",
+          "source_spans": [
+            {
+              "char_end": 29,
+              "char_start": 22,
+              "evidence_id": "B17-P-E4",
+              "text": "Z stall"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s6",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 30,
+      "b_state_count": 6,
+      "c_accuracy": 0.5256410256410257,
+      "c_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s1",
+          "canonical_content": "A signed in ahead of B signing in.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "polarity": "positive",
+          "predicate": "sign_in_sequence",
+          "source_spans": [
+            {
+              "char_end": 34,
+              "char_start": 0,
+              "evidence_id": "B17-P-E1",
+              "text": "A signed in ahead of B signing in."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s2",
+          "canonical_content": "B signed in ahead of C signing in.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "polarity": "positive",
+          "predicate": "sign_in_sequence",
+          "source_spans": [
+            {
+              "char_end": 34,
+              "char_start": 0,
+              "evidence_id": "B17-P-E2",
+              "text": "B signed in ahead of C signing in."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s3",
+          "canonical_content": "X broke, which made Y stop.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "cause": "X broke",
+            "effect": "Y stop"
+          },
+          "polarity": "positive",
+          "predicate": "cause_y_stop",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 0,
+              "evidence_id": "B17-P-E3",
+              "text": "X broke, which made Y stop."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s3",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-P_s4",
+          "canonical_content": "Y stopped, which made Z stall.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-P",
+          "modality": "asserted",
+          "participants": {
+            "cause": "Y stopped",
+            "effect": "Z stall"
+          },
+          "polarity": "positive",
+          "predicate": "cause_z_stall",
+          "source_spans": [
+            {
+              "char_end": 30,
+              "char_start": 0,
+              "evidence_id": "B17-P-E4",
+              "text": "Y stopped, which made Z stall."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-P_s4",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s1",
+          "canonical_content": "A signed in ahead of B signing in.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "polarity": "positive",
+          "predicate": "sign_in_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-P-E1",
+              "text": "A signed in ahead of B signing in."
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s2",
+          "canonical_content": "B signed in ahead of C signing in.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "polarity": "positive",
+          "predicate": "sign_in_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-P-E2",
+              "text": "B signed in ahead of C signing in."
+            }
+          ],
+          "state_key": "s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s3",
+          "canonical_content": "X broke, which made Y stop.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "cause": "X broke",
+            "effect": "Y stop"
+          },
+          "polarity": "positive",
+          "predicate": "cause_y_stop",
+          "source_spans": [
+            {
+              "evidence_id": "B17-P-E3",
+              "text": "X broke, which made Y stop."
+            }
+          ],
+          "state_key": "s3",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s4",
+          "canonical_content": "Y stopped, which made Z stall.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "cause": "Y stopped",
+            "effect": "Z stall"
+          },
+          "polarity": "positive",
+          "predicate": "cause_z_stall",
+          "source_spans": [
+            {
+              "evidence_id": "B17-P-E4",
+              "text": "Y stopped, which made Z stall."
+            }
+          ],
+          "state_key": "s4",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_relations": [
+        {
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "char_end": 20,
+            "char_start": 12,
+            "evidence_id": "B17-P-E1",
+            "text": "ahead of"
+          },
+          "direction": "directed",
+          "source_state_id": "B17-P_s1",
+          "target_state_id": "B17-P_s2",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        },
+        {
+          "basis": "explicit_connective",
+          "cue_span": {
+            "char_end": 19,
+            "char_start": 9,
+            "evidence_id": "B17-P-E3",
+            "text": "which made"
+          },
+          "direction": "directed",
+          "source_state_id": "B17-P_s3",
+          "target_state_id": "B17-P_s4",
+          "traversal_allowed": true,
+          "type": "CAUSE"
+        }
+      ],
+      "c_state_count": 4,
+      "case_id": "B17-P",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B17",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 2,
+        "availability": 2,
+        "canonical_content": 1,
+        "entity_status_uncertainty": 2,
+        "epistemic_hedge": 2,
+        "holder": 2,
+        "modality": 2,
+        "participants": 2,
+        "polarity": 2,
+        "predicate_kind": 5,
+        "provenance": 4,
+        "utterer": 2,
+        "valid_time_precision": 2
+      },
+      "gold_state_count": 6,
+      "proposal_cache_key": "1d21f3cb1ac8b6e6e46e3671df1c8d7d8887d2b541a9057050bcb8c5a944beb7",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 0,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 0,
+      "case_id": "B18-C",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "family": "B18",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 0,
+      "proposal_cache_key": "df00d4188c4de5a75d313e36525166ffdfdd2902b3739bc42eb558adef18e3c5",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 1,
+      "b_state_count": 1,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B18-C",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "family": "B18",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 1,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "85f2f543b6d3fd7bc824d898bb7bbba142ff95d90a5d6add4aadf864ff155ce3",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 0,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 0,
+      "case_id": "B18-P",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "family": "B18",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 0,
+      "proposal_cache_key": "0f8dd89324240806f54f974f55ea7a5408ec00272aeda6e106563acc9d2687b5",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B18-P",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "family": "B18",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "43c8af47d4a39db1caa7580381e4127fd4375d962ae1bb7c14d9fa27ddae88cb",
+      "split": "dev"
+    },
+    {
+      "b_accuracy": 0.9487179487179487,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 3,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 3,
+      "case_id": "B03-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B03",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": -2,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 3,
+      "proposal_cache_key": "4647f95dd59f8febfbd6c4bb3ef31459f903ba911e51026a7f2e3d72d5b660ca",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.7692307692307693,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -2,
+      "b_state_count": 2,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B04-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B04",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": -2,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": -1,
+        "polarity": 0,
+        "predicate_kind": 1,
+        "provenance": -1,
+        "utterer": 1,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "4f2e6c09638b6c9ba22ce99546970667dd74e6ea20efd0a2d21abb89faf9bbf2",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B05-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B05",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "004238150c12748a676977323c898df28b0139ea8ddc80c7b87297cd67867468",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.8846153846153846,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B07-N_s1",
+          "canonical_content": "Mira and Lila manage Cedar.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "state",
+          "lineage_id": "lineage_b_B07-N",
+          "modality": "asserted",
+          "participants": {
+            "actors": [
+              "Mira",
+              "Lila"
+            ],
+            "object": "Cedar"
+          },
+          "polarity": "positive",
+          "predicate": "manage",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 0,
+              "evidence_id": "B07-N-E1",
+              "text": "Mira and Lila manage Cedar."
+            }
+          ],
+          "state_available_at": "2026-04-08T13:00:00Z",
+          "state_id": "B07-N_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-08"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B07-N_s2",
+          "canonical_content": "She restarted it on 2026-04-09.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B07-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "UNKNOWN",
+            "object": "UNKNOWN"
+          },
+          "polarity": "positive",
+          "predicate": "restart",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 0,
+              "evidence_id": "B07-N-E2",
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "state_available_at": "2026-04-10T13:00:00Z",
+          "state_id": "B07-N_s2",
+          "time_precision": "day",
+          "uncertainty": "actor_ambiguous",
+          "utterer": "user",
+          "valid_time": "2026-04-09"
+        }
+      ],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 12,
+      "b_state_count": 2,
+      "c_accuracy": 0.4230769230769231,
+      "c_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B07-N_s1",
+          "canonical_content": "She restarted it yesterday.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B07-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "UNKNOWN",
+            "target": "UNKNOWN"
+          },
+          "polarity": "positive",
+          "predicate": "restart",
+          "source_spans": [
+            {
+              "char_end": 27,
+              "char_start": 0,
+              "evidence_id": "B07-N-E2",
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "state_available_at": "2026-04-10T13:00:00Z",
+          "state_id": "B07-N_s1",
+          "time_precision": "day",
+          "uncertainty": "actor_ambiguous",
+          "utterer": "user",
+          "valid_time": "2026-04-09"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s1",
+          "canonical_content": "She restarted it yesterday.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "actor": "UNKNOWN",
+            "target": "UNKNOWN"
+          },
+          "polarity": "positive",
+          "predicate": "restart",
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E2",
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "actor_ambiguous",
+          "utterer": "user",
+          "valid_time": "2026-04-09"
+        }
+      ],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B07-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B07",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 1,
+        "availability": 1,
+        "canonical_content": 1,
+        "entity_status_uncertainty": 1,
+        "epistemic_hedge": 1,
+        "holder": 1,
+        "modality": 1,
+        "participants": 0,
+        "polarity": 1,
+        "predicate_kind": 1,
+        "provenance": 1,
+        "utterer": 1,
+        "valid_time_precision": 1
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "515819e64bfb5b1b6b2fcf9bef233f292580f9fb8b65b34286ff00c6fca7ca14",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.9615384615384616,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B08-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B08",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "980d275d6a7da0fb8bfa43e6a71cb8bfd12666a3162b4eb9f86eca651fa5e67b",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.8461538461538461,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B11-N_s1",
+          "canonical_content": "Mira approved Cedar, granting it permission to proceed.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B11-N",
+          "modality": "asserted",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "polarity": "positive",
+          "predicate": "approve",
+          "source_spans": [
+            {
+              "char_end": 55,
+              "char_start": 0,
+              "evidence_id": "B11-N-E1",
+              "text": "Mira approved Cedar, granting it permission to proceed."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B11-N_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "b_hard_failures": [
+        "silent_holder_flip in s1: Mira -> user"
+      ],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [
+        {
+          "attribution_mode": "indirect_report",
+          "block_id": "B11-N_s1",
+          "canonical_content": "Mira approved Cedar on 2026-04-02.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "Mira",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B11-N",
+          "modality": "asserted",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "polarity": "positive",
+          "predicate": "approve",
+          "source_spans": [
+            {
+              "char_end": 19,
+              "char_start": 0,
+              "evidence_id": "B11-N-E1",
+              "text": "Mira approved Cedar"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B11-N_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "indirect_report",
+          "block_id": "B11-N_s2",
+          "canonical_content": "Mira granted Cedar permission to proceed on 2026-04-02.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "Mira",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B11-N",
+          "modality": "asserted",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "polarity": "positive",
+          "predicate": "grant_permission",
+          "source_spans": [
+            {
+              "char_end": 54,
+              "char_start": 21,
+              "evidence_id": "B11-N-E1",
+              "text": "granting it permission to proceed"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B11-N_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [
+        "invalid_relation_endpoint in relation B11-N_s1->B11-N_s2"
+      ],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "indirect_report",
+          "block_key": "s1",
+          "canonical_content": "Mira approved Cedar on 2026-04-02.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "Mira",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "polarity": "positive",
+          "predicate": "approve",
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "text": "Mira approved Cedar"
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "indirect_report",
+          "block_key": "s2",
+          "canonical_content": "Mira granted Cedar permission to proceed on 2026-04-02.",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "Mira",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "polarity": "positive",
+          "predicate": "grant_permission",
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "text": "granting it permission to proceed"
+            }
+          ],
+          "state_key": "s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_relations": [
+        {
+          "basis": "explicit_connective",
+          "cue_span": {
+            "char_end": 29,
+            "char_start": 21,
+            "evidence_id": "B11-N-E1",
+            "text": "granting"
+          },
+          "direction": "directed",
+          "source_state_id": "B11-N_s1",
+          "target_state_id": "B11-N_s2",
+          "traversal_allowed": true,
+          "type": "CAUSE"
+        }
+      ],
+      "c_state_count": 2,
+      "case_id": "B11-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B11",
+      "field_delta_b_minus_c": {
+        "attribution_mode": -1,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": -1,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 1,
+        "provenance": 1,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "3d7462b18a47bf55a7197fa5aca122145f77a0094caafdbf025ca1c0f27116e2",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B13-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B13",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "9b6e5cfc3ab762023df08ef11e8e43bac2f325f034bbfb10ea9ea088970718b4",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.9615384615384616,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 2,
+      "c_accuracy": 0.9615384615384616,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B14-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B14",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "894612afc4f2436c2fa8e256291e42000e423edc730b0d271333219b2a1b498c",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.8076923076923077,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": -1,
+      "b_state_count": 2,
+      "c_accuracy": 0.8461538461538461,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B15-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B15",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": -1,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "bae28b8e1f2d53b9be1986ac4a40c3a553048f4404e631015d8199fa911a1c30",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B16-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "family": "B16",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "544d678ece5dbc4e30370e3bc9ff638426a9fc61bc946208cd52e9cadc00fbee",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 2,
+      "b_state_count": 2,
+      "c_accuracy": 0.9230769230769231,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 2,
+      "case_id": "B16-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "family": "B16",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 2,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 2,
+      "proposal_cache_key": "43d77bc6e1569fed86c2c3770ca091ebb99dd28ab4350710a5298efba8e0c334",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 0.9743589743589743,
+      "b_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s1",
+          "canonical_content": "A logged in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "A"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 11,
+              "char_start": 0,
+              "evidence_id": "B17-N-E1",
+              "text": "A logged in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s1",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s2",
+          "canonical_content": "B logged in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 30,
+              "char_start": 19,
+              "evidence_id": "B17-N-E1",
+              "text": "B logged in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s2",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s3",
+          "canonical_content": "C logged in.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login",
+          "source_spans": [
+            {
+              "char_end": 30,
+              "char_start": 19,
+              "evidence_id": "B17-N-E2",
+              "text": "C logged in"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s3",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s4",
+          "canonical_content": "X appeared.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "X"
+          },
+          "polarity": "positive",
+          "predicate": "appear",
+          "source_spans": [
+            {
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "B17-N-E3",
+              "text": "X appeared"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s4",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s5",
+          "canonical_content": "Y appeared.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "Y"
+          },
+          "polarity": "positive",
+          "predicate": "appear",
+          "source_spans": [
+            {
+              "char_end": 28,
+              "char_start": 18,
+              "evidence_id": "B17-N-E3",
+              "text": "Y appeared"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s5",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s6",
+          "canonical_content": "Z appeared.",
+          "compiler_version": "arm-b-one-pass-v1",
+          "entity_status": "resolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_b_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "actor": "Z"
+          },
+          "polarity": "positive",
+          "predicate": "appear",
+          "source_spans": [
+            {
+              "char_end": 28,
+              "char_start": 18,
+              "evidence_id": "B17-N-E4",
+              "text": "Z appeared"
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s6",
+          "time_precision": "day",
+          "uncertainty": "none",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 32,
+      "b_state_count": 6,
+      "c_accuracy": 0.5641025641025641,
+      "c_blocks": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s1",
+          "canonical_content": "A logged in before B logged in.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "char_end": 31,
+              "char_start": 0,
+              "evidence_id": "B17-N-E1",
+              "text": "A logged in before B logged in."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s1",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s2",
+          "canonical_content": "B logged in before C logged in.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "char_end": 31,
+              "char_start": 0,
+              "evidence_id": "B17-N-E2",
+              "text": "B logged in before C logged in."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s2",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s3",
+          "canonical_content": "X appeared before Y appeared.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "first": "X",
+            "second": "Y"
+          },
+          "polarity": "positive",
+          "predicate": "appear_sequence",
+          "source_spans": [
+            {
+              "char_end": 29,
+              "char_start": 0,
+              "evidence_id": "B17-N-E3",
+              "text": "X appeared before Y appeared."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s3",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_id": "B17-N_s4",
+          "canonical_content": "Y appeared before Z appeared.",
+          "compiler_version": "arm-c-recommended-v1",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "independent_support_count": 1,
+          "kind": "event",
+          "lineage_id": "lineage_c_B17-N",
+          "modality": "asserted",
+          "participants": {
+            "first": "Y",
+            "second": "Z"
+          },
+          "polarity": "positive",
+          "predicate": "appear_sequence",
+          "source_spans": [
+            {
+              "char_end": 29,
+              "char_start": 0,
+              "evidence_id": "B17-N-E4",
+              "text": "Y appeared before Z appeared."
+            }
+          ],
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "state_id": "B17-N_s4",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s1",
+          "canonical_content": "A logged in before B logged in.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "text": "A logged in before B logged in."
+            }
+          ],
+          "state_key": "s1",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s2",
+          "canonical_content": "B logged in before C logged in.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "polarity": "positive",
+          "predicate": "login_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E2",
+              "text": "B logged in before C logged in."
+            }
+          ],
+          "state_key": "s2",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s3",
+          "canonical_content": "X appeared before Y appeared.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "X",
+            "second": "Y"
+          },
+          "polarity": "positive",
+          "predicate": "appear_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E3",
+              "text": "X appeared before Y appeared."
+            }
+          ],
+          "state_key": "s3",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        },
+        {
+          "attribution_mode": "direct_speaker",
+          "block_key": "s4",
+          "canonical_content": "Y appeared before Z appeared.",
+          "entity_status": "unresolved",
+          "epistemic_hedge": "none",
+          "holder": "user",
+          "kind": "event",
+          "modality": "asserted",
+          "participants": {
+            "first": "Y",
+            "second": "Z"
+          },
+          "polarity": "positive",
+          "predicate": "appear_sequence",
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E4",
+              "text": "Y appeared before Z appeared."
+            }
+          ],
+          "state_key": "s4",
+          "time_precision": "day",
+          "uncertainty": "referent_unresolved",
+          "utterer": "user",
+          "valid_time": "2026-04-02"
+        }
+      ],
+      "c_relations": [
+        {
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "char_end": 18,
+            "char_start": 12,
+            "evidence_id": "B17-N-E1",
+            "text": "before"
+          },
+          "direction": "directed",
+          "source_state_id": "B17-N_s1",
+          "target_state_id": "B17-N_s2",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        },
+        {
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "char_end": 18,
+            "char_start": 12,
+            "evidence_id": "B17-N-E1",
+            "text": "before"
+          },
+          "direction": "directed",
+          "source_state_id": "B17-N_s3",
+          "target_state_id": "B17-N_s4",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        }
+      ],
+      "c_state_count": 4,
+      "case_id": "B17-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "family": "B17",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 2,
+        "availability": 2,
+        "canonical_content": 2,
+        "entity_status_uncertainty": 6,
+        "epistemic_hedge": 2,
+        "holder": 2,
+        "modality": 2,
+        "participants": 2,
+        "polarity": 2,
+        "predicate_kind": 2,
+        "provenance": 4,
+        "utterer": 2,
+        "valid_time_precision": 2
+      },
+      "gold_state_count": 6,
+      "proposal_cache_key": "ef21193f496d666e88f0e6d02dfa284994a88c602246b175da9a6bfcc8107f6f",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B18-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "family": "B18",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "4888cbd973b41ead5c47730c59be72952822110d2bca3f676c2dbb7809740e1c",
+      "split": "heldout"
+    },
+    {
+      "b_accuracy": 1.0,
+      "b_blocks": [],
+      "b_hard_failures": [],
+      "b_minus_c_correct": 0,
+      "b_state_count": 1,
+      "c_accuracy": 1.0,
+      "c_blocks": [],
+      "c_dropped": [],
+      "c_hard_failures": [],
+      "c_mutations": [],
+      "c_proposal_units": [],
+      "c_relations": [],
+      "c_state_count": 1,
+      "case_id": "B18-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "family": "B18",
+      "field_delta_b_minus_c": {
+        "attribution_mode": 0,
+        "availability": 0,
+        "canonical_content": 0,
+        "entity_status_uncertainty": 0,
+        "epistemic_hedge": 0,
+        "holder": 0,
+        "modality": 0,
+        "participants": 0,
+        "polarity": 0,
+        "predicate_kind": 0,
+        "provenance": 0,
+        "utterer": 0,
+        "valid_time_precision": 0
+      },
+      "gold_state_count": 1,
+      "proposal_cache_key": "7537e2083b0e662604c6303f65a5eb68ead3e0691d546b2ee978cda2cbea8e03",
+      "split": "heldout"
+    }
+  ],
+  "source_run": "run_20260924_012403",
+  "strict_f8": [
+    {
+      "before_traversable_count": 0,
+      "case_id": "B17-C",
+      "false_cause_edges": [],
+      "mapped_edges": [
+        {
+          "source_gold": "s1",
+          "target_gold": "s2",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        },
+        {
+          "source_gold": "s5",
+          "target_gold": "s6",
+          "traversal_allowed": true,
+          "type": "CAUSE"
+        }
+      ],
+      "missing_cause_edges": [
+        [
+          "s4",
+          "s5"
+        ]
+      ],
+      "pred_to_gold": {
+        "B17-C_s1": "s1",
+        "B17-C_s2": "s2",
+        "B17-C_s3": "s5",
+        "B17-C_s4": "s6"
+      },
+      "reported_seed_s4_id": "B17-C_s4",
+      "reported_seed_s4_maps_to_gold": "s6",
+      "required_cause_edges": [
+        [
+          "s4",
+          "s5"
+        ],
+        [
+          "s5",
+          "s6"
+        ]
+      ],
+      "strict_positive_path": false,
+      "unmatched_gold": [
+        "s3",
+        "s4"
+      ]
+    },
+    {
+      "before_traversable_count": 0,
+      "case_id": "B17-P",
+      "false_cause_edges": [],
+      "mapped_edges": [
+        {
+          "source_gold": "s2",
+          "target_gold": "s3",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        },
+        {
+          "source_gold": "s4",
+          "target_gold": "s5",
+          "traversal_allowed": true,
+          "type": "CAUSE"
+        }
+      ],
+      "missing_cause_edges": [
+        [
+          "s5",
+          "s6"
+        ]
+      ],
+      "pred_to_gold": {
+        "B17-P_s1": "s2",
+        "B17-P_s2": "s3",
+        "B17-P_s3": "s4",
+        "B17-P_s4": "s5"
+      },
+      "reported_seed_s4_id": "B17-P_s4",
+      "reported_seed_s4_maps_to_gold": "s5",
+      "required_cause_edges": [
+        [
+          "s4",
+          "s5"
+        ],
+        [
+          "s5",
+          "s6"
+        ]
+      ],
+      "strict_positive_path": false,
+      "unmatched_gold": [
+        "s1",
+        "s6"
+      ]
+    },
+    {
+      "before_traversable_count": 0,
+      "case_id": "B17-N",
+      "false_cause_edges": [],
+      "mapped_edges": [
+        {
+          "source_gold": "s1",
+          "target_gold": "s2",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        },
+        {
+          "source_gold": "s4",
+          "target_gold": "s5",
+          "traversal_allowed": false,
+          "type": "BEFORE"
+        }
+      ],
+      "missing_cause_edges": [],
+      "pred_to_gold": {
+        "B17-N_s1": "s1",
+        "B17-N_s2": "s2",
+        "B17-N_s3": "s4",
+        "B17-N_s4": "s5"
+      },
+      "reported_seed_s4_id": "B17-N_s4",
+      "reported_seed_s4_maps_to_gold": "s5",
+      "required_cause_edges": [],
+      "strict_positive_path": false,
+      "unmatched_gold": [
+        "s3",
+        "s6"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "sha256": {
+    "annotation_packets/annotator_A/ANNOTATIONS_BLANK.jsonl": "b2531a07b88ba1b3429b63bb41ee40d2abdc741eb5f58ed27104a2e74672e13f",
+    "annotation_packets/annotator_A/ANNOTATION_TEMPLATE.json": "2f5a90917a2fa0b93ba6c01bee4efb7a887b45f617d89b54a81eba1d4327af7b",
+    "annotation_packets/annotator_A/ANNOTATOR_INSTRUCTIONS.md": "f691b833a384f8232bd484a8fa9f0f09baaa53c5e5fd392dec8dfc6f1ee3c572",
+    "annotation_packets/annotator_A/CASES.jsonl": "458ade38d27bcde3a8e6b1f83f6dd9ad5473291d53218b97c463c1a0189f1337",
+    "annotation_packets/annotator_A/PACKET_SHA256.json": "b431a06262afea6669cd90a91419aa2b95a8971f6187ed9068ff18a09455ebe4",
+    "annotation_packets/annotator_A/SEMANTIC_BLOCK_DEFINITION.md": "b3c1aeff9ae035a64b00e590af582f88085fe808836348cc2fb00b4a4ed6b6b4",
+    "annotation_packets/annotator_B/ANNOTATIONS_BLANK.jsonl": "fac66ff31430229a67d426d6aed36f125d897655e507d6a50d5b152a9fd4b8ee",
+    "annotation_packets/annotator_B/ANNOTATION_TEMPLATE.json": "2f5a90917a2fa0b93ba6c01bee4efb7a887b45f617d89b54a81eba1d4327af7b",
+    "annotation_packets/annotator_B/ANNOTATOR_INSTRUCTIONS.md": "f691b833a384f8232bd484a8fa9f0f09baaa53c5e5fd392dec8dfc6f1ee3c572",
+    "annotation_packets/annotator_B/CASES.jsonl": "5e279dbc163edb59b954a5bff0197cc2df543b7934857ec9d1ae80af388b24d1",
+    "annotation_packets/annotator_B/PACKET_SHA256.json": "b9e0d6a759fd05304ceb98dc0e42b5a15365c0ef99126cc8b9cc0b0f54cabae3",
+    "annotation_packets/annotator_B/SEMANTIC_BLOCK_DEFINITION.md": "b3c1aeff9ae035a64b00e590af582f88085fe808836348cc2fb00b4a4ed6b6b4",
+    "candidate_cases.jsonl": "44fcc4a8247106033edc31874eb9ecc8ce292270bee5db3956123b77189d6041",
+    "operator_scenario_map.jsonl": "32da99ffac192ee2adccc4a646a389dab0809f086c9246e9ba8c8b1c7c40288b"
+  },
+  "status": "INPUTS_ONLY_NO_GOLD"
+}

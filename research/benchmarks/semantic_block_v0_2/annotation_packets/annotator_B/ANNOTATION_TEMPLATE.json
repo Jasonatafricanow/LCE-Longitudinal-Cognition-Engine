@@ -1,0 +1,65 @@
+{
+  "case_id": "COPY_CASE_ID",
+  "annotator_id": "A_OR_B",
+  "status": "UNSTARTED_OR_COMPLETE",
+  "states": [
+    {
+      "local_state_key": "s1",
+      "local_block_key": "b1",
+      "canonical_content": "FILL_FROM_SOURCE_OR_UNKNOWN",
+      "predicate": "FILL_OR_UNKNOWN",
+      "kind": "event_state_attitude_proposition_or_other_explained",
+      "participants": {"role_name": "entity_or_UNKNOWN"},
+      "holder": "PERSON_SOURCE_OR_UNKNOWN",
+      "utterer": "PERSON_SOURCE_OR_UNKNOWN",
+      "attribution_mode": "direct_speaker_direct_quote_indirect_report_or_UNKNOWN",
+      "polarity": "positive_negative_mixed_or_UNKNOWN",
+      "modality": "asserted_possible_intended_required_conditional_counterfactual_or_UNKNOWN",
+      "epistemic_hedge": "none_uncertain_approximate_reported_or_UNKNOWN",
+      "valid_time": "SOURCE_SCOPED_TIME_OR_UNKNOWN",
+      "time_precision": "instant_day_month_interval_approximate_or_UNKNOWN",
+      "evidence_available_at": "YYYY-MM-DDTHH:MM:SSZ",
+      "state_available_at": "YYYY-MM-DDTHH:MM:SSZ",
+      "entity_resolution_status": "resolved_unresolved_conflicting_or_UNKNOWN",
+      "uncertainty": "none_or_explicit_reason",
+      "independent_support_count": 1,
+      "support_status": "active_withdrawn_contested_or_UNKNOWN",
+      "source_spans": [
+        {"evidence_id": "COPY_EVIDENCE_ID", "char_start": 0, "char_end": 1, "text": "X"}
+      ],
+      "claim_support": [
+        {
+          "claim_text": "ONE_ASSERTION_OR_CLAUSE",
+          "source_spans": [
+            {"evidence_id": "COPY_EVIDENCE_ID", "char_start": 0, "char_end": 1, "text": "X"}
+          ]
+        }
+      ],
+      "lineage_reason": "new_continuation_clarification_retraction_or_UNKNOWN"
+    }
+  ],
+  "relations": [
+    {
+      "type": "CAUSE_SAME_ENTITY_BEFORE_or_other_explained",
+      "source_local_state_key": "s1",
+      "target_local_state_key": "s2",
+      "basis": "EXPLICIT_CUE_REGISTRY_OR_CONTEXT_REFERENCE",
+      "cue_spans": [],
+      "traversal_allowed": false,
+      "certainty": "grounded_or_uncertain"
+    }
+  ],
+  "visibility": [
+    {"cutoff": "COPY_REQUESTED_CUTOFF", "visible_local_state_keys": ["s1"]}
+  ],
+  "explicit_exclusions": [
+    {"cutoff": "COPY_REQUESTED_CUTOFF", "forbidden_claim_or_relation": "FILL_IF_ANY", "reason": "FILL"}
+  ],
+  "uncertainties": [
+    {"scope": "block_relation_time_or_source", "question": "FILL", "options": [], "reason": "FILL"}
+  ],
+  "block_only_checks": [
+    {"cutoff": "COPY_REQUESTED_CUTOFF", "operation": "meaning_holder_modality_time_support_identity_relation_path", "expected_answer": "FILL", "raw_reopen_needed": false, "reason": "FILL"}
+  ],
+  "free_notes": ""
+}
