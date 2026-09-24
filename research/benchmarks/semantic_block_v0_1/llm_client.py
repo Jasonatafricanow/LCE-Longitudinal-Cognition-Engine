@@ -208,17 +208,41 @@ def embed_texts(texts: list[str], cache_dir: Path | str | None = None) -> list[l
                 except Exception:
                     pass
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{EMBEDDING_MODEL}:embedContent?key={api_key}"
-        payload = {"content": {"parts": [{"text": text}]}}
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        vec = data["embedding"]["values"]
+        max_retries = 10
+        last_error = None
+        vec = None
+        for attempt in range(max_retries):
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{EMBEDDING_MODEL}:embedContent?key={api_key}"
+                payload = {"content": {"parts": [{"text": text}]}}
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"},
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                vec = data["embedding"]["values"]
+                time.sleep(0.5)
+                break
+            except urllib.error.HTTPError as e:
+                last_error = e
+                if e.code in (429, 500, 503):
+                    wait_time = 5.0 + 3.0 * attempt if e.code in (500, 503) else 20.0 + 10.0 * attempt
+                    print(f"Transient embedding HTTP error ({e.code}), waiting {wait_time:.1f}s before retry (attempt {attempt+1}/{max_retries})...")
+                    time.sleep(wait_time)
+                    continue
+                err_body = e.read().decode("utf-8") if hasattr(e, "read") else ""
+                raise RuntimeError(f"HTTPError {e.code}: {err_body}") from e
+            except Exception as e:
+                last_error = e
+                print(f"Transient embedding exception ({type(e).__name__}: {e}), waiting 5s before retry (attempt {attempt+1}/{max_retries})...")
+                time.sleep(5.0)
+
+        if vec is None:
+            raise RuntimeError(f"Exceeded max retries for embedding: {last_error}")
+
         results.append(vec)
         if cdir:
             cpath = cdir / f"embed_{h}.json"
