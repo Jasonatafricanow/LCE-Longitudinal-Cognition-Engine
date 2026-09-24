@@ -117,6 +117,21 @@ One-cluster-per-item lost legitimate multi-membership. The current structure dis
 
 Productization exposed provenance, recovery, and repeated-support bugs that broad happy-path tests had missed. Recovery matrices, invalidation tests, and stricter source-support checks were added afterward.
 
+## Engineering surface vs research claim
+
+The repository separates **implemented pipeline mechanics** from **open empirical claims**.
+
+Implemented mechanics include source-linked semantic blocks, rebuildable vector/structure
+artifacts, overlapping local structures, draft-versus-accepted revisions, invalidation,
+recovery, immutable revision lineage, and read-only access to accepted revisions. Those
+behaviors are executable and regression-tested.
+
+What remains open is whether the current representations and discovery methods recover
+useful longitudinal cognition broadly enough on external real-world corpora. A compact
+implementation of the pipeline is therefore not evidence that the research problem is
+"small" or solved; conversely, adding more abstraction or code would not count as stronger
+research evidence. External empirical replication is the missing evidence.
+
 ## Research / verification tools
 
 The public verification gate is:
