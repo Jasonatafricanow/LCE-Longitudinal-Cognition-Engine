@@ -1,0 +1,4381 @@
+{
+  "A": [
+    {
+      "case_id": "B03-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B03-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_9b6a2bc82f_000001",
+          "state_id": "state_ac7f0d362ba855e17651d84b",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The storage cluster lost quorum.\nLater, the API gateway returned 503.\nAfter that, checkout failed.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 3,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "The storage cluster lost quorum."
+            },
+            {
+              "evidence_id": "B03-N-E2",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "Later, the API gateway returned 503."
+            },
+            {
+              "evidence_id": "B03-N-E3",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "After that, checkout failed."
+            }
+          ],
+          "lineage_id": "lineage_v1_B03-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.7412999984808266
+    },
+    {
+      "case_id": "B04-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B04-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_5495296f76_000001",
+          "state_id": "state_e94b0c53570f15b61ecd25cb",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira said, \"The migration is safe.\" I agree with her.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 0,
+              "char_end": 53,
+              "text": "Mira said, \"The migration is safe.\" I agree with her."
+            }
+          ],
+          "lineage_id": "lineage_v1_B04-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.3105999785475433
+    },
+    {
+      "case_id": "B05-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B05-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_d198b4c7ad_000001",
+          "state_id": "state_3b0491968f8a44ccac2e221e",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "I moved to Lisbon on 2026-04-02.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B05-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "I moved to Lisbon on 2026-04-02."
+            }
+          ],
+          "lineage_id": "lineage_v1_B05-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.4607999580912292
+    },
+    {
+      "case_id": "B07-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B07-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_a865d0676d_000001",
+          "state_id": "state_faa19cfb05234218a0ba6da2",
+          "state_available_at": "2026-04-10T13:00:00Z",
+          "canonical_content": "Mira and Lila manage Cedar.\nShe restarted it yesterday.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 2,
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E1",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "Mira and Lila manage Cedar."
+            },
+            {
+              "evidence_id": "B07-N-E2",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "lineage_id": "lineage_v1_B07-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.41779997991397977
+    },
+    {
+      "case_id": "B08-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B08-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_b344a36e81_000001",
+          "state_id": "state_0c0e90ebc42c71bb78cf4628",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's email queue stopped.\nCedar's billing task broker recovered.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 2,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Cedar's email queue stopped."
+            },
+            {
+              "evidence_id": "B08-N-E2",
+              "char_start": 0,
+              "char_end": 38,
+              "text": "Cedar's billing task broker recovered."
+            }
+          ],
+          "lineage_id": "lineage_v1_B08-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.44520001392811537
+    },
+    {
+      "case_id": "B11-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B11-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_acd39d5e9b_000001",
+          "state_id": "state_a01ea5aa6769e6cb93ac3ed9",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira approved Cedar, granting it permission to proceed.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "char_start": 0,
+              "char_end": 55,
+              "text": "Mira approved Cedar, granting it permission to proceed."
+            }
+          ],
+          "lineage_id": "lineage_v1_B11-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.26649999199435115
+    },
+    {
+      "case_id": "B13-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B13-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_3631c61336_000001",
+          "state_id": "state_870e5f318daa8b2791ffa7ea",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue lost quorum.\nThe Cedar queue recovered.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 2,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "The Cedar queue lost quorum."
+            },
+            {
+              "evidence_id": "B13-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_v1_B13-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.6399000412784517
+    },
+    {
+      "case_id": "B14-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B14-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_0a94722aec_000001",
+          "state_id": "state_1f800c49962feb150fd27418",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The task broker for Cedar failed.\nA scheduling service recovered.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 2,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E1",
+              "char_start": 0,
+              "char_end": 33,
+              "text": "The task broker for Cedar failed."
+            },
+            {
+              "evidence_id": "B14-N-E2",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "A scheduling service recovered."
+            }
+          ],
+          "lineage_id": "lineage_v1_B14-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.8746000239625573
+    },
+    {
+      "case_id": "B15-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B15-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_f0ac5ba8a4_000001",
+          "state_id": "state_9213f5f2995784e44bb2fb90",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira said, \"Cedar is ready.\" I agree; checkout passes.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 0,
+              "char_end": 54,
+              "text": "Mira said, \"Cedar is ready.\" I agree; checkout passes."
+            }
+          ],
+          "lineage_id": "lineage_v1_B15-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.4844000213779509
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B16-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_afec5cfc5d_000001",
+          "state_id": "state_3b0035e3e6e6e28e35fcd94f",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_v1_B16-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.46529999235644937
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B16-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_afec5cfc5d_000001",
+          "state_id": "state_505a2aa37ea2083ab3034a9b",
+          "state_available_at": "2026-03-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.\nThe Cedar queue recovered.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 2,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            },
+            {
+              "evidence_id": "B16-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_v1_B16-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.9010000503621995
+    },
+    {
+      "case_id": "B17-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B17-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_aecbbcc63b_000001",
+          "state_id": "state_54236e37d2c8fa70d91ed695",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A logged in before B logged in.\nB logged in before C logged in.\nX appeared before Y appeared.\nY appeared before Z appeared.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 4,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "A logged in before B logged in."
+            },
+            {
+              "evidence_id": "B17-N-E2",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "B logged in before C logged in."
+            },
+            {
+              "evidence_id": "B17-N-E3",
+              "char_start": 0,
+              "char_end": 29,
+              "text": "X appeared before Y appeared."
+            },
+            {
+              "evidence_id": "B17-N-E4",
+              "char_start": 0,
+              "char_end": 29,
+              "text": "Y appeared before Z appeared."
+            }
+          ],
+          "lineage_id": "lineage_v1_B17-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 1.6672000056132674
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B18-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_1970ecbc07_000001",
+          "state_id": "state_22eafd7825cd3e3e7c17c88c",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_v1_B18-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.458399998024106
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "A",
+      "manifest_id": "manifest_A_B18-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "sb_1970ecbc07_000001",
+          "state_id": "state_22eafd7825cd3e3e7c17c88c",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5.",
+          "predicate": "UNKNOWN",
+          "kind": "UNKNOWN",
+          "participants": {
+            "subject": "UNKNOWN"
+          },
+          "holder": "UNKNOWN",
+          "utterer": "UNKNOWN",
+          "attribution_mode": "UNKNOWN",
+          "polarity": "UNKNOWN",
+          "modality": "UNKNOWN",
+          "epistemic_hedge": "UNKNOWN",
+          "valid_time": "UNKNOWN",
+          "time_precision": "UNKNOWN",
+          "entity_status": "UNKNOWN",
+          "uncertainty": "UNKNOWN",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_v1_B18-N",
+          "compiler_version": "lce-semantic-stream-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "latency_ms": 0.2785999677143991
+    }
+  ],
+  "B": [
+    {
+      "case_id": "B03-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B03-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B03-N_s1",
+          "state_id": "B03-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The storage cluster lost quorum.",
+          "predicate": "lose_quorum",
+          "kind": "event",
+          "participants": {
+            "subject": "storage cluster"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "The storage cluster lost quorum."
+            }
+          ],
+          "lineage_id": "lineage_b_B03-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B03-N_s2",
+          "state_id": "B03-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The API gateway returned 503.",
+          "predicate": "return_503",
+          "kind": "event",
+          "participants": {
+            "subject": "API gateway"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E2",
+              "char_start": 7,
+              "char_end": 36,
+              "text": "the API gateway returned 503."
+            }
+          ],
+          "lineage_id": "lineage_b_B03-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B03-N_s3",
+          "state_id": "B03-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The checkout failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "checkout"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E3",
+              "char_start": 12,
+              "char_end": 28,
+              "text": "checkout failed."
+            }
+          ],
+          "lineage_id": "lineage_b_B03-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B03-N_s1",
+          "target_state_id": "B03-N_s2",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B03-N-E2",
+            "char_start": 0,
+            "char_end": 5,
+            "text": "Later"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B03-N_s2",
+          "target_state_id": "B03-N_s3",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B03-N-E3",
+            "char_start": 0,
+            "char_end": 10,
+            "text": "After that"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 1706,
+      "completion_tokens": 838,
+      "total_tokens": 2544,
+      "latency_ms": 4955.540299997665
+    },
+    {
+      "case_id": "B04-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B04-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B04-N_s1",
+          "state_id": "B04-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The migration is safe.",
+          "predicate": "be_safe",
+          "kind": "proposition",
+          "participants": {
+            "subject": "migration"
+          },
+          "holder": "Mira",
+          "utterer": "Mira",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 12,
+              "char_end": 34,
+              "text": "The migration is safe."
+            }
+          ],
+          "lineage_id": "lineage_b_B04-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B04-N_s2",
+          "state_id": "B04-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "I agree with her.",
+          "predicate": "agree_ready",
+          "kind": "attitude",
+          "participants": {
+            "agent": "user",
+            "target": "Mira"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-03",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 36,
+              "char_end": 53,
+              "text": "I agree with her."
+            }
+          ],
+          "lineage_id": "lineage_b_B04-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1455,
+      "completion_tokens": 484,
+      "total_tokens": 1939,
+      "latency_ms": 4740.67049997393
+    },
+    {
+      "case_id": "B05-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B05-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B05-N_s1",
+          "state_id": "B05-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "I moved to Lisbon on 2026-04-02.",
+          "predicate": "move",
+          "kind": "event",
+          "participants": {
+            "agent": "user",
+            "location": "Lisbon"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B05-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "I moved to Lisbon on 2026-04-02."
+            }
+          ],
+          "lineage_id": "lineage_b_B05-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1458,
+      "completion_tokens": 278,
+      "total_tokens": 1736,
+      "latency_ms": 12628.757999977097
+    },
+    {
+      "case_id": "B07-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B07-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B07-N_s1",
+          "state_id": "B07-N_s1",
+          "state_available_at": "2026-04-08T13:00:00Z",
+          "canonical_content": "Mira and Lila manage Cedar.",
+          "predicate": "manage",
+          "kind": "state",
+          "participants": {
+            "actors": [
+              "Mira",
+              "Lila"
+            ],
+            "object": "Cedar"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-08",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E1",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "Mira and Lila manage Cedar."
+            }
+          ],
+          "lineage_id": "lineage_b_B07-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B07-N_s2",
+          "state_id": "B07-N_s2",
+          "state_available_at": "2026-04-10T13:00:00Z",
+          "canonical_content": "She restarted it on 2026-04-09.",
+          "predicate": "restart",
+          "kind": "event",
+          "participants": {
+            "actor": "UNKNOWN",
+            "object": "UNKNOWN"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-09",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "actor_ambiguous",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E2",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "lineage_id": "lineage_b_B07-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1576,
+      "completion_tokens": 509,
+      "total_tokens": 2085,
+      "latency_ms": 6306.830400018953
+    },
+    {
+      "case_id": "B08-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B08-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B08-N_s1",
+          "state_id": "B08-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's email queue stopped.",
+          "predicate": "stop",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarEmail-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Cedar's email queue stopped."
+            }
+          ],
+          "lineage_id": "lineage_b_B08-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B08-N_s2",
+          "state_id": "B08-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's billing task broker recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBilling-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E2",
+              "char_start": 0,
+              "char_end": 38,
+              "text": "Cedar's billing task broker recovered."
+            }
+          ],
+          "lineage_id": "lineage_b_B08-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1605,
+      "completion_tokens": 488,
+      "total_tokens": 2093,
+      "latency_ms": 5033.565299992915
+    },
+    {
+      "case_id": "B11-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B11-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B11-N_s1",
+          "state_id": "B11-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira approved Cedar, granting it permission to proceed.",
+          "predicate": "approve",
+          "kind": "event",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "char_start": 0,
+              "char_end": 55,
+              "text": "Mira approved Cedar, granting it permission to proceed."
+            }
+          ],
+          "lineage_id": "lineage_b_B11-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1451,
+      "completion_tokens": 263,
+      "total_tokens": 1714,
+      "latency_ms": 10619.809200055897
+    },
+    {
+      "case_id": "B13-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B13-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B13-N_s1",
+          "state_id": "B13-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue lost quorum.",
+          "predicate": "lose_quorum",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "The Cedar queue lost quorum."
+            }
+          ],
+          "lineage_id": "lineage_b_B13-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B13-N_s2",
+          "state_id": "B13-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_b_B13-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B13-N_s1",
+          "target_state_id": "B13-N_s2",
+          "basis": "explicit_temporal",
+          "cue_span": null,
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 1588,
+      "completion_tokens": 543,
+      "total_tokens": 2131,
+      "latency_ms": 5073.940099973697
+    },
+    {
+      "case_id": "B14-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B14-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B14-N_s1",
+          "state_id": "B14-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The task broker for Cedar failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E1",
+              "char_start": 0,
+              "char_end": 33,
+              "text": "The task broker for Cedar failed."
+            }
+          ],
+          "lineage_id": "lineage_b_B14-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B14-N_s2",
+          "state_id": "B14-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A scheduling service recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "scheduling_service"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E2",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "A scheduling service recovered."
+            }
+          ],
+          "lineage_id": "lineage_b_B14-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1589,
+      "completion_tokens": 486,
+      "total_tokens": 2075,
+      "latency_ms": 5994.421000010334
+    },
+    {
+      "case_id": "B15-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B15-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B15-N_s1",
+          "state_id": "B15-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira said, \"Cedar is ready.\"",
+          "predicate": "agree_ready",
+          "kind": "attitude",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "holder": "Mira",
+          "utterer": "user",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Mira said, \"Cedar is ready.\""
+            }
+          ],
+          "lineage_id": "lineage_b_B15-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B15-N_s2",
+          "state_id": "B15-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "I agree; checkout passes.",
+          "predicate": "pass",
+          "kind": "event",
+          "participants": {
+            "agent": "user",
+            "target": "checkout"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 29,
+              "char_end": 54,
+              "text": "I agree; checkout passes."
+            }
+          ],
+          "lineage_id": "lineage_b_B15-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1455,
+      "completion_tokens": 500,
+      "total_tokens": 1955,
+      "latency_ms": 5577.281200035941
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B16-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B16-N_s1",
+          "state_id": "B16-N_s1",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-10",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_b_B16-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1446,
+      "completion_tokens": 246,
+      "total_tokens": 1692,
+      "latency_ms": 5050.232500012498
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B16-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B16-N_s1",
+          "state_id": "B16-N_s1",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-10",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_b_B16-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B16-N_s2",
+          "state_id": "B16-N_s2",
+          "state_available_at": "2026-03-10T13:00:00Z",
+          "canonical_content": "The Cedar queue recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-03-10",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_b_B16-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B16-N_s1",
+          "target_state_id": "B16-N_s2",
+          "basis": "explicit_temporal",
+          "cue_span": null,
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 1572,
+      "completion_tokens": 535,
+      "total_tokens": 2107,
+      "latency_ms": 12596.889100037515
+    },
+    {
+      "case_id": "B17-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B17-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B17-N_s1",
+          "state_id": "B17-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A logged in.",
+          "predicate": "login",
+          "kind": "event",
+          "participants": {
+            "actor": "A"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "char_start": 0,
+              "char_end": 11,
+              "text": "A logged in"
+            }
+          ],
+          "lineage_id": "lineage_b_B17-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B17-N_s2",
+          "state_id": "B17-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "B logged in.",
+          "predicate": "login",
+          "kind": "event",
+          "participants": {
+            "actor": "B"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "char_start": 19,
+              "char_end": 30,
+              "text": "B logged in"
+            }
+          ],
+          "lineage_id": "lineage_b_B17-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B17-N_s3",
+          "state_id": "B17-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "C logged in.",
+          "predicate": "login",
+          "kind": "event",
+          "participants": {
+            "actor": "C"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E2",
+              "char_start": 19,
+              "char_end": 30,
+              "text": "C logged in"
+            }
+          ],
+          "lineage_id": "lineage_b_B17-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B17-N_s4",
+          "state_id": "B17-N_s4",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "X appeared.",
+          "predicate": "appear",
+          "kind": "event",
+          "participants": {
+            "actor": "X"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E3",
+              "char_start": 0,
+              "char_end": 10,
+              "text": "X appeared"
+            }
+          ],
+          "lineage_id": "lineage_b_B17-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B17-N_s5",
+          "state_id": "B17-N_s5",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Y appeared.",
+          "predicate": "appear",
+          "kind": "event",
+          "participants": {
+            "actor": "Y"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E3",
+              "char_start": 18,
+              "char_end": 28,
+              "text": "Y appeared"
+            }
+          ],
+          "lineage_id": "lineage_b_B17-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        },
+        {
+          "block_id": "B17-N_s6",
+          "state_id": "B17-N_s6",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Z appeared.",
+          "predicate": "appear",
+          "kind": "event",
+          "participants": {
+            "actor": "Z"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E4",
+              "char_start": 18,
+              "char_end": 28,
+              "text": "Z appeared"
+            }
+          ],
+          "lineage_id": "lineage_b_B17-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s1",
+          "target_state_id": "B17-N_s2",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s2",
+          "target_state_id": "B17-N_s3",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s4",
+          "target_state_id": "B17-N_s5",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s5",
+          "target_state_id": "B17-N_s6",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 1832,
+      "completion_tokens": 1605,
+      "total_tokens": 3437,
+      "latency_ms": 7637.344199989457
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B18-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B18-N_s1",
+          "state_id": "B18-N_s1",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-05",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_b_B18-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1450,
+      "completion_tokens": 254,
+      "total_tokens": 1704,
+      "latency_ms": 4567.65430001542
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "B",
+      "manifest_id": "manifest_B_B18-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B18-N_s1",
+          "state_id": "B18-N_s1",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-05",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_b_B18-N",
+          "compiler_version": "arm-b-one-pass-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1450,
+      "completion_tokens": 254,
+      "total_tokens": 1704,
+      "latency_ms": 5553.677499992773
+    }
+  ],
+  "C": [
+    {
+      "case_id": "B03-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B03-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B03-N_s1",
+          "state_id": "B03-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The storage cluster lost quorum.",
+          "predicate": "lose_quorum",
+          "kind": "event",
+          "participants": {
+            "subject": "storage cluster"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "The storage cluster lost quorum."
+            }
+          ],
+          "lineage_id": "lineage_c_B03-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B03-N_s2",
+          "state_id": "B03-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The API gateway returned 503.",
+          "predicate": "return_503",
+          "kind": "event",
+          "participants": {
+            "subject": "API gateway"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E2",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "Later, the API gateway returned 503."
+            }
+          ],
+          "lineage_id": "lineage_c_B03-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B03-N_s3",
+          "state_id": "B03-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The checkout failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "checkout"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E3",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "After that, checkout failed."
+            }
+          ],
+          "lineage_id": "lineage_c_B03-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 2,
+      "prompt_tokens": 2670,
+      "completion_tokens": 722,
+      "total_tokens": 3392,
+      "latency_ms": 9191.685900033917
+    },
+    {
+      "case_id": "B04-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B04-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B04-N_s1",
+          "state_id": "B04-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira said, \"The migration is safe.\"",
+          "predicate": "verify_safety",
+          "kind": "proposition",
+          "participants": {
+            "agent": "Mira",
+            "target": "migration"
+          },
+          "holder": "Mira",
+          "utterer": "user",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 0,
+              "char_end": 35,
+              "text": "Mira said, \"The migration is safe.\""
+            }
+          ],
+          "lineage_id": "lineage_c_B04-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B04-N_s2",
+          "state_id": "B04-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The user agrees that the migration is safe.",
+          "predicate": "agree_ready",
+          "kind": "attitude",
+          "participants": {
+            "agent": "user",
+            "target": "migration"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-03",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 36,
+              "char_end": 53,
+              "text": "I agree with her."
+            }
+          ],
+          "lineage_id": "lineage_c_B04-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B04-N_s1",
+          "target_state_id": "B04-N_s2",
+          "basis": "explicit_temporal",
+          "cue_span": null,
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 2,
+      "prompt_tokens": 2082,
+      "completion_tokens": 570,
+      "total_tokens": 2652,
+      "latency_ms": 10528.818999999203
+    },
+    {
+      "case_id": "B05-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B05-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B05-N_s1",
+          "state_id": "B05-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "I moved to Lisbon on 2026-04-02.",
+          "predicate": "move",
+          "kind": "event",
+          "participants": {
+            "agent": "user",
+            "destination": "Lisbon"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B05-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "I moved to Lisbon on 2026-04-02."
+            }
+          ],
+          "lineage_id": "lineage_c_B05-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1433,
+      "completion_tokens": 272,
+      "total_tokens": 1705,
+      "latency_ms": 3858.088199980557
+    },
+    {
+      "case_id": "B07-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B07-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B07-N_s1",
+          "state_id": "B07-N_s1",
+          "state_available_at": "2026-04-10T13:00:00Z",
+          "canonical_content": "She restarted it yesterday.",
+          "predicate": "restart",
+          "kind": "event",
+          "participants": {
+            "actor": "UNKNOWN",
+            "target": "UNKNOWN"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-09",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "actor_ambiguous",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E2",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "lineage_id": "lineage_c_B07-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1551,
+      "completion_tokens": 252,
+      "total_tokens": 1803,
+      "latency_ms": 4146.926900022663
+    },
+    {
+      "case_id": "B08-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B08-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B08-N_s1",
+          "state_id": "B08-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's email queue stopped.",
+          "predicate": "stop",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarEmail-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Cedar's email queue stopped."
+            }
+          ],
+          "lineage_id": "lineage_c_B08-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B08-N_s2",
+          "state_id": "B08-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's billing task broker recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBilling-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E2",
+              "char_start": 0,
+              "char_end": 38,
+              "text": "Cedar's billing task broker recovered."
+            }
+          ],
+          "lineage_id": "lineage_c_B08-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 2,
+      "prompt_tokens": 2374,
+      "completion_tokens": 491,
+      "total_tokens": 2865,
+      "latency_ms": 8999.855300004128
+    },
+    {
+      "case_id": "B11-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B11-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B11-N_s1",
+          "state_id": "B11-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira approved Cedar on 2026-04-02.",
+          "predicate": "approve",
+          "kind": "event",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "holder": "Mira",
+          "utterer": "user",
+          "attribution_mode": "indirect_report",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "char_start": 0,
+              "char_end": 19,
+              "text": "Mira approved Cedar"
+            }
+          ],
+          "lineage_id": "lineage_c_B11-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B11-N_s2",
+          "state_id": "B11-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira granted Cedar permission to proceed on 2026-04-02.",
+          "predicate": "grant_permission",
+          "kind": "event",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "holder": "Mira",
+          "utterer": "user",
+          "attribution_mode": "indirect_report",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "char_start": 21,
+              "char_end": 54,
+              "text": "granting it permission to proceed"
+            }
+          ],
+          "lineage_id": "lineage_c_B11-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "CAUSE",
+          "direction": "directed",
+          "source_state_id": "B11-N_s1",
+          "target_state_id": "B11-N_s2",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B11-N-E1",
+            "char_start": 21,
+            "char_end": 29,
+            "text": "granting"
+          },
+          "traversal_allowed": true
+        }
+      ],
+      "call_count": 2,
+      "prompt_tokens": 2088,
+      "completion_tokens": 584,
+      "total_tokens": 2672,
+      "latency_ms": 13350.026199943386
+    },
+    {
+      "case_id": "B13-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B13-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B13-N_s1",
+          "state_id": "B13-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue lost quorum.",
+          "predicate": "lose_quorum",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "The Cedar queue lost quorum."
+            }
+          ],
+          "lineage_id": "lineage_c_B13-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B13-N_s2",
+          "state_id": "B13-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_c_B13-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "SAME_ENTITY",
+          "direction": "directed",
+          "source_state_id": "B13-N_s1",
+          "target_state_id": "B13-N_s2",
+          "basis": "authorized_registry",
+          "cue_span": null,
+          "traversal_allowed": true
+        }
+      ],
+      "call_count": 2,
+      "prompt_tokens": 2338,
+      "completion_tokens": 549,
+      "total_tokens": 2887,
+      "latency_ms": 15845.294099941384
+    },
+    {
+      "case_id": "B14-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B14-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B14-N_s1",
+          "state_id": "B14-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The task broker for Cedar failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E1",
+              "char_start": 0,
+              "char_end": 33,
+              "text": "The task broker for Cedar failed."
+            }
+          ],
+          "lineage_id": "lineage_c_B14-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B14-N_s2",
+          "state_id": "B14-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A scheduling service recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "scheduling service"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E2",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "A scheduling service recovered."
+            }
+          ],
+          "lineage_id": "lineage_c_B14-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 2,
+      "prompt_tokens": 2339,
+      "completion_tokens": 488,
+      "total_tokens": 2827,
+      "latency_ms": 7963.67189992452
+    },
+    {
+      "case_id": "B15-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B15-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B15-N_s1",
+          "state_id": "B15-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira said, \"Cedar is ready.\"",
+          "predicate": "agree_ready",
+          "kind": "proposition",
+          "participants": {
+            "agent": "Mira",
+            "target": "Cedar"
+          },
+          "holder": "Mira",
+          "utterer": "Mira",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Mira said, \"Cedar is ready.\""
+            }
+          ],
+          "lineage_id": "lineage_c_B15-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B15-N_s2",
+          "state_id": "B15-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The user agrees that checkout passes.",
+          "predicate": "pass",
+          "kind": "event",
+          "participants": {
+            "target": "checkout"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 29,
+              "char_end": 54,
+              "text": "I agree; checkout passes."
+            }
+          ],
+          "lineage_id": "lineage_c_B15-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 2,
+      "prompt_tokens": 2077,
+      "completion_tokens": 496,
+      "total_tokens": 2573,
+      "latency_ms": 11902.935600024648
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B16-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B16-N_s1",
+          "state_id": "B16-N_s1",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-10",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_c_B16-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1421,
+      "completion_tokens": 240,
+      "total_tokens": 1661,
+      "latency_ms": 5006.81439996697
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B16-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B16-N_s1",
+          "state_id": "B16-N_s1",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-10",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_c_B16-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B16-N_s2",
+          "state_id": "B16-N_s2",
+          "state_available_at": "2026-03-10T13:00:00Z",
+          "canonical_content": "The Cedar queue recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-03-10",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_c_B16-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 2,
+      "prompt_tokens": 2303,
+      "completion_tokens": 487,
+      "total_tokens": 2790,
+      "latency_ms": 8387.967900023796
+    },
+    {
+      "case_id": "B17-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B17-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B17-N_s1",
+          "state_id": "B17-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A logged in before B logged in.",
+          "predicate": "login_sequence",
+          "kind": "event",
+          "participants": {
+            "first": "A",
+            "second": "B"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "A logged in before B logged in."
+            }
+          ],
+          "lineage_id": "lineage_c_B17-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B17-N_s2",
+          "state_id": "B17-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "B logged in before C logged in.",
+          "predicate": "login_sequence",
+          "kind": "event",
+          "participants": {
+            "first": "B",
+            "second": "C"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E2",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "B logged in before C logged in."
+            }
+          ],
+          "lineage_id": "lineage_c_B17-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B17-N_s3",
+          "state_id": "B17-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "X appeared before Y appeared.",
+          "predicate": "appear_sequence",
+          "kind": "event",
+          "participants": {
+            "first": "X",
+            "second": "Y"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E3",
+              "char_start": 0,
+              "char_end": 29,
+              "text": "X appeared before Y appeared."
+            }
+          ],
+          "lineage_id": "lineage_c_B17-N",
+          "compiler_version": "arm-c-recommended-v1"
+        },
+        {
+          "block_id": "B17-N_s4",
+          "state_id": "B17-N_s4",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Y appeared before Z appeared.",
+          "predicate": "appear_sequence",
+          "kind": "event",
+          "participants": {
+            "first": "Y",
+            "second": "Z"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E4",
+              "char_start": 0,
+              "char_end": 29,
+              "text": "Y appeared before Z appeared."
+            }
+          ],
+          "lineage_id": "lineage_c_B17-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s1",
+          "target_state_id": "B17-N_s2",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s3",
+          "target_state_id": "B17-N_s4",
+          "basis": "explicit_temporal",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 2,
+      "prompt_tokens": 3017,
+      "completion_tokens": 1129,
+      "total_tokens": 4146,
+      "latency_ms": 9553.307600028347
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B18-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B18-N_s1",
+          "state_id": "B18-N_s1",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on 2026-01-05.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-05",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_c_B18-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1425,
+      "completion_tokens": 256,
+      "total_tokens": 1681,
+      "latency_ms": 4539.403099974152
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "C",
+      "manifest_id": "manifest_C_B18-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B18-N_s1",
+          "state_id": "B18-N_s1",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5, 2026.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "subject": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-05",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_c_B18-N",
+          "compiler_version": "arm-c-recommended-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1425,
+      "completion_tokens": 254,
+      "total_tokens": 1679,
+      "latency_ms": 5154.97100003995
+    }
+  ],
+  "D": [
+    {
+      "case_id": "B03-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B03-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B03-N_s1",
+          "state_id": "B03-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The storage cluster lost quorum.",
+          "predicate": "lose",
+          "kind": "event",
+          "participants": {
+            "Agent": "storage cluster",
+            "Theme": "quorum"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "The storage cluster lost quorum."
+            }
+          ],
+          "lineage_id": "lineage_d_B03-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B03-N_s2",
+          "state_id": "B03-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The API gateway returned 503.",
+          "predicate": "return",
+          "kind": "event",
+          "participants": {
+            "Agent": "API gateway",
+            "Theme": "503"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E2",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "Later, the API gateway returned 503."
+            }
+          ],
+          "lineage_id": "lineage_d_B03-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B03-N_s3",
+          "state_id": "B03-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Checkout failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "Theme": "checkout"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B03-N-E3",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "After that, checkout failed."
+            }
+          ],
+          "lineage_id": "lineage_d_B03-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "CAUSE",
+          "direction": "directed",
+          "source_state_id": "B03-N_s1",
+          "target_state_id": "B03-N_s2",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B03-N-E2",
+            "char_start": 0,
+            "char_end": 5,
+            "text": "Later"
+          },
+          "traversal_allowed": true
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B03-N_s2",
+          "target_state_id": "B03-N_s1",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B03-N-E2",
+            "char_start": 0,
+            "char_end": 5,
+            "text": "Later"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "CAUSE",
+          "direction": "directed",
+          "source_state_id": "B03-N_s2",
+          "target_state_id": "B03-N_s3",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B03-N-E3",
+            "char_start": 0,
+            "char_end": 10,
+            "text": "After that"
+          },
+          "traversal_allowed": true
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B03-N_s3",
+          "target_state_id": "B03-N_s2",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B03-N-E3",
+            "char_start": 0,
+            "char_end": 10,
+            "text": "After that"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 1107,
+      "completion_tokens": 937,
+      "total_tokens": 2044,
+      "latency_ms": 5594.856699986849
+    },
+    {
+      "case_id": "B04-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B04-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B04-N_s1",
+          "state_id": "B04-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira stated that the migration is safe.",
+          "predicate": "say",
+          "kind": "event",
+          "participants": {
+            "Speaker": "Mira",
+            "Message": "The migration is safe."
+          },
+          "holder": "Mira",
+          "utterer": "Mira",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "actor_ambiguous",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 0,
+              "char_end": 35,
+              "text": "Mira said, \"The migration is safe.\""
+            }
+          ],
+          "lineage_id": "lineage_d_B04-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B04-N_s2",
+          "state_id": "B04-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The user agrees with Mira's assessment that the migration is safe.",
+          "predicate": "agree",
+          "kind": "attitude",
+          "participants": {
+            "Agent": "user",
+            "Theme": "f1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-03",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B04-N-E1",
+              "char_start": 36,
+              "char_end": 53,
+              "text": "I agree with her."
+            }
+          ],
+          "lineage_id": "lineage_d_B04-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "SAME_ENTITY",
+          "direction": "directed",
+          "source_state_id": "B04-N_s2",
+          "target_state_id": "B04-N_s1",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B04-N-E1",
+            "char_start": 49,
+            "char_end": 52,
+            "text": "her"
+          },
+          "traversal_allowed": true
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 856,
+      "completion_tokens": 565,
+      "total_tokens": 1421,
+      "latency_ms": 3848.983500036411
+    },
+    {
+      "case_id": "B05-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B05-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B05-N_s1",
+          "state_id": "B05-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The user moved to Lisbon on 2026-04-02.",
+          "predicate": "move",
+          "kind": "event",
+          "participants": {
+            "Agent": "user",
+            "Goal": "Lisbon"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B05-N-E1",
+              "char_start": 0,
+              "char_end": 32,
+              "text": "I moved to Lisbon on 2026-04-02."
+            }
+          ],
+          "lineage_id": "lineage_d_B05-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 859,
+      "completion_tokens": 281,
+      "total_tokens": 1140,
+      "latency_ms": 3495.519999996759
+    },
+    {
+      "case_id": "B07-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B07-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B07-N_s1",
+          "state_id": "B07-N_s1",
+          "state_available_at": "2026-04-08T13:00:00Z",
+          "canonical_content": "Mira and Lila manage Cedar.",
+          "predicate": "manage",
+          "kind": "state",
+          "participants": {
+            "Agent": "Mira, Lila",
+            "Theme": "Cedar"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-08",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E1",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "Mira and Lila manage Cedar."
+            }
+          ],
+          "lineage_id": "lineage_d_B07-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B07-N_s2",
+          "state_id": "B07-N_s2",
+          "state_available_at": "2026-04-10T13:00:00Z",
+          "canonical_content": "An unidentified female restarted an unidentified entity yesterday.",
+          "predicate": "restart",
+          "kind": "event",
+          "participants": {
+            "Agent": "She",
+            "Theme": "it"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-09",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B07-N-E2",
+              "char_start": 0,
+              "char_end": 27,
+              "text": "She restarted it yesterday."
+            }
+          ],
+          "lineage_id": "lineage_d_B07-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 977,
+      "completion_tokens": 510,
+      "total_tokens": 1487,
+      "latency_ms": 7705.697899975348
+    },
+    {
+      "case_id": "B08-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B08-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B08-N_s1",
+          "state_id": "B08-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's email queue stopped.",
+          "predicate": "stop",
+          "kind": "event",
+          "participants": {
+            "Theme": "CedarEmail-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Cedar's email queue stopped."
+            }
+          ],
+          "lineage_id": "lineage_d_B08-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B08-N_s2",
+          "state_id": "B08-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar's billing task broker recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "Theme": "CedarBilling-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B08-N-E2",
+              "char_start": 0,
+              "char_end": 38,
+              "text": "Cedar's billing task broker recovered."
+            }
+          ],
+          "lineage_id": "lineage_d_B08-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 1006,
+      "completion_tokens": 517,
+      "total_tokens": 1523,
+      "latency_ms": 19512.752299953718
+    },
+    {
+      "case_id": "B11-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B11-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B11-N_s1",
+          "state_id": "B11-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira approved Cedar, granting it permission to proceed.",
+          "predicate": "approve",
+          "kind": "event",
+          "participants": {
+            "Agent": "Mira",
+            "Theme": "Cedar",
+            "Effect": "permission to proceed"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B11-N-E1",
+              "char_start": 0,
+              "char_end": 55,
+              "text": "Mira approved Cedar, granting it permission to proceed."
+            }
+          ],
+          "lineage_id": "lineage_d_B11-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 852,
+      "completion_tokens": 289,
+      "total_tokens": 1141,
+      "latency_ms": 14084.952200006228
+    },
+    {
+      "case_id": "B13-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B13-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B13-N_s1",
+          "state_id": "B13-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue lost quorum.",
+          "predicate": "lose",
+          "kind": "event",
+          "participants": {
+            "Agent": "CedarBroker-1",
+            "Theme": "quorum"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "The Cedar queue lost quorum."
+            }
+          ],
+          "lineage_id": "lineage_d_B13-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B13-N_s2",
+          "state_id": "B13-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The Cedar queue recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "Agent": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B13-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_d_B13-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B13-N_s1",
+          "target_state_id": "B13-N_s2",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B13-N-E2",
+            "char_start": 16,
+            "char_end": 25,
+            "text": "recovered"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 989,
+      "completion_tokens": 558,
+      "total_tokens": 1547,
+      "latency_ms": 13674.477799970191
+    },
+    {
+      "case_id": "B14-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B14-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B14-N_s1",
+          "state_id": "B14-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The task broker for Cedar failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "Agent": "CedarBroker-1"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E1",
+              "char_start": 0,
+              "char_end": 33,
+              "text": "The task broker for Cedar failed."
+            }
+          ],
+          "lineage_id": "lineage_d_B14-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B14-N_s2",
+          "state_id": "B14-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A scheduling service recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "Agent": "unresolved"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B14-N-E2",
+              "char_start": 0,
+              "char_end": 31,
+              "text": "A scheduling service recovered."
+            }
+          ],
+          "lineage_id": "lineage_d_B14-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 990,
+      "completion_tokens": 515,
+      "total_tokens": 1505,
+      "latency_ms": 5832.9879000084475
+    },
+    {
+      "case_id": "B15-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B15-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B15-N_s1",
+          "state_id": "B15-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Mira said that Cedar is ready.",
+          "predicate": "say",
+          "kind": "event",
+          "participants": {
+            "Speaker": "Mira",
+            "Message": "Cedar is ready"
+          },
+          "holder": "Mira",
+          "utterer": "user",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 0,
+              "char_end": 28,
+              "text": "Mira said, \"Cedar is ready.\""
+            }
+          ],
+          "lineage_id": "lineage_d_B15-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B15-N_s2",
+          "state_id": "B15-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Cedar is ready.",
+          "predicate": "ready",
+          "kind": "state",
+          "participants": {
+            "Entity": "Cedar"
+          },
+          "holder": "Mira",
+          "utterer": "Mira",
+          "attribution_mode": "direct_quote",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 12,
+              "char_end": 27,
+              "text": "Cedar is ready."
+            }
+          ],
+          "lineage_id": "lineage_d_B15-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B15-N_s3",
+          "state_id": "B15-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "The user agrees that Cedar is ready.",
+          "predicate": "agree",
+          "kind": "attitude",
+          "participants": {
+            "Agent": "user",
+            "Proposition": "f2"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-03T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 29,
+              "char_end": 36,
+              "text": "I agree"
+            }
+          ],
+          "lineage_id": "lineage_d_B15-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B15-N_s4",
+          "state_id": "B15-N_s4",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Checkout passes.",
+          "predicate": "pass",
+          "kind": "event",
+          "participants": {
+            "Theme": "checkout"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-03T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "resolved",
+          "uncertainty": "none",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B15-N-E1",
+              "char_start": 38,
+              "char_end": 53,
+              "text": "checkout passes"
+            }
+          ],
+          "lineage_id": "lineage_d_B15-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "CAUSE",
+          "direction": "directed",
+          "source_state_id": "B15-N_s2",
+          "target_state_id": "B15-N_s1",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B15-N-E1",
+            "char_start": 5,
+            "char_end": 9,
+            "text": "said"
+          },
+          "traversal_allowed": true
+        },
+        {
+          "type": "SAME_ENTITY",
+          "direction": "directed",
+          "source_state_id": "B15-N_s3",
+          "target_state_id": "B15-N_s2",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B15-N-E1",
+            "char_start": 31,
+            "char_end": 36,
+            "text": "agree"
+          },
+          "traversal_allowed": true
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 856,
+      "completion_tokens": 1102,
+      "total_tokens": 1958,
+      "latency_ms": 7396.78350003669
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B16-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B16-N_s1",
+          "state_id": "B16-N_s1",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "Theme": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-10T12:00:00Z",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_d_B16-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 847,
+      "completion_tokens": 263,
+      "total_tokens": 1110,
+      "latency_ms": 4076.5773999737576
+    },
+    {
+      "case_id": "B16-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B16-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B16-N_s1",
+          "state_id": "B16-N_s1",
+          "state_available_at": "2026-01-10T13:00:00Z",
+          "canonical_content": "The Cedar queue failed.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "Theme": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-10",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E1",
+              "char_start": 0,
+              "char_end": 23,
+              "text": "The Cedar queue failed."
+            }
+          ],
+          "lineage_id": "lineage_d_B16-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B16-N_s2",
+          "state_id": "B16-N_s2",
+          "state_available_at": "2026-03-10T13:00:00Z",
+          "canonical_content": "The Cedar queue recovered.",
+          "predicate": "recover",
+          "kind": "event",
+          "participants": {
+            "Theme": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-03-10",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B16-N-E2",
+              "char_start": 0,
+              "char_end": 26,
+              "text": "The Cedar queue recovered."
+            }
+          ],
+          "lineage_id": "lineage_d_B16-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B16-N_s2",
+          "target_state_id": "B16-N_s1",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B16-N-E2",
+            "char_start": 16,
+            "char_end": 25,
+            "text": "recovered"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 973,
+      "completion_tokens": 534,
+      "total_tokens": 1507,
+      "latency_ms": 5310.320999997202
+    },
+    {
+      "case_id": "B17-N",
+      "cutoff": "2026-04-20T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B17-N_2026-04-20T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B17-N_s1",
+          "state_id": "B17-N_s1",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "A logged in.",
+          "predicate": "log_in",
+          "kind": "event",
+          "participants": {
+            "Agent": "A"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "char_start": 0,
+              "char_end": 11,
+              "text": "A logged in"
+            }
+          ],
+          "lineage_id": "lineage_d_B17-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B17-N_s2",
+          "state_id": "B17-N_s2",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "B logged in.",
+          "predicate": "log_in",
+          "kind": "event",
+          "participants": {
+            "Agent": "B"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E1",
+              "char_start": 19,
+              "char_end": 30,
+              "text": "B logged in"
+            }
+          ],
+          "lineage_id": "lineage_d_B17-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B17-N_s3",
+          "state_id": "B17-N_s3",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "C logged in.",
+          "predicate": "log_in",
+          "kind": "event",
+          "participants": {
+            "Agent": "C"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E2",
+              "char_start": 19,
+              "char_end": 30,
+              "text": "C logged in"
+            }
+          ],
+          "lineage_id": "lineage_d_B17-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B17-N_s4",
+          "state_id": "B17-N_s4",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "X appeared.",
+          "predicate": "appear",
+          "kind": "event",
+          "participants": {
+            "Theme": "X"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E3",
+              "char_start": 0,
+              "char_end": 10,
+              "text": "X appeared"
+            }
+          ],
+          "lineage_id": "lineage_d_B17-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B17-N_s5",
+          "state_id": "B17-N_s5",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Y appeared.",
+          "predicate": "appear",
+          "kind": "event",
+          "participants": {
+            "Theme": "Y"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E3",
+              "char_start": 18,
+              "char_end": 28,
+              "text": "Y appeared"
+            }
+          ],
+          "lineage_id": "lineage_d_B17-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        },
+        {
+          "block_id": "B17-N_s6",
+          "state_id": "B17-N_s6",
+          "state_available_at": "2026-04-03T12:00:00Z",
+          "canonical_content": "Z appeared.",
+          "predicate": "appear",
+          "kind": "event",
+          "participants": {
+            "Theme": "Z"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-04-02",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B17-N-E4",
+              "char_start": 18,
+              "char_end": 28,
+              "text": "Z appeared"
+            }
+          ],
+          "lineage_id": "lineage_d_B17-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s1",
+          "target_state_id": "B17-N_s2",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s2",
+          "target_state_id": "B17-N_s3",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s4",
+          "target_state_id": "B17-N_s5",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        },
+        {
+          "type": "BEFORE",
+          "direction": "directed",
+          "source_state_id": "B17-N_s5",
+          "target_state_id": "B17-N_s6",
+          "basis": "explicit_connective",
+          "cue_span": {
+            "evidence_id": "B17-N-E1",
+            "char_start": 12,
+            "char_end": 18,
+            "text": "before"
+          },
+          "traversal_allowed": false
+        }
+      ],
+      "call_count": 1,
+      "prompt_tokens": 1233,
+      "completion_tokens": 1597,
+      "total_tokens": 2830,
+      "latency_ms": 9127.830800018273
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-02-01T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B18-N_2026-02-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B18-N_s1",
+          "state_id": "B18-N_s1",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5, 2026.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "Entity": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-05",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_d_B18-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 851,
+      "completion_tokens": 267,
+      "total_tokens": 1118,
+      "latency_ms": 4332.512199995108
+    },
+    {
+      "case_id": "B18-N",
+      "cutoff": "2026-04-01T00:00:00Z",
+      "arm_id": "D",
+      "manifest_id": "manifest_D_B18-N_2026-04-01T00:00:00Z",
+      "blocks": [
+        {
+          "block_id": "B18-N_s1",
+          "state_id": "B18-N_s1",
+          "state_available_at": "2026-01-05T13:00:00Z",
+          "canonical_content": "The Cedar queue failed on January 5, 2026.",
+          "predicate": "fail",
+          "kind": "event",
+          "participants": {
+            "Entity": "Cedar queue"
+          },
+          "holder": "user",
+          "utterer": "user",
+          "attribution_mode": "direct_speaker",
+          "polarity": "positive",
+          "modality": "asserted",
+          "epistemic_hedge": "none",
+          "valid_time": "2026-01-05",
+          "time_precision": "day",
+          "entity_status": "unresolved",
+          "uncertainty": "referent_unresolved",
+          "independent_support_count": 1,
+          "source_spans": [
+            {
+              "evidence_id": "B18-N-E1",
+              "char_start": 0,
+              "char_end": 36,
+              "text": "The Cedar queue failed on January 5."
+            }
+          ],
+          "lineage_id": "lineage_d_B18-N",
+          "compiler_version": "arm-d-full-frame-v1"
+        }
+      ],
+      "relations": [],
+      "call_count": 1,
+      "prompt_tokens": 851,
+      "completion_tokens": 267,
+      "total_tokens": 1118,
+      "latency_ms": 4915.368199988734
+    }
+  ]
+}

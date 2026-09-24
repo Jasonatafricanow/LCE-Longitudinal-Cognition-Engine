@@ -1,0 +1,37 @@
+{
+  "run_id": "run_20260924_012403",
+  "created_at_utc": "2026-09-24T01:29:30.046638+00:00",
+  "git_head": "fc047c0d352dc87bdf514e2861a329adb5c1b2c3",
+  "git_branch": "research/semantic-block-issue-19",
+  "frozen_manifest_sha256": "b7a0f012b47f211c3afc255c17b6170f7aa69093c243af65ec8fad9ab8fa6997",
+  "source_hashes": {
+    "contracts": "8e3d41c3a01465dc7eb59eb6da2b4030125b1905381e25ef8353df9987570846",
+    "base": "5955fa84d1b3d29a918c201399461eecbfdd8c90e3663b234d441175349c0d9c",
+    "arm_a": "ec095edcbd75f1f30a93075bb6c7e3fdf612839e6f78a176e94bc7a9fb0dd2d0",
+    "arm_b": "ed632d7f421b6c86f0e244d6572b132485ed2da504dd36df21001a9dcdb9900e",
+    "arm_c": "5522e7260149768815ce78975ca702b726907a32540807610c2dfdda73270438",
+    "arm_d": "a8e3fb4b729916cc1da55f5bae3981d5cb2c6ccffa99638c20265f2d6b42fae9",
+    "consumer": "8ea59136b1d3be95aecb803c0413a52a3dbbc95a330c4150984a636b455e4b94",
+    "alignment": "abd10db2906449f62ac0c2bed1e67cce957662d393dc487b2fe823391445bbca",
+    "metrics": "b7e9bb570e475ee79ba7937c3a3f514c7ed503f6c2ca5a0bd225294ee6aa9ded",
+    "llm_client": "79a041e533221116c148fadc7f5db80160dbbd1bbb743f49cac706f3de66bce4"
+  },
+  "model_provider": "Google Generative AI",
+  "model_name": "gemini-3.1-flash-lite",
+  "embedding_model": "gemini-embedding-001",
+  "temperature": 0.0,
+  "seed": 42,
+  "budget": {
+    "max_context_evidence_records": 4,
+    "max_context_tokens": 1024,
+    "max_input_tokens_per_request": 8192,
+    "max_output_tokens_per_request": 2048,
+    "semantic_retry_policy": "NO_SEMANTIC_RETRY"
+  },
+  "arms": {
+    "A": "V1 reference memory stream compiler baseline",
+    "B": "One-pass structured LLM proposal + deterministic validation",
+    "C": "Recommended two-pass (internal proposal + validation + typed linker)",
+    "D": "Full-frame internal representation projected to public block shape"
+  }
+}

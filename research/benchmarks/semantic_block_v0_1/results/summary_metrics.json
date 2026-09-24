@@ -1,0 +1,220 @@
+{
+  "dev": {
+    "A": {
+      "case_count": 52,
+      "micro_accuracy": 0.09749552772808587,
+      "macro_family_accuracy": 0.13532763532763534,
+      "exact_block_count_rate": 0.5,
+      "account_exact_match_rate": 0.0,
+      "relations_tp": 0,
+      "relations_fp": 0,
+      "relations_fn": 16,
+      "relations_precision": 0.0,
+      "relations_recall": 0.0,
+      "relations_f1": 0.0,
+      "hard_failure_count": 0,
+      "hard_failures": [],
+      "forbidden_violations": [],
+      "total_tokens": 0,
+      "median_latency_ms": 0.23119995603337884,
+      "p95_latency_ms": 0.6736000068485737
+    },
+    "B": {
+      "case_count": 52,
+      "micro_accuracy": 0.8864042933810375,
+      "macro_family_accuracy": 0.8785612535612536,
+      "exact_block_count_rate": 0.8076923076923077,
+      "account_exact_match_rate": 0.2441860465116279,
+      "relations_tp": 16,
+      "relations_fp": 4,
+      "relations_fn": 0,
+      "relations_precision": 0.8,
+      "relations_recall": 1.0,
+      "relations_f1": 0.888888888888889,
+      "hard_failure_count": 4,
+      "hard_failures": [
+        "invalid_relation_endpoint in relation B09-C_s1->B09-C_s2",
+        "silent_holder_flip in s1: Mira -> user",
+        "invalid_relation_endpoint in relation B15-P_s3->B15-P_s2",
+        "invalid_relation_endpoint in relation B16-C_s2->B16-C_s1"
+      ],
+      "forbidden_violations": [],
+      "total_tokens": 103902,
+      "median_latency_ms": 4947.183500044048,
+      "p95_latency_ms": 12676.945999963209
+    },
+    "C": {
+      "case_count": 52,
+      "micro_accuracy": 0.8658318425760286,
+      "macro_family_accuracy": 0.8970797720797721,
+      "exact_block_count_rate": 0.8461538461538461,
+      "account_exact_match_rate": 0.27906976744186046,
+      "relations_tp": 11,
+      "relations_fp": 1,
+      "relations_fn": 5,
+      "relations_precision": 0.9166666666666666,
+      "relations_recall": 0.6875,
+      "relations_f1": 0.7857142857142857,
+      "hard_failure_count": 4,
+      "hard_failures": [
+        "invalid_relation_endpoint in relation B12-C_s1->B12-C_s2",
+        "invalid_relation_endpoint in relation B12-P_s1->B12-P_s2",
+        "invalid_relation_endpoint in relation B15-C_s3->B15-C_s2",
+        "invalid_relation_endpoint in relation B15-P_s3->B15-P_s2"
+      ],
+      "forbidden_violations": [],
+      "total_tokens": 123330,
+      "median_latency_ms": 9512.590800004546,
+      "p95_latency_ms": 16381.854200037196
+    },
+    "D": {
+      "case_count": 52,
+      "micro_accuracy": 0.8085867620751341,
+      "macro_family_accuracy": 0.8108974358974359,
+      "exact_block_count_rate": 0.8076923076923077,
+      "account_exact_match_rate": 0.11627906976744186,
+      "relations_tp": 10,
+      "relations_fp": 15,
+      "relations_fn": 6,
+      "relations_precision": 0.4,
+      "relations_recall": 0.625,
+      "relations_f1": 0.48780487804878053,
+      "hard_failure_count": 13,
+      "hard_failures": [
+        "reversed_cause s2<-s1",
+        "reversed_cause s3<-s2",
+        "invalid_relation_endpoint in relation B05-C_s1->B05-C_s2",
+        "invalid_relation_endpoint in relation B05-P_s2->B05-P_s1",
+        "invalid_relation_endpoint in relation B09-C_s2->B09-C_s1",
+        "invalid_relation_endpoint in relation B09-P_s2->B09-P_s1",
+        "silent_holder_flip in s1: Mira -> user",
+        "silent_holder_flip in s1: Mira -> user",
+        "invalid_relation_endpoint in relation B12-C_s2->B12-C_s1",
+        "invalid_relation_endpoint in relation B12-P_s2->B12-P_s1",
+        "invalid_relation_endpoint in relation B15-C_s2->B15-C_s1",
+        "invalid_relation_endpoint in relation B15-P_s2->B15-P_s3",
+        "invalid_relation_endpoint in relation B16-P_s2->B16-P_s1"
+      ],
+      "forbidden_violations": [],
+      "total_tokens": 73547,
+      "median_latency_ms": 4884.0322000323795,
+      "p95_latency_ms": 12065.968799986877
+    }
+  },
+  "heldout": {
+    "A": {
+      "case_count": 14,
+      "micro_accuracy": 0.08791208791208792,
+      "macro_family_accuracy": 0.11217948717948718,
+      "exact_block_count_rate": 0.35714285714285715,
+      "account_exact_match_rate": 0.0,
+      "relations_tp": 0,
+      "relations_fp": 0,
+      "relations_fn": 5,
+      "relations_precision": 0.0,
+      "relations_recall": 0.0,
+      "relations_f1": 0.0,
+      "hard_failure_count": 0,
+      "hard_failures": [],
+      "forbidden_violations": [],
+      "total_tokens": 0,
+      "median_latency_ms": 0.46529999235644937,
+      "p95_latency_ms": 1.6672000056132674
+    },
+    "B": {
+      "case_count": 14,
+      "micro_accuracy": 0.9395604395604396,
+      "macro_family_accuracy": 0.9294871794871794,
+      "exact_block_count_rate": 1.0,
+      "account_exact_match_rate": 0.5357142857142857,
+      "relations_tp": 4,
+      "relations_fp": 4,
+      "relations_fn": 1,
+      "relations_precision": 0.5,
+      "relations_recall": 0.8,
+      "relations_f1": 0.6153846153846154,
+      "hard_failure_count": 1,
+      "hard_failures": [
+        "silent_holder_flip in s1: Mira -> user"
+      ],
+      "forbidden_violations": [],
+      "total_tokens": 28916,
+      "median_latency_ms": 5577.281200035941,
+      "p95_latency_ms": 12628.757999977097
+    },
+    "C": {
+      "case_count": 14,
+      "micro_accuracy": 0.8269230769230769,
+      "macro_family_accuracy": 0.8675213675213675,
+      "exact_block_count_rate": 0.7857142857142857,
+      "account_exact_match_rate": 0.39285714285714285,
+      "relations_tp": 3,
+      "relations_fp": 1,
+      "relations_fn": 2,
+      "relations_precision": 0.75,
+      "relations_recall": 0.6,
+      "relations_f1": 0.6666666666666665,
+      "hard_failure_count": 1,
+      "hard_failures": [
+        "invalid_relation_endpoint in relation B11-N_s1->B11-N_s2"
+      ],
+      "forbidden_violations": [],
+      "total_tokens": 35333,
+      "median_latency_ms": 8999.855300004128,
+      "p95_latency_ms": 15845.294099941384
+    },
+    "D": {
+      "case_count": 14,
+      "micro_accuracy": 0.8653846153846154,
+      "macro_family_accuracy": 0.8600427350427351,
+      "exact_block_count_rate": 0.9285714285714286,
+      "account_exact_match_rate": 0.03571428571428571,
+      "relations_tp": 4,
+      "relations_fp": 7,
+      "relations_fn": 1,
+      "relations_precision": 0.36363636363636365,
+      "relations_recall": 0.8,
+      "relations_f1": 0.5000000000000001,
+      "hard_failure_count": 4,
+      "hard_failures": [
+        "forbidden_CAUSE_emitted",
+        "silent_holder_flip in s1: Mira -> user",
+        "invalid_relation_endpoint in relation B15-N_s2->B15-N_s1",
+        "invalid_relation_endpoint in relation B15-N_s3->B15-N_s2"
+      ],
+      "forbidden_violations": [
+        "forbidden_CAUSE_emitted"
+      ],
+      "total_tokens": 21449,
+      "median_latency_ms": 5832.9879000084475,
+      "p95_latency_ms": 19512.752299953718
+    }
+  },
+  "gates": {
+    "A": {
+      "verdict": "INCONCLUSIVE",
+      "hard_failures": 0,
+      "accuracy": 0.08791208791208792,
+      "exact_block_count": 0.35714285714285715
+    },
+    "B": {
+      "verdict": "BLOCKED",
+      "hard_failures": 1,
+      "accuracy": 0.9395604395604396,
+      "exact_block_count": 1.0
+    },
+    "C": {
+      "verdict": "BLOCKED",
+      "hard_failures": 1,
+      "accuracy": 0.8269230769230769,
+      "exact_block_count": 0.7857142857142857
+    },
+    "D": {
+      "verdict": "BLOCKED",
+      "hard_failures": 4,
+      "accuracy": 0.8653846153846154,
+      "exact_block_count": 0.9285714285714286
+    }
+  },
+  "overall_verdict": "INCONCLUSIVE"
+}
