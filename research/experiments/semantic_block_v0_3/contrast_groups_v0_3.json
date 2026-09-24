@@ -1,0 +1,175 @@
+{
+  "status": "draft_single_author_unadjudicated",
+  "equivalence_groups": [
+    {
+      "group_id": "EQ-REPORT-LAYOFF",
+      "case_ids": [
+        "V3-002",
+        "V3-006"
+      ],
+      "invariant": "用户转述朋友认为公司下个月可能裁员；用户本人是否认同未知。"
+    },
+    {
+      "group_id": "EQ-ASSERT-BEIJING",
+      "case_ids": [
+        "V3-007",
+        "V3-012"
+      ],
+      "invariant": "用户当前明确表达明天去北京的未来安排；结果尚未发生。"
+    },
+    {
+      "group_id": "EQ-POSS-LAYOFF",
+      "case_ids": [
+        "V3-015",
+        "V3-018"
+      ],
+      "invariant": "用户本人认为公司下个月存在裁员可能。"
+    },
+    {
+      "group_id": "EQ-MUST-BEIJING",
+      "case_ids": [
+        "V3-021",
+        "V3-024"
+      ],
+      "invariant": "用户当前存在明天必须去北京的强要求/约束，未来结果未知。"
+    },
+    {
+      "group_id": "EQ-COND-RAIN",
+      "case_ids": [
+        "V3-025",
+        "V3-028"
+      ],
+      "invariant": "如果明天下雨，用户就不去北京；条件和结果均尚未落地。"
+    },
+    {
+      "group_id": "EQ-CORR-WED",
+      "case_ids": [
+        "V3-031",
+        "V3-036"
+      ],
+      "invariant": "用户纠正此前的日期表述：周二是说错，当前正确日期为周三。"
+    },
+    {
+      "group_id": "EQ-ELLIPSIS-SHANGHAI",
+      "case_ids": [
+        "V3-039",
+        "V3-042"
+      ],
+      "invariant": "在北京/上海二选一语境中，用户选择上海。"
+    },
+    {
+      "group_id": "EQ-SARC-OUTAGE",
+      "case_ids": [
+        "V3-043",
+        "V3-047"
+      ],
+      "invariant": "用户在系统再次故障语境中用正面字面词进行反讽，实际表达负面评价。"
+    }
+  ],
+  "hard_negative_groups": [
+    {
+      "group_id": "HN-HELD-LAYOFF",
+      "split": "held_out",
+      "case_ids": [
+        "V3-002",
+        "V3-006",
+        "V3-013",
+        "V3-015",
+        "V3-018"
+      ],
+      "distinction": "相同裁员主题下区分转述来源、用户本人判断与确定性强度。"
+    },
+    {
+      "group_id": "HN-HELD-TRAVEL",
+      "split": "held_out",
+      "case_ids": [
+        "V3-007",
+        "V3-012",
+        "V3-021",
+        "V3-024",
+        "V3-025",
+        "V3-028",
+        "V3-039",
+        "V3-042"
+      ],
+      "distinction": "北京/明天等表面词高度重叠，但分别是明确安排、强制要求、条件规则或二选一结果。"
+    },
+    {
+      "group_id": "HN-HELD-OUTAGE",
+      "split": "held_out",
+      "case_ids": [
+        "V3-043",
+        "V3-047",
+        "V3-048"
+      ],
+      "distinction": "相同系统故障主题下区分反讽表达与字面故障陈述。"
+    },
+    {
+      "group_id": "HN-DEV-LAYOFF",
+      "split": "dev",
+      "case_ids": [
+        "V3-003",
+        "V3-004",
+        "V3-005",
+        "V3-014",
+        "V3-016",
+        "V3-017"
+      ],
+      "distinction": "同一裁员话题下区分多层转述、认同、拒绝、高概率、否定与UNKNOWN。"
+    },
+    {
+      "group_id": "HN-DEV-TRAVEL",
+      "split": "dev",
+      "case_ids": [
+        "V3-008",
+        "V3-009",
+        "V3-010",
+        "V3-011",
+        "V3-019",
+        "V3-020",
+        "V3-022",
+        "V3-023"
+      ],
+      "distinction": "高度相似的出行词汇下区分提问、试探、否定、愿望、计划、已完成与外部要求。"
+    },
+    {
+      "group_id": "HN-DEV-HYPOTHETICAL",
+      "split": "dev",
+      "case_ids": [
+        "V3-026",
+        "V3-027",
+        "V3-029",
+        "V3-030"
+      ],
+      "distinction": "区分反事实愿望、条件性未实现结果、纯假设与真实未发生事件加反事实后果。"
+    },
+    {
+      "group_id": "HN-DEV-REVISION",
+      "split": "dev",
+      "case_ids": [
+        "V3-031",
+        "V3-032",
+        "V3-033",
+        "V3-034",
+        "V3-035",
+        "V3-036"
+      ],
+      "distinction": "区分说错后的纠正、世界/计划真实变化、状态纠正、主体纠正。"
+    },
+    {
+      "group_id": "HN-DEV-NONLITERAL",
+      "split": "dev",
+      "case_ids": [
+        "V3-044",
+        "V3-045",
+        "V3-046"
+      ],
+      "distinction": "区分夸张、真实歧义与比喻，防止所有非字面表达被同一标签抹平。"
+    }
+  ],
+  "rules": [
+    "equivalence group tests surface invariance, not verbatim equality",
+    "hard-negative group tests semantic separability under lexical/topic overlap",
+    "group labels are evaluator metadata and must not be shown to the compiler"
+  ]
+}
