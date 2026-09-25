@@ -1,5 +1,6 @@
 """Derived cognition worktrees and conservative promotion."""
 
+from lce.cognition.external import PrecomputedDraftInput, PrecomputedDraftIntake
 from lce.cognition.promotion import (
     BoundedInterpretation,
     BoundedInterpretationPackage,
@@ -24,6 +25,8 @@ __all__ = [
     "ConservativePromotionPolicy",
     "DraftRevision",
     "DraftRevisionStore",
+    "PrecomputedDraftInput",
+    "PrecomputedDraftIntake",
     "RuleBasedBoundedInterpreter",
     "UnderstandingPromoter",
 ]
