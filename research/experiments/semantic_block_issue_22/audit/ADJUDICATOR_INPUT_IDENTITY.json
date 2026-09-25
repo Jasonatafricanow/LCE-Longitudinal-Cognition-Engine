@@ -1,0 +1,415 @@
+{
+  "held_out_queries": [
+    {
+      "query_id": "RQ-H01",
+      "candidates_b0": [
+        "V3-002",
+        "V3-006",
+        "V3-015",
+        "V3-018",
+        "V3-013"
+      ],
+      "candidates_b4": [
+        "V3-006",
+        "V3-002",
+        "V3-018",
+        "V3-015",
+        "V3-013"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-002": true,
+        "V3-006": true,
+        "V3-015": false,
+        "V3-018": false,
+        "V3-013": false
+      },
+      "decisions_b4": {
+        "V3-006": true,
+        "V3-002": true,
+        "V3-018": false,
+        "V3-015": false,
+        "V3-013": false
+      },
+      "decisions_match": true,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H02",
+      "candidates_b0": [
+        "V3-015",
+        "V3-018",
+        "V3-013",
+        "V3-002",
+        "V3-006"
+      ],
+      "candidates_b4": [
+        "V3-015",
+        "V3-018",
+        "V3-002",
+        "V3-013",
+        "V3-006"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-015": true,
+        "V3-018": true,
+        "V3-013": false,
+        "V3-002": false,
+        "V3-006": false
+      },
+      "decisions_b4": {
+        "V3-015": true,
+        "V3-018": true,
+        "V3-002": false,
+        "V3-013": false,
+        "V3-006": false
+      },
+      "decisions_match": true,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H03",
+      "candidates_b0": [
+        "V3-013",
+        "V3-015",
+        "V3-018",
+        "V3-002",
+        "V3-006"
+      ],
+      "candidates_b4": [
+        "V3-013",
+        "V3-018",
+        "V3-015",
+        "V3-007",
+        "V3-012"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-013": true,
+        "V3-015": false,
+        "V3-018": false,
+        "V3-002": false,
+        "V3-006": false
+      },
+      "decisions_b4": {
+        "V3-013": true,
+        "V3-018": false,
+        "V3-015": false,
+        "V3-007": false,
+        "V3-012": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H04",
+      "candidates_b0": [
+        "V3-021",
+        "V3-024",
+        "V3-007",
+        "V3-012",
+        "V3-025"
+      ],
+      "candidates_b4": [
+        "V3-021",
+        "V3-024",
+        "V3-012",
+        "V3-007",
+        "V3-039"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-021": false,
+        "V3-024": false,
+        "V3-007": true,
+        "V3-012": true,
+        "V3-025": false
+      },
+      "decisions_b4": {
+        "V3-021": false,
+        "V3-024": false,
+        "V3-012": true,
+        "V3-007": true,
+        "V3-039": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H05",
+      "candidates_b0": [
+        "V3-021",
+        "V3-024",
+        "V3-007",
+        "V3-012",
+        "V3-025"
+      ],
+      "candidates_b4": [
+        "V3-021",
+        "V3-024",
+        "V3-012",
+        "TF-03-A",
+        "TF-03-B"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-021": false,
+        "V3-024": false,
+        "V3-007": false,
+        "V3-012": false,
+        "V3-025": false
+      },
+      "decisions_b4": {
+        "V3-021": true,
+        "V3-024": true,
+        "V3-012": false,
+        "TF-03-A": false,
+        "TF-03-B": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": [
+        "V3-021",
+        "V3-024"
+      ]
+    },
+    {
+      "query_id": "RQ-H06",
+      "candidates_b0": [
+        "V3-025",
+        "V3-028",
+        "V3-021",
+        "V3-024",
+        "V3-007"
+      ],
+      "candidates_b4": [
+        "V3-025",
+        "V3-028",
+        "V3-021",
+        "V3-024",
+        "V3-007"
+      ],
+      "candidates_match": true,
+      "decisions_b0": {
+        "V3-025": true,
+        "V3-028": true,
+        "V3-021": false,
+        "V3-024": false,
+        "V3-007": false
+      },
+      "decisions_b4": {
+        "V3-025": true,
+        "V3-028": true,
+        "V3-021": false,
+        "V3-024": false,
+        "V3-007": false
+      },
+      "decisions_match": true,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H07",
+      "candidates_b0": [
+        "V3-039",
+        "V3-042",
+        "V3-007",
+        "V3-012",
+        "V3-025"
+      ],
+      "candidates_b4": [
+        "V3-039",
+        "V3-042",
+        "V3-012",
+        "V3-021",
+        "V3-024"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-039": true,
+        "V3-042": true,
+        "V3-007": false,
+        "V3-012": false,
+        "V3-025": false
+      },
+      "decisions_b4": {
+        "V3-039": true,
+        "V3-042": true,
+        "V3-012": false,
+        "V3-021": false,
+        "V3-024": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H08",
+      "candidates_b0": [
+        "V3-047",
+        "V3-043",
+        "V3-048",
+        "V3-015",
+        "V3-018"
+      ],
+      "candidates_b4": [
+        "V3-047",
+        "V3-043",
+        "V3-048",
+        "V3-006",
+        "V3-013"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-047": true,
+        "V3-043": true,
+        "V3-048": false,
+        "V3-015": false,
+        "V3-018": false
+      },
+      "decisions_b4": {
+        "V3-047": true,
+        "V3-043": true,
+        "V3-048": false,
+        "V3-006": false,
+        "V3-013": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H09",
+      "candidates_b0": [
+        "V3-048",
+        "V3-047",
+        "V3-043",
+        "V3-013",
+        "V3-015"
+      ],
+      "candidates_b4": [
+        "V3-047",
+        "V3-043",
+        "V3-048",
+        "V3-025",
+        "V3-028"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "V3-048": true,
+        "V3-047": false,
+        "V3-043": false,
+        "V3-013": false,
+        "V3-015": false
+      },
+      "decisions_b4": {
+        "V3-047": false,
+        "V3-043": false,
+        "V3-048": true,
+        "V3-025": false,
+        "V3-028": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H10",
+      "candidates_b0": [
+        "TF-03-A",
+        "TF-03-B",
+        "TF-03-C",
+        "V3-021",
+        "V3-024"
+      ],
+      "candidates_b4": [
+        "TF-03-A",
+        "TF-03-B",
+        "TF-03-C",
+        "V3-021",
+        "V3-024"
+      ],
+      "candidates_match": true,
+      "decisions_b0": {
+        "TF-03-A": true,
+        "TF-03-B": true,
+        "TF-03-C": true,
+        "V3-021": false,
+        "V3-024": false
+      },
+      "decisions_b4": {
+        "TF-03-A": true,
+        "TF-03-B": true,
+        "TF-03-C": true,
+        "V3-021": false,
+        "V3-024": false
+      },
+      "decisions_match": true,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H11",
+      "candidates_b0": [
+        "TF-04-A",
+        "TF-04-B",
+        "TF-04-C",
+        "V3-007",
+        "V3-012"
+      ],
+      "candidates_b4": [
+        "TF-04-A",
+        "TF-04-B",
+        "TF-04-C",
+        "V3-006",
+        "V3-007"
+      ],
+      "candidates_match": false,
+      "decisions_b0": {
+        "TF-04-A": true,
+        "TF-04-B": true,
+        "TF-04-C": true,
+        "V3-007": false,
+        "V3-012": false
+      },
+      "decisions_b4": {
+        "TF-04-A": true,
+        "TF-04-B": true,
+        "TF-04-C": true,
+        "V3-006": false,
+        "V3-007": false
+      },
+      "decisions_match": false,
+      "divergent_candidates": []
+    },
+    {
+      "query_id": "RQ-H12",
+      "candidates_b0": [
+        "V3-021",
+        "V3-024",
+        "TF-03-A",
+        "TF-03-B",
+        "TF-03-C"
+      ],
+      "candidates_b4": [
+        "V3-021",
+        "V3-024",
+        "TF-03-A",
+        "TF-03-B",
+        "TF-03-C"
+      ],
+      "candidates_match": true,
+      "decisions_b0": {
+        "V3-021": true,
+        "V3-024": true,
+        "TF-03-A": true,
+        "TF-03-B": true,
+        "TF-03-C": true
+      },
+      "decisions_b4": {
+        "V3-021": true,
+        "V3-024": true,
+        "TF-03-A": true,
+        "TF-03-B": true,
+        "TF-03-C": true
+      },
+      "decisions_match": true,
+      "divergent_candidates": []
+    }
+  ]
+}

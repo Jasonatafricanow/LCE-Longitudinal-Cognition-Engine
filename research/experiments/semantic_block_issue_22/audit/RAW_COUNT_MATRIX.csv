@@ -1,0 +1,757 @@
+Split,Arm,Method,BudgetK,MetricName,Numerator,Denominator,ExactFractionOrFormula,DecimalValue,ReportedPercentageOrScore
+held_out,B0,R0,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B0,R0,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B0,R0,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B0,R0,3,Final Accepted Target Recall,9.875,12,9.8750/12,0.8229166666666666,82.3%
+held_out,B0,R0,3,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B0,R0,3,Mean Candidate Tokens,1514,12,1514/12,126.16666666666667,126.2
+held_out,B0,R0,3,Mean Prompt Tokens,6790,12,6790/12,565.8333333333334,565.8
+held_out,B0,R0,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B0,R0,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B0,R0,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B0,R0,5,Final Accepted Target Recall,10.625,12,85/96 (10*1.0 + 0 + 5/8)/12,0.8854166666666666,88.5%
+held_out,B0,R0,5,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B0,R0,5,Mean Candidate Tokens,2482,12,2482/12,206.83333333333334,206.8
+held_out,B0,R0,5,Mean Prompt Tokens,9707,12,9707/12,808.9166666666666,808.9
+held_out,B0,R0,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B0,R0,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B0,R0,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B0,R0,8,Final Accepted Target Recall,10.625,12,10.6250/12,0.8854166666666666,88.5%
+held_out,B0,R0,8,Adjudication Precision,10.5,12,10.5000/12,0.875,87.5%
+held_out,B0,R0,8,Mean Candidate Tokens,3982,12,3982/12,331.8333333333333,331.8
+held_out,B0,R0,8,Mean Prompt Tokens,12252,12,12252/12,1021.0,1021.0
+held_out,B0,R2,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B0,R2,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B0,R2,3,Mean First Target Rank,13,12,13/12,1.0833333333333333,1.08
+held_out,B0,R2,3,Final Accepted Target Recall,10.375,12,10.3750/12,0.8645833333333334,86.5%
+held_out,B0,R2,3,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B0,R2,3,Mean Candidate Tokens,1520,12,1520/12,126.66666666666667,126.7
+held_out,B0,R2,3,Mean Prompt Tokens,6795,12,6795/12,566.25,566.2
+held_out,B0,R2,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B0,R2,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B0,R2,5,Mean First Target Rank,13,12,13/12,1.0833333333333333,1.08
+held_out,B0,R2,5,Final Accepted Target Recall,10.625,12,85/96 (10*1.0 + 0 + 5/8)/12,0.8854166666666666,88.5%
+held_out,B0,R2,5,Adjudication Precision,10.6667,12,10.6667/12,0.8888888888888888,88.9%
+held_out,B0,R2,5,Mean Candidate Tokens,2487,12,2487/12,207.25,207.2
+held_out,B0,R2,5,Mean Prompt Tokens,9716,12,9716/12,809.6666666666666,809.7
+held_out,B0,R2,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B0,R2,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B0,R2,8,Mean First Target Rank,13,12,13/12,1.0833333333333333,1.08
+held_out,B0,R2,8,Final Accepted Target Recall,10.625,12,10.6250/12,0.8854166666666666,88.5%
+held_out,B0,R2,8,Adjudication Precision,10.6667,12,10.6667/12,0.8888888888888888,88.9%
+held_out,B0,R2,8,Mean Candidate Tokens,3727,12,3727/12,310.5833333333333,310.6
+held_out,B0,R2,8,Mean Prompt Tokens,13595,12,13595/12,1132.9166666666667,1132.9
+held_out,B1,R0,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R0,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R0,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R0,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B1,R0,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R0,3,Mean Candidate Tokens,5237,12,5237/12,436.4166666666667,436.4
+held_out,B1,R0,3,Mean Prompt Tokens,10044,12,10044/12,837.0,837.0
+held_out,B1,R0,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R0,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R0,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R0,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B1,R0,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R0,5,Mean Candidate Tokens,8732,12,8732/12,727.6666666666666,727.7
+held_out,B1,R0,5,Mean Prompt Tokens,14360,12,14360/12,1196.6666666666667,1196.7
+held_out,B1,R0,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R0,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B1,R0,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R0,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B1,R0,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R0,8,Mean Candidate Tokens,13095,12,13095/12,1091.25,1091.2
+held_out,B1,R0,8,Mean Prompt Tokens,20098,12,20098/12,1674.8333333333333,1674.8
+held_out,B1,R1,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R1,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R1,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R1,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B1,R1,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R1,3,Mean Candidate Tokens,5251,12,5251/12,437.5833333333333,437.6
+held_out,B1,R1,3,Mean Prompt Tokens,10069,12,10069/12,839.0833333333334,839.1
+held_out,B1,R1,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R1,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R1,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R1,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B1,R1,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R1,5,Mean Candidate Tokens,8764,12,8764/12,730.3333333333334,730.3
+held_out,B1,R1,5,Mean Prompt Tokens,14396,12,14396/12,1199.6666666666667,1199.7
+held_out,B1,R1,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R1,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B1,R1,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R1,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B1,R1,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R1,8,Mean Candidate Tokens,13143,12,13143/12,1095.25,1095.2
+held_out,B1,R1,8,Mean Prompt Tokens,20148,12,20148/12,1679.0,1679.0
+held_out,B1,R2,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R2,3,HN Presence Rate,8,12,8/12,0.6666666666666666,66.7%
+held_out,B1,R2,3,Mean First Target Rank,13,12,13/12,1.0833333333333333,1.08
+held_out,B1,R2,3,Final Accepted Target Recall,11.375,12,11.3750/12,0.9479166666666666,94.8%
+held_out,B1,R2,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R2,3,Mean Candidate Tokens,5221,12,5221/12,435.0833333333333,435.1
+held_out,B1,R2,3,Mean Prompt Tokens,10061,12,10061/12,838.4166666666666,838.4
+held_out,B1,R2,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R2,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R2,5,Mean First Target Rank,13,12,13/12,1.0833333333333333,1.08
+held_out,B1,R2,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B1,R2,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R2,5,Mean Candidate Tokens,8722,12,8722/12,726.8333333333334,726.8
+held_out,B1,R2,5,Mean Prompt Tokens,14384,12,14384/12,1198.6666666666667,1198.7
+held_out,B1,R2,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R2,8,HN Presence Rate,10,12,10/12,0.8333333333333334,83.3%
+held_out,B1,R2,8,Mean First Target Rank,13,12,13/12,1.0833333333333333,1.08
+held_out,B1,R2,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B1,R2,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R2,8,Mean Candidate Tokens,13081,12,13081/12,1090.0833333333333,1090.1
+held_out,B1,R2,8,Mean Prompt Tokens,20131,12,20131/12,1677.5833333333333,1677.6
+held_out,B1,R3,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R3,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R3,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R3,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B1,R3,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R3,3,Mean Candidate Tokens,5251,12,5251/12,437.5833333333333,437.6
+held_out,B1,R3,3,Mean Prompt Tokens,10069,12,10069/12,839.0833333333334,839.1
+held_out,B1,R3,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R3,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B1,R3,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R3,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B1,R3,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R3,5,Mean Candidate Tokens,8764,12,8764/12,730.3333333333334,730.3
+held_out,B1,R3,5,Mean Prompt Tokens,14396,12,14396/12,1199.6666666666667,1199.7
+held_out,B1,R3,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B1,R3,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B1,R3,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B1,R3,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B1,R3,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B1,R3,8,Mean Candidate Tokens,13143,12,13143/12,1095.25,1095.2
+held_out,B1,R3,8,Mean Prompt Tokens,20148,12,20148/12,1679.0,1679.0
+held_out,B2,R0,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R0,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B2,R0,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B2,R0,3,Final Accepted Target Recall,9.875,12,9.8750/12,0.8229166666666666,82.3%
+held_out,B2,R0,3,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R0,3,Mean Candidate Tokens,7526,12,7526/12,627.1666666666666,627.2
+held_out,B2,R0,3,Mean Prompt Tokens,11835,12,11835/12,986.25,986.2
+held_out,B2,R0,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R0,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B2,R0,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B2,R0,5,Final Accepted Target Recall,10.625,12,85/96 (10*1.0 + 0 + 5/8)/12,0.8854166666666666,88.5%
+held_out,B2,R0,5,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R0,5,Mean Candidate Tokens,12554,12,12554/12,1046.1666666666667,1046.2
+held_out,B2,R0,5,Mean Prompt Tokens,16913,12,16913/12,1409.4166666666667,1409.4
+held_out,B2,R0,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R0,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B2,R0,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B2,R0,8,Final Accepted Target Recall,10.625,12,10.6250/12,0.8854166666666666,88.5%
+held_out,B2,R0,8,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R0,8,Mean Candidate Tokens,18827,12,18827/12,1568.9166666666667,1568.9
+held_out,B2,R0,8,Mean Prompt Tokens,23672,12,23672/12,1972.6666666666667,1972.7
+held_out,B2,R1,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R1,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B2,R1,3,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B2,R1,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B2,R1,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B2,R1,3,Mean Candidate Tokens,7535,12,7535/12,627.9166666666666,627.9
+held_out,B2,R1,3,Mean Prompt Tokens,11821,12,11821/12,985.0833333333334,985.1
+held_out,B2,R1,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R1,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B2,R1,5,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B2,R1,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B2,R1,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B2,R1,5,Mean Candidate Tokens,12556,12,12556/12,1046.3333333333333,1046.3
+held_out,B2,R1,5,Mean Prompt Tokens,16894,12,16894/12,1407.8333333333333,1407.8
+held_out,B2,R1,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R1,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B2,R1,8,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B2,R1,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B2,R1,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B2,R1,8,Mean Candidate Tokens,18830,12,18830/12,1569.1666666666667,1569.2
+held_out,B2,R1,8,Mean Prompt Tokens,23646,12,23646/12,1970.5,1970.5
+held_out,B2,R2,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R2,3,HN Presence Rate,8,12,8/12,0.6666666666666666,66.7%
+held_out,B2,R2,3,Mean First Target Rank,12,12,12/12,1.0,1.00
+held_out,B2,R2,3,Final Accepted Target Recall,10.375,12,10.3750/12,0.8645833333333334,86.5%
+held_out,B2,R2,3,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R2,3,Mean Candidate Tokens,7516,12,7516/12,626.3333333333334,626.3
+held_out,B2,R2,3,Mean Prompt Tokens,11819,12,11819/12,984.9166666666666,984.9
+held_out,B2,R2,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R2,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B2,R2,5,Mean First Target Rank,12,12,12/12,1.0,1.00
+held_out,B2,R2,5,Final Accepted Target Recall,10.375,12,83/96 (10*1.0 + 0 + 3/8)/12,0.8645833333333334,86.5%
+held_out,B2,R2,5,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R2,5,Mean Candidate Tokens,12511,12,12511/12,1042.5833333333333,1042.6
+held_out,B2,R2,5,Mean Prompt Tokens,16892,12,16892/12,1407.6666666666667,1407.7
+held_out,B2,R2,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R2,8,HN Presence Rate,10,12,10/12,0.8333333333333334,83.3%
+held_out,B2,R2,8,Mean First Target Rank,12,12,12/12,1.0,1.00
+held_out,B2,R2,8,Final Accepted Target Recall,10.375,12,10.3750/12,0.8645833333333334,86.5%
+held_out,B2,R2,8,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R2,8,Mean Candidate Tokens,18763,12,18763/12,1563.5833333333333,1563.6
+held_out,B2,R2,8,Mean Prompt Tokens,23642,12,23642/12,1970.1666666666667,1970.2
+held_out,B2,R3,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R3,3,HN Presence Rate,8,12,8/12,0.6666666666666666,66.7%
+held_out,B2,R3,3,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B2,R3,3,Final Accepted Target Recall,9.875,12,9.8750/12,0.8229166666666666,82.3%
+held_out,B2,R3,3,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R3,3,Mean Candidate Tokens,7548,12,7548/12,629.0,629.0
+held_out,B2,R3,3,Mean Prompt Tokens,11828,12,11828/12,985.6666666666666,985.7
+held_out,B2,R3,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R3,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B2,R3,5,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B2,R3,5,Final Accepted Target Recall,10.625,12,85/96 (10*1.0 + 0 + 5/8)/12,0.8854166666666666,88.5%
+held_out,B2,R3,5,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R3,5,Mean Candidate Tokens,12561,12,12561/12,1046.75,1046.8
+held_out,B2,R3,5,Mean Prompt Tokens,16904,12,16904/12,1408.6666666666667,1408.7
+held_out,B2,R3,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B2,R3,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B2,R3,8,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B2,R3,8,Final Accepted Target Recall,10.625,12,10.6250/12,0.8854166666666666,88.5%
+held_out,B2,R3,8,Adjudication Precision,11.0,12,11.0000/12,0.9166666666666666,91.7%
+held_out,B2,R3,8,Mean Candidate Tokens,18837,12,18837/12,1569.75,1569.8
+held_out,B2,R3,8,Mean Prompt Tokens,23660,12,23660/12,1971.6666666666667,1971.7
+held_out,B3,R0,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R0,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B3,R0,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B3,R0,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B3,R0,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R0,3,Mean Candidate Tokens,11694,12,11694/12,974.5,974.5
+held_out,B3,R0,3,Mean Prompt Tokens,15247,12,15247/12,1270.5833333333333,1270.6
+held_out,B3,R0,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R0,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B3,R0,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B3,R0,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B3,R0,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R0,5,Mean Candidate Tokens,19537,12,19537/12,1628.0833333333333,1628.1
+held_out,B3,R0,5,Mean Prompt Tokens,21789,12,21789/12,1815.75,1815.8
+held_out,B3,R0,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R0,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B3,R0,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B3,R0,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B3,R0,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R0,8,Mean Candidate Tokens,29302,12,29302/12,2441.8333333333335,2441.8
+held_out,B3,R0,8,Mean Prompt Tokens,30501,12,30501/12,2541.75,2541.8
+held_out,B3,R1,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R1,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B3,R1,3,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B3,R1,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B3,R1,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R1,3,Mean Candidate Tokens,11706,12,11706/12,975.5,975.5
+held_out,B3,R1,3,Mean Prompt Tokens,15237,12,15237/12,1269.75,1269.8
+held_out,B3,R1,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R1,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B3,R1,5,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B3,R1,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B3,R1,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R1,5,Mean Candidate Tokens,19548,12,19548/12,1629.0,1629.0
+held_out,B3,R1,5,Mean Prompt Tokens,21775,12,21775/12,1814.5833333333333,1814.6
+held_out,B3,R1,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R1,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B3,R1,8,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B3,R1,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B3,R1,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R1,8,Mean Candidate Tokens,29321,12,29321/12,2443.4166666666665,2443.4
+held_out,B3,R1,8,Mean Prompt Tokens,30481,12,30481/12,2540.0833333333335,2540.1
+held_out,B3,R2,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R2,3,HN Presence Rate,8,12,8/12,0.6666666666666666,66.7%
+held_out,B3,R2,3,Mean First Target Rank,15,12,15/12,1.25,1.25
+held_out,B3,R2,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B3,R2,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R2,3,Mean Candidate Tokens,11718,12,11718/12,976.5,976.5
+held_out,B3,R2,3,Mean Prompt Tokens,15187,12,15187/12,1265.5833333333333,1265.6
+held_out,B3,R2,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R2,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B3,R2,5,Mean First Target Rank,15,12,15/12,1.25,1.25
+held_out,B3,R2,5,Final Accepted Target Recall,11.5,12,23/24 (11*1.0 + 4/8)/12,0.9583333333333334,95.8%
+held_out,B3,R2,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R2,5,Mean Candidate Tokens,19408,12,19408/12,1617.3333333333333,1617.3
+held_out,B3,R2,5,Mean Prompt Tokens,21705,12,21705/12,1808.75,1808.8
+held_out,B3,R2,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R2,8,HN Presence Rate,10,12,10/12,0.8333333333333334,83.3%
+held_out,B3,R2,8,Mean First Target Rank,15,12,15/12,1.25,1.25
+held_out,B3,R2,8,Final Accepted Target Recall,11.5,12,11.5000/12,0.9583333333333334,95.8%
+held_out,B3,R2,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R2,8,Mean Candidate Tokens,29109,12,29109/12,2425.75,2425.8
+held_out,B3,R2,8,Mean Prompt Tokens,30382,12,30382/12,2531.8333333333335,2531.8
+held_out,B3,R3,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R3,3,HN Presence Rate,8,12,8/12,0.6666666666666666,66.7%
+held_out,B3,R3,3,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B3,R3,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B3,R3,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R3,3,Mean Candidate Tokens,11724,12,11724/12,977.0,977.0
+held_out,B3,R3,3,Mean Prompt Tokens,15245,12,15245/12,1270.4166666666667,1270.4
+held_out,B3,R3,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R3,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B3,R3,5,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B3,R3,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B3,R3,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R3,5,Mean Candidate Tokens,19548,12,19548/12,1629.0,1629.0
+held_out,B3,R3,5,Mean Prompt Tokens,21787,12,21787/12,1815.5833333333333,1815.6
+held_out,B3,R3,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B3,R3,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B3,R3,8,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B3,R3,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B3,R3,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B3,R3,8,Mean Candidate Tokens,29321,12,29321/12,2443.4166666666665,2443.4
+held_out,B3,R3,8,Mean Prompt Tokens,30497,12,30497/12,2541.4166666666665,2541.4
+held_out,B4,R0,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R0,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R0,3,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B4,R0,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B4,R0,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R0,3,Mean Candidate Tokens,14355,12,14355/12,1196.25,1196.2
+held_out,B4,R0,3,Mean Prompt Tokens,17295,12,17295/12,1441.25,1441.2
+held_out,B4,R0,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R0,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R0,5,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B4,R0,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B4,R0,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R0,5,Mean Candidate Tokens,23955,12,23955/12,1996.25,1996.2
+held_out,B4,R0,5,Mean Prompt Tokens,24713,12,24713/12,2059.4166666666665,2059.4
+held_out,B4,R0,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R0,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B4,R0,8,Mean First Target Rank,14,12,14/12,1.1666666666666667,1.17
+held_out,B4,R0,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B4,R0,8,Adjudication Precision,11.5,12,11.5000/12,0.9583333333333334,95.8%
+held_out,B4,R0,8,Mean Candidate Tokens,38239,12,38239/12,3186.5833333333335,3186.6
+held_out,B4,R0,8,Mean Prompt Tokens,36257,12,36257/12,3021.4166666666665,3021.4
+held_out,B4,R1,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R1,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R1,3,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B4,R1,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B4,R1,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R1,3,Mean Candidate Tokens,14359,12,14359/12,1196.5833333333333,1196.6
+held_out,B4,R1,3,Mean Prompt Tokens,17253,12,17253/12,1437.75,1437.8
+held_out,B4,R1,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R1,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R1,5,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B4,R1,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B4,R1,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R1,5,Mean Candidate Tokens,23929,12,23929/12,1994.0833333333333,1994.1
+held_out,B4,R1,5,Mean Prompt Tokens,24652,12,24652/12,2054.3333333333335,2054.3
+held_out,B4,R1,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R1,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B4,R1,8,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B4,R1,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B4,R1,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R1,8,Mean Candidate Tokens,38088,12,38088/12,3174.0,3174.0
+held_out,B4,R1,8,Mean Prompt Tokens,35996,12,35996/12,2999.6666666666665,2999.7
+held_out,B4,R2,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R2,3,HN Presence Rate,8,12,8/12,0.6666666666666666,66.7%
+held_out,B4,R2,3,Mean First Target Rank,15,12,15/12,1.25,1.25
+held_out,B4,R2,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B4,R2,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R2,3,Mean Candidate Tokens,14386,12,14386/12,1198.8333333333333,1198.8
+held_out,B4,R2,3,Mean Prompt Tokens,17276,12,17276/12,1439.6666666666667,1439.7
+held_out,B4,R2,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R2,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R2,5,Mean First Target Rank,15,12,15/12,1.25,1.25
+held_out,B4,R2,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B4,R2,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R2,5,Mean Candidate Tokens,23859,12,23859/12,1988.25,1988.2
+held_out,B4,R2,5,Mean Prompt Tokens,24686,12,24686/12,2057.1666666666665,2057.2
+held_out,B4,R2,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R2,8,HN Presence Rate,10,12,10/12,0.8333333333333334,83.3%
+held_out,B4,R2,8,Mean First Target Rank,15,12,15/12,1.25,1.25
+held_out,B4,R2,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B4,R2,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R2,8,Mean Candidate Tokens,35785,12,35785/12,2982.0833333333335,2982.1
+held_out,B4,R2,8,Mean Prompt Tokens,34556,12,34556/12,2879.6666666666665,2879.7
+held_out,B4,R3,3,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R3,3,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R3,3,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B4,R3,3,Final Accepted Target Recall,10.875,12,10.8750/12,0.90625,90.6%
+held_out,B4,R3,3,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R3,3,Mean Candidate Tokens,14359,12,14359/12,1196.5833333333333,1196.6
+held_out,B4,R3,3,Mean Prompt Tokens,17253,12,17253/12,1437.75,1437.8
+held_out,B4,R3,5,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R3,5,HN Presence Rate,9,12,9/12,0.75,75.0%
+held_out,B4,R3,5,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B4,R3,5,Final Accepted Target Recall,11.625,12,31/32 (11*1.0 + 5/8)/12,0.96875,96.9%
+held_out,B4,R3,5,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R3,5,Mean Candidate Tokens,23929,12,23929/12,1994.0833333333333,1994.1
+held_out,B4,R3,5,Mean Prompt Tokens,24652,12,24652/12,2054.3333333333335,2054.3
+held_out,B4,R3,8,Recall@K,12,12,12/12,1.0,100.0%
+held_out,B4,R3,8,HN Presence Rate,11,12,11/12,0.9166666666666666,91.7%
+held_out,B4,R3,8,Mean First Target Rank,16,12,16/12,1.3333333333333333,1.33
+held_out,B4,R3,8,Final Accepted Target Recall,11.625,12,11.6250/12,0.96875,96.9%
+held_out,B4,R3,8,Adjudication Precision,12.0,12,12.0000/12,1.0,100.0%
+held_out,B4,R3,8,Mean Candidate Tokens,35889,12,35889/12,2990.75,2990.8
+held_out,B4,R3,8,Mean Prompt Tokens,34510,12,34510/12,2875.8333333333335,2875.8
+dev,B0,R0,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B0,R0,3,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B0,R0,3,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B0,R0,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B0,R0,3,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B0,R0,3,Mean Candidate Tokens,2310,17,2310/17,135.88235294117646,135.9
+dev,B0,R0,3,Mean Prompt Tokens,9870,17,9870/17,580.5882352941177,580.6
+dev,B0,R0,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B0,R0,5,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B0,R0,5,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B0,R0,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B0,R0,5,Adjudication Precision,14.4167,17,14.4167/17,0.8480392156862745,84.8%
+dev,B0,R0,5,Mean Candidate Tokens,3852,17,3852/17,226.58823529411765,226.6
+dev,B0,R0,5,Mean Prompt Tokens,14110,17,14110/17,830.0,830.0
+dev,B0,R0,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B0,R0,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B0,R0,8,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B0,R0,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B0,R0,8,Adjudication Precision,14.2333,17,14.2333/17,0.8372549019607842,83.7%
+dev,B0,R0,8,Mean Candidate Tokens,6124,17,6124/17,360.2352941176471,360.2
+dev,B0,R0,8,Mean Prompt Tokens,17852,17,17852/17,1050.1176470588234,1050.1
+dev,B0,R2,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B0,R2,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B0,R2,3,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B0,R2,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B0,R2,3,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B0,R2,3,Mean Candidate Tokens,2376,17,2376/17,139.76470588235293,139.8
+dev,B0,R2,3,Mean Prompt Tokens,9985,17,9985/17,587.3529411764706,587.4
+dev,B0,R2,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B0,R2,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B0,R2,5,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B0,R2,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B0,R2,5,Adjudication Precision,14.5,17,14.5000/17,0.8529411764705882,85.3%
+dev,B0,R2,5,Mean Candidate Tokens,3969,17,3969/17,233.47058823529412,233.5
+dev,B0,R2,5,Mean Prompt Tokens,14272,17,14272/17,839.5294117647059,839.5
+dev,B0,R2,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B0,R2,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B0,R2,8,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B0,R2,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B0,R2,8,Adjudication Precision,14.5,17,14.5000/17,0.8529411764705882,85.3%
+dev,B0,R2,8,Mean Candidate Tokens,5950,17,5950/17,350.0,350.0
+dev,B0,R2,8,Mean Prompt Tokens,19975,17,19975/17,1175.0,1175.0
+dev,B1,R0,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B1,R0,3,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B1,R0,3,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B1,R0,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B1,R0,3,Adjudication Precision,15.5,17,15.5000/17,0.9117647058823529,91.2%
+dev,B1,R0,3,Mean Candidate Tokens,7373,17,7373/17,433.70588235294116,433.7
+dev,B1,R0,3,Mean Prompt Tokens,14311,17,14311/17,841.8235294117648,841.8
+dev,B1,R0,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B1,R0,5,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R0,5,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B1,R0,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B1,R0,5,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B1,R0,5,Mean Candidate Tokens,12329,17,12329/17,725.2352941176471,725.2
+dev,B1,R0,5,Mean Prompt Tokens,20455,17,20455/17,1203.235294117647,1203.2
+dev,B1,R0,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B1,R0,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R0,8,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B1,R0,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B1,R0,8,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B1,R0,8,Mean Candidate Tokens,18490,17,18490/17,1087.6470588235295,1087.6
+dev,B1,R0,8,Mean Prompt Tokens,28631,17,28631/17,1684.1764705882354,1684.2
+dev,B1,R1,3,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R1,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B1,R1,3,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B1,R1,3,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B1,R1,3,Adjudication Precision,15.0,17,15.0000/17,0.8823529411764706,88.2%
+dev,B1,R1,3,Mean Candidate Tokens,7495,17,7495/17,440.88235294117646,440.9
+dev,B1,R1,3,Mean Prompt Tokens,14390,17,14390/17,846.4705882352941,846.5
+dev,B1,R1,5,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R1,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B1,R1,5,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B1,R1,5,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B1,R1,5,Adjudication Precision,14.0833,17,14.0833/17,0.8284313725490197,82.8%
+dev,B1,R1,5,Mean Candidate Tokens,12396,17,12396/17,729.1764705882352,729.2
+dev,B1,R1,5,Mean Prompt Tokens,20567,17,20567/17,1209.8235294117646,1209.8
+dev,B1,R1,8,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R1,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R1,8,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B1,R1,8,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B1,R1,8,Adjudication Precision,14.0833,17,14.0833/17,0.8284313725490197,82.8%
+dev,B1,R1,8,Mean Candidate Tokens,18590,17,18590/17,1093.5294117647059,1093.5
+dev,B1,R1,8,Mean Prompt Tokens,28787,17,28787/17,1693.3529411764705,1693.4
+dev,B1,R2,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B1,R2,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B1,R2,3,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B1,R2,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B1,R2,3,Adjudication Precision,15.3333,17,15.3333/17,0.9019607843137255,90.2%
+dev,B1,R2,3,Mean Candidate Tokens,7511,17,7511/17,441.8235294117647,441.8
+dev,B1,R2,3,Mean Prompt Tokens,14392,17,14392/17,846.5882352941177,846.6
+dev,B1,R2,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B1,R2,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B1,R2,5,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B1,R2,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B1,R2,5,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B1,R2,5,Mean Candidate Tokens,12403,17,12403/17,729.5882352941177,729.6
+dev,B1,R2,5,Mean Prompt Tokens,20570,17,20570/17,1210.0,1210.0
+dev,B1,R2,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B1,R2,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R2,8,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B1,R2,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B1,R2,8,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B1,R2,8,Mean Candidate Tokens,18600,17,18600/17,1094.1176470588234,1094.1
+dev,B1,R2,8,Mean Prompt Tokens,28792,17,28792/17,1693.6470588235295,1693.6
+dev,B1,R3,3,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R3,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B1,R3,3,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B1,R3,3,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B1,R3,3,Adjudication Precision,15.0,17,15.0000/17,0.8823529411764706,88.2%
+dev,B1,R3,3,Mean Candidate Tokens,7490,17,7490/17,440.5882352941176,440.6
+dev,B1,R3,3,Mean Prompt Tokens,14409,17,14409/17,847.5882352941177,847.6
+dev,B1,R3,5,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R3,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B1,R3,5,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B1,R3,5,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B1,R3,5,Adjudication Precision,14.0833,17,14.0833/17,0.8284313725490197,82.8%
+dev,B1,R3,5,Mean Candidate Tokens,12418,17,12418/17,730.4705882352941,730.5
+dev,B1,R3,5,Mean Prompt Tokens,20593,17,20593/17,1211.3529411764705,1211.4
+dev,B1,R3,8,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R3,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B1,R3,8,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B1,R3,8,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B1,R3,8,Adjudication Precision,14.0833,17,14.0833/17,0.8284313725490197,82.8%
+dev,B1,R3,8,Mean Candidate Tokens,18623,17,18623/17,1095.4705882352941,1095.5
+dev,B1,R3,8,Mean Prompt Tokens,28824,17,28824/17,1695.5294117647059,1695.5
+dev,B2,R0,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R0,3,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B2,R0,3,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B2,R0,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R0,3,Adjudication Precision,15.0,17,15.0000/17,0.8823529411764706,88.2%
+dev,B2,R0,3,Mean Candidate Tokens,10655,17,10655/17,626.7647058823529,626.8
+dev,B2,R0,3,Mean Prompt Tokens,16850,17,16850/17,991.1764705882352,991.2
+dev,B2,R0,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R0,5,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B2,R0,5,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B2,R0,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R0,5,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B2,R0,5,Mean Candidate Tokens,17797,17,17797/17,1046.8823529411766,1046.9
+dev,B2,R0,5,Mean Prompt Tokens,24084,17,24084/17,1416.7058823529412,1416.7
+dev,B2,R0,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R0,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B2,R0,8,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B2,R0,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R0,8,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B2,R0,8,Mean Candidate Tokens,26692,17,26692/17,1570.1176470588234,1570.1
+dev,B2,R0,8,Mean Prompt Tokens,33709,17,33709/17,1982.8823529411766,1982.9
+dev,B2,R1,3,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B2,R1,3,HN Presence Rate,10,17,10/17,0.5882352941176471,58.8%
+dev,B2,R1,3,Mean First Target Rank,17,16,17/16,1.0625,1.06
+dev,B2,R1,3,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B2,R1,3,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B2,R1,3,Mean Candidate Tokens,10656,17,10656/17,626.8235294117648,626.8
+dev,B2,R1,3,Mean Prompt Tokens,16825,17,16825/17,989.7058823529412,989.7
+dev,B2,R1,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R1,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B2,R1,5,Mean First Target Rank,22,17,22/17,1.2941176470588236,1.29
+dev,B2,R1,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R1,5,Adjudication Precision,15.8333,17,15.8333/17,0.9313725490196079,93.1%
+dev,B2,R1,5,Mean Candidate Tokens,17756,17,17756/17,1044.4705882352941,1044.5
+dev,B2,R1,5,Mean Prompt Tokens,24045,17,24045/17,1414.4117647058824,1414.4
+dev,B2,R1,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R1,8,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B2,R1,8,Mean First Target Rank,22,17,22/17,1.2941176470588236,1.29
+dev,B2,R1,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R1,8,Adjudication Precision,15.8333,17,15.8333/17,0.9313725490196079,93.1%
+dev,B2,R1,8,Mean Candidate Tokens,26629,17,26629/17,1566.4117647058824,1566.4
+dev,B2,R1,8,Mean Prompt Tokens,33655,17,33655/17,1979.7058823529412,1979.7
+dev,B2,R2,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R2,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B2,R2,3,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B2,R2,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R2,3,Adjudication Precision,16.3333,17,16.3333/17,0.9607843137254901,96.1%
+dev,B2,R2,3,Mean Candidate Tokens,10802,17,10802/17,635.4117647058823,635.4
+dev,B2,R2,3,Mean Prompt Tokens,16897,17,16897/17,993.9411764705883,993.9
+dev,B2,R2,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R2,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B2,R2,5,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B2,R2,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R2,5,Adjudication Precision,15.8333,17,15.8333/17,0.9313725490196079,93.1%
+dev,B2,R2,5,Mean Candidate Tokens,17829,17,17829/17,1048.764705882353,1048.8
+dev,B2,R2,5,Mean Prompt Tokens,24151,17,24151/17,1420.6470588235295,1420.6
+dev,B2,R2,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R2,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B2,R2,8,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B2,R2,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B2,R2,8,Adjudication Precision,15.8333,17,15.8333/17,0.9313725490196079,93.1%
+dev,B2,R2,8,Mean Candidate Tokens,26741,17,26741/17,1573.0,1573.0
+dev,B2,R2,8,Mean Prompt Tokens,33803,17,33803/17,1988.4117647058824,1988.4
+dev,B2,R3,3,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B2,R3,3,HN Presence Rate,10,17,10/17,0.5882352941176471,58.8%
+dev,B2,R3,3,Mean First Target Rank,17,16,17/16,1.0625,1.06
+dev,B2,R3,3,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B2,R3,3,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B2,R3,3,Mean Candidate Tokens,10681,17,10681/17,628.2941176470588,628.3
+dev,B2,R3,3,Mean Prompt Tokens,16809,17,16809/17,988.7647058823529,988.8
+dev,B2,R3,5,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B2,R3,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B2,R3,5,Mean First Target Rank,17,16,17/16,1.0625,1.06
+dev,B2,R3,5,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B2,R3,5,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B2,R3,5,Mean Candidate Tokens,17716,17,17716/17,1042.1176470588234,1042.1
+dev,B2,R3,5,Mean Prompt Tokens,24022,17,24022/17,1413.0588235294117,1413.1
+dev,B2,R3,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B2,R3,8,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B2,R3,8,Mean First Target Rank,24,17,24/17,1.411764705882353,1.41
+dev,B2,R3,8,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B2,R3,8,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B2,R3,8,Mean Candidate Tokens,26569,17,26569/17,1562.8823529411766,1562.9
+dev,B2,R3,8,Mean Prompt Tokens,33621,17,33621/17,1977.7058823529412,1977.7
+dev,B3,R0,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R0,3,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B3,R0,3,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B3,R0,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R0,3,Adjudication Precision,15.0,17,15.0000/17,0.8823529411764706,88.2%
+dev,B3,R0,3,Mean Candidate Tokens,15937,17,15937/17,937.4705882352941,937.5
+dev,B3,R0,3,Mean Prompt Tokens,21249,17,21249/17,1249.9411764705883,1249.9
+dev,B3,R0,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R0,5,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B3,R0,5,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B3,R0,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R0,5,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B3,R0,5,Mean Candidate Tokens,26793,17,26793/17,1576.0588235294117,1576.1
+dev,B3,R0,5,Mean Prompt Tokens,30367,17,30367/17,1786.2941176470588,1786.3
+dev,B3,R0,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R0,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B3,R0,8,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B3,R0,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R0,8,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B3,R0,8,Mean Candidate Tokens,40185,17,40185/17,2363.823529411765,2363.8
+dev,B3,R0,8,Mean Prompt Tokens,42505,17,42505/17,2500.294117647059,2500.3
+dev,B3,R1,3,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B3,R1,3,HN Presence Rate,10,17,10/17,0.5882352941176471,58.8%
+dev,B3,R1,3,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B3,R1,3,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B3,R1,3,Adjudication Precision,14.3333,17,14.3333/17,0.8431372549019608,84.3%
+dev,B3,R1,3,Mean Candidate Tokens,16041,17,16041/17,943.5882352941177,943.6
+dev,B3,R1,3,Mean Prompt Tokens,21315,17,21315/17,1253.8235294117646,1253.8
+dev,B3,R1,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R1,5,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B3,R1,5,Mean First Target Rank,23,17,23/17,1.3529411764705883,1.35
+dev,B3,R1,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R1,5,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B3,R1,5,Mean Candidate Tokens,27035,17,27035/17,1590.2941176470588,1590.3
+dev,B3,R1,5,Mean Prompt Tokens,30461,17,30461/17,1791.8235294117646,1791.8
+dev,B3,R1,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R1,8,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B3,R1,8,Mean First Target Rank,23,17,23/17,1.3529411764705883,1.35
+dev,B3,R1,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R1,8,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B3,R1,8,Mean Candidate Tokens,40549,17,40549/17,2385.235294117647,2385.2
+dev,B3,R1,8,Mean Prompt Tokens,42639,17,42639/17,2508.176470588235,2508.2
+dev,B3,R2,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R2,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B3,R2,3,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B3,R2,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R2,3,Adjudication Precision,15.3333,17,15.3333/17,0.9019607843137255,90.2%
+dev,B3,R2,3,Mean Candidate Tokens,16084,17,16084/17,946.1176470588235,946.1
+dev,B3,R2,3,Mean Prompt Tokens,21280,17,21280/17,1251.764705882353,1251.8
+dev,B3,R2,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R2,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B3,R2,5,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B3,R2,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R2,5,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B3,R2,5,Mean Candidate Tokens,26770,17,26770/17,1574.7058823529412,1574.7
+dev,B3,R2,5,Mean Prompt Tokens,30408,17,30408/17,1788.7058823529412,1788.7
+dev,B3,R2,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R2,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B3,R2,8,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B3,R2,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B3,R2,8,Adjudication Precision,14.8333,17,14.8333/17,0.8725490196078431,87.3%
+dev,B3,R2,8,Mean Candidate Tokens,40151,17,40151/17,2361.823529411765,2361.8
+dev,B3,R2,8,Mean Prompt Tokens,42564,17,42564/17,2503.764705882353,2503.8
+dev,B3,R3,3,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B3,R3,3,HN Presence Rate,10,17,10/17,0.5882352941176471,58.8%
+dev,B3,R3,3,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B3,R3,3,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B3,R3,3,Adjudication Precision,14.3333,17,14.3333/17,0.8431372549019608,84.3%
+dev,B3,R3,3,Mean Candidate Tokens,16107,17,16107/17,947.4705882352941,947.5
+dev,B3,R3,3,Mean Prompt Tokens,21278,17,21278/17,1251.6470588235295,1251.6
+dev,B3,R3,5,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B3,R3,5,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B3,R3,5,Mean First Target Rank,18,16,18/16,1.125,1.12
+dev,B3,R3,5,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B3,R3,5,Adjudication Precision,14.3333,17,14.3333/17,0.8431372549019608,84.3%
+dev,B3,R3,5,Mean Candidate Tokens,26928,17,26928/17,1584.0,1584.0
+dev,B3,R3,5,Mean Prompt Tokens,30408,17,30408/17,1788.7058823529412,1788.7
+dev,B3,R3,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B3,R3,8,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B3,R3,8,Mean First Target Rank,25,17,25/17,1.4705882352941178,1.47
+dev,B3,R3,8,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B3,R3,8,Adjudication Precision,14.3333,17,14.3333/17,0.8431372549019608,84.3%
+dev,B3,R3,8,Mean Candidate Tokens,40387,17,40387/17,2375.705882352941,2375.7
+dev,B3,R3,8,Mean Prompt Tokens,42564,17,42564/17,2503.764705882353,2503.8
+dev,B4,R0,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R0,3,HN Presence Rate,13,17,13/17,0.7647058823529411,76.5%
+dev,B4,R0,3,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B4,R0,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R0,3,Adjudication Precision,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B4,R0,3,Mean Candidate Tokens,19766,17,19766/17,1162.7058823529412,1162.7
+dev,B4,R0,3,Mean Prompt Tokens,24301,17,24301/17,1429.4705882352941,1429.5
+dev,B4,R0,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R0,5,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B4,R0,5,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B4,R0,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R0,5,Adjudication Precision,15.3333,17,15.3333/17,0.9019607843137255,90.2%
+dev,B4,R0,5,Mean Candidate Tokens,33203,17,33203/17,1953.1176470588234,1953.1
+dev,B4,R0,5,Mean Prompt Tokens,34726,17,34726/17,2042.7058823529412,2042.7
+dev,B4,R0,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R0,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B4,R0,8,Mean First Target Rank,17,17,17/17,1.0,1.00
+dev,B4,R0,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R0,8,Adjudication Precision,14.3333,17,14.3333/17,0.8431372549019608,84.3%
+dev,B4,R0,8,Mean Candidate Tokens,52985,17,52985/17,3116.764705882353,3116.8
+dev,B4,R0,8,Mean Prompt Tokens,50625,17,50625/17,2977.9411764705883,2977.9
+dev,B4,R1,3,Recall@K,15,17,15/17,0.8823529411764706,88.2%
+dev,B4,R1,3,HN Presence Rate,10,17,10/17,0.5882352941176471,58.8%
+dev,B4,R1,3,Mean First Target Rank,15,15,15/15,1.0,1.00
+dev,B4,R1,3,Final Accepted Target Recall,15.0,17,15.0000/17,0.8823529411764706,88.2%
+dev,B4,R1,3,Adjudication Precision,13.8333,17,13.8333/17,0.8137254901960784,81.4%
+dev,B4,R1,3,Mean Candidate Tokens,20041,17,20041/17,1178.8823529411766,1178.9
+dev,B4,R1,3,Mean Prompt Tokens,24494,17,24494/17,1440.8235294117646,1440.8
+dev,B4,R1,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R1,5,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B4,R1,5,Mean First Target Rank,24,17,24/17,1.411764705882353,1.41
+dev,B4,R1,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R1,5,Adjudication Precision,15.6667,17,15.6667/17,0.9215686274509803,92.2%
+dev,B4,R1,5,Mean Candidate Tokens,33674,17,33674/17,1980.8235294117646,1980.8
+dev,B4,R1,5,Mean Prompt Tokens,35000,17,35000/17,2058.823529411765,2058.8
+dev,B4,R1,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R1,8,HN Presence Rate,14,17,14/17,0.8235294117647058,82.4%
+dev,B4,R1,8,Mean First Target Rank,24,17,24/17,1.411764705882353,1.41
+dev,B4,R1,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R1,8,Adjudication Precision,14.2833,17,14.2833/17,0.8401960784313726,84.0%
+dev,B4,R1,8,Mean Candidate Tokens,53368,17,53368/17,3139.294117647059,3139.3
+dev,B4,R1,8,Mean Prompt Tokens,51118,17,51118/17,3006.9411764705883,3006.9
+dev,B4,R2,3,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R2,3,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B4,R2,3,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B4,R2,3,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R2,3,Adjudication Precision,15.3333,17,15.3333/17,0.9019607843137255,90.2%
+dev,B4,R2,3,Mean Candidate Tokens,20037,17,20037/17,1178.6470588235295,1178.6
+dev,B4,R2,3,Mean Prompt Tokens,24401,17,24401/17,1435.3529411764705,1435.4
+dev,B4,R2,5,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R2,5,HN Presence Rate,15,17,15/17,0.8823529411764706,88.2%
+dev,B4,R2,5,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B4,R2,5,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R2,5,Adjudication Precision,14.5,17,14.5000/17,0.8529411764705882,85.3%
+dev,B4,R2,5,Mean Candidate Tokens,33301,17,33301/17,1958.8823529411766,1958.9
+dev,B4,R2,5,Mean Prompt Tokens,34868,17,34868/17,2051.0588235294117,2051.1
+dev,B4,R2,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R2,8,HN Presence Rate,16,17,16/17,0.9411764705882353,94.1%
+dev,B4,R2,8,Mean First Target Rank,18,17,18/17,1.0588235294117647,1.06
+dev,B4,R2,8,Final Accepted Target Recall,17.0,17,17.0000/17,1.0,100.0%
+dev,B4,R2,8,Adjudication Precision,14.5,17,14.5000/17,0.8529411764705882,85.3%
+dev,B4,R2,8,Mean Candidate Tokens,49948,17,49948/17,2938.1176470588234,2938.1
+dev,B4,R2,8,Mean Prompt Tokens,48808,17,48808/17,2871.0588235294117,2871.1
+dev,B4,R3,3,Recall@K,15,17,15/17,0.8823529411764706,88.2%
+dev,B4,R3,3,HN Presence Rate,8,17,8/17,0.47058823529411764,47.1%
+dev,B4,R3,3,Mean First Target Rank,15,15,15/15,1.0,1.00
+dev,B4,R3,3,Final Accepted Target Recall,15.0,17,15.0000/17,0.8823529411764706,88.2%
+dev,B4,R3,3,Adjudication Precision,13.8333,17,13.8333/17,0.8137254901960784,81.4%
+dev,B4,R3,3,Mean Candidate Tokens,19962,17,19962/17,1174.235294117647,1174.2
+dev,B4,R3,3,Mean Prompt Tokens,24474,17,24474/17,1439.6470588235295,1439.6
+dev,B4,R3,5,Recall@K,16,17,16/17,0.9411764705882353,94.1%
+dev,B4,R3,5,HN Presence Rate,12,17,12/17,0.7058823529411765,70.6%
+dev,B4,R3,5,Mean First Target Rank,20,16,20/16,1.25,1.25
+dev,B4,R3,5,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B4,R3,5,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B4,R3,5,Mean Candidate Tokens,33575,17,33575/17,1975.0,1975.0
+dev,B4,R3,5,Mean Prompt Tokens,34973,17,34973/17,2057.235294117647,2057.2
+dev,B4,R3,8,Recall@K,17,17,17/17,1.0,100.0%
+dev,B4,R3,8,HN Presence Rate,14,17,14/17,0.8235294117647058,82.4%
+dev,B4,R3,8,Mean First Target Rank,27,17,27/17,1.588235294117647,1.59
+dev,B4,R3,8,Final Accepted Target Recall,16.0,17,16.0000/17,0.9411764705882353,94.1%
+dev,B4,R3,8,Adjudication Precision,14.6667,17,14.6667/17,0.8627450980392156,86.3%
+dev,B4,R3,8,Mean Candidate Tokens,50358,17,50358/17,2962.235294117647,2962.2
+dev,B4,R3,8,Mean Prompt Tokens,48954,17,48954/17,2879.6470588235293,2879.6

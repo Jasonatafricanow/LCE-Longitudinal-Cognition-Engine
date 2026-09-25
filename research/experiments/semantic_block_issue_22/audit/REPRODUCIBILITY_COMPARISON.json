@@ -1,0 +1,10 @@
+{
+  "status": "COMPLETED",
+  "evaluations_compared": 54,
+  "perfect_metric_matches": 54,
+  "mismatches": [],
+  "decision_level_matches": 648,
+  "decision_level_total": 648,
+  "match_rate": 1.0,
+  "decision_match_rate": 1.0
+}

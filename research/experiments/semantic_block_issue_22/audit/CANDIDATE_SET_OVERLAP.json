@@ -1,0 +1,1963 @@
+{
+  "held_out": {
+    "total_queries": 12,
+    "mean_jaccard_B0_vs_B1": 0.876984126984127,
+    "mean_jaccard_B1_vs_B4": 0.7261904761904762,
+    "queries_with_b1_b4_identical_candidates": "5/12 (41.7%)",
+    "queries_with_all_arms_identical_to_b0": "5/12 (41.7%)",
+    "per_query_analysis": [
+      {
+        "query_id": "RQ-H01",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-002",
+            "V3-006",
+            "V3-015",
+            "V3-018",
+            "V3-013"
+          ],
+          "B1": [
+            "V3-006",
+            "V3-002",
+            "V3-018",
+            "V3-015",
+            "V3-013"
+          ],
+          "B2": [
+            "V3-006",
+            "V3-002",
+            "V3-018",
+            "V3-015",
+            "V3-013"
+          ],
+          "B3": [
+            "V3-006",
+            "V3-002",
+            "V3-018",
+            "V3-015",
+            "V3-013"
+          ],
+          "B4": [
+            "V3-006",
+            "V3-002",
+            "V3-018",
+            "V3-015",
+            "V3-013"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 1.0,
+          "B0_vs_B4": 1.0,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": true,
+          "B1_vs_B3": true,
+          "B1_vs_B4": true,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": true,
+        "all_arms_identical_to_b0": true
+      },
+      {
+        "query_id": "RQ-H02",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-015",
+            "V3-018",
+            "V3-013",
+            "V3-002",
+            "V3-006"
+          ],
+          "B1": [
+            "V3-015",
+            "V3-002",
+            "V3-018",
+            "V3-006",
+            "V3-013"
+          ],
+          "B2": [
+            "V3-015",
+            "V3-018",
+            "V3-002",
+            "V3-013",
+            "V3-006"
+          ],
+          "B3": [
+            "V3-015",
+            "V3-018",
+            "V3-002",
+            "V3-013",
+            "V3-006"
+          ],
+          "B4": [
+            "V3-015",
+            "V3-018",
+            "V3-002",
+            "V3-013",
+            "V3-006"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 1.0,
+          "B0_vs_B4": 1.0,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": true
+      },
+      {
+        "query_id": "RQ-H03",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-013",
+            "V3-015",
+            "V3-018",
+            "V3-002",
+            "V3-006"
+          ],
+          "B1": [
+            "V3-013",
+            "V3-018",
+            "V3-006",
+            "V3-015",
+            "V3-002"
+          ],
+          "B2": [
+            "V3-013",
+            "V3-018",
+            "V3-015",
+            "V3-007",
+            "V3-012"
+          ],
+          "B3": [
+            "V3-013",
+            "V3-018",
+            "V3-015",
+            "V3-007",
+            "V3-012"
+          ],
+          "B4": [
+            "V3-013",
+            "V3-018",
+            "V3-015",
+            "V3-007",
+            "V3-012"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.42857142857142855,
+          "B1_vs_B3": 0.42857142857142855,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H04",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "V3-025"
+          ],
+          "B1": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "V3-025"
+          ],
+          "B2": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "TF-04-A"
+          ],
+          "B3": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "TF-04-A"
+          ],
+          "B4": [
+            "V3-021",
+            "V3-024",
+            "V3-012",
+            "V3-007",
+            "V3-039"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H05",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "V3-025"
+          ],
+          "B1": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "V3-025"
+          ],
+          "B2": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "TF-03-A"
+          ],
+          "B3": [
+            "V3-021",
+            "V3-024",
+            "V3-007",
+            "V3-012",
+            "TF-03-A"
+          ],
+          "B4": [
+            "V3-021",
+            "V3-024",
+            "V3-012",
+            "TF-03-A",
+            "TF-03-B"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H06",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-025",
+            "V3-028",
+            "V3-021",
+            "V3-024",
+            "V3-007"
+          ],
+          "B1": [
+            "V3-025",
+            "V3-028",
+            "V3-021",
+            "V3-024",
+            "V3-007"
+          ],
+          "B2": [
+            "V3-025",
+            "V3-028",
+            "V3-021",
+            "V3-024",
+            "V3-007"
+          ],
+          "B3": [
+            "V3-025",
+            "V3-028",
+            "V3-021",
+            "V3-024",
+            "V3-007"
+          ],
+          "B4": [
+            "V3-025",
+            "V3-028",
+            "V3-021",
+            "V3-024",
+            "V3-007"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 1.0,
+          "B0_vs_B4": 1.0,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": true,
+          "B0_vs_B3": true,
+          "B0_vs_B4": true,
+          "B1_vs_B2": true,
+          "B1_vs_B3": true,
+          "B1_vs_B4": true,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": true,
+        "all_arms_identical_to_b0": true
+      },
+      {
+        "query_id": "RQ-H07",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-039",
+            "V3-042",
+            "V3-007",
+            "V3-012",
+            "V3-025"
+          ],
+          "B1": [
+            "V3-039",
+            "V3-042",
+            "V3-007",
+            "V3-012",
+            "V3-025"
+          ],
+          "B2": [
+            "V3-039",
+            "V3-042",
+            "V3-007",
+            "V3-012",
+            "V3-021"
+          ],
+          "B3": [
+            "V3-039",
+            "V3-042",
+            "V3-007",
+            "V3-012",
+            "V3-021"
+          ],
+          "B4": [
+            "V3-039",
+            "V3-042",
+            "V3-012",
+            "V3-021",
+            "V3-024"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H08",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-015",
+            "V3-018"
+          ],
+          "B1": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-006",
+            "V3-002"
+          ],
+          "B2": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-006",
+            "V3-013"
+          ],
+          "B3": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-006",
+            "V3-013"
+          ],
+          "B4": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-006",
+            "V3-013"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H09",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-048",
+            "V3-047",
+            "V3-043",
+            "V3-013",
+            "V3-015"
+          ],
+          "B1": [
+            "V3-048",
+            "V3-047",
+            "V3-043",
+            "V3-013",
+            "V3-007"
+          ],
+          "B2": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-025",
+            "V3-028"
+          ],
+          "B3": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-025",
+            "V3-028"
+          ],
+          "B4": [
+            "V3-047",
+            "V3-043",
+            "V3-048",
+            "V3-025",
+            "V3-028"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.42857142857142855,
+          "B1_vs_B3": 0.42857142857142855,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H10",
+        "candidates_by_arm": {
+          "B0": [
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C",
+            "V3-021",
+            "V3-024"
+          ],
+          "B1": [
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C",
+            "V3-021",
+            "V3-024"
+          ],
+          "B2": [
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C",
+            "V3-021",
+            "V3-024"
+          ],
+          "B3": [
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C",
+            "V3-021",
+            "V3-024"
+          ],
+          "B4": [
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C",
+            "V3-021",
+            "V3-024"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 1.0,
+          "B0_vs_B4": 1.0,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": true,
+          "B0_vs_B3": true,
+          "B0_vs_B4": true,
+          "B1_vs_B2": true,
+          "B1_vs_B3": true,
+          "B1_vs_B4": true,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": true,
+        "all_arms_identical_to_b0": true
+      },
+      {
+        "query_id": "RQ-H11",
+        "candidates_by_arm": {
+          "B0": [
+            "TF-04-A",
+            "TF-04-B",
+            "TF-04-C",
+            "V3-007",
+            "V3-012"
+          ],
+          "B1": [
+            "TF-04-A",
+            "TF-04-B",
+            "TF-04-C",
+            "V3-006",
+            "V3-002"
+          ],
+          "B2": [
+            "TF-04-A",
+            "TF-04-B",
+            "TF-04-C",
+            "V3-006",
+            "V3-007"
+          ],
+          "B3": [
+            "TF-04-A",
+            "TF-04-B",
+            "TF-04-C",
+            "V3-006",
+            "V3-007"
+          ],
+          "B4": [
+            "TF-04-A",
+            "TF-04-B",
+            "TF-04-C",
+            "V3-006",
+            "V3-007"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-H12",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-021",
+            "V3-024",
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C"
+          ],
+          "B1": [
+            "V3-021",
+            "V3-024",
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C"
+          ],
+          "B2": [
+            "V3-021",
+            "V3-024",
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C"
+          ],
+          "B3": [
+            "V3-021",
+            "V3-024",
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C"
+          ],
+          "B4": [
+            "V3-021",
+            "V3-024",
+            "TF-03-A",
+            "TF-03-B",
+            "TF-03-C"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 1.0,
+          "B0_vs_B4": 1.0,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": true,
+          "B0_vs_B3": true,
+          "B0_vs_B4": true,
+          "B1_vs_B2": true,
+          "B1_vs_B3": true,
+          "B1_vs_B4": true,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": true,
+        "all_arms_identical_to_b0": true
+      }
+    ]
+  },
+  "dev": {
+    "total_queries": 17,
+    "mean_jaccard_B0_vs_B1": 0.6134453781512605,
+    "mean_jaccard_B1_vs_B4": 0.6120448179271709,
+    "queries_with_b1_b4_identical_candidates": "4/17 (23.5%)",
+    "queries_with_all_arms_identical_to_b0": "1/17 (5.9%)",
+    "per_query_analysis": [
+      {
+        "query_id": "RQ-D01",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-003",
+            "V3-014",
+            "V3-017",
+            "V3-016",
+            "V3-005"
+          ],
+          "B1": [
+            "V3-003",
+            "V3-004",
+            "V3-005",
+            "V3-038",
+            "V3-014"
+          ],
+          "B2": [
+            "V3-003",
+            "V3-004",
+            "V3-005",
+            "V3-038",
+            "V3-014"
+          ],
+          "B3": [
+            "V3-003",
+            "V3-004",
+            "V3-005",
+            "V3-038",
+            "V3-014"
+          ],
+          "B4": [
+            "V3-003",
+            "V3-004",
+            "V3-005",
+            "V3-038",
+            "V3-014"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": true,
+          "B1_vs_B3": true,
+          "B1_vs_B4": true,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": true,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D02",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-004",
+            "V3-014",
+            "V3-003",
+            "V3-005",
+            "V3-017"
+          ],
+          "B1": [
+            "V3-004",
+            "V3-038",
+            "V3-003",
+            "V3-014",
+            "V3-005"
+          ],
+          "B2": [
+            "V3-004",
+            "V3-038",
+            "V3-014",
+            "V3-003",
+            "V3-001"
+          ],
+          "B3": [
+            "V3-004",
+            "V3-038",
+            "V3-014",
+            "V3-003",
+            "V3-001"
+          ],
+          "B4": [
+            "V3-004",
+            "V3-038",
+            "V3-014",
+            "V3-003",
+            "V3-001"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D03",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-005",
+            "V3-016",
+            "V3-004",
+            "V3-014",
+            "V3-017"
+          ],
+          "B1": [
+            "V3-005",
+            "V3-004",
+            "V3-038",
+            "V3-003",
+            "V3-016"
+          ],
+          "B2": [
+            "V3-005",
+            "V3-016",
+            "V3-017",
+            "V3-004",
+            "SE-06"
+          ],
+          "B3": [
+            "V3-005",
+            "V3-016",
+            "V3-017",
+            "V3-004",
+            "SE-06"
+          ],
+          "B4": [
+            "V3-005",
+            "V3-016",
+            "V3-017",
+            "V3-004",
+            "V3-037"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 0.42857142857142855,
+          "B1_vs_B3": 0.42857142857142855,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D04",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-008",
+            "V3-010",
+            "V3-009",
+            "V3-020",
+            "V3-019"
+          ],
+          "B1": [
+            "V3-020",
+            "V3-019",
+            "V3-010",
+            "V3-011",
+            "SE-07"
+          ],
+          "B2": [
+            "V3-009",
+            "V3-020",
+            "V3-019",
+            "SE-09",
+            "V3-008"
+          ],
+          "B3": [
+            "V3-009",
+            "V3-020",
+            "V3-019",
+            "SE-09",
+            "V3-008"
+          ],
+          "B4": [
+            "V3-009",
+            "V3-020",
+            "V3-019",
+            "SE-09",
+            "V3-008"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 0.25,
+          "B1_vs_B3": 0.25,
+          "B1_vs_B4": 0.25,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D05",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-010",
+            "V3-019",
+            "V3-008",
+            "V3-029",
+            "V3-009"
+          ],
+          "B1": [
+            "V3-010",
+            "V3-029",
+            "V3-009",
+            "V3-008",
+            "V3-019"
+          ],
+          "B2": [
+            "V3-010",
+            "V3-029",
+            "V3-009",
+            "V3-008",
+            "SE-07"
+          ],
+          "B3": [
+            "V3-010",
+            "V3-029",
+            "V3-009",
+            "V3-008",
+            "SE-07"
+          ],
+          "B4": [
+            "V3-010",
+            "V3-029",
+            "V3-009",
+            "V3-008",
+            "SE-07"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D06",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-019",
+            "V3-020",
+            "V3-010",
+            "V3-008",
+            "V3-023"
+          ],
+          "B1": [
+            "V3-019",
+            "V3-020",
+            "V3-010",
+            "V3-011",
+            "V3-029"
+          ],
+          "B2": [
+            "V3-019",
+            "V3-020",
+            "V3-022",
+            "TF-01-A",
+            "TF-01-B"
+          ],
+          "B3": [
+            "V3-019",
+            "V3-020",
+            "V3-022",
+            "TF-01-A",
+            "TF-01-B"
+          ],
+          "B4": [
+            "V3-019",
+            "V3-020",
+            "TF-01-A",
+            "TF-01-B",
+            "TF-01-C"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.25,
+          "B0_vs_B3": 0.25,
+          "B0_vs_B4": 0.25,
+          "B1_vs_B2": 0.25,
+          "B1_vs_B3": 0.25,
+          "B1_vs_B4": 0.25,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D07",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-020",
+            "V3-008",
+            "V3-019",
+            "V3-010",
+            "V3-023"
+          ],
+          "B1": [
+            "V3-023",
+            "V3-020",
+            "SE-10",
+            "V3-019",
+            "V3-008"
+          ],
+          "B2": [
+            "V3-023",
+            "V3-020",
+            "SE-10",
+            "V3-019",
+            "V3-032"
+          ],
+          "B3": [
+            "SE-10",
+            "V3-023",
+            "V3-020",
+            "V3-032",
+            "V3-019"
+          ],
+          "B4": [
+            "SE-10",
+            "V3-032",
+            "V3-023",
+            "V3-020",
+            "TF-01-A"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.25,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": false,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D08",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-023",
+            "V3-020",
+            "V3-011",
+            "TF-01-A",
+            "TF-01-B"
+          ],
+          "B1": [
+            "V3-023",
+            "SE-10",
+            "V3-020",
+            "V3-011",
+            "TF-01-A"
+          ],
+          "B2": [
+            "V3-023",
+            "SE-10",
+            "V3-020",
+            "TF-01-A",
+            "TF-01-B"
+          ],
+          "B3": [
+            "V3-023",
+            "SE-10",
+            "V3-020",
+            "TF-01-A",
+            "TF-01-B"
+          ],
+          "B4": [
+            "V3-023",
+            "SE-10",
+            "TF-01-A",
+            "TF-01-B",
+            "TF-01-C"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D09",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-031",
+            "V3-036",
+            "SE-09",
+            "V3-032",
+            "V3-033"
+          ],
+          "B1": [
+            "V3-031",
+            "V3-036",
+            "SE-10",
+            "SE-09",
+            "V3-032"
+          ],
+          "B2": [
+            "V3-031",
+            "V3-036",
+            "SE-09",
+            "SE-10",
+            "V3-032"
+          ],
+          "B3": [
+            "V3-031",
+            "V3-036",
+            "SE-09",
+            "V3-035",
+            "SE-10"
+          ],
+          "B4": [
+            "V3-031",
+            "V3-036",
+            "SE-09",
+            "V3-035",
+            "SE-10"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 0.6666666666666666,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": false,
+          "B2_vs_B4": false,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D10",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-034",
+            "V3-011",
+            "V3-041",
+            "V3-020",
+            "V3-032"
+          ],
+          "B1": [
+            "V3-034",
+            "SE-10",
+            "V3-023",
+            "V3-011",
+            "V3-041"
+          ],
+          "B2": [
+            "V3-034",
+            "SE-10",
+            "V3-023",
+            "V3-020",
+            "V3-032"
+          ],
+          "B3": [
+            "V3-034",
+            "V3-023",
+            "SE-10",
+            "V3-035",
+            "V3-020"
+          ],
+          "B4": [
+            "V3-034",
+            "SE-10",
+            "V3-032",
+            "V3-023",
+            "V3-035"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.25,
+          "B0_vs_B4": 0.25,
+          "B1_vs_B2": 0.42857142857142855,
+          "B1_vs_B3": 0.42857142857142855,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 0.6666666666666666,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": false,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D11",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-038",
+            "V3-001",
+            "V3-014",
+            "V3-005",
+            "V3-017"
+          ],
+          "B1": [
+            "V3-038",
+            "V3-005",
+            "V3-003",
+            "V3-023",
+            "V3-001"
+          ],
+          "B2": [
+            "V3-038",
+            "V3-005",
+            "V3-023",
+            "V3-001",
+            "V3-014"
+          ],
+          "B3": [
+            "V3-038",
+            "V3-005",
+            "V3-023",
+            "V3-001",
+            "V3-014"
+          ],
+          "B4": [
+            "V3-038",
+            "V3-005",
+            "V3-045",
+            "V3-023",
+            "V3-001"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 0.6666666666666666,
+          "B3_vs_B4": 0.6666666666666666
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-D12",
+        "candidates_by_arm": {
+          "B0": [
+            "V3-044",
+            "V3-045",
+            "V3-022",
+            "V3-046",
+            "V3-014"
+          ],
+          "B1": [
+            "V3-044",
+            "V3-045",
+            "V3-022",
+            "V3-046",
+            "V3-014"
+          ],
+          "B2": [
+            "V3-044",
+            "V3-045",
+            "V3-022",
+            "V3-046",
+            "V3-014"
+          ],
+          "B3": [
+            "V3-044",
+            "V3-045",
+            "V3-022",
+            "V3-046",
+            "V3-014"
+          ],
+          "B4": [
+            "V3-044",
+            "V3-045",
+            "V3-022",
+            "V3-046",
+            "V3-014"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 1.0,
+          "B0_vs_B4": 1.0,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": true,
+          "B0_vs_B2": true,
+          "B0_vs_B3": true,
+          "B0_vs_B4": true,
+          "B1_vs_B2": true,
+          "B1_vs_B3": true,
+          "B1_vs_B4": true,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": true,
+        "all_arms_identical_to_b0": true
+      },
+      {
+        "query_id": "RQ-S01",
+        "candidates_by_arm": {
+          "B0": [
+            "SE-01",
+            "SE-02",
+            "V3-038",
+            "SE-04",
+            "V3-035"
+          ],
+          "B1": [
+            "SE-01",
+            "SE-02",
+            "SE-10",
+            "V3-023",
+            "SE-04"
+          ],
+          "B2": [
+            "SE-01",
+            "SE-02",
+            "SE-10",
+            "V3-023",
+            "SE-04"
+          ],
+          "B3": [
+            "SE-01",
+            "SE-02",
+            "V3-023",
+            "SE-10",
+            "SE-04"
+          ],
+          "B4": [
+            "SE-01",
+            "V3-023",
+            "SE-02",
+            "SE-10",
+            "SE-04"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": true,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": false,
+          "B2_vs_B4": false,
+          "B3_vs_B4": false
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-S02",
+        "candidates_by_arm": {
+          "B0": [
+            "SE-04",
+            "SE-03",
+            "SE-01",
+            "SE-02",
+            "V3-020"
+          ],
+          "B1": [
+            "SE-04",
+            "SE-03",
+            "V3-020",
+            "V3-022",
+            "V3-035"
+          ],
+          "B2": [
+            "SE-04",
+            "SE-03",
+            "V3-020",
+            "V3-022",
+            "SE-05"
+          ],
+          "B3": [
+            "SE-04",
+            "SE-03",
+            "V3-020",
+            "V3-022",
+            "SE-05"
+          ],
+          "B4": [
+            "SE-04",
+            "SE-03",
+            "V3-020",
+            "V3-022",
+            "SE-05"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.42857142857142855,
+          "B0_vs_B2": 0.42857142857142855,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 0.6666666666666666,
+          "B1_vs_B3": 0.6666666666666666,
+          "B1_vs_B4": 0.6666666666666666,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-S03",
+        "candidates_by_arm": {
+          "B0": [
+            "SE-05",
+            "SE-06",
+            "V3-034",
+            "V3-004",
+            "V3-041"
+          ],
+          "B1": [
+            "SE-05",
+            "SE-06",
+            "V3-004",
+            "V3-038",
+            "V3-034"
+          ],
+          "B2": [
+            "SE-05",
+            "V3-004",
+            "V3-038",
+            "SE-06",
+            "V3-034"
+          ],
+          "B3": [
+            "SE-05",
+            "V3-004",
+            "V3-038",
+            "SE-06",
+            "V3-034"
+          ],
+          "B4": [
+            "SE-05",
+            "V3-004",
+            "V3-038",
+            "SE-06",
+            "V3-034"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 1.0,
+          "B1_vs_B4": 1.0,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": true,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-S04",
+        "candidates_by_arm": {
+          "B0": [
+            "SE-07",
+            "V3-029",
+            "SE-08",
+            "V3-030",
+            "V3-010"
+          ],
+          "B1": [
+            "SE-07",
+            "V3-029",
+            "V3-010",
+            "SE-08",
+            "V3-045"
+          ],
+          "B2": [
+            "SE-07",
+            "V3-030",
+            "V3-029",
+            "V3-010",
+            "V3-027"
+          ],
+          "B3": [
+            "SE-07",
+            "V3-030",
+            "V3-029",
+            "V3-010",
+            "V3-027"
+          ],
+          "B4": [
+            "SE-07",
+            "V3-030",
+            "V3-029",
+            "V3-010",
+            "V3-027"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 0.6666666666666666,
+          "B0_vs_B2": 0.6666666666666666,
+          "B0_vs_B3": 0.6666666666666666,
+          "B0_vs_B4": 0.6666666666666666,
+          "B1_vs_B2": 0.42857142857142855,
+          "B1_vs_B3": 0.42857142857142855,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 1.0,
+          "B2_vs_B4": 1.0,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": true,
+          "B2_vs_B4": true,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      },
+      {
+        "query_id": "RQ-S05",
+        "candidates_by_arm": {
+          "B0": [
+            "SE-09",
+            "V3-032",
+            "V3-031",
+            "V3-036",
+            "SE-10"
+          ],
+          "B1": [
+            "SE-10",
+            "SE-09",
+            "V3-032",
+            "V3-031",
+            "V3-036"
+          ],
+          "B2": [
+            "SE-09",
+            "V3-031",
+            "V3-036",
+            "SE-10",
+            "V3-032"
+          ],
+          "B3": [
+            "SE-09",
+            "V3-031",
+            "V3-036",
+            "V3-033",
+            "V3-035"
+          ],
+          "B4": [
+            "SE-09",
+            "V3-031",
+            "V3-036",
+            "V3-033",
+            "V3-035"
+          ]
+        },
+        "pairwise_jaccard": {
+          "B0_vs_B1": 1.0,
+          "B0_vs_B2": 1.0,
+          "B0_vs_B3": 0.42857142857142855,
+          "B0_vs_B4": 0.42857142857142855,
+          "B1_vs_B2": 1.0,
+          "B1_vs_B3": 0.42857142857142855,
+          "B1_vs_B4": 0.42857142857142855,
+          "B2_vs_B3": 0.42857142857142855,
+          "B2_vs_B4": 0.42857142857142855,
+          "B3_vs_B4": 1.0
+        },
+        "pairwise_rank_match": {
+          "B0_vs_B1": false,
+          "B0_vs_B2": false,
+          "B0_vs_B3": false,
+          "B0_vs_B4": false,
+          "B1_vs_B2": false,
+          "B1_vs_B3": false,
+          "B1_vs_B4": false,
+          "B2_vs_B3": false,
+          "B2_vs_B4": false,
+          "B3_vs_B4": true
+        },
+        "b1_b2_b3_b4_candidate_set_identical": false,
+        "b1_b2_b3_b4_rank_order_identical": false,
+        "all_arms_identical_to_b0": false
+      }
+    ]
+  }
+}
