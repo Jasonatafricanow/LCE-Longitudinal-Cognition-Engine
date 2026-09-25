@@ -1,0 +1,25 @@
+{
+  "experiment_name": "semantic_block_issue_22_projection_expansion",
+  "authority": [
+    "docs/architecture/SEMANTIC_BLOCK_DESIGN_FREEZE_2026-09-25.md",
+    "docs/research/SEMANTIC_BLOCK_V03_FIDELITY_GRANULARITY_EXPERIMENT.md",
+    "https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine/issues/22"
+  ],
+  "llm_model": "gemini-3.1-flash-lite",
+  "embedding_model": "gemini-embedding-001",
+  "temperature": 0.0,
+  "seed": 42,
+  "arms": ["B0", "B1", "B2", "B3", "B4"],
+  "retrieval_methods": ["R0", "R1", "R2", "R3"],
+  "budgets": [3, 5, 8],
+  "datasets": {
+    "core_cases": "../semantic_block_v0_3/cases_v0_3.jsonl",
+    "gold_adjudicated": "../semantic_block_v0_3/gold_v0_3_adjudicated.jsonl",
+    "temporal_forks": "../semantic_block_v0_3/temporal_forks_v0_3_adjudicated.jsonl",
+    "split_manifest": "../semantic_block_v0_3/split_manifest_v0_3.json",
+    "v03_queries": "../semantic_block_v0_3/retrieval_queries_v0_3.jsonl",
+    "stress_cases": "data/stress_cases.jsonl",
+    "stress_gold": "data/stress_gold_adjudicated.jsonl",
+    "stress_queries": "data/stress_retrieval_queries.jsonl"
+  }
+}

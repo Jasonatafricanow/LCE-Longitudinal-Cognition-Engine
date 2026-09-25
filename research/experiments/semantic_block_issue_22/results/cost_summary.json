@@ -1,0 +1,7 @@
+{
+  "total_prompt_tokens": 798401,
+  "total_completion_tokens": 205989,
+  "total_tokens": 1004390,
+  "total_latency_seconds": 3388.34870300052,
+  "total_adjudication_calls": 522
+}
