@@ -33,10 +33,13 @@ class DraftRevision:
     interpretation_trace: Mapping[str, object] = field(default_factory=dict)
     selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
     processing_input_id: str | None = None
+    support_kind: str = "semantic_block"
 
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
             raise ValueError("draft status must be OPEN, MERGED, or DROPPED")
+        if self.support_kind not in {"semantic_block", "external_memory"}:
+            raise ValueError("support_kind must be semantic_block or external_memory")
         if not self.candidate_content.strip():
             raise ValueError("candidate_content must be non-empty")
         if len({item.block_id for item in self.selected_support}) != len(self.selected_support):
@@ -75,7 +78,8 @@ class DraftRevisionStore:
                 unresolved TEXT,
                 interpretation_trace_json TEXT NOT NULL DEFAULT '{}',
                 selected_support_json TEXT NOT NULL DEFAULT '[]',
-                processing_input_id TEXT
+                processing_input_id TEXT,
+                support_kind TEXT NOT NULL DEFAULT 'semantic_block'
             );
             CREATE TABLE IF NOT EXISTS support_cycles (
                 worktree_id TEXT NOT NULL,
@@ -98,6 +102,11 @@ class DraftRevisionStore:
             self.conn.execute("ALTER TABLE worktrees ADD COLUMN selected_support_json TEXT NOT NULL DEFAULT '[]'")
         if "processing_input_id" not in columns:
             self.conn.execute("ALTER TABLE worktrees ADD COLUMN processing_input_id TEXT")
+        if "support_kind" not in columns:
+            self.conn.execute(
+                "ALTER TABLE worktrees ADD COLUMN support_kind TEXT NOT NULL "
+                "DEFAULT 'semantic_block'"
+            )
         self.conn.commit()
 
     @staticmethod
@@ -117,6 +126,7 @@ class DraftRevisionStore:
         interpretation_trace: Mapping[str, object] | None = None,
         selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
         processing_input_id: str | None = None,
+        support_kind: str = "semantic_block",
     ) -> DraftRevision:
         now = _now()
         selected = tuple(selected_support)
@@ -137,24 +147,27 @@ class DraftRevisionStore:
             interpretation_trace=interpretation_trace or {},
             selected_support=selected,
             processing_input_id=processing_input_id,
+            support_kind=support_kind,
         )
         if not item.supporting_block_ids:
-            raise ValueError("a draft requires at least one supporting Semantic Block")
+            raise ValueError("a draft requires at least one supporting item")
         self.conn.execute(
             """
             INSERT INTO worktrees (
                 worktree_id, region_id, base_baseline_id, base_revision, candidate_content,
                 supporting_block_ids_json, supporting_structure_ids_json, created_at, updated_at,
                 status, needs_rebuild, merged_baseline_id, applicability, unresolved,
-                interpretation_trace_json, selected_support_json, processing_input_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                interpretation_trace_json, selected_support_json, processing_input_id,
+                support_kind
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (item.worktree_id, item.region_id, item.base_baseline_id, item.base_revision, item.candidate_content,
              json.dumps(item.supporting_block_ids), json.dumps(item.supporting_structure_ids), item.created_at.isoformat(),
              item.updated_at.isoformat(), item.status, 0, None, item.applicability, item.unresolved,
              json.dumps(dict(item.interpretation_trace), ensure_ascii=False, sort_keys=True),
              json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in item.selected_support],
-                        ensure_ascii=False, sort_keys=True), item.processing_input_id),
+                        ensure_ascii=False, sort_keys=True), item.processing_input_id,
+             item.support_kind),
         )
         self.conn.commit()
         return item
@@ -178,6 +191,7 @@ class DraftRevisionStore:
                 for value in json.loads(str(row[15]))
             ) if len(row) > 15 and row[15] is not None else (),
             processing_input_id=str(row[16]) if len(row) > 16 and row[16] is not None else None,
+            support_kind=str(row[17]) if len(row) > 17 and row[17] is not None else "semantic_block",
         )
 
     def get(self, worktree_id: str) -> DraftRevision:
