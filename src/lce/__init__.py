@@ -1,5 +1,6 @@
 """LCE — Minimal Longitudinal Logical Understanding Core."""
 
+from lce.cognition.external import PrecomputedDraftInput, PrecomputedDraftIntake
 from lce.contracts.baseline import (
     Baseline,
     BaselineHistory,
@@ -37,6 +38,8 @@ __all__ = [
     "LceRuntime",
     "MemoryItemView",
     "MemorySubstratePort",
+    "PrecomputedDraftInput",
+    "PrecomputedDraftIntake",
     "ProcessResult",
     "SemanticConsolidatorPort",
     "SqliteBaselineStore",
