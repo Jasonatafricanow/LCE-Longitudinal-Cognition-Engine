@@ -1,0 +1,16 @@
+{
+  "compiler_model": "gemini-3.1-flash-lite",
+  "embedding_model": "gemini-embedding-001",
+  "seed": 42,
+  "temperature": 0.0,
+  "arms": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+  ],
+  "retrieval_metric": "cosine_similarity",
+  "frozen_timestamp": "2026-09-25T06:20:00Z",
+  "git_commit": "master_frozen"
+}

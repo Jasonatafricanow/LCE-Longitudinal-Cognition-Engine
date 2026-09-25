@@ -1,0 +1,68 @@
+{
+  "corpus_id": "semantic-block-v0.3-adjudicated-2026-09-25",
+  "status": "ADJUDICATED_FROZEN",
+  "authority": {
+    "semantic_block_definition": "docs/architecture/SEMANTIC_BLOCK_DESIGN_FREEZE_2026-09-25.md",
+    "experiment_protocol": "docs/research/SEMANTIC_BLOCK_V03_FIDELITY_GRANULARITY_EXPERIMENT.md",
+    "adjudication_guide": "research/experiments/semantic_block_v0_3/ADJUDICATION_GUIDE.md"
+  },
+  "counts": {
+    "core_cases": 48,
+    "adjudicated_gold_records": 48,
+    "temporal_fork_groups": 4,
+    "temporal_branch_records": 12,
+    "adjudication_records": 48,
+    "log_entries": 52,
+    "dev_core": 32,
+    "held_out_core": 16,
+    "dev_temporal_branches": 6,
+    "held_out_temporal_branches": 6
+  },
+  "adjudication_summary": {
+    "core_decisions": {
+      "ACCEPT": 48,
+      "REVISE": 0,
+      "AMBIGUOUS": 0,
+      "INVALID_CASE": 0,
+      "DEFINITION_CHALLENGE": 0
+    },
+    "temporal_fork_decisions": {
+      "REVISE": 4,
+      "ACCEPT": 0
+    },
+    "core_severities": {
+      "none": 48,
+      "minor": 0,
+      "material": 0
+    },
+    "temporal_fork_severities": {
+      "minor": 4
+    },
+    "temporal_fork_prefix_consistency": "100% verified uniform across all branches"
+  },
+  "git_blob_sha": {
+    "cases_v0_3.jsonl": "98db57077d02386fada4e0619edefa05d11644ea",
+    "gold_v0_3_adjudicated.jsonl": "365d0d50d459ba9eb02c98a8fc3214e7dffc7fc0",
+    "adjudication_v0_3.jsonl": "d61ae73b3dc5f69798925235b4e0c2add7bc6b44",
+    "temporal_fork_adjudication_v0_3.jsonl": "d3afad62bb9a4b1ff075eda59d28a1958847f9d9",
+    "temporal_forks_v0_3_adjudicated.jsonl": "107ad5c50f909f795367274b3e759234dd52f367",
+    "ADJUDICATION_LOG_V03.jsonl": "e7661343a7cf3007262d1b017f2693f975e41467",
+    "contrast_groups_v0_3.json": "0ccf4188063cc210b4fcee17cdbe22b0a546dba5",
+    "split_manifest_v0_3.json": "cf09f018c71fe0a59c7b59ce9de17b9ceea82f7e",
+    "retrieval_queries_v0_3.jsonl": "c2a18fa7ebc49b8c09a1ecc22d7ad38d4f0e2b35"
+  },
+  "sha256": {
+    "gold_v0_3_adjudicated.jsonl": "696741e270b043556146a6c47082124d24d509f946f60c7880cbd5ceaaa71d1f",
+    "adjudication_v0_3.jsonl": "ec07bceb93fcccd0a1eeccfca8a7faa0e98bcfd95b12f211cc76e6abe30b22bc",
+    "temporal_fork_adjudication_v0_3.jsonl": "2c93be4aa6ac9920aa0fb47e96bf2601581f2ae1c809c9559e158341afc76cc4",
+    "temporal_forks_v0_3_adjudicated.jsonl": "c5e9a4c5d57e704ab164b81fb850fe3d6188ce8893fe2f74263dc0057fcc373f",
+    "ADJUDICATION_LOG_V03.jsonl": "c4c31c7fbbc0d29a054ae9f0a974b1a07e5f6e6e284d135177af238fbcaa923b"
+  },
+  "validation": {
+    "all_cases_adjudicated": true,
+    "temporal_forks_prefix_consistent": true,
+    "draft_gold_preserved_unmodified": true,
+    "reconstructability_checked": true,
+    "honest_unknowns_verified": true
+  }
+}
