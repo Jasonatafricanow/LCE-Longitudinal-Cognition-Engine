@@ -1,0 +1,34 @@
+{
+  "experiment_id": "EXP-LONGITUDINAL-ISSUE-24",
+  "title": "Validate time-first longitudinal relations above SemanticBlock",
+  "date": "2026-09-25",
+  "models": {
+    "llm_adjudicator": "gemini-3.1-flash-lite",
+    "embedding": "gemini-embedding-001"
+  },
+  "runtime": {
+    "temperature": 0.0,
+    "seed": 42,
+    "max_retries": 25,
+    "proxy_url": "http://127.0.0.1:7890"
+  },
+  "candidate_generation": {
+    "l1_cosine_threshold": 0.65,
+    "temporal_window_hours": 720.0
+  },
+  "relations": [
+    "UNCERTAINTY_RESOLUTION",
+    "STATE_CHANGE",
+    "CORRECTION_RETRACTION",
+    "PERSISTENCE_CONFIRMATION",
+    "UNRELATED",
+    "UNKNOWN_RELATION"
+  ],
+  "falsification_tests": [
+    "F1_TIME_NECESSARY_BUT_INSUFFICIENT",
+    "F2_NO_MUTATION_OF_EARLIER_TRUTH",
+    "F3_UNKNOWN_CLOSES_ONLY_WITH_EVIDENCE",
+    "F4_STATE_CHANGE_DISTINCT_FROM_CORRECTION",
+    "F5_SPARSE_CANDIDATE_FORMATION"
+  ]
+}

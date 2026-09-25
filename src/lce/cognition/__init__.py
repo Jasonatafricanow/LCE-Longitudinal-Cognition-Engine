@@ -14,6 +14,12 @@ from lce.cognition.worktree import (
     DraftRevision,
     DraftRevisionStore,
 )
+from lce.cognition.longitudinal_relation import (
+    LongitudinalCandidate,
+    LongitudinalObservation,
+    LongitudinalRelationType,
+    compute_block_content_hash,
+)
 
 __all__ = [
     "BoundedInterpretation",
@@ -24,6 +30,11 @@ __all__ = [
     "ConservativePromotionPolicy",
     "DraftRevision",
     "DraftRevisionStore",
+    "LongitudinalCandidate",
+    "LongitudinalObservation",
+    "LongitudinalRelationType",
     "RuleBasedBoundedInterpreter",
     "UnderstandingPromoter",
+    "compute_block_content_hash",
 ]
+

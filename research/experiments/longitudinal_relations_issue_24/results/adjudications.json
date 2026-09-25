@@ -1,0 +1,1151 @@
+{
+  "GP_FLIGHT_01": {
+    "pair_id": "GP_FLIGHT_01",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "eventual_boarding",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "最终是否按时登机",
+    "outcome_or_current_state": "用户已成功赶上航班并就座",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "赶上了，已经坐到座位上了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2是对t1中未决义务的履行结果，而非客观计划的变更。",
+      "CORRECTION_RETRACTION": "t2是对事实的确认，而非对t1陈述错误的纠正。",
+      "UNCERTAINTY_RESOLUTION": "不适用，因为本项即为所选关系。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1明确提出了赶飞机的义务，并留下了‘最终是否按时登机’的未决维度。t2提供了确凿的执行结果，闭合了该悬念，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_FLIGHT_02": {
+    "pair_id": "GP_FLIGHT_02",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_FAIL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "eventual_boarding",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "最终是否按时登机",
+    "outcome_or_current_state": "用户因堵车未能赶上航班，登机任务失败",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "路上堵死了，最后没赶上飞机"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2并非描述计划的变更，而是对t1中未决悬念的最终结果陈述。",
+      "CORRECTION_RETRACTION": "t2并未否定t1中‘必须赶飞机’的意图，而是确认了该意图未能实现的结果。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了一个具有时间约束的未决任务（赶飞机），t2提供了关于该任务的最终执行结果（没赶上），属于典型的未决悬念闭合。",
+    "cached": true
+  },
+  "GP_FLIGHT_03": {
+    "pair_id": "GP_FLIGHT_03",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_CANCEL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "eventual_boarding",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "eventual_boarding",
+    "outcome_or_current_state": "航班因暴雨被官方取消，用户无法按原计划登机。",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "因为暴雨该航班已被官方取消"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "虽然状态发生了变化，但该变化直接闭合了t1中关于‘是否顺利起飞到达’的未决悬念，属于结果性闭合而非单纯的计划变更。",
+      "CORRECTION_RETRACTION": "t2并未否定t1中‘用户当时有赶飞机需求’这一事实，而是提供了导致该需求无法实现的外部客观结果。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了一个关于航班行程的未决义务（必须赶飞机），t2提供了外部客观证据（航班取消），该证据直接导致了t1中未决维度的闭合，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_FLIGHT_04": {
+    "pair_id": "GP_FLIGHT_04",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "航班因航司通知延期至今晚九点起飞",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "刚收到航司通知，航班延期改到今晚九点起飞了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t2明确指出是航司通知导致的客观延期，而非t1陈述本身存在错误或口误。",
+      "UNCERTAINTY_RESOLUTION": "t2仅改变了航班时间，并未闭合“是否顺利起飞到达”这一最终结果悬念。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1确立了用户赶飞机的义务，t2通过外部航司通知引入了客观状态变迁（延期），属于典型的STATE_CHANGE，而非对t1事实的否定。",
+    "cached": true
+  },
+  "GP_FLIGHT_05": {
+    "pair_id": "GP_FLIGHT_05",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "destination_or_location",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "用户明确指出此前关于目的地为北京的陈述为口误，实际目的地应为深圳。",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "我刚才口误说错了，不是飞北京，其实是飞深圳"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1的陈述是口误（speaker_slip_repair），而非客观世界中目的地发生了变更。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2是对t1事实性错误的修正，而非对t1中未决悬念（如是否登机）的闭合。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2明确使用了‘口误’、‘说错了’等词汇，符合CORRECTION_RETRACTION的定义，即对t1的语义内容进行撤回与纠正，而非状态变迁。",
+    "cached": true
+  },
+  "GP_FLIGHT_06": {
+    "pair_id": "GP_FLIGHT_06",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_PERSIST",
+    "predicted_relation": "PERSISTENCE_CONFIRMATION",
+    "affected_dimension": "eventual_boarding",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "用户仍处于堵车状态，赶上航班的悬念持续存在且未获得结果。",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "现在还在高架上死堵着，依然不知道能不能赶上"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "客观目标（赶飞机）未发生变迁，仅是外部环境（交通）导致状态延续。",
+      "CORRECTION_RETRACTION": "t2 未否定 t1 的意图，仅描述了当前进展的持续性。",
+      "UNCERTAINTY_RESOLUTION": "t2 明确表示结果仍未明朗，未提供闭合悬念的最终事实。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 提出了赶飞机的义务要求，t2 描述了当前处于堵车中且结果未知的状态，这直接确认了 t1 中未决的‘最终是否按时登机’维度处于持续未决状态，符合 PERSISTENCE_CONFIRMATION 定义。",
+    "cached": true
+  },
+  "GP_FLIGHT_07": {
+    "pair_id": "GP_FLIGHT_07",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns a flight from Hangzhou to Beijing, while t2 concerns a high-speed train ticket to Shanghai; the two events involve different transport modes, destinations, and timeframes.",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "下周去上海的高铁票我已经买好了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify or update the status of the flight mentioned in t1; it introduces a completely separate travel arrangement.",
+      "CORRECTION_RETRACTION": "t2 does not claim that the information in t1 was incorrect or mistaken.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the outcome of the flight mentioned in t1, leaving the original unknowns unresolved."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "The two semantic blocks describe distinct travel events with different destinations (Beijing vs. Shanghai), different modes of transport (flight vs. high-speed train), and different temporal scopes (today vs. next week). There is no causal, corrective, or state-transition link between them.",
+    "cached": true
+  },
+  "GP_FLIGHT_08": {
+    "pair_id": "GP_FLIGHT_08",
+    "predecessor": "B_FLIGHT_01",
+    "successor": "B_FLIGHT_02_ELAPSED_NO_EV",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns a specific flight obligation on 2026-10-01, while t2 provides an observation about weather in Beijing on 2026-10-05. The two blocks describe distinct events and objects.",
+    "evidence_spans": [
+      "我今天必须赶杭州到北京的飞机",
+      "今天北京的天气据说是晴天"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify or update the status of the flight obligation mentioned in t1; it introduces an entirely different subject (weather).",
+      "CORRECTION_RETRACTION": "t2 does not claim that the information in t1 was incorrect or mistaken.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the outcome of the flight obligation (boarding/arrival) mentioned in t1."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 establishes a travel obligation on 2026-10-01. t2 provides a weather observation on 2026-10-05. There is no semantic link between the flight status and the weather observation, nor does t2 resolve the pending status of the flight. Therefore, they are unrelated.",
+    "cached": true
+  },
+  "GP_REPORT_01": {
+    "pair_id": "GP_REPORT_01",
+    "predecessor": "B_REPORT_01",
+    "successor": "B_REPORT_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "submission_and_acceptance_status",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "submission_completion_and_acceptance",
+    "outcome_or_current_state": "报告已通过邮件提交，并获得王总确认接收，任务闭合。",
+    "evidence_spans": [
+      "这个季度总结报告我今天下班前必须提交给王总",
+      "报告刚才已经通过邮件发给王总了，他也回邮件确认收到了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "任务并非因外部环境变动而改变计划，而是完成了原定的义务要求。",
+      "CORRECTION_RETRACTION": "t2 确认了任务的完成，并未否定 t1 中关于‘必须提交’的义务陈述。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 设定了明确的义务要求（下班前提交），t2 提供了执行结果（已发送并获确认），该结果直接闭合了 t1 中关于‘是否提交完成’及‘王总是否验收’的未决维度。",
+    "cached": true
+  },
+  "GP_REPORT_02": {
+    "pair_id": "GP_REPORT_02",
+    "predecessor": "B_REPORT_01",
+    "successor": "B_REPORT_02_FAIL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "submission_status",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "是否在下班前提交完成",
+    "outcome_or_current_state": "因电脑硬件故障导致无法按时提交报告，任务失败",
+    "evidence_spans": [
+      "这个季度总结报告我今天下班前必须提交给王总",
+      "办公电脑主板突然烧了，文件没备份，今天肯定交不上去了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "虽然客观情况发生了变化，但t2是对t1中未决义务的直接结果判定，而非单纯的计划变更（如改期），属于任务闭合。",
+      "CORRECTION_RETRACTION": "t2并未否定t1中‘需要提交’的义务，而是确认了该义务无法达成，不涉及对t1事实陈述的撤回。",
+      "UNCERTAINTY_RESOLUTION": "已选中，无需排除。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了一个待完成的义务（下班前提交报告），t2通过描述突发硬件故障，明确了该义务无法完成的结果，闭合了t1中关于‘是否提交完成’的未决悬念。",
+    "cached": true
+  },
+  "GP_REPORT_03": {
+    "pair_id": "GP_REPORT_03",
+    "predecessor": "B_REPORT_01",
+    "successor": "B_REPORT_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "报告提交截止时间由今天下班前变更为下周一上午",
+    "evidence_spans": [
+      "这个季度总结报告我今天下班前必须提交给王总",
+      "季度总结提交时间统一顺延到下周一上午"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t2明确指出是外部通知导致的顺延，而非t1陈述本身存在事实错误或口误。",
+      "UNCERTAINTY_RESOLUTION": "t1的悬念（是否在下班前提交）并未通过完成任务来闭合，而是通过外部规则变更导致原任务失效。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1设定了截止时间，t2作为外部客观事实的变迁（王总通知），改变了该任务的截止时间维度，属于典型的客观状态变迁。",
+    "cached": true
+  },
+  "GP_REPORT_04": {
+    "pair_id": "GP_REPORT_04",
+    "predecessor": "B_REPORT_01",
+    "successor": "B_REPORT_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "submission_task_content",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "用户明确指出前序关于提交季度报告的陈述为口误，实际应提交事项为差旅报销单。",
+    "evidence_spans": [
+      "这个季度总结报告我今天下班前必须提交给王总",
+      "我刚才脑子懵了说错了，下班前要交的不是季度报告，是差旅报销单"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1的陈述是由于‘脑子懵了’导致的错误，而非客观任务需求发生了变动。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2并未解决t1中关于‘是否提交完成’的悬念，而是直接否定了t1中任务对象的真实性。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2中包含明确的自我纠错行为（‘说错了’），且明确指出了t1中关于‘季度总结报告’的陈述属于认知错误，符合CORRECTION_RETRACTION的定义。",
+    "cached": true
+  },
+  "GP_REPORT_05": {
+    "pair_id": "GP_REPORT_05",
+    "predecessor": "B_REPORT_01",
+    "successor": "B_REPORT_02_PERSIST",
+    "predicted_relation": "PERSISTENCE_CONFIRMATION",
+    "affected_dimension": "submission_status",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "报告提交任务因等待财务数据而持续处于阻塞状态，未完成提交。",
+    "evidence_spans": [
+      "这个季度总结报告我今天下班前必须提交给王总",
+      "还在等财务部门同步最后两组核心数据，报告现在还没法最终提交"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "报告的提交义务并未因客观环境变迁而取消或变更，仅是执行进度受阻，目标状态保持不变。",
+      "CORRECTION_RETRACTION": "t2 描述的是当前客观进展，并未否定 t1 中关于‘必须提交’的义务陈述，不存在口误或认知错误。",
+      "UNCERTAINTY_RESOLUTION": "t2 仅确认了任务处于阻塞状态，并未提供最终提交或取消的闭合结果，悬念依然存在。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 设定了提交义务，t2 明确指出由于外部依赖（财务数据）导致该义务无法在当前时刻完成，且明确表示‘还没法提交’，这属于对前序未决状态的持续性确认，而非状态变更或纠错。",
+    "cached": true
+  },
+  "GP_REPORT_06": {
+    "pair_id": "GP_REPORT_06",
+    "predecessor": "B_REPORT_01",
+    "successor": "B_REPORT_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "None",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 涉及季度报告提交任务，t2 涉及绿植养护表接收，两者主体、对象及任务目标完全不同。",
+    "evidence_spans": [
+      "这个季度总结报告我今天下班前必须提交给王总",
+      "张助理刚才送来了这周的办公室绿植养护表"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 的内容并未改变 t1 中关于季度报告提交的计划或状态，两者描述的是完全独立的事务。",
+      "CORRECTION_RETRACTION": "t2 没有对 t1 的陈述进行任何修正或撤回，不存在认知纠错行为。",
+      "UNCERTAINTY_RESOLUTION": "t2 提供的绿植信息无法闭合 t1 中关于季度报告提交的悬念。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "通过对比两个语义块的实体角色锚点（actor_agent, affected_object），发现两者在业务领域和执行对象上均无交集，符合纯时间邻近但无逻辑关联的判定标准。",
+    "cached": true
+  },
+  "GP_MEETING_01": {
+    "pair_id": "GP_MEETING_01",
+    "predecessor": "B_MEETING_01",
+    "successor": "B_MEETING_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "复盘会因会议室冲突，时间由周二上午十点变更为周三上午十点。",
+    "evidence_spans": [
+      "复盘会定在周二上午十点开",
+      "周二会议室冲突，复盘会改到周三上午十点了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t2明确指出变更是由于客观的会议室冲突，而非t1陈述本身存在口误或认知错误，属于外部环境导致的计划变更。",
+      "UNCERTAINTY_RESOLUTION": "t1中的未决悬念（是否如期召开）在t2中并未彻底闭合，而是演化为新的计划状态，且未决维度依然存在。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1确立了初始计划，t2基于客观冲突对计划进行了调整。根据定义，客观世界导致的计划变迁属于STATE_CHANGE，而非对历史事实的否定。",
+    "cached": true
+  },
+  "GP_MEETING_02": {
+    "pair_id": "GP_MEETING_02",
+    "predecessor": "B_MEETING_01",
+    "successor": "B_MEETING_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "纠正了关于复盘会时间的错误陈述，明确实际时间为周四",
+    "evidence_spans": [
+      "我们组的产品复盘会定在周二上午十点开",
+      "我刚才记混看错日程了",
+      "复盘会实际一直都是周四"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1的陈述是基于‘记混看错’的错误，而非客观计划的变更，因此排除状态变迁。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2是对t1事实性的否定与修正，而非对t1中未决悬念的闭合。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1陈述了复盘会时间，t2明确指出该陈述源于‘看错日程’的认知错误，并提供了修正后的事实，符合CORRECTION_RETRACTION的定义。",
+    "cached": true
+  },
+  "GP_MEETING_03": {
+    "pair_id": "GP_MEETING_03",
+    "predecessor": "B_MEETING_01",
+    "successor": "B_MEETING_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "meeting_execution_status",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "meeting_execution_status",
+    "outcome_or_current_state": "复盘会已如期顺利召开并结束",
+    "evidence_spans": [
+      "复盘会定在周二上午十点开",
+      "周二复盘会刚顺利开完了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 描述的是 t1 计划的执行结果，而非计划本身的变更或撤销。",
+      "CORRECTION_RETRACTION": "t2 确认了 t1 的计划并报告了执行情况，不存在对 t1 事实陈述的否定或纠错。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 提出了关于会议是否如期召开的未决悬念，t2 明确提供了会议已顺利完成的事实，闭合了该悬念，符合 UNCERTAINTY_RESOLUTION 定义。",
+    "cached": true
+  },
+  "GP_MEETING_04": {
+    "pair_id": "GP_MEETING_04",
+    "predecessor": "B_MEETING_01",
+    "successor": "B_MEETING_02_PERSIST",
+    "predicted_relation": "PERSISTENCE_CONFIRMATION",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "会议时间维持原定周二上午十点，未发生变动。",
+    "evidence_spans": [
+      "复盘会定在周二上午十点开",
+      "产品复盘会还是维持在周二，目前没有任何调整变动"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出会议没有任何调整变动，而非状态发生改变。",
+      "CORRECTION_RETRACTION": "t2确认了t1的原始计划，不存在对t1陈述的撤回或纠错。",
+      "UNCERTAINTY_RESOLUTION": "t1的悬念在于会议是否如期召开，t2仅确认了时间安排的持续性，并未提供会议最终执行结果（如会议已结束或已取消）的闭合。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1设定了初始计划，t2作为后续语义块，明确表达了对该计划的维持与确认，属于典型的状态持续性确认，而非状态变更或纠错。",
+    "cached": true
+  },
+  "GP_MEETING_05": {
+    "pair_id": "GP_MEETING_05",
+    "predecessor": "B_MEETING_01",
+    "successor": "B_MEETING_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns a product review meeting for the product team, while t2 describes an unrelated marketing department meeting.",
+    "evidence_spans": [
+      "我们组的产品复盘会定在周二上午十点开",
+      "隔壁市场部今天下午正在三楼召开新品发布动员大会"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify or update the schedule or status of the product review meeting mentioned in t1.",
+      "CORRECTION_RETRACTION": "t2 does not claim that the information in t1 was incorrect or erroneous.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the occurrence or attendance of the product review meeting."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 and t2 involve different departments (product team vs. marketing department) and different events (product review vs. product launch mobilization). There is no semantic overlap or causal link between the two blocks.",
+    "cached": true
+  },
+  "GP_HIRING_01": {
+    "pair_id": "GP_HIRING_01",
+    "predecessor": "B_HIRING_01",
+    "successor": "B_HIRING_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "approval_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "集团HRD是否批准通过",
+    "outcome_or_current_state": "录用审批已获HRD批准，正式offer已发送给老张",
+    "evidence_spans": [
+      "老张的录用审批单我已经提交给集团HRD了",
+      "HRD刚在系统里签字通过了，正式offer已经发送给老张"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2是对t1中悬而未决的审批结果的确认，而非原定计划的变更。",
+      "CORRECTION_RETRACTION": "t2是对审批进展的推进，并未否定t1中提交审批这一事实。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1明确提出了关于审批结果的未知维度，t2作为后续动作，提供了HRD签字通过的确凿证据，直接闭合了t1中的悬念，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_HIRING_02": {
+    "pair_id": "GP_HIRING_02",
+    "predecessor": "B_HIRING_01",
+    "successor": "B_HIRING_02_FAIL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "approval_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "集团HRD是否批准通过",
+    "outcome_or_current_state": "老张的录用审批因薪酬方案超出级别上限被HRD驳回，审批流程闭合。",
+    "evidence_spans": [
+      "集团HRD是否批准通过",
+      "HRD把审批退回了，说薪酬方案超出当前级别上限，不同意录用。"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t1描述的是审批提交后的等待状态，t2是对该审批结果的最终反馈，属于对未决悬念的闭合，而非计划或客观环境的变更。",
+      "CORRECTION_RETRACTION": "t2并未否定t1中‘已提交审批’这一事实，而是提供了审批的后续结果，不涉及对t1陈述内容的撤回。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1明确提出了‘集团HRD是否批准通过’的未决悬念，t2作为后续动作，明确给出了‘退回/不同意’的结论，完全闭合了该悬念，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_HIRING_03": {
+    "pair_id": "GP_HIRING_03",
+    "predecessor": "B_HIRING_01",
+    "successor": "B_HIRING_02_CANCEL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "hiring_approval_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "hiring_approval_outcome",
+    "outcome_or_current_state": "因集团冻结HC，招聘流程被强制终止，审批不再进行。",
+    "evidence_spans": [
+      "集团HRD是否批准通过",
+      "该岗位招聘已整体撤销"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "虽然存在状态变迁，但t2直接闭合了t1中关于审批结果的未决悬念，属于更高级别的确定性闭合。",
+      "CORRECTION_RETRACTION": "t2并未否定t1提交审批这一事实，而是对后续结果进行了终结，非纠错。",
+      "UNCERTAINTY_RESOLUTION": "已选中此项。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1中明确存在‘集团HRD是否批准通过’的未决维度，t2通过‘招聘已整体撤销’这一事实，将该未决维度闭合为‘取消/失败’，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_HIRING_04": {
+    "pair_id": "GP_HIRING_04",
+    "predecessor": "B_HIRING_01",
+    "successor": "B_HIRING_02_PERSIST",
+    "predicted_relation": "PERSISTENCE_CONFIRMATION",
+    "affected_dimension": "approval_outcome",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "老张的录用审批单在集团HRD处仍处于待审批状态，未发生任何进展。",
+    "evidence_spans": [
+      "录用审批单我已经提交给集团HRD了",
+      "老张的审批在HRD那里压了三天了，到现在系统状态还是待审批中"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "审批状态未发生改变，仍维持在t1时的待审批状态，而非进入批准或拒绝的新状态。",
+      "CORRECTION_RETRACTION": "t2是对当前状态的客观描述，并未否定t1中提交审批这一历史事实。",
+      "UNCERTAINTY_RESOLUTION": "t2仅确认了审批的持续积压，并未提供最终的批准或拒绝结果，悬念依然存在。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了待审批的悬念，t2通过描述‘压了三天’和‘还是待审批中’，确认了该未决状态在时间流逝后依然保持不变，符合PERSISTENCE_CONFIRMATION定义。",
+    "cached": true
+  },
+  "GP_HIRING_05": {
+    "pair_id": "GP_HIRING_05",
+    "predecessor": "B_HIRING_01",
+    "successor": "B_HIRING_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1涉及首席架构师老张的录用审批，t2涉及前端实习生小李的面试，两者属于不同的招聘对象与事务流程。",
+    "evidence_spans": [
+      "首席架构师候选人老张的录用审批单",
+      "面试了一个前端实习生小李"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2并未改变t1中关于老张审批流程的状态，两者描述的是完全不同的招聘对象。",
+      "CORRECTION_RETRACTION": "t2没有对t1的陈述进行任何修正或撤回。",
+      "UNCERTAINTY_RESOLUTION": "t2的内容与t1中提到的审批结果或老张是否接受offer无关，未闭合任何悬念。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1与t2在实体（老张 vs 小李）、岗位（首席架构师 vs 前端实习生）及业务动作（审批提交 vs 面试）上均无交集，判定为无关事件。",
+    "cached": true
+  },
+  "GP_MED_01": {
+    "pair_id": "GP_MED_01",
+    "predecessor": "B_MED_01",
+    "successor": "B_MED_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "eventual_blood_draw_completion",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "明日是否按时完成抽血",
+    "outcome_or_current_state": "用户已于2026-10-06顺利完成抽血，目前处于等待化验单结果的状态。",
+    "evidence_spans": [
+      "我明天早晨去华山医院空腹抽血",
+      "血抽完了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t1的计划已按预期执行，并非因外部因素导致计划变更或状态转移，而是悬念的闭合。",
+      "CORRECTION_RETRACTION": "t2未对t1的陈述进行任何否定或修正，而是确认了动作的完成。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了关于‘明日是否按时完成抽血’的未决悬念，t2明确陈述‘血抽完了’，直接闭合了该悬念，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_MED_02": {
+    "pair_id": "GP_MED_02",
+    "predecessor": "B_MED_01",
+    "successor": "B_MED_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "因进食破坏空腹条件，原定于今日的抽血计划变更为后天早上进行。",
+    "evidence_spans": [
+      "我明天早晨去华山医院空腹抽血",
+      "早上起晚不小心喝了含糖豆浆，抽血只能延期改到后天早上了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t1的计划在当时是真实的意图，t2是因为客观条件（喝了豆浆）导致计划被迫变更，而非t1陈述本身存在错误。",
+      "UNCERTAINTY_RESOLUTION": "t1的抽血任务并未完成，悬念（是否按时完成）并未闭合，而是被推迟到了新的时间点。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1确立了抽血计划，t2因客观突发事件（喝豆浆）导致原定时间无法执行，属于典型的外部因素导致的计划状态变迁（STATE_CHANGE），而非对历史事实的纠错。",
+    "cached": true
+  },
+  "GP_MED_03": {
+    "pair_id": "GP_MED_03",
+    "predecessor": "B_MED_01",
+    "successor": "B_MED_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "target_recipient",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "用户明确指出前序关于就诊医院的陈述为口误，实际预约地点为中山医院。",
+    "evidence_spans": [
+      "我说错了，预约的是中山医院，不是华山医院",
+      "我刚看挂号短信发现我说错了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1的陈述是错误的（口误），而非客观预约计划发生了变更。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2并未解决抽血是否完成或指标是否正常的悬念，仅修正了前序陈述中的事实错误。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2中明确使用了‘我说错了’这一话语行为，且通过‘看挂号短信’这一证据源否定了t1中关于医院名称的陈述，符合CORRECTION_RETRACTION的定义。",
+    "cached": true
+  },
+  "GP_MED_04": {
+    "pair_id": "GP_MED_04",
+    "predecessor": "B_MED_01",
+    "successor": "B_MED_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 描述的是医院空腹抽血计划，t2 描述的是药房购买维生素行为，两者在医疗行为逻辑上无直接关联。",
+    "evidence_spans": [
+      "我明天早晨去华山医院空腹抽血做肝功能和血脂全套检查",
+      "晚上回家顺路在药房买了一盒复合维生素B咀嚼片"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 的购买行为并未改变 t1 中关于抽血计划的客观状态或执行结果。",
+      "CORRECTION_RETRACTION": "t2 没有对 t1 的抽血计划进行任何否定或修正。",
+      "UNCERTAINTY_RESOLUTION": "t2 提供的购买维生素信息并未闭合 t1 中关于抽血是否完成或检验指标是否正常的悬念。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 关注的是医院检验计划，t2 关注的是药店购物行为。两者在时间上虽有先后，但在语义逻辑上属于完全不同的医疗活动，不存在因果、状态变迁或纠错关系。",
+    "cached": true
+  },
+  "GP_SRV_01": {
+    "pair_id": "GP_SRV_01",
+    "predecessor": "B_SRV_01",
+    "successor": "B_SRV_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "migration_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "凌晨两点割接是否成功",
+    "outcome_or_current_state": "数据库迁移割接成功，业务回归测试通过",
+    "evidence_spans": [
+      "核心生产库从MySQL迁移到PostgreSQL的操作定在今天凌晨两点实施",
+      "凌晨三点半数据流量全部切到新PG集群，业务回归测试全绿，割接成功"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2是对t1计划执行结果的确认，而非计划本身的变更（如取消或改期）。",
+      "CORRECTION_RETRACTION": "t2并未否定t1的计划陈述，而是确认了该计划的最终执行结果。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了关于迁移成功与否的未决悬念，t2作为后续时间点的执行报告，明确给出了割接成功的结果，符合UNCERTAINTY_RESOLUTION的定义。",
+    "cached": true
+  },
+  "GP_SRV_02": {
+    "pair_id": "GP_SRV_02",
+    "predecessor": "B_SRV_01",
+    "successor": "B_SRV_02_FAIL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "migration_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "凌晨两点割接是否成功",
+    "outcome_or_current_state": "迁移失败，因主键冲突导致服务雪崩，已全量回滚至老库",
+    "evidence_spans": [
+      "核心生产库从MySQL迁移到PostgreSQL的操作定在今天凌晨两点实施",
+      "割接后主键冲突严重导致订单服务雪崩，运维已于凌晨两点四十全量回滚老库"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2并非描述计划的变更，而是对t1中预设的‘迁移是否成功’这一未决悬念给出了明确的失败结果。",
+      "CORRECTION_RETRACTION": "t2并未否定t1中‘计划在凌晨两点实施’这一事实，而是描述了实施后的结果，不涉及对原陈述的撤回。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了关于迁移结果的未决悬念，t2作为后续事实，明确了迁移失败并执行了回滚操作，完全闭合了t1的认知悬念。",
+    "cached": true
+  },
+  "GP_SRV_03": {
+    "pair_id": "GP_SRV_03",
+    "predecessor": "B_SRV_01",
+    "successor": "B_SRV_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "迁移计划因外部因素（大促压测延后）顺延至下周五凌晨两点。",
+    "evidence_spans": [
+      "核心生产库从MySQL迁移到PostgreSQL的操作定在今天凌晨两点实施",
+      "因大促压测延后，生产库迁移时间调整改到了下周五凌晨两点"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t2明确指出是因外部因素（压测延后）导致的计划调整，而非t1陈述本身存在事实错误或口误。",
+      "UNCERTAINTY_RESOLUTION": "t1中的未决项（是否成功、是否回滚）并未因计划延期而获得闭合，迁移任务本身仍处于未执行的未决状态。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1确立了当时真实的迁移计划，t2基于外部客观原因（压测延后）对该计划进行了变更，符合STATE_CHANGE定义，即原计划在当时是真实的，但随客观世界变迁进入了新状态。",
+    "cached": true
+  },
+  "GP_SRV_04": {
+    "pair_id": "GP_SRV_04",
+    "predecessor": "B_SRV_01",
+    "successor": "B_SRV_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "migration_target_scope",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "迁移目标被更正为测试环境库，原关于生产库的迁移计划被撤回。",
+    "evidence_spans": [
+      "核心生产库从MySQL迁移到PostgreSQL",
+      "我刚才口误敲错了，今晚要迁的是测试环境库，不是生产库"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1的陈述是由于口误导致的错误，而非客观环境发生变迁。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2并未解决t1中关于迁移是否成功的悬念，而是直接否定了t1所描述的事件对象本身。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2明确使用了‘口误’、‘敲错了’、‘不是生产库’等语义，直接否定了t1中关于迁移对象的陈述，符合CORRECTION_RETRACTION的定义。",
+    "cached": true
+  },
+  "GP_SRV_05": {
+    "pair_id": "GP_SRV_05",
+    "predecessor": "B_SRV_01",
+    "successor": "B_SRV_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns a production database migration, while t2 concerns a routine restart of an internal Wiki Redis cache; these are distinct operational tasks.",
+    "evidence_spans": [
+      "核心生产库从MySQL迁移到PostgreSQL",
+      "公司内部Wiki服务器的Redis缓存实例顺手重启了一下"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify or update the status of the production database migration mentioned in t1.",
+      "CORRECTION_RETRACTION": "t2 does not claim any error or misstatement regarding the migration plan in t1.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the success or failure of the migration task defined in t1."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "The two semantic blocks describe entirely different technical systems (Production DB vs. Internal Wiki) and distinct operational actions. There is no causal, temporal, or logical dependency between the migration of a production database and the restart of a Wiki cache.",
+    "cached": true
+  },
+  "GP_LEASE_01": {
+    "pair_id": "GP_LEASE_01",
+    "predecessor": "B_LEASE_01",
+    "successor": "B_LEASE_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "lease_renewal_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "lease_renewal_outcome",
+    "outcome_or_current_state": "房东同意原价续租，且双方已完成新合同的电子签署，续租意向已达成。",
+    "evidence_spans": [
+      "我正在和房东谈续租一年",
+      "房东是否同意续租",
+      "房东答应维持原价续租，我们刚刚在电子租赁平台上把新合同签好了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 并非因为外部环境变动导致原计划失效，而是 t1 中正在进行的协商过程得到了明确的成功结果。",
+      "CORRECTION_RETRACTION": "t2 确认了 t1 的续租意向，并未否定 t1 的事实陈述，不存在口误或认知错误。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 明确提出了续租意向并列出了未决维度（房东是否同意、租金是否涨价），t2 提供了确凿的执行结果（同意原价续租并已签署合同），完全闭合了 t1 的悬念。",
+    "cached": true
+  },
+  "GP_LEASE_02": {
+    "pair_id": "GP_LEASE_02",
+    "predecessor": "B_LEASE_01",
+    "successor": "B_LEASE_02_FAIL",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "lease_renewal_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "房东是否同意续租及租金涨价条件",
+    "outcome_or_current_state": "续租谈判破裂，用户决定搬走，原续租意向计划终止",
+    "evidence_spans": [
+      "我正在和房东谈续租一年",
+      "房东是否同意续租",
+      "租金是否涨价",
+      "我们谈崩了，我决定下周搬走"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "虽然状态发生了变化，但核心在于t1提出的悬念（是否续租）被t2明确的谈判结果所闭合，属于悬念解决而非单纯的客观计划变更。",
+      "CORRECTION_RETRACTION": "t2是对谈判结果的陈述，并未否定t1中‘正在谈’这一历史事实，因此不属于纠错。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1明确提出了关于续租的未决悬念（房东态度、租金条件），t2通过描述谈判破裂的最终结果，直接闭合了这些悬念，符合UNCERTAINTY_RESOLUTION的定义。",
+    "cached": true
+  },
+  "GP_LEASE_03": {
+    "pair_id": "GP_LEASE_03",
+    "predecessor": "B_LEASE_01",
+    "successor": "B_LEASE_02_CHANGE",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "lease_renewal_outcome",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "房东是否同意续租",
+    "outcome_or_current_state": "续租协商失败，房东因家庭原因收回房屋自住，租约无法延续。",
+    "evidence_spans": [
+      "我正在和房东谈续租一年",
+      "房东刚打电话说他儿子下个月回国结婚要收回自住，完全不能再租了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "虽然房东的决定改变了房屋状态，但该事件直接闭合了t1中关于‘续租是否成功’的未决悬念，属于结果性闭合。",
+      "CORRECTION_RETRACTION": "t2并未否定t1中‘正在协商’这一历史事实，而是提供了协商后的最终结果，因此不是撤回。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1提出了续租意向并留下了‘房东是否同意’的未决悬念。t2通过房东的明确拒绝，闭合了该悬念，判定为UNCERTAINTY_RESOLUTION。",
+    "cached": true
+  },
+  "GP_LEASE_04": {
+    "pair_id": "GP_LEASE_04",
+    "predecessor": "B_LEASE_01",
+    "successor": "B_LEASE_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "contract_expiry_date",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "合同到期日被更正为下个月三号，撤回了关于下周三到期的错误陈述。",
+    "evidence_spans": [
+      "这套朝南两居室的租房合同下周三到期",
+      "我刚才笔误把租期写错了，不是下周三到期，实际是下个月三号才到期"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1中的时间信息为笔误（speaker_slip_repair），而非客观世界发生了变动。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2是对t1事实陈述的修正，而非对续租意向或结果的闭合。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2明确使用了‘笔误’、‘不是下周三’等词汇，符合CORRECTION_RETRACTION的定义，即对前序陈述的错误进行撤回与修正。",
+    "cached": true
+  },
+  "GP_LEASE_05": {
+    "pair_id": "GP_LEASE_05",
+    "predecessor": "B_LEASE_01",
+    "successor": "B_LEASE_02_PERSIST",
+    "predicted_relation": "PERSISTENCE_CONFIRMATION",
+    "affected_dimension": "lease_renewal_status",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "房东因出差未归，续租协商处于停滞状态，未获得任何实质性进展。",
+    "evidence_spans": [
+      "我正在和房东谈续租一年",
+      "房东还在外地出差，续租的事情到现在一直还没有回信"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "房东出差导致无法回复属于客观阻滞，而非合同条款或续租意向本身的变更。",
+      "CORRECTION_RETRACTION": "t2 确认了 t1 的续租意向依然存在，并未撤回或否定 t1 的陈述。",
+      "UNCERTAINTY_RESOLUTION": "t2 明确指出续租事宜仍无回信，未决悬念（是否续租成功）依然存在，未被闭合。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 提出了续租意向并列出未知项，t2 描述了房东出差导致沟通中断，这直接确认了 t1 中的未决状态在时间流逝后依然处于未决（阻滞）状态，符合 PERSISTENCE_CONFIRMATION 定义。",
+    "cached": true
+  },
+  "GP_LEASE_06": {
+    "pair_id": "GP_LEASE_06",
+    "predecessor": "B_LEASE_01",
+    "successor": "B_LEASE_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns a residential lease renewal negotiation, while t2 concerns a parking space fee payment.",
+    "evidence_spans": [
+      "这套朝南两居室的租房合同下周三到期",
+      "今天把地下车库的月租车位管理费交清了"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify or change the status of the residential lease negotiation mentioned in t1.",
+      "CORRECTION_RETRACTION": "t2 does not claim any error or misstatement regarding the information provided in t1.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the landlord's decision or the rent price, leaving the uncertainties in t1 unresolved."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 and t2 involve distinct objects (residential lease vs. parking space fee) and distinct counterparties (landlord vs. property management). There is no causal or logical link between the two events.",
+    "cached": true
+  },
+  "GP_AUDIT_01": {
+    "pair_id": "GP_AUDIT_01",
+    "predecessor": "B_AUDIT_01",
+    "successor": "B_AUDIT_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "audit_outcome_and_compliance_status",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "审核是否出具合规签字及是否存在纳税调增风险",
+    "outcome_or_current_state": "审计合规签字确认函已送达，项目以无保留意见通过，风险消除。",
+    "evidence_spans": [
+      "审核是否出具合规签字",
+      "是否存在纳税调增风险",
+      "审计合规签字确认函刚才正式送达，加计扣除项目全额无保留意见通过"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2并非改变了原定的审计计划，而是对t1中悬而未决的审核结果进行了最终确认，属于闭合而非变迁。",
+      "CORRECTION_RETRACTION": "t2并未否定t1的陈述，t1关于正在进行审核的描述在当时是完全准确的。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1明确提出了关于审计结果的未知维度（是否签字、是否有风险），t2提供了确凿的审计结论（无保留意见通过），直接闭合了t1的悬念，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_AUDIT_02": {
+    "pair_id": "GP_AUDIT_02",
+    "predecessor": "B_AUDIT_01",
+    "successor": "B_AUDIT_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "audit_scope",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "由于外部监管文件更新，审计范围从原先的内部研发费用扩展至包含外协外包合同凭证。",
+    "evidence_spans": [
+      "普华对Q3研发费用加计扣除做合规审核",
+      "新规导致审核范围扩展至外包外协合同凭证"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t2并非指出t1的陈述有误，而是客观监管环境发生了外部变迁，导致原定计划的执行范围发生改变。",
+      "UNCERTAINTY_RESOLUTION": "t2并未闭合t1中关于‘是否出具合规签字’或‘是否存在纳税调增风险’的悬念，仅改变了审核的客观范围。"
+    },
+    "confidence": 0.95,
+    "adjudication_trace": "t1确立了审计的初始计划，t2引入了外部监管文件的强制性变更，导致审计对象范围发生客观演变。这符合STATE_CHANGE定义，即原计划在当时真实，但因外部环境变迁进入新状态。",
+    "cached": true
+  },
+  "GP_AUDIT_03": {
+    "pair_id": "GP_AUDIT_03",
+    "predecessor": "B_AUDIT_01",
+    "successor": "B_AUDIT_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "actor_agent",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "审计机构名称由普华更正为德勤，确认前序陈述为口误。",
+    "evidence_spans": [
+      "普华审计师事务所正在对我们第三季度的研发费用加计扣除做专项合规审核",
+      "我刚才看错抬头说错了，来现场做专项审核的是德勤，不是普华"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出是由于看错抬头导致的口误，而非客观审计机构发生了变更。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2并未解决t1中关于审核结果或纳税风险的悬念，仅修正了主体身份。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2明确使用了‘看错抬头说错了’的表述，符合CORRECTION_RETRACTION的定义，即对t1中错误的事实陈述进行撤回与修正。",
+    "cached": true
+  },
+  "GP_AUDIT_04": {
+    "pair_id": "GP_AUDIT_04",
+    "predecessor": "B_AUDIT_01",
+    "successor": "B_AUDIT_02_PERSIST",
+    "predicted_relation": "PERSISTENCE_CONFIRMATION",
+    "affected_dimension": "audit_progress_status",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "审计工作处于持续进行状态，尚未出具最终合规结论或风险评估结果。",
+    "evidence_spans": [
+      "普华审计师事务所正在对我们第三季度的研发费用加计扣除做专项合规审核",
+      "审计团队还在会议室对账，前两周抽检的单据现在依旧还在核实中"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "审计工作仍在原定计划轨道内进行，未发生计划变更或外部环境导致的客观状态改变。",
+      "CORRECTION_RETRACTION": "t2 未对 t1 的事实陈述进行任何否定或修正，仅描述了进度的延续。",
+      "UNCERTAINTY_RESOLUTION": "t1 中的未决悬念（是否出具签字、是否存在风险）在 t2 中依然处于未决状态，未获得闭合。"
+    },
+    "confidence": 0.95,
+    "adjudication_trace": "t1 确立了审计任务的启动，t2 通过描述‘还在对账’、‘依旧在核实中’，确认了该任务在时间流逝后仍处于未决的进行时态，符合 PERSISTENCE_CONFIRMATION 的定义。",
+    "cached": true
+  },
+  "GP_AUDIT_05": {
+    "pair_id": "GP_AUDIT_05",
+    "predecessor": "B_AUDIT_01",
+    "successor": "B_AUDIT_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns an ongoing audit by PwC regarding R&D tax deductions, while t2 concerns an administrative policy update regarding travel invoice archiving.",
+    "evidence_spans": [
+      "普华审计师事务所正在对我们第三季度的研发费用加计扣除做专项合规审核",
+      "行政部今天正在向全员推行差旅发票电子归档系统的新规范"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify, update, or change the status of the audit process described in t1; they are distinct operational activities.",
+      "CORRECTION_RETRACTION": "t2 does not reference or invalidate any information provided in t1.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the audit outcomes or the specific unknowns (signing, tax risks) mentioned in t1."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "The two blocks involve different departments (Finance/Audit vs. Administration), different subject matters (R&D tax compliance vs. travel invoice archiving), and different target audiences. There is no causal, temporal, or logical dependency between the two events.",
+    "cached": true
+  },
+  "GP_LEGAL_01": {
+    "pair_id": "GP_LEGAL_01",
+    "predecessor": "B_LEGAL_01",
+    "successor": "B_LEGAL_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "legal_agreement_status",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "法务是否审批通过协议及签署执行",
+    "outcome_or_current_state": "保密协议已完成签署用印，正式生效。",
+    "evidence_spans": [
+      "与阿尔法科技的战略合作双向保密协议正在法务处进行最终条款合规审查",
+      "双方总法务已经签署用印，该战略合作保密协议今日起正式生效"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2并非描述计划变更，而是对t1中处于审查阶段的悬念进行了最终结果的闭合。",
+      "CORRECTION_RETRACTION": "t2未否定t1的审查事实，而是推进了该流程的生命周期。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1明确提出了关于协议审批与签署的未决状态，t2提供了签署完成并生效的确定性事实，直接闭合了t1中的悬念，符合UNCERTAINTY_RESOLUTION定义。",
+    "cached": true
+  },
+  "GP_LEGAL_02": {
+    "pair_id": "GP_LEGAL_02",
+    "predecessor": "B_LEGAL_01",
+    "successor": "B_LEGAL_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "contract_terms_content",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "保密协议中的第四条排他期限条款因对方异议被修改为非排他合作，协议状态从合规审查转为条款修订阶段。",
+    "evidence_spans": [
+      "与阿尔法科技的战略合作双向保密协议正在法务处进行最终条款合规审查",
+      "阿尔法科技法务提出异议，第四条排他期限条款已被正式修改为非排他合作"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "N/A",
+      "CORRECTION_RETRACTION": "t2并非指出t1的陈述有误，而是描述了在t1之后发生的外部反馈导致的合同条款变更，属于客观状态变迁。",
+      "UNCERTAINTY_RESOLUTION": "t1中的核心悬念（法务是否审批通过）在t2中并未得到闭合，反而因条款变更进入了新的修订流程。"
+    },
+    "confidence": 0.95,
+    "adjudication_trace": "t1描述了协议处于合规审查阶段，t2描述了因外部（阿尔法科技）异议导致合同条款发生实质性变更。这属于合同谈判过程中的客观状态演进，而非对t1事实的否定或对悬念的最终解决。",
+    "cached": true
+  },
+  "GP_LEGAL_03": {
+    "pair_id": "GP_LEGAL_03",
+    "predecessor": "B_LEGAL_01",
+    "successor": "B_LEGAL_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "legal_counterparty_identity",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "纠正合作方名称，实际审查对象为贝塔科技而非阿尔法科技",
+    "evidence_spans": [
+      "与阿尔法科技的战略合作双向保密协议",
+      "我刚才口误说错了合作方名字，正在审查的是贝塔科技的协议，不是阿尔法科技"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1中的信息为口误，而非客观合作方发生了变更，属于认知纠错而非状态演变。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2并未解决t1中关于法务审批结果或签署时间的悬念，仅修正了主体身份。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t2明确使用了‘口误’、‘不是阿尔法科技’等词汇，直接否定了t1中关于合作方实体的陈述，符合CORRECTION_RETRACTION的定义。",
+    "cached": true
+  },
+  "GP_LEGAL_04": {
+    "pair_id": "GP_LEGAL_04",
+    "predecessor": "B_LEGAL_01",
+    "successor": "B_LEGAL_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "none",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 concerns a legal review of a partnership agreement with Alpha Tech, while t2 concerns a patent application submission to the National Intellectual Property Administration.",
+    "evidence_spans": [
+      "与阿尔法科技的战略合作双向保密协议正在法务处进行最终条款合规审查",
+      "今天向国家知识产权局提交了一项关于分布式缓存一致性的发明专利申请"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 does not modify, update, or change the status of the legal review mentioned in t1.",
+      "CORRECTION_RETRACTION": "t2 does not claim that the information in t1 was incorrect or erroneous.",
+      "UNCERTAINTY_RESOLUTION": "t2 provides no information regarding the approval status or signing timeline of the agreement mentioned in t1."
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 and t2 involve distinct legal entities (Alpha Tech vs. National Intellectual Property Administration) and distinct legal objects (NDA vs. Patent Application). There is no causal or logical link between the two events.",
+    "cached": true
+  },
+  "GP_EVENT_01": {
+    "pair_id": "GP_EVENT_01",
+    "predecessor": "B_EVENT_01",
+    "successor": "B_EVENT_02_SUCC",
+    "predicted_relation": "UNCERTAINTY_RESOLUTION",
+    "affected_dimension": "eventual_execution_status",
+    "prior_unknown_resolved": true,
+    "resolved_dimension": "周六比赛是否如期举行",
+    "outcome_or_current_state": "赛事已顺利鸣枪并完赛，三千名选手成功冲线",
+    "evidence_spans": [
+      "周六比赛是否如期举行",
+      "周六慈善马拉松顺利鸣枪完赛"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 描述的是事件的最终执行结果，而非计划的变更或撤销。",
+      "CORRECTION_RETRACTION": "t2 明确标注 is_revision 为 false，且内容是对 t1 计划的执行确认，而非对 t1 事实的否定。",
+      "UNCERTAINTY_RESOLUTION": "N/A"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1 提出了关于赛事是否如期举行的未决悬念，t2 提供了赛事顺利完赛的客观事实，闭合了该悬念，符合 UNCERTAINTY_RESOLUTION 定义。",
+    "cached": true
+  },
+  "GP_EVENT_02": {
+    "pair_id": "GP_EVENT_02",
+    "predecessor": "B_EVENT_01",
+    "successor": "B_EVENT_02_CHANGE",
+    "predicted_relation": "STATE_CHANGE",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "比赛时间由周六上午变更为周日上午，原因系雷暴预警导致的客观计划调整。",
+    "evidence_spans": [
+      "本周六上午在奥森公园举办的年度慈善半程马拉松赛事安排已全部就绪",
+      "因雷暴预警，比赛改期顺延至周日上午"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "符合定义，t1的计划在当时是真实的，t2因外部环境变化导致状态变迁。",
+      "CORRECTION_RETRACTION": "t1的陈述在当时是准确的，并非口误或认知错误，故排除。",
+      "UNCERTAINTY_RESOLUTION": "虽然时间维度发生了变化，但并未闭合t1中关于‘比赛是否如期举行’的悬念（因为比赛依然举行，只是时间变了），且属于计划变更而非结果达成。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1确立了周六比赛的计划，t2明确指出因雷暴预警（外部客观因素）导致比赛顺延至周日。这属于典型的客观状态变迁（STATE_CHANGE），而非对t1事实的否定或撤回。",
+    "cached": true
+  },
+  "GP_EVENT_03": {
+    "pair_id": "GP_EVENT_03",
+    "predecessor": "B_EVENT_01",
+    "successor": "B_EVENT_02_CORR",
+    "predicted_relation": "CORRECTION_RETRACTION",
+    "affected_dimension": "schedule_time",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "纠正了关于慈善半马举办时间的错误陈述，明确该赛事实际安排在下个月六号。",
+    "evidence_spans": [
+      "本周六上午在奥森公园举办的年度慈善半程马拉松赛事安排已全部就绪",
+      "我刚才看错通知口误了，这周六是全马选拔赛，慈善半马实际是下个月六号"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2明确指出t1的陈述是由于‘看错通知’导致的‘口误’，而非客观世界在t1之后发生了变迁。",
+      "CORRECTION_RETRACTION": "N/A",
+      "UNCERTAINTY_RESOLUTION": "t2是对t1事实性的否定与修正，而非对t1中未决悬念的闭合。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "t1陈述了赛事安排，t2明确使用了‘看错通知’、‘口误’等词汇，直接否定了t1中关于时间维度的陈述真实性，符合CORRECTION_RETRACTION的定义。",
+    "cached": true
+  },
+  "GP_EVENT_04": {
+    "pair_id": "GP_EVENT_04",
+    "predecessor": "B_EVENT_01",
+    "successor": "B_EVENT_02_UNRELATED",
+    "predicted_relation": "UNRELATED",
+    "affected_dimension": "None",
+    "prior_unknown_resolved": false,
+    "resolved_dimension": null,
+    "outcome_or_current_state": "t1 讨论的是周六的慈善马拉松赛事，t2 讨论的是购买露营帐篷，两者在主体、事件目标及场景上均无关联。",
+    "evidence_spans": [
+      "本周六上午在奥森公园举办的年度慈善半程马拉松赛事",
+      "今天下午在体育用品店为登山露营选购了一顶防风帐篷"
+    ],
+    "reason_competing_rejections": {
+      "STATE_CHANGE": "t2 未对 t1 的赛事计划进行任何变更或更新。",
+      "CORRECTION_RETRACTION": "t2 未提及 t1 存在任何错误或需要撤回的信息。",
+      "UNCERTAINTY_RESOLUTION": "t2 的内容与 t1 的赛事悬念（如天气、是否举行）完全无关，未提供任何闭合证据。"
+    },
+    "confidence": 1.0,
+    "adjudication_trace": "通过对比两个语义块的实体角色锚点（马拉松赛事 vs 露营帐篷）及领域动作，判定两者属于完全独立的事件，符合 UNRELATED 定义。",
+    "cached": true
+  }
+}

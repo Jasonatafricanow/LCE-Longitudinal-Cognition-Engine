@@ -1,0 +1,383 @@
+{
+  "date": "2026-09-25T11:36:06.916949+00:00",
+  "candidate_metrics": {
+    "dev": {
+      "L0": {
+        "level": "L0",
+        "total_possible_pairs": 741,
+        "candidates_produced": 739,
+        "true_relation_pairs_count": 27,
+        "true_candidates_recalled": 27,
+        "recall": 1.0,
+        "candidates_per_block": 18.94871794871795,
+        "reduction_pct": 0.26990553306343035,
+        "false_candidate_rate": 0.9634641407307172
+      },
+      "L1": {
+        "level": "L1",
+        "total_possible_pairs": 741,
+        "candidates_produced": 119,
+        "true_relation_pairs_count": 27,
+        "true_candidates_recalled": 24,
+        "recall": 0.8888888888888888,
+        "candidates_per_block": 3.051282051282051,
+        "reduction_pct": 83.94062078272604,
+        "false_candidate_rate": 0.7983193277310925
+      },
+      "L2": {
+        "level": "L2",
+        "total_possible_pairs": 741,
+        "candidates_produced": 78,
+        "true_relation_pairs_count": 27,
+        "true_candidates_recalled": 27,
+        "recall": 1.0,
+        "candidates_per_block": 2.0,
+        "reduction_pct": 89.47368421052632,
+        "false_candidate_rate": 0.6538461538461539
+      }
+    },
+    "held_out": {
+      "L0": {
+        "level": "L0",
+        "total_possible_pairs": 253,
+        "candidates_produced": 253,
+        "true_relation_pairs_count": 15,
+        "true_candidates_recalled": 15,
+        "recall": 1.0,
+        "candidates_per_block": 11.0,
+        "reduction_pct": 0.0,
+        "false_candidate_rate": 0.9407114624505929
+      },
+      "L1": {
+        "level": "L1",
+        "total_possible_pairs": 253,
+        "candidates_produced": 50,
+        "true_relation_pairs_count": 15,
+        "true_candidates_recalled": 15,
+        "recall": 1.0,
+        "candidates_per_block": 2.1739130434782608,
+        "reduction_pct": 80.23715415019763,
+        "false_candidate_rate": 0.7
+      },
+      "L2": {
+        "level": "L2",
+        "total_possible_pairs": 253,
+        "candidates_produced": 45,
+        "true_relation_pairs_count": 15,
+        "true_candidates_recalled": 15,
+        "recall": 1.0,
+        "candidates_per_block": 1.9565217391304348,
+        "reduction_pct": 82.21343873517787,
+        "false_candidate_rate": 0.6666666666666666
+      }
+    },
+    "total": {
+      "L0": {
+        "level": "L0",
+        "total_possible_pairs": 1891,
+        "candidates_produced": 1889,
+        "true_relation_pairs_count": 42,
+        "true_candidates_recalled": 42,
+        "recall": 1.0,
+        "candidates_per_block": 30.467741935483872,
+        "reduction_pct": 0.10576414595452333,
+        "false_candidate_rate": 0.9777660137638963
+      },
+      "L1": {
+        "level": "L1",
+        "total_possible_pairs": 1891,
+        "candidates_produced": 223,
+        "true_relation_pairs_count": 42,
+        "true_candidates_recalled": 39,
+        "recall": 0.9285714285714286,
+        "candidates_per_block": 3.596774193548387,
+        "reduction_pct": 88.20729772607086,
+        "false_candidate_rate": 0.8251121076233184
+      },
+      "L2": {
+        "level": "L2",
+        "total_possible_pairs": 1891,
+        "candidates_produced": 123,
+        "true_relation_pairs_count": 42,
+        "true_candidates_recalled": 42,
+        "recall": 1.0,
+        "candidates_per_block": 1.9838709677419355,
+        "reduction_pct": 93.49550502379694,
+        "false_candidate_rate": 0.6585365853658537
+      }
+    }
+  },
+  "adjudication_metrics": {
+    "dev": {
+      "level": "L3",
+      "total_evaluated": 33,
+      "overall_accuracy": 0.9696969696969697,
+      "state_change_accuracy": 1.0,
+      "correction_retraction_accuracy": 1.0,
+      "state_vs_correction_confusion_rate": 0.0,
+      "uncertainty_resolution_accuracy": 1.0,
+      "persistence_accuracy": 1.0,
+      "unrelated_rejection_accuracy": 1.0,
+      "unknown_relation_rate": 0.0,
+      "confusion_matrix": {
+        "UNCERTAINTY_RESOLUTION": {
+          "UNCERTAINTY_RESOLUTION": 12
+        },
+        "STATE_CHANGE": {
+          "STATE_CHANGE": 5
+        },
+        "CORRECTION_RETRACTION": {
+          "CORRECTION_RETRACTION": 5
+        },
+        "PERSISTENCE_CONFIRMATION": {
+          "PERSISTENCE_CONFIRMATION": 4
+        },
+        "UNRELATED": {
+          "UNRELATED": 6
+        },
+        "UNKNOWN_RELATION": {
+          "UNRELATED": 1
+        }
+      }
+    },
+    "held_out": {
+      "level": "L3",
+      "total_evaluated": 19,
+      "overall_accuracy": 0.9473684210526315,
+      "state_change_accuracy": 0.75,
+      "correction_retraction_accuracy": 1.0,
+      "state_vs_correction_confusion_rate": 0.0,
+      "uncertainty_resolution_accuracy": 1.0,
+      "persistence_accuracy": 1.0,
+      "unrelated_rejection_accuracy": 1.0,
+      "unknown_relation_rate": 0.0,
+      "confusion_matrix": {
+        "UNCERTAINTY_RESOLUTION": {
+          "UNCERTAINTY_RESOLUTION": 5
+        },
+        "STATE_CHANGE": {
+          "UNCERTAINTY_RESOLUTION": 1,
+          "STATE_CHANGE": 3
+        },
+        "CORRECTION_RETRACTION": {
+          "CORRECTION_RETRACTION": 4
+        },
+        "PERSISTENCE_CONFIRMATION": {
+          "PERSISTENCE_CONFIRMATION": 2
+        },
+        "UNRELATED": {
+          "UNRELATED": 4
+        }
+      }
+    }
+  },
+  "falsification_results": [
+    {
+      "falsification_id": "F1",
+      "name": "Time is necessary but insufficient",
+      "passed": true,
+      "evidence_summary": "Tested 10 unrelated temporal neighbors. Correct rejection rate: 100.0% (10/10).",
+      "details": {
+        "details": [
+          {
+            "pair_id": "GP_FLIGHT_07",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_REPORT_06",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_MEETING_05",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_HIRING_05",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_MED_04",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_SRV_05",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_LEASE_06",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_AUDIT_05",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_LEGAL_04",
+            "status": "PASS_REJECTED"
+          },
+          {
+            "pair_id": "GP_EVENT_04",
+            "status": "PASS_REJECTED"
+          }
+        ],
+        "accuracy": 1.0
+      }
+    },
+    {
+      "falsification_id": "F2",
+      "name": "Future evidence does not rewrite earlier truth",
+      "passed": true,
+      "evidence_summary": "Checked 62 SemanticBlocks. Content mutations detected: 0.",
+      "details": {
+        "mutations": []
+      }
+    },
+    {
+      "falsification_id": "F3",
+      "name": "UNKNOWN closes only with new evidence",
+      "passed": true,
+      "evidence_summary": "Audited 7 elapsed-time and persistent cases. Unsupported unknown closures: 0.",
+      "details": {
+        "unsupported_closures": []
+      }
+    },
+    {
+      "falsification_id": "F4",
+      "name": "State change != correction",
+      "passed": true,
+      "evidence_summary": "Evaluated 18 contrastive pairs. State change vs correction confusions: 0 (Error rate: 0.0%).",
+      "details": {
+        "confusions": [],
+        "rate": 0.0,
+        "pairs_tested": [
+          {
+            "pair_id": "GP_FLIGHT_04",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_FLIGHT_05",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_REPORT_03",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_REPORT_04",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_MEETING_01",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_MEETING_02",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_MED_02",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_MED_03",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_SRV_03",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_SRV_04",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_LEASE_03",
+            "gold": "STATE_CHANGE",
+            "pred": "UNCERTAINTY_RESOLUTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_LEASE_04",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_AUDIT_02",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_AUDIT_03",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_LEGAL_02",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_LEGAL_03",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_EVENT_02",
+            "gold": "STATE_CHANGE",
+            "pred": "STATE_CHANGE",
+            "confused": false
+          },
+          {
+            "pair_id": "GP_EVENT_03",
+            "gold": "CORRECTION_RETRACTION",
+            "pred": "CORRECTION_RETRACTION",
+            "confused": false
+          }
+        ]
+      }
+    },
+    {
+      "falsification_id": "F5",
+      "name": "Sparse candidate formation",
+      "passed": true,
+      "evidence_summary": "L2 Candidate Reduction: 93.5% vs all-pairs. True Relation Recall: 100.0%.",
+      "details": {
+        "reduction_pct": 93.49550502379694,
+        "recall": 1.0,
+        "candidates_produced": 123,
+        "total_possible": 1891
+      }
+    }
+  ],
+  "cost_metrics": {
+    "total_adjudication_calls": 52,
+    "calls_per_block": 0.8387096774193549,
+    "tokens_per_accepted_relation": 2211.9756097560976,
+    "avg_latency_ms": 4829.043819239954
+  }
+}
