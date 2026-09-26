@@ -340,24 +340,63 @@ class LceProjectionCore:
     def query(self, current_context: str | dict[str, object] | None) -> tuple[UnderstandingView, ...]:
         return self.read_api.query(current_context)
 
-    def invalidate_and_rebuild(self, evidence_id: str, *, cutoff: datetime | None = None) -> InvalidationResult:
-        invalidator = DependencyInvalidator(self.memory, self.discovery, self.worktrees, self.baselines)
+    def invalidate_and_rebuild(
+        self, evidence_id: str, *, cutoff: datetime | None = None
+    ) -> InvalidationResult:
+        """Standalone path: mutate the owned source, then rebuild projections."""
+        invalidator = DependencyInvalidator(
+            self.memory, self.discovery, self.worktrees, self.baselines
+        )
         result = invalidator.invalidate(evidence_id)
-        self.memory.rebuild_vector_index(deterministic_block_embedding, index_version="lce-vector-v1")
+        self._rebuild_after_source_change(cutoff=cutoff)
+        return result
+
+    def source_changed_and_rebuild(
+        self, evidence_id: str, *, cutoff: datetime | None = None
+    ) -> InvalidationResult:
+        """Embedded path: source owner already changed canonical lifecycle."""
+        invalidator = DependencyInvalidator(
+            self.memory, self.discovery, self.worktrees, self.baselines
+        )
+        result = invalidator.source_changed(evidence_id)
+        self._rebuild_after_source_change(cutoff=cutoff)
+        return result
+
+    def _rebuild_after_source_change(
+        self, *, cutoff: datetime | None
+    ) -> None:
+        self.memory.rebuild_vector_index(
+            deterministic_block_embedding,
+            index_version="lce-vector-v1",
+        )
         latest = cutoff or max(
-            (snapshot.cutoff for snapshot in self.discovery.snapshots.all_snapshots()),
+            (
+                snapshot.cutoff
+                for snapshot in self.discovery.snapshots.all_snapshots()
+            ),
             default=datetime.now(UTC),
         )
         previous = max(
-            (snapshot for snapshot in self.discovery.snapshots.all_snapshots() if snapshot.cutoff < latest),
+            (
+                snapshot
+                for snapshot in self.discovery.snapshots.all_snapshots()
+                if snapshot.cutoff < latest
+            ),
             key=lambda snapshot: snapshot.cutoff,
             default=None,
         )
         corrected_snapshot = self.discovery.create_snapshot(latest)
-        corrected_diff = self.discovery.diff(previous, corrected_snapshot) if previous else None
-        for candidate in self.discovery.higher_order_candidates(corrected_snapshot):
-            self._evaluate_candidate(candidate, corrected_snapshot, corrected_diff)
-        return result
+        corrected_diff = (
+            self.discovery.diff(previous, corrected_snapshot)
+            if previous
+            else None
+        )
+        for candidate in self.discovery.higher_order_candidates(
+            corrected_snapshot
+        ):
+            self._evaluate_candidate(
+                candidate, corrected_snapshot, corrected_diff
+            )
 
     def close(self) -> None:
         self.discovery.close()
