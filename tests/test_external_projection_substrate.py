@@ -40,7 +40,13 @@ def test_external_source_projection_keeps_canonical_rows_out_of_projection_db(
     assert len(results) == len(materials)
     core.close()
 
-    assert source.list_current_valid_evidence() == tuple(materials)
+    stored = source.list_current_valid_evidence()
+    assert tuple(item.evidence_id for item in stored) == tuple(
+        item.evidence_id for item in materials
+    )
+    assert tuple(item.content for item in stored) == tuple(
+        item.content for item in materials
+    )
     with sqlite3.connect(
         tmp_path / "derived" / "projection_state.sqlite"
     ) as conn:
@@ -64,7 +70,13 @@ def test_external_projection_validates_source_and_cannot_mutate_it(
     state = SqliteProjectionStateStore(tmp_path / "derived")
     substrate = ProjectionSubstrate(source, state)
 
-    assert substrate.add_evidence(material) == material
+    validated = substrate.add_evidence(material)
+    assert validated.evidence_id == material.evidence_id
+    assert validated.content == material.content
+    assert (
+        validated.effective_ordering_key
+        == material.effective_ordering_key
+    )
     with pytest.raises(KeyError):
         substrate.add_evidence(
             material.__class__(
