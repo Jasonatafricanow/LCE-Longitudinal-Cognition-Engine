@@ -1,0 +1,288 @@
+{
+  "frozen_sha": "85974a2",
+  "corpus_size": 33,
+  "gold_count": 18,
+  "candidate_metrics": {
+    "B0": {
+      "baseline_level": "B0",
+      "total_possible_pairs": 528,
+      "candidates_produced": 442,
+      "true_relation_pairs": 12,
+      "true_recalled": 8,
+      "recall": 0.6666666666666666,
+      "candidates_per_block": 13.393939393939394,
+      "reduction_pct": 16.287878787878785,
+      "false_candidate_rate": 0.9819004524886877,
+      "target_miss_ids": [
+        "h17_patent_pending__h18_patent_still_pending",
+        "h03_cert_plan__h04_cert_fail",
+        "h07_promotion_rumor__h08_promotion_confirmed",
+        "h01_marathon_plan__h02_marathon_done"
+      ]
+    },
+    "B1": {
+      "baseline_level": "B1",
+      "total_possible_pairs": 528,
+      "candidates_produced": 16,
+      "true_relation_pairs": 12,
+      "true_recalled": 5,
+      "recall": 0.4166666666666667,
+      "candidates_per_block": 0.48484848484848486,
+      "reduction_pct": 96.96969696969697,
+      "false_candidate_rate": 0.6875,
+      "target_miss_ids": [
+        "h25_symptoms__h26_diagnosis",
+        "h21_never_cooked__h22_actually_chef",
+        "h17_patent_pending__h18_patent_still_pending",
+        "h03_cert_plan__h04_cert_fail",
+        "h01_marathon_plan__h02_marathon_done",
+        "h07_promotion_rumor__h08_promotion_confirmed",
+        "h23_lease_end__h24_lease_early_termination"
+      ]
+    },
+    "B2": {
+      "baseline_level": "B2",
+      "total_possible_pairs": 528,
+      "candidates_produced": 56,
+      "true_relation_pairs": 12,
+      "true_recalled": 4,
+      "recall": 0.3333333333333333,
+      "candidates_per_block": 1.696969696969697,
+      "reduction_pct": 89.39393939393939,
+      "false_candidate_rate": 0.9285714285714286,
+      "target_miss_ids": [
+        "h25_symptoms__h26_diagnosis",
+        "h17_patent_pending__h18_patent_still_pending",
+        "h03_cert_plan__h04_cert_fail",
+        "h13_single__h14_relationship",
+        "h01_marathon_plan__h02_marathon_done",
+        "h11_loan_pending__h12_loan_approved",
+        "h07_promotion_rumor__h08_promotion_confirmed",
+        "h23_lease_end__h24_lease_early_termination"
+      ]
+    }
+  },
+  "adjudication_metrics": {
+    "total_evaluated": 7,
+    "relation_accuracy": 0.2857142857142857,
+    "correction_vs_state_confusion": 0.0,
+    "unrelated_rejection_accuracy": 0.0,
+    "persistence_accuracy": 1.0,
+    "unknown_relation_rate": 0.5714285714285714,
+    "confusion_matrix": {
+      "UNRELATED": {
+        "UNKNOWN_RELATION": 3
+      },
+      "STATE_CHANGE": {
+        "UNKNOWN_RELATION": 1,
+        "STATE_CHANGE": 1
+      },
+      "CORRECTION_RETRACTION": {
+        "UNRELATED": 1,
+        "CORRECTION_RETRACTION": 1
+      }
+    }
+  },
+  "knowledge_effect_metrics": {
+    "total_evaluated": 7,
+    "prior_unknown_resolution_precision": 1.0,
+    "prior_unknown_resolution_recall": 0.3333333333333333,
+    "wrong_unknown_closure_rate": 0.0,
+    "wrong_dimension_resolution_rate": 0.14285714285714285,
+    "evidence_free_closure_count": 0
+  },
+  "temporal_integrity": {
+    "reverse_time_errors": 0,
+    "future_leakage_count": 0,
+    "invalid_rewrite_count": 0,
+    "axis_confusion_count": 0,
+    "passed_all": true
+  },
+  "miss_analysis": [
+    {
+      "pair_id": "HG01",
+      "predecessor_id": "h01_marathon_plan",
+      "successor_id": "h02_marathon_done",
+      "semantic_family": "F1_plan_completed",
+      "cosine_sim": 0.2023,
+      "temporal_delta_days": 60.3,
+      "boundary_signals": [
+        "entity_overlap:3",
+        "semantic_time_proximity"
+      ],
+      "boundary_score": 0.3,
+      "miss_categories": [
+        "temporal_distance"
+      ]
+    },
+    {
+      "pair_id": "HG02",
+      "predecessor_id": "h03_cert_plan",
+      "successor_id": "h04_cert_fail",
+      "semantic_family": "F2_plan_failed",
+      "cosine_sim": 0.169,
+      "temporal_delta_days": 90.0,
+      "boundary_signals": [
+        "entity_overlap:2",
+        "plan_outcome_arc",
+        "semantic_time_proximity"
+      ],
+      "boundary_score": 0.55,
+      "miss_categories": [
+        "temporal_distance"
+      ]
+    },
+    {
+      "pair_id": "HG04",
+      "predecessor_id": "h07_promotion_rumor",
+      "successor_id": "h08_promotion_confirmed",
+      "semantic_family": "F4_confirmed",
+      "cosine_sim": 0.1147,
+      "temporal_delta_days": 80.0,
+      "boundary_signals": [
+        "entity_overlap:2"
+      ],
+      "boundary_score": 0.1,
+      "miss_categories": [
+        "temporal_distance",
+        "missing_semantic_anchor"
+      ]
+    },
+    {
+      "pair_id": "HG06",
+      "predecessor_id": "h11_loan_pending",
+      "successor_id": "h12_loan_approved",
+      "semantic_family": "F6_resolved",
+      "cosine_sim": 0.1286,
+      "temporal_delta_days": 15.0,
+      "boundary_signals": [
+        "entity_overlap:2"
+      ],
+      "boundary_score": 0.1,
+      "miss_categories": [
+        "missing_semantic_anchor"
+      ]
+    },
+    {
+      "pair_id": "HG07",
+      "predecessor_id": "h13_single",
+      "successor_id": "h14_relationship",
+      "semantic_family": "F7_state_change",
+      "cosine_sim": 0.1622,
+      "temporal_delta_days": 44.0,
+      "boundary_signals": [
+        "entity_overlap:2"
+      ],
+      "boundary_score": 0.1,
+      "miss_categories": [
+        "missing_semantic_anchor"
+      ]
+    },
+    {
+      "pair_id": "HG09",
+      "predecessor_id": "h17_patent_pending",
+      "successor_id": "h18_patent_still_pending",
+      "semantic_family": "F9_persistence",
+      "cosine_sim": 0.1147,
+      "temporal_delta_days": 46.0,
+      "boundary_signals": [
+        "entity_overlap:2",
+        "persistence_cue"
+      ],
+      "boundary_score": 0.35,
+      "miss_categories": [
+        "temporal_distance"
+      ]
+    },
+    {
+      "pair_id": "HG12",
+      "predecessor_id": "h23_lease_end",
+      "successor_id": "h24_lease_early_termination",
+      "semantic_family": "F12_future_changed",
+      "cosine_sim": 0.0668,
+      "temporal_delta_days": 22.0,
+      "boundary_signals": [
+        "validity_window_overlap"
+      ],
+      "boundary_score": 0.2,
+      "miss_categories": [
+        "vector_miss",
+        "lexical_discontinuity",
+        "missing_semantic_anchor"
+      ]
+    },
+    {
+      "pair_id": "HG13",
+      "predecessor_id": "h25_symptoms",
+      "successor_id": "h26_diagnosis",
+      "semantic_family": "F13_weak_lexical_strong_relation",
+      "cosine_sim": 0.0,
+      "temporal_delta_days": 3.3,
+      "boundary_signals": [
+        "semantic_time_proximity"
+      ],
+      "boundary_score": 0.15,
+      "miss_categories": [
+        "vector_miss",
+        "lexical_discontinuity",
+        "missing_semantic_anchor"
+      ]
+    },
+    {
+      "pair_id": "HG11",
+      "predecessor_id": "h21_never_cooked",
+      "successor_id": "h22_actually_chef",
+      "semantic_family": "F11_late_fact",
+      "cosine_sim": 0.0,
+      "temporal_delta_days": 9.0,
+      "boundary_signals": [
+        "correction_cue"
+      ],
+      "boundary_score": 0.4,
+      "miss_categories": [
+        "vector_miss",
+        "lexical_discontinuity"
+      ],
+      "b1_only_miss": true
+    }
+  ],
+  "marginal_value": {
+    "b1_recall": 0.4166666666666667,
+    "b2_recall": 0.3333333333333333,
+    "b1_volume": 16,
+    "b2_volume": 56,
+    "b1_only_targets": [
+      "HG06",
+      "HG07"
+    ],
+    "b2_only_targets": [
+      "HG11"
+    ],
+    "both_recall": [
+      "HG03",
+      "HG05",
+      "HG08"
+    ],
+    "neither_recall": [
+      "HG01",
+      "HG02",
+      "HG04",
+      "HG09",
+      "HG12",
+      "HG13"
+    ],
+    "b2_marginal_false": 41
+  },
+  "q4_dual_axis_cases": [
+    "B2_h03_cert_plan__h23_lease_end",
+    "B2_h17_patent_pending__h07_promotion_rumor",
+    "B2_h17_patent_pending__h23_lease_end",
+    "B2_h17_patent_pending__h10_office_stay",
+    "B2_h07_promotion_rumor__h23_lease_end",
+    "B2_h07_promotion_rumor__h10_office_stay",
+    "B2_h09_office_move_rumor__h23_lease_end",
+    "B2_h09_office_move_rumor__h10_office_stay",
+    "B2_h11_loan_pending__h10_office_stay"
+  ],
+  "verdict": "NOT_SUPPORTED"
+}
