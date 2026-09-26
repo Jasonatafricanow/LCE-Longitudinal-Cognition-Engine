@@ -1,4 +1,8 @@
-"""Storage-independent longitudinal projection pipeline.\n\nConcrete standalone storage is composed in lce.runtime; this module owns only\nthe cognition pipeline and injected substrate/store dependencies.\n"""
+"""Source-store-independent longitudinal projection pipeline.
+
+Concrete standalone source storage is composed in lce.runtime. This module owns
+LCE-derived projection state and consumes an injected source/working substrate.
+"""
 
 from __future__ import annotations
 
