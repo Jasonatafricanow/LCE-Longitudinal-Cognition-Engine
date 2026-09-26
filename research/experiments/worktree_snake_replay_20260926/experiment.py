@@ -544,9 +544,169 @@ def simulate(
     )
 
 
+
+def mature_probe_corpus() -> tuple[SemanticPoint, ...]:
+    """Fresh probes evaluated only after six cognition branches already exist.
+
+    This isolates the user's core claim: once a branch has accumulated a
+    coherent logical envelope, can it recall semantically distributed evidence
+    that no single historical point represents well?
+    """
+
+    probes = [
+        _p("pj01", 260, "An application moved straight into interview preparation.", ["ctx_job", "application", "interview", "external_search", "scheduling"], ["JOB_LEAVE"]),
+        _p("pj02", 265, "A recruiter revisited the management issue while discussing another role.", ["ctx_job", "recruiter", "management_conflict", "external_search", "role_scope"], ["JOB_LEAVE"]),
+        _p("pj03", 271, "I reused the revised resume for a later interview.", ["ctx_job", "resume", "interview", "browsing", "preparation"], ["JOB_LEAVE"]),
+        _p("pj04", 278, "Another external application was motivated by the same management friction.", ["ctx_job", "application", "management_conflict", "external_search", "motivation"], ["JOB_LEAVE"]),
+
+        _p("pj05", 262, "The promotion package now combines compensation and a broader internal role.", ["ctx_job", "promotion", "compensation", "internal_role", "package"], ["JOB_STAY"]),
+        _p("pj06", 269, "Manager support and the raise made the leadership path more credible.", ["ctx_job", "manager_support", "raise", "career_growth", "credibility"], ["JOB_STAY"]),
+        _p("pj07", 276, "Retention now depends on both promotion scope and salary.", ["ctx_job", "retention", "promotion", "compensation", "condition"], ["JOB_STAY"]),
+        _p("pj08", 283, "The internal role grew after the manager backed the promotion.", ["ctx_job", "internal_role", "manager_support", "promotion", "scope"], ["JOB_STAY"]),
+
+        _p("ph01", 261, "A viewing triggered a moving quote for the shorter commute.", ["ctx_home", "viewing", "moving_company", "commute", "quote"], ["HOME_MOVE"]),
+        _p("ph02", 267, "The neighborhood choice is now tied to relocation logistics.", ["ctx_home", "neighborhood", "relocation", "moving_company", "planning"], ["HOME_MOVE"]),
+        _p("ph03", 274, "Another viewing made the relocation plan concrete enough to schedule movers.", ["ctx_home", "viewing", "relocation", "moving_company", "schedule"], ["HOME_MOVE"]),
+        _p("ph04", 281, "The commute advantage survived comparison with a different neighborhood.", ["ctx_home", "commute", "neighborhood", "relocation", "comparison"], ["HOME_MOVE"]),
+
+        _p("ph05", 263, "The renewal offer now combines a rent discount and completed repairs.", ["ctx_home", "renewal", "rent_discount", "repair", "package"], ["HOME_STAY"]),
+        _p("ph06", 270, "The landlord used the repairs to strengthen the renewal proposal.", ["ctx_home", "landlord_offer", "repair", "renewal", "proposal"], ["HOME_STAY"]),
+        _p("ph07", 277, "A lower rent plus the repaired kitchen changed the stay calculation.", ["ctx_home", "rent_discount", "repair", "renewal", "comparison"], ["HOME_STAY"]),
+        _p("ph08", 284, "The final landlord offer preserved the renewal option.", ["ctx_home", "landlord_offer", "renewal", "rent_discount", "option"], ["HOME_STAY"]),
+
+        _p("pa01", 264, "The prototype and migration replay now share the new stack.", ["ctx_arch", "prototype", "migration", "new_stack", "integration"], ["ARCH_REWRITE"]),
+        _p("pa02", 268, "A new-stack prototype was exercised through another replay.", ["ctx_arch", "prototype", "replay", "new_stack", "validation"], ["ARCH_REWRITE"]),
+        _p("pa03", 275, "Migration work reused the adapter created during the prototype.", ["ctx_arch", "migration", "adapter", "prototype", "reuse"], ["ARCH_REWRITE"]),
+        _p("pa04", 282, "The new stack replay exposed the next migration step.", ["ctx_arch", "new_stack", "replay", "migration", "sequence"], ["ARCH_REWRITE"]),
+
+        _p("pa05", 266, "A compatibility release packaged the latest incremental patch.", ["ctx_arch", "compatibility", "release", "incremental", "package"], ["ARCH_PATCH"]),
+        _p("pa06", 272, "Maintenance still relies on the adapter compatibility layer.", ["ctx_arch", "maintenance", "adapter", "compatibility", "legacy"], ["ARCH_PATCH"]),
+        _p("pa07", 279, "The patch release kept the incremental path viable.", ["ctx_arch", "patch", "release", "incremental", "viability"], ["ARCH_PATCH"]),
+        _p("pa08", 286, "Compatibility maintenance absorbed one more incremental change.", ["ctx_arch", "compatibility", "maintenance", "incremental", "change"], ["ARCH_PATCH"]),
+
+        # Deliberately multi-branch evidence: one observation updates both live futures.
+        _p("pm01", 290, "External interviews and the internal promotion are both active in the decision.", ["ctx_job", "interview", "external_search", "promotion", "retention", "uncertainty"], ["JOB_LEAVE", "JOB_STAY"]),
+        _p("pm02", 292, "A new-home viewing and the renewal discount are being compared side by side.", ["ctx_home", "viewing", "relocation", "renewal", "rent_discount", "uncertainty"], ["HOME_MOVE", "HOME_STAY"]),
+        _p("pm03", 294, "Migration replay continues while compatibility releases remain necessary.", ["ctx_arch", "migration", "replay", "compatibility", "release", "uncertainty"], ["ARCH_REWRITE", "ARCH_PATCH"]),
+
+        # Same worktree context, intentionally unrelated to either active branch.
+        _p("pn01", 296, "I changed the avatar on the careers portal.", ["ctx_job", "avatar", "portal_ui"]),
+        _p("pn02", 297, "The apartment building changed its parcel locker code.", ["ctx_home", "parcel_locker", "access_code"]),
+        _p("pn03", 298, "The repository README typo was corrected.", ["ctx_arch", "readme", "typo"]),
+    ]
+    return tuple(sorted(probes, key=lambda p: (p.day, p.point_id)))
+
+
+def _established_branches() -> tuple[BranchState, ...]:
+    points_by_id = {p.point_id: p for p in corpus()}
+    scoring_features = frozenset(_feature_weights(corpus()))
+    fixtures = (
+        ("MB1", "WT_JOB", ("j01", "j02", "j05")),
+        ("MB2", "WT_JOB", ("j03", "j04", "j06")),
+        ("MB3", "WT_HOME", ("h01", "h02", "h05")),
+        ("MB4", "WT_HOME", ("h03", "h04", "h06")),
+        ("MB5", "WT_ARCH", ("a01", "a02", "a05")),
+        ("MB6", "WT_ARCH", ("a03", "a04", "a06")),
+    )
+    branches: list[BranchState] = []
+    for branch_id, worktree_id, support_ids in fixtures:
+        branch = BranchState(branch_id, worktree_id, created_step=0)
+        for support_id in support_ids:
+            branch.add(points_by_id[support_id], scoring_features=scoring_features)
+        branches.append(branch)
+    return tuple(branches)
+
+
+def mature_probe_benchmark(threshold: float) -> dict[str, object]:
+    historical = corpus()
+    probes = mature_probe_corpus()
+    roots = baselines()
+    all_for_weights = historical + probes
+    weights = _feature_weights(all_for_weights)
+    historical_by_id = {p.point_id: p for p in historical}
+    branches = _established_branches()
+    alignment = _align_branches(branches, historical_by_id)
+
+    gold_memberships = 0
+    envelope_hits = 0
+    point_hits = 0
+    exact_multi_total = 0
+    exact_multi_hits = 0
+    false_candidates = 0
+    candidate_count = 0
+    per_probe: dict[str, object] = {}
+
+    for probe in probes:
+        worktree_id = _route_worktree(probe, roots)
+        eligible = [branch for branch in branches if branch.worktree_id == worktree_id]
+        envelope_candidates = tuple(
+            branch.branch_id
+            for score, branch in sorted(
+                ((_branch_envelope_score(branch, probe, weights), branch) for branch in eligible),
+                key=lambda item: item[0],
+                reverse=True,
+            )
+            if score >= threshold
+        )
+        point_candidates = tuple(
+            branch.branch_id
+            for score, branch in sorted(
+                ((_branch_point_score(branch, probe, historical_by_id, weights), branch) for branch in eligible),
+                key=lambda item: item[0],
+                reverse=True,
+            )
+            if score >= threshold
+        )
+
+        env_labels = {alignment.get(branch_id) for branch_id in envelope_candidates}
+        point_labels = {alignment.get(branch_id) for branch_id in point_candidates}
+        candidate_count += len(envelope_candidates)
+        false_candidates += sum(
+            1 for branch_id in envelope_candidates
+            if alignment.get(branch_id) not in probe.gold_branches
+        )
+
+        gold_memberships += len(probe.gold_branches)
+        envelope_hits += sum(label in env_labels for label in probe.gold_branches)
+        point_hits += sum(label in point_labels for label in probe.gold_branches)
+
+        if len(probe.gold_branches) > 1:
+            exact_multi_total += 1
+            exact_multi_hits += int(probe.gold_branches.issubset(env_labels))
+
+        per_probe[probe.point_id] = {
+            "gold": sorted(probe.gold_branches),
+            "envelope_candidates": list(envelope_candidates),
+            "envelope_labels": sorted(label for label in env_labels if label is not None),
+            "point_candidates": list(point_candidates),
+            "point_labels": sorted(label for label in point_labels if label is not None),
+        }
+
+    return {
+        "threshold": threshold,
+        "probe_count": len(probes),
+        "gold_memberships": gold_memberships,
+        "envelope_hits": envelope_hits,
+        "envelope_recall": envelope_hits / gold_memberships if gold_memberships else 0.0,
+        "point_hits": point_hits,
+        "point_recall": point_hits / gold_memberships if gold_memberships else 0.0,
+        "recall_gain_vs_point": (
+            (envelope_hits - point_hits) / gold_memberships if gold_memberships else 0.0
+        ),
+        "multi_branch_exact_total": exact_multi_total,
+        "multi_branch_exact_hits": exact_multi_hits,
+        "multi_branch_exact_recall": exact_multi_hits / exact_multi_total if exact_multi_total else 0.0,
+        "candidate_count": candidate_count,
+        "false_candidates": false_candidates,
+        "false_candidate_fraction": false_candidates / candidate_count if candidate_count else 0.0,
+        "branch_alignment": alignment,
+        "per_probe": per_probe,
+    }
+
 def benchmark() -> dict[str, object]:
     thresholds = (0.30, 0.40, 0.50, 0.60)
     runs = [simulate(threshold) for threshold in thresholds]
+    mature_runs = [mature_probe_benchmark(threshold) for threshold in thresholds]
     return {
         "experiment": "worktree-snake-chronological-replay",
         "mechanism": {
@@ -564,7 +724,8 @@ def benchmark() -> dict[str, object]:
             "gold_memberships": sum(len(p.gold_branches) for p in corpus()),
             "max_day": max(p.day for p in corpus()),
         },
-        "runs": [run.summary for run in runs],
+        "end_to_end_replay": [run.summary for run in runs],
+        "mature_branch_probes": mature_runs,
     }
 
 
