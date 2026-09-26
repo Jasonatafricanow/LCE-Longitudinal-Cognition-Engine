@@ -98,9 +98,19 @@ def test_benchmark_reports_recall_without_asserting_success() -> None:
     report = exp.benchmark()
 
     assert report["corpus"]["gold_branches"] == 6
-    assert len(report["runs"]) == 4
-    for run in report["runs"]:
+    assert len(report["end_to_end_replay"]) == 4
+    assert len(report["mature_branch_probes"]) == 4
+    for run in report["end_to_end_replay"]:
         assert 0.0 <= run["envelope_candidate_recall"] <= 1.0
         assert 0.0 <= run["point_candidate_recall"] <= 1.0
         assert 0.0 <= run["seed_coverage"] <= 1.0
         assert 0.0 <= run["false_candidate_fraction"] <= 1.0
+
+
+def test_mature_probe_benchmark_compares_compiled_branch_against_isolated_points() -> None:
+    report = exp.mature_probe_benchmark(0.50)
+
+    assert report["gold_memberships"] > 0
+    assert 0.0 <= report["envelope_recall"] <= 1.0
+    assert 0.0 <= report["point_recall"] <= 1.0
+    assert 0.0 <= report["multi_branch_exact_recall"] <= 1.0
