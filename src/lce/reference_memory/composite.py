@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable, Mapping
 from datetime import datetime
 
@@ -50,7 +51,16 @@ class ProjectionSubstrate:
             and left.content == right.content
             and left.occurred_at == right.occurred_at
             and left.effective_ordering_key == right.effective_ordering_key
-            and dict(left.provenance) == dict(right.provenance)
+            and json.dumps(
+                dict(left.provenance),
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            == json.dumps(
+                dict(right.provenance),
+                sort_keys=True,
+                separators=(",", ":"),
+            )
             and left.state == right.state
             and left.superseded_by == right.superseded_by
         )
