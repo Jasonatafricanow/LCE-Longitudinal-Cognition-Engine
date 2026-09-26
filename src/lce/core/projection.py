@@ -62,7 +62,7 @@ class ProcessResult:
 
 
 class LceProjectionCore:
-    """Storage-independent cognition pipeline.
+    """Source-store-independent cognition pipeline.
 
     The core never constructs a factual/source store. A caller must inject the
     substrate that supplies source validity plus rebuildable semantic-block and
@@ -74,11 +74,11 @@ class LceProjectionCore:
         self,
         root: Path | str,
         *,
+        memory: ReferenceMemorySubstratePort,
         provider: SemanticDecisionProvider | None = None,
         policy: PromotionPolicy | None = None,
         lineage_id: str = "default",
         structure_config: StructureConfig | None = None,
-        memory: ReferenceMemorySubstratePort,
         interpreter: BoundedInterpreter | None = None,
         close_memory: bool = False,
     ) -> None:
