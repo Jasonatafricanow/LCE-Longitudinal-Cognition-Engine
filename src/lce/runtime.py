@@ -1,6 +1,6 @@
 """Standalone LCE composition wrapper.
 
-The cognition pipeline lives in :mod:\`lce.core.projection\`. This module keeps
+The cognition pipeline lives in :mod:`lce.core.projection`. This module keeps
 the convenience runtime that composes the bundled ReferenceMemoryStore for
 standalone demos and research runs.
 """
