@@ -20,8 +20,9 @@ from lce.contracts.external_memory import (
     MemorySubstratePort,
 )
 from lce.core.engine import LceCore
+from lce.core.projection import LceProjectionCore, ProcessResult
 from lce.read_api import AcceptedUnderstandingReadAPI, UnderstandingView
-from lce.runtime import LceRuntime, ProcessResult
+from lce.runtime import LceRuntime
 from lce.store.interface import BaselineStorePort
 from lce.store.sqlite_store import SqliteBaselineStore, StorageIntegrityError
 
@@ -35,6 +36,7 @@ __all__ = [
     "EmptyNeighborhoodError",
     "LceCore",
     "LceError",
+    "LceProjectionCore",
     "LceRuntime",
     "MemoryItemView",
     "MemorySubstratePort",

@@ -146,6 +146,105 @@ class CompilerCheckpoint:
 
 
 @runtime_checkable
+class CanonicalEvidenceSourcePort(Protocol):
+    """Read-only canonical source authority consumed by an embedded LCE projection."""
+
+    def get_evidence(self, evidence_id: str) -> RawEvidence:
+        ...
+
+    def list_current_valid_evidence(self) -> tuple[RawEvidence, ...]:
+        ...
+
+
+@runtime_checkable
+class DerivedProjectionStatePort(Protocol):
+    """LCE-owned derived state with no factual/source write authority."""
+
+    def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
+        ...
+
+    def get_semantic_block(self, block_id: str) -> SemanticBlock:
+        ...
+
+    def get_semantic_block_state(self, state_id: str) -> SemanticBlock:
+        ...
+
+    def list_semantic_blocks(self) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def list_semantic_block_states(self) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def list_semantic_blocks_at_cutoff(self, cutoff: datetime) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def extend_semantic_block(
+        self,
+        block_id: str,
+        *,
+        content: str | None,
+        evidence_id: str,
+        occurred_at: datetime,
+    ) -> SemanticBlock:
+        ...
+
+    def replace_vector_index(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        embedder: Callable[[SemanticBlock], tuple[float, ...]],
+        *,
+        index_version: str,
+    ) -> None:
+        ...
+
+    def delete_vector_index(self) -> None:
+        ...
+
+    def get_vector(self, block_id: str, *, state_id: str | None = None) -> VectorProjection:
+        ...
+
+    def vector_projection_ids(self) -> tuple[str, ...]:
+        ...
+
+    def get_checkpoint(self, lineage_id: str) -> CompilerCheckpoint | None:
+        ...
+
+    def save_checkpoint(self, checkpoint: CompilerCheckpoint) -> None:
+        ...
+
+    def commit_compilation(
+        self,
+        *,
+        evidence_id: str,
+        lineage_id: str,
+        block_states: tuple[SemanticBlock, ...],
+        block_ids: tuple[str, ...],
+        decision: Mapping[str, object],
+        checkpoint: CompilerCheckpoint,
+    ) -> None:
+        ...
+
+    def compiled_block_ids(self, evidence_id: str) -> tuple[str, ...] | None:
+        ...
+
+    def mark_pending_failure(
+        self, lineage_id: str, *, evidence_id: str, ordering_key: str
+    ) -> None:
+        ...
+
+    def get_pipeline_stage(self, evidence_id: str) -> str | None:
+        ...
+
+    def mark_pipeline_stage(
+        self, evidence_id: str, stage: str, *, fingerprint: str | None = None
+    ) -> None:
+        ...
+
+    def close(self) -> None:
+        ...
+
+
+@runtime_checkable
 class ReferenceMemoryPort(Protocol):
     """Compatibility evidence port for callers that only need raw evidence."""
 

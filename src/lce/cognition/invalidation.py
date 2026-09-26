@@ -36,8 +36,18 @@ class DependencyInvalidator:
         self.worktrees: CognitionWorktreeStore = worktrees
         self.baselines = baselines
 
-    def invalidate(self, evidence_id: str, *, reason: str = "source evidence changed") -> InvalidationResult:
+    def invalidate(
+        self, evidence_id: str, *, reason: str = "source evidence changed"
+    ) -> InvalidationResult:
         self.memory.invalidate(evidence_id, reason=reason)
+        return self.source_changed(evidence_id)
+
+    def source_changed(self, evidence_id: str) -> InvalidationResult:
+        """Propagate an already-authoritative source lifecycle change.
+
+        Embedded runtimes own their canonical source and must mutate it before
+        asking LCE to invalidate dependent projections.
+        """
         affected_blocks = tuple(
             block.block_id
             for block in self.memory.list_semantic_blocks(current_valid_only=False)
