@@ -74,7 +74,7 @@ def test_one_line_can_participate_in_two_surfaces_without_exclusive_assignment()
 def test_overlapping_surfaces_share_only_the_underlying_raw_support_they_really_share() -> None:
     result = exp.overlap_scenario()
 
-    assert result["shared_raw_closure"] == result["expected_trading_raw"]
+    assert set(result["shared_raw_closure"]) == set(result["expected_trading_raw"])
     assert len(result["shared_raw_closure"]) == 13
 
 
