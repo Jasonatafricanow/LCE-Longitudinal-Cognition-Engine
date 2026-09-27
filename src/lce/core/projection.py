@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
@@ -43,6 +43,10 @@ from lce.structure.contracts import (
     StructureSnapshot,
 )
 from lce.structure.discovery import SnapshotStructureDiscovery
+from lce.structure.frontier import (
+    FrontierCandidateDiscovery,
+    FrontierDiscoveryConfig,
+)
 
 
 def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
@@ -65,6 +69,12 @@ class ProcessResult:
     promotions: tuple[ConsolidationResult, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class _CandidateEvaluation:
+    handled: bool
+    promotion: ConsolidationResult | None = None
+
+
 class LceProjectionCore:
     """Source-store-independent cognition pipeline.
 
@@ -83,60 +93,168 @@ class LceProjectionCore:
         policy: PromotionPolicy | None = None,
         lineage_id: str = "default",
         structure_config: StructureConfig | None = None,
+        frontier_config: FrontierDiscoveryConfig | None = None,
         interpreter: BoundedInterpreter | None = None,
+        block_embedder: Callable[
+            [SemanticBlock], tuple[float, ...]
+        ] | None = None,
+        block_embedding_version: str = "lce-vector-v1",
         close_memory: bool = False,
     ) -> None:
         if type(close_memory) is not bool:
             raise TypeError("close_memory must be bool")
+        if (
+            not isinstance(block_embedding_version, str)
+            or not block_embedding_version.strip()
+        ):
+            raise ValueError("block_embedding_version must be nonempty")
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.memory = memory
         self._close_memory = close_memory
         self.baselines = SqliteBaselineStore(self.root / "baselines")
         self.worktrees = CognitionWorktreeStore(self.root / "worktrees")
-        self.discovery = SnapshotStructureDiscovery(self.memory, self.root / "structures", config=structure_config)
-        self.compiler = SemanticCompiler(self.memory, provider, lineage_id=lineage_id)
+        self.discovery = SnapshotStructureDiscovery(
+            self.memory,
+            self.root / "structures",
+            config=structure_config,
+        )
+        self.frontier = FrontierCandidateDiscovery(
+            baselines=self.baselines,
+            worktrees=self.worktrees,
+            config=frontier_config,
+        )
+        self.compiler = SemanticCompiler(
+            self.memory,
+            provider,
+            lineage_id=lineage_id,
+        )
         self.policy = policy or ConservativePromotionPolicy()
         self.interpreter = interpreter or RuleBasedBoundedInterpreter()
-        self.promoter = UnderstandingPromoter(
-            memory=self.memory, baseline_store=self.baselines, worktree_store=self.worktrees, policy=self.policy
+        self._block_embedder = (
+            block_embedder or deterministic_block_embedding
         )
-        self.read_api = AcceptedUnderstandingReadAPI(memory=self.memory, baseline_store=self.baselines)
+        self._block_embedding_version = block_embedding_version.strip()
+        self.promoter = UnderstandingPromoter(
+            memory=self.memory,
+            baseline_store=self.baselines,
+            worktree_store=self.worktrees,
+            policy=self.policy,
+        )
+        self.read_api = AcceptedUnderstandingReadAPI(
+            memory=self.memory,
+            baseline_store=self.baselines,
+        )
 
-    def process(self, material: RawEvidence, *, mode: str = "nearline") -> ProcessResult:
+    def process(
+        self, material: RawEvidence, *, mode: str = "nearline"
+    ) -> ProcessResult:
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
         compiler_result = self.compiler.process(material)
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
-            return self._completed_replay_result(material, compiler_result)
-        if stage not in {"vector-ready", "snapshot/discovery-evaluated", "worktree-support-evaluated", "promotion-evaluated", "complete"}:
-            self.memory.rebuild_vector_index(deterministic_block_embedding, index_version="lce-vector-v1")
-            self.memory.mark_pipeline_stage(material.evidence_id, "vector-ready", fingerprint="lce-vector-v1")
+            return self._completed_replay_result(
+                material,
+                compiler_result,
+            )
+        if stage not in {
+            "vector-ready",
+            "snapshot/discovery-evaluated",
+            "worktree-support-evaluated",
+            "promotion-evaluated",
+            "complete",
+        }:
+            self.memory.rebuild_vector_index(
+                self._block_embedder,
+                index_version=self._block_embedding_version,
+            )
+            self.memory.mark_pipeline_stage(
+                material.evidence_id,
+                "vector-ready",
+                fingerprint=self._block_embedding_version,
+            )
         previous = max(
-            (snapshot for snapshot in self.discovery.snapshots.all_snapshots() if snapshot.cutoff < material.occurred_at),
+            (
+                snapshot
+                for snapshot in self.discovery.snapshots.all_snapshots()
+                if snapshot.cutoff < material.occurred_at
+            ),
             key=lambda snapshot: snapshot.cutoff,
             default=None,
         )
         snapshot = self.discovery.create_snapshot(material.occurred_at)
-        diff = self.discovery.diff(previous, snapshot) if previous else None
-        candidates = self.discovery.higher_order_candidates(snapshot)
+        diff = (
+            self.discovery.diff(previous, snapshot)
+            if previous
+            else None
+        )
+
+        frontier_candidates = self.frontier.candidates(
+            snapshot,
+            current_block_ids=compiler_result.block_ids,
+        )
+        structure_candidates = self.discovery.higher_order_candidates(
+            snapshot
+        )
+        candidates = (*frontier_candidates, *structure_candidates)
         promotions: list[ConsolidationResult] = []
-        self.memory.mark_pipeline_stage(material.evidence_id, "snapshot/discovery-evaluated", fingerprint=snapshot.snapshot_id)
-        for candidate in candidates:
-            result = self._evaluate_candidate(
+
+        self.memory.mark_pipeline_stage(
+            material.evidence_id,
+            "snapshot/discovery-evaluated",
+            fingerprint=snapshot.snapshot_id,
+        )
+
+        frontier_handled = False
+        for candidate in frontier_candidates:
+            outcome = self._evaluate_candidate(
                 candidate,
                 snapshot,
                 diff,
                 replayed=compiler_result.replayed,
                 processing_input_id=material.evidence_id,
             )
-            if result is not None:
-                promotions.append(result)
-        self.memory.mark_pipeline_stage(material.evidence_id, "worktree-support-evaluated", fingerprint=snapshot.snapshot_id)
-        self.memory.mark_pipeline_stage(material.evidence_id, "promotion-evaluated", fingerprint=snapshot.snapshot_id)
-        self.memory.mark_pipeline_stage(material.evidence_id, "complete", fingerprint=snapshot.snapshot_id)
-        return ProcessResult(compiler_result, snapshot, diff, candidates, tuple(promotions))
+            frontier_handled = frontier_handled or outcome.handled
+            if outcome.promotion is not None:
+                promotions.append(outcome.promotion)
+
+        # Frontier is the primary incremental path.  Legacy 06R remains the
+        # discovery fallback when no existing cognition can absorb the input.
+        if not frontier_handled:
+            for candidate in structure_candidates:
+                outcome = self._evaluate_candidate(
+                    candidate,
+                    snapshot,
+                    diff,
+                    replayed=compiler_result.replayed,
+                    processing_input_id=material.evidence_id,
+                )
+                if outcome.promotion is not None:
+                    promotions.append(outcome.promotion)
+
+        self.memory.mark_pipeline_stage(
+            material.evidence_id,
+            "worktree-support-evaluated",
+            fingerprint=snapshot.snapshot_id,
+        )
+        self.memory.mark_pipeline_stage(
+            material.evidence_id,
+            "promotion-evaluated",
+            fingerprint=snapshot.snapshot_id,
+        )
+        self.memory.mark_pipeline_stage(
+            material.evidence_id,
+            "complete",
+            fingerprint=snapshot.snapshot_id,
+        )
+        return ProcessResult(
+            compiler_result,
+            snapshot,
+            diff,
+            candidates,
+            tuple(promotions),
+        )
 
     def _completed_replay_result(
         self, material: RawEvidence, compiler_result: CompilerResult
@@ -165,6 +283,63 @@ class LceProjectionCore:
         ordered = sorted(materials, key=lambda item: (item.effective_ordering_key, item.evidence_id))
         return tuple(self.process(material, mode="batch") for material in ordered)
 
+    @staticmethod
+    def _frontier_refs(
+        candidate: HigherOrderCandidate,
+    ) -> tuple[str, ...]:
+        raw = candidate.metadata.get("frontier_refs", ())
+        if not isinstance(raw, (list, tuple)):
+            return ()
+        return tuple(
+            dict.fromkeys(
+                item
+                for item in raw
+                if isinstance(item, str) and item.strip()
+            )
+        )
+
+    @classmethod
+    def _candidate_region_id(
+        cls,
+        candidate: HigherOrderCandidate,
+    ) -> str:
+        if candidate.relation_type == "frontier_absorption":
+            target = candidate.metadata.get("target_region_id")
+            if not isinstance(target, str) or not target.strip():
+                raise ValueError(
+                    "frontier absorption requires target_region_id"
+                )
+            return target
+        if candidate.relation_type == "frontier_boundary":
+            regions = candidate.metadata.get(
+                "frontier_region_ids",
+                (),
+            )
+            if not isinstance(regions, (list, tuple)):
+                raise ValueError(
+                    "frontier boundary requires frontier_region_ids"
+                )
+            region_ids = tuple(
+                sorted(
+                    {
+                        item
+                        for item in regions
+                        if isinstance(item, str) and item.strip()
+                    }
+                )
+            )
+            if len(region_ids) < 2:
+                raise ValueError(
+                    "frontier boundary requires at least two regions"
+                )
+            digest = hashlib.sha256(
+                json.dumps(region_ids).encode()
+            ).hexdigest()[:20]
+            return f"frontier-boundary:{digest}"
+        return "higher-order:" + ":".join(
+            candidate.supporting_structure_ids
+        )
+
     def _evaluate_candidate(
         self,
         candidate: HigherOrderCandidate,
@@ -173,88 +348,183 @@ class LceProjectionCore:
         *,
         replayed: bool = False,
         processing_input_id: str | None = None,
-    ) -> ConsolidationResult | None:
-        region_id = "higher-order:" + ":".join(candidate.supporting_structure_ids)
+    ) -> _CandidateEvaluation:
+        region_id = self._candidate_region_id(candidate)
         head = self.baselines.get_head(region_id)
+        frontier_refs = self._frontier_refs(candidate)
+        frontier_candidate = candidate.relation_type.startswith(
+            "frontier_"
+        )
 
         # A replay after compilation may be resuming a partially completed
-        # input.  Once this input has a committed worktree effect, the
-        # persisted candidate/support is authoritative for recovery; calling
-        # the bounded interpreter again could produce a different valid
-        # proposal because its package includes the previous baseline.
+        # input. Once this input has a durable worktree effect, that persisted
+        # effect is authoritative for recovery.
         if replayed and processing_input_id is not None:
-            durable = self.worktrees.find_by_region_and_input(region_id, processing_input_id)
+            durable = self.worktrees.find_by_region_and_input(
+                region_id,
+                processing_input_id,
+            )
             if durable is not None:
                 if durable.status != "OPEN":
-                    return None
-                reconciled = self.promoter.reconcile_committed(durable.worktree_id)
+                    return _CandidateEvaluation(handled=True)
+                reconciled = self.promoter.reconcile_committed(
+                    durable.worktree_id
+                )
                 if reconciled is not None:
-                    return reconciled
-                support_identity = self._support_identity(candidate, snapshot, diff, durable.selected_support)
+                    return _CandidateEvaluation(
+                        handled=True,
+                        promotion=reconciled,
+                    )
+                support_identity = self._support_identity(
+                    candidate,
+                    snapshot,
+                    diff,
+                    durable.selected_support,
+                )
                 self.worktrees.record_support(
                     durable.worktree_id,
                     snapshot_id=snapshot.snapshot_id,
                     support_identity=support_identity,
                     processing_input_id=processing_input_id,
                 )
-                return self.promoter.evaluate(durable.worktree_id)
+                return _CandidateEvaluation(
+                    handled=True,
+                    promotion=self.promoter.evaluate(
+                        durable.worktree_id
+                    ),
+                )
 
         existing = self.worktrees.find_open_by_region(region_id)
         if existing is not None:
-            reconciled = self.promoter.reconcile_committed(existing.worktree_id)
+            reconciled = self.promoter.reconcile_committed(
+                existing.worktree_id
+            )
             if reconciled is not None:
-                return reconciled
+                return _CandidateEvaluation(
+                    handled=True,
+                    promotion=reconciled,
+                )
+
         structures = tuple(
             observation
             for observation in snapshot.structures
-            if observation.structure_id in candidate.supporting_structure_ids
+            if observation.structure_id
+            in candidate.supporting_structure_ids
         )
-        blocks_by_id = {block.block_id: block for block in snapshot.block_states}
-        blocks = tuple(blocks_by_id[block_id] for block_id in candidate.supporting_block_ids if block_id in blocks_by_id)
-        source_refs = tuple(sorted({source for block in blocks for source in block.raw_evidence_ids}))
+        blocks_by_id = {
+            block.block_id: block
+            for block in snapshot.block_states
+        }
+        blocks = tuple(
+            blocks_by_id[block_id]
+            for block_id in candidate.supporting_block_ids
+            if block_id in blocks_by_id
+        )
+        source_refs = tuple(
+            sorted(
+                {
+                    source
+                    for block in blocks
+                    for source in block.raw_evidence_ids
+                }
+            )
+        )
         package = BoundedInterpretationPackage(
             candidate=candidate,
             structures=structures,
             semantic_blocks=blocks,
             authorized_source_refs=source_refs,
             previous_baseline=head,
+            context={
+                "frontier_refs": frontier_refs,
+                "supplier": candidate.metadata.get("supplier"),
+            },
         )
         interpretation = self.interpreter.interpret(package)
-        if interpretation.status != "PROPOSED" or interpretation.content is None:
-            return None
+        if (
+            interpretation.status != "PROPOSED"
+            or interpretation.content is None
+        ):
+            return _CandidateEvaluation(handled=False)
+
         content = interpretation.content
         authorized_blocks = set(candidate.supporting_block_ids)
-        if not set(interpretation.supporting_block_ids).issubset(authorized_blocks):
-            raise ValueError("bounded interpreter returned an unauthorized Semantic Block")
-        selected_support = self._selected_support(interpretation, blocks)
+        if not set(
+            interpretation.supporting_block_ids
+        ).issubset(authorized_blocks):
+            raise ValueError(
+                "bounded interpreter returned an unauthorized Semantic Block"
+            )
+        selected_support = self._selected_support(
+            interpretation,
+            blocks,
+        )
         interpretation = replace(
             interpretation,
-            supporting_block_ids=tuple(item.block_id for item in selected_support),
+            supporting_block_ids=tuple(
+                item.block_id for item in selected_support
+            ),
             selected_support=selected_support,
         )
+
         if head is not None and head.content.strip() == content.strip():
-            return None
-        support_identity = self._support_identity(candidate, snapshot, diff, selected_support)
+            return _CandidateEvaluation(handled=True)
+
+        support_identity = self._support_identity(
+            candidate,
+            snapshot,
+            diff,
+            selected_support,
+        )
         if existing is None:
             existing = self.worktrees.create(
                 region_id=region_id,
                 candidate_content=content,
                 supporting_block_ids=candidate.supporting_block_ids,
-                supporting_structure_ids=candidate.supporting_structure_ids,
+                supporting_structure_ids=(
+                    candidate.supporting_structure_ids
+                ),
+                supporting_frontier_refs=frontier_refs,
                 base_baseline=head,
                 interpretation_trace=interpretation.model_trace,
                 selected_support=selected_support,
                 processing_input_id=processing_input_id,
+                support_kind=(
+                    "frontier"
+                    if frontier_candidate
+                    else "semantic_block"
+                ),
             )
         else:
             self.worktrees.update_support(
                 existing.worktree_id,
-                remove_block_ids=tuple(set(existing.supporting_block_ids) - set(candidate.supporting_block_ids))
-                if existing.needs_rebuild else (),
-                remove_structure_ids=tuple(set(existing.supporting_structure_ids) - set(candidate.supporting_structure_ids))
-                if existing.needs_rebuild else (),
+                remove_block_ids=(
+                    tuple(
+                        set(existing.supporting_block_ids)
+                        - set(candidate.supporting_block_ids)
+                    )
+                    if existing.needs_rebuild
+                    else ()
+                ),
+                remove_structure_ids=(
+                    tuple(
+                        set(existing.supporting_structure_ids)
+                        - set(candidate.supporting_structure_ids)
+                    )
+                    if existing.needs_rebuild
+                    else ()
+                ),
+                remove_frontier_refs=(
+                    tuple(
+                        set(existing.supporting_frontier_refs)
+                        - set(frontier_refs)
+                    )
+                    if existing.needs_rebuild
+                    else ()
+                ),
                 add_block_ids=candidate.supporting_block_ids,
                 add_structure_ids=candidate.supporting_structure_ids,
+                add_frontier_refs=frontier_refs,
                 selected_support=selected_support,
                 processing_input_id=processing_input_id,
             )
@@ -265,14 +535,23 @@ class LceProjectionCore:
                     interpretation_trace=interpretation.model_trace,
                 )
             if existing.needs_rebuild:
-                self.worktrees.clear_needs_rebuild(existing.worktree_id)
+                self.worktrees.clear_needs_rebuild(
+                    existing.worktree_id
+                )
+
         self.worktrees.record_support(
             existing.worktree_id,
             snapshot_id=snapshot.snapshot_id,
             support_identity=support_identity,
             processing_input_id=processing_input_id,
         )
-        return self.promoter.evaluate(existing.worktree_id, interpretation=interpretation)
+        return _CandidateEvaluation(
+            handled=True,
+            promotion=self.promoter.evaluate(
+                existing.worktree_id,
+                interpretation=interpretation,
+            ),
+        )
 
     @staticmethod
     def _selected_support(
@@ -312,8 +591,8 @@ class LceProjectionCore:
             raise ValueError("a proposed interpretation must select at least one authorized state")
         return selected
 
-    @staticmethod
     def _support_identity(
+        self,
         candidate: HigherOrderCandidate,
         snapshot: StructureSnapshot,
         _diff: StructureDiff | None,
@@ -329,6 +608,7 @@ class LceProjectionCore:
         ]
         payload = {
             "relation": candidate.relation_type,
+            "frontier_refs": self._frontier_refs(candidate),
             "structures": structures,
             "blocks": tuple(sorted(
                 # State IDs retain exact immutable provenance, but a newer
@@ -370,8 +650,8 @@ class LceProjectionCore:
         self, *, cutoff: datetime | None
     ) -> None:
         self.memory.rebuild_vector_index(
-            deterministic_block_embedding,
-            index_version="lce-vector-v1",
+            self._block_embedder,
+            index_version=self._block_embedding_version,
         )
         latest = cutoff or max(
             (
