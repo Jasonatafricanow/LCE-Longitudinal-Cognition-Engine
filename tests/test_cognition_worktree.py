@@ -80,4 +80,7 @@ def test_frontier_refs_and_support_kind_survive_restart(tmp_path) -> None:
     restored = reopened.get(item.worktree_id)
     assert restored.support_kind == "frontier"
     assert restored.supporting_frontier_refs == ("baseline:b1",)
+    assert restored.processing_input_id == "input-1"
+    assert restored.processing_supplier == "frontier"
+    assert restored.processing_support_identity == "support-1"
     reopened.close()
