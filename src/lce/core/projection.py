@@ -894,6 +894,51 @@ class LceProjectionCore:
             knowledge_cutoff=knowledge_cutoff,
         )
 
+    def callable_line_projections(
+        self,
+        current_block_ids: tuple[str, ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[CallableLineProjection, ...]:
+        """Return bounded consumer views for Lines touched by current blocks.
+
+        This is intentionally narrower than a global semantic search. A Line
+        becomes callable here only after the current SemanticBlock has already
+        been structurally absorbed into that Line. Higher-recall proposal
+        operators may be added later without weakening this consumption
+        boundary.
+        """
+        visible = {
+            block.block_id: block
+            for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
+                knowledge_cutoff,
+                current_valid_only=True,
+            )
+        }
+        projections: list[CallableLineProjection] = []
+        seen: set[tuple[str, str]] = set()
+        for block_id in current_block_ids:
+            block = visible.get(block_id)
+            if block is None:
+                continue
+            for line_id in self.lines.lines_for_block(block_id):
+                projection = self.line_projector.project_for_block(
+                    line_id,
+                    block,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                if projection is None:
+                    continue
+                identity = (
+                    projection.line_id,
+                    projection.anchor_node_id,
+                )
+                if identity in seen:
+                    continue
+                seen.add(identity)
+                projections.append(projection)
+        return tuple(projections)
+
     def invalidate_and_rebuild(
         self, evidence_id: str, *, cutoff: datetime | None = None
     ) -> InvalidationResult:
