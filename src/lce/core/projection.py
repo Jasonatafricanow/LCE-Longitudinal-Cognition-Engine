@@ -194,6 +194,7 @@ class LceProjectionCore:
         frontier_candidates = self.frontier.candidates(
             snapshot,
             current_block_ids=compiler_result.block_ids,
+            processing_input_id=material.evidence_id,
         )
         structure_candidates = self.discovery.higher_order_candidates(
             snapshot
