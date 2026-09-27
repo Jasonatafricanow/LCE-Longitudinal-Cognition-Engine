@@ -1059,7 +1059,12 @@ class CallableLineProjector:
                     state_id=block.state_id,
                 )
             )
-            raw_ids.update(block.raw_evidence_ids)
+            raw_ids.update(
+                self.view.raw_closure(
+                    node_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+            )
             fragments.append(block.content)
 
         if not support:
