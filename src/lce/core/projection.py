@@ -380,10 +380,14 @@ class LceProjectionCore:
         *,
         frontier_candidate: bool,
     ) -> bool:
-        durable_frontier = (
-            durable.support_kind == "frontier"
-            or bool(durable.supporting_frontier_refs)
+        expected = (
+            "frontier" if frontier_candidate else "structure"
         )
+        if durable.processing_supplier is not None:
+            return durable.processing_supplier == expected
+        # Backward-compatible inference for worktrees persisted before the
+        # explicit processing-supplier field existed.
+        durable_frontier = durable.support_kind == "frontier"
         return durable_frontier == frontier_candidate
 
     def _evaluate_candidate(
@@ -586,6 +590,11 @@ class LceProjectionCore:
                 interpretation_trace=interpretation.model_trace,
                 selected_support=selected_support,
                 processing_input_id=processing_input_id,
+                processing_supplier=(
+                    "frontier"
+                    if frontier_candidate
+                    else "structure"
+                ),
                 support_kind=(
                     "frontier"
                     if frontier_candidate
@@ -624,6 +633,11 @@ class LceProjectionCore:
                 add_frontier_refs=frontier_refs,
                 selected_support=selected_support,
                 processing_input_id=processing_input_id,
+                processing_supplier=(
+                    "frontier"
+                    if frontier_candidate
+                    else "structure"
+                ),
             )
             if existing.candidate_content != content:
                 self.worktrees.update_candidate(
