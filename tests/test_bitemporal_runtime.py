@@ -92,3 +92,71 @@ def test_compiler_accepts_late_known_earlier_logical_evidence() -> None:
         memory.get_checkpoint("main").last_ordering_key
         == datetime(2026, 1, 1, tzinfo=UTC).isoformat()
     )
+
+
+
+def test_knowledge_cutoff_preserves_past_wrong_belief_after_later_invalidation() -> None:
+    memory = InMemoryReferenceMemory()
+    item = _raw("E-old", occurred_year=2020, known_year=2020)
+    memory.add_evidence(item)
+    memory.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-old",
+            content="belief later falsified",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test",
+            lineage_id="main",
+        )
+    )
+
+    before_invalidation = datetime.now(UTC)
+    memory.invalidate(item.evidence_id, reason="later correction")
+    after_invalidation = datetime.now(UTC)
+
+    assert tuple(
+        block.block_id
+        for block in memory.list_semantic_blocks_at_knowledge_cutoff(
+            before_invalidation
+        )
+    ) == ("SB-old",)
+    assert memory.list_semantic_blocks_at_knowledge_cutoff(
+        after_invalidation
+    ) == ()
+
+
+def test_sqlite_historical_validity_replays_lifecycle_at_cutoff(
+    tmp_path: Path,
+) -> None:
+    store = ReferenceMemoryStore(tmp_path / "history-memory")
+    item = _raw("E-history", occurred_year=2020, known_year=2020)
+    store.add_evidence(item)
+    store.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-history",
+            content="historical state",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test",
+            lineage_id="main",
+        )
+    )
+
+    before_invalidation = datetime.now(UTC)
+    store.invalidate(item.evidence_id, reason="later correction")
+    after_invalidation = datetime.now(UTC)
+
+    assert store.evidence_valid_at(item.evidence_id, before_invalidation)
+    assert not store.evidence_valid_at(item.evidence_id, after_invalidation)
+    assert tuple(
+        block.block_id
+        for block in store.list_semantic_blocks_at_knowledge_cutoff(
+            before_invalidation
+        )
+    ) == ("SB-history",)
+    assert store.list_semantic_blocks_at_knowledge_cutoff(
+        after_invalidation
+    ) == ()
+    store.close()
