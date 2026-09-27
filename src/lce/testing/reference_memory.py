@@ -37,6 +37,9 @@ class InMemoryReferenceMemory:
         self._checkpoints: dict[str, CompilerCheckpoint] = {}
         self._compiled: dict[str, tuple[str, ...]] = {}
         self._stages: dict[str, tuple[str, str | None]] = {}
+        self._lifecycle_events: dict[
+            str, list[tuple[str, datetime]]
+        ] = {}
 
     @staticmethod
     def _state_id(block: SemanticBlock) -> str:
@@ -94,16 +97,52 @@ class InMemoryReferenceMemory:
             )
         )
 
-    def invalidate(self, evidence_id: str, *, reason: str) -> None:
+    def evidence_valid_at(
+        self,
+        evidence_id: str,
+        cutoff: datetime,
+    ) -> bool:
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
         item = self.get_evidence(evidence_id)
-        self._evidence[evidence_id] = replace(item, state="INVALID", superseded_by=None)
+        if item.effective_known_at > cutoff:
+            return False
+        lifecycle = self._lifecycle_events.get(evidence_id, ())
+        if lifecycle:
+            return not any(
+                event_time <= cutoff
+                for event_type, event_time in lifecycle
+                if event_type in {"INVALIDATED", "SUPERSEDED"}
+            )
+        return item.current_valid
+
+    def invalidate(self, evidence_id: str, *, reason: str) -> None:
+        del reason
+        item = self.get_evidence(evidence_id)
+        if item.state == "INVALID":
+            return
+        self._evidence[evidence_id] = replace(
+            item,
+            state="INVALID",
+            superseded_by=None,
+        )
+        self._lifecycle_events.setdefault(evidence_id, []).append(
+            ("INVALIDATED", datetime.now(UTC))
+        )
 
     def supersede(self, evidence_id: str, replacement_evidence_id: str) -> None:
         item = self.get_evidence(evidence_id)
         replacement = self.get_evidence(replacement_evidence_id)
         if not replacement.current_valid:
             raise ValueError("replacement evidence must be current-valid")
-        self._evidence[evidence_id] = replace(item, state="SUPERSEDED", superseded_by=replacement_evidence_id)
+        self._evidence[evidence_id] = replace(
+            item,
+            state="SUPERSEDED",
+            superseded_by=replacement_evidence_id,
+        )
+        self._lifecycle_events.setdefault(evidence_id, []).append(
+            ("SUPERSEDED", datetime.now(UTC))
+        )
 
     def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
         for evidence_id in block.raw_evidence_ids:
@@ -190,11 +229,17 @@ class InMemoryReferenceMemory:
             raise ValueError("cutoff must be UTC")
         latest: dict[str, SemanticBlock] = {}
         for block in self.list_semantic_block_states(
-            current_valid_only=current_valid_only
+            current_valid_only=False
         ):
             try:
                 visible = all(
-                    self.get_evidence(evidence_id).effective_known_at <= cutoff
+                    (
+                        self.evidence_valid_at(evidence_id, cutoff)
+                        if current_valid_only
+                        else self.get_evidence(
+                            evidence_id
+                        ).effective_known_at <= cutoff
+                    )
                     for evidence_id in block.raw_evidence_ids
                 )
             except KeyError:
