@@ -723,10 +723,10 @@ class LineGraphView:
                     node_state.state_id
                 )
                 if not all(
-                    self.memory.get_evidence(evidence_id).current_valid
-                    and self.memory.get_evidence(
-                        evidence_id
-                    ).effective_known_at <= knowledge_cutoff
+                    self.memory.evidence_valid_at(
+                        evidence_id,
+                        knowledge_cutoff,
+                    )
                     for evidence_id in block.raw_evidence_ids
                 ):
                     continue
