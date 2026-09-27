@@ -416,3 +416,50 @@ def test_bootstrap_neighbour_candidate_source_is_replaceable() -> None:
         path.block_ids == tuple(block.block_id for block in blocks)
         for path in paths
     )
+
+
+
+def test_long_bootstrap_path_is_segmented_without_losing_tail(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            index=index,
+            day=index * 10,
+            vector=_vector(index * 4.0),
+        )
+        for index in range(10)
+    )
+    _rebuild(memory)
+
+    store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=store,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.99,
+            min_support=3,
+            max_path_length=4,
+            max_paths=32,
+        ),
+    )
+
+    result = runtime.bootstrap(
+        knowledge_cutoff=BASE + timedelta(days=200),
+    )
+
+    assert result.candidate_paths
+    covered = {
+        block_id
+        for path in result.candidate_paths
+        for block_id in path.block_ids
+    }
+    assert covered == {block.block_id for block in blocks}
+    assert len(store.list_lines()) == 1
+    line_id = store.list_lines()[0].line_id
+    assert {
+        node.block_id for node in store.nodes_for_line(line_id)
+    } == covered
