@@ -24,7 +24,7 @@ from lce.cognition.promotion import (
     RuleBasedBoundedInterpreter,
     UnderstandingPromoter,
 )
-from lce.cognition.worktree import CognitionWorktreeStore
+from lce.cognition.worktree import CognitionWorktreeStore, DraftRevision
 from lce.contracts.consolidation import ConsolidationResult
 from lce.read_api import AcceptedUnderstandingReadAPI, UnderstandingView
 from lce.reference_memory.contracts import (
@@ -376,19 +376,13 @@ class LceProjectionCore:
 
     @staticmethod
     def _durable_matches_candidate(
-        durable: object,
+        durable: DraftRevision,
         *,
         frontier_candidate: bool,
     ) -> bool:
-        support_kind = getattr(durable, "support_kind", None)
-        frontier_refs = getattr(
-            durable,
-            "supporting_frontier_refs",
-            (),
-        )
         durable_frontier = (
-            support_kind == "frontier"
-            or bool(frontier_refs)
+            durable.support_kind == "frontier"
+            or bool(durable.supporting_frontier_refs)
         )
         return durable_frontier == frontier_candidate
 
