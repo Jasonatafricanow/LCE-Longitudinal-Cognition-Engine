@@ -670,7 +670,7 @@ def a4_candidate_diagnostics() -> list[dict[str, object]]:
 def a4_cohesion_sweep() -> list[dict[str, object]]:
     points = corpus()
     rows: list[dict[str, object]] = []
-    for min_cohesion in (0.00, 0.03, 0.05, 0.07, 0.09, 0.11):
+    for min_cohesion in (0.00, 0.07, 0.11, 0.13, 0.15, 0.18, 0.22, 0.25):
         candidates = persistent_mutual_knn(points, min_cohesion=min_cohesion)
         evaluation = _evaluate(points, candidates)
         rows.append(
