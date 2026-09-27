@@ -285,6 +285,12 @@ The slow bootstrap neighbour source is already abstracted behind
 external vector-store adapter can replace it without changing mutual-neighbour
 confirmation, trajectory formation, or Line identity rules.
 
+A custom neighbour provider whose internal behavior can change independently of
+its Python class should expose a stable `derivation_fingerprint`. That value
+participates in the persisted Line derivation fingerprint, so changing the
+provider implementation/version cannot silently reuse graph revisions compiled
+under older neighbour semantics.
+
 Surface discovery is a higher-order slow-path operation. Supplying a
 `SurfaceConfig` makes the operator available but does not make every nearline
 turn rescan all Lines. Batch processing may run Surface discovery after the
@@ -313,15 +319,27 @@ edge revisions have stable identities.
 
 Every current membership/edge revision records a Line derivation fingerprint
 covering the embedding version, trajectory config, assembler policy, and
-neighbour-provider identity. If that fingerprint changes, LCE rebuilds vectors
-and compiles a new current graph revision instead of silently treating an old
-graph as if it came from the new algorithm. Historical revisions retain their
-old fingerprint.
+neighbour-provider identity/version. If that fingerprint changes, LCE rebuilds
+vectors and compiles a new current graph revision instead of silently treating
+an old graph as if it came from the new algorithm. Historical revisions retain
+their old fingerprint.
+
+Before that explicit rebuild completes, Line consumer reads fail closed with
+`StaleLineGraphError`. Read APIs do not silently rebuild or mutate the graph.
+Restarting with the same derivation fingerprint reuses the existing current
+revision without manufacturing a new one.
 
 Bitemporal-divergent input (`known_at != occurred_at`) is compiled into the new
 trajectory path but is not sent through legacy Frontier/06R cognition
-evaluation. This avoids inserting a new logical-history snapshot into the old
-Baseline path without replaying all later legacy snapshots.
+evaluation. Once any source in a compiler lineage becomes bitemporal-divergent,
+the legacy cognition path remains closed for that lineage, including later
+ordinary inputs and source-rebuild flows. Re-enabling that path requires a
+future explicit forward replay of all affected legacy snapshots; a later
+ordinary input is not enough.
+
+This avoids inserting a new logical-history snapshot into the old Baseline path
+and then accidentally treating the retroactive evidence as a newly emerged
+structure at some later cutoff.
 
 A nearline system that starts with no Lines is expected to accumulate evidence
 until an explicit/periodic bootstrap is run. Nearline traffic alone does not
@@ -343,6 +361,8 @@ rejoin != history rewrite
 relation rebuild != history rewrite
 invalid historical node != cutoff-valid identity support
 derivation fingerprint mismatch != reusable current graph
+stale Line graph != readable Line graph
+legacy lineage after retroactive evidence != safe legacy replay
 known_at controls visibility
 occurred_at controls logical placement
 ```
@@ -380,7 +400,10 @@ The branch has focused production tests for:
 - current Line relation rebuild while preserving historical relation replay;
 - logical-time state revision invalidating stale ordering edges;
 - same-cutoff rebuild retry after partial relation retirement;
-- derivation-fingerprint rebuild across embedding/config changes;
+- derivation-fingerprint rebuild across embedding/config/provider changes;
+- same-fingerprint restart without spurious Line revision;
+- stale Line read rejection before explicit rebuild;
+- lineage-level legacy shutdown after retroactive evidence;
 - cycle and transitive-edge rejection;
 - bounded non-persistent callable projections;
 - local-drift trajectory recovery;
