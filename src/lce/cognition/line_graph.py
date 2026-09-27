@@ -216,6 +216,7 @@ class LineGraphStore:
         seed_block_ids: tuple[str, ...],
         *,
         created_at: datetime | None = None,
+        commit: bool = True,
     ) -> LineRecord:
         if not seed_block_ids:
             raise ValueError("a Line seed requires at least one block")
@@ -233,7 +234,8 @@ class LineGraphStore:
             "INSERT INTO lines VALUES (?, ?, ?)",
             (line_id, json.dumps(ordered), now.isoformat()),
         )
-        self.conn.commit()
+        if commit:
+            self.conn.commit()
         return LineRecord(line_id, ordered, now)
 
     def get_line(self, line_id: str) -> LineRecord:
@@ -262,6 +264,7 @@ class LineGraphStore:
         block: SemanticBlock,
         *,
         knowledge_at: datetime,
+        commit: bool = True,
     ) -> tuple[LineNode, bool, bool]:
         self.get_line(line_id)
         if block.state_id is None:
@@ -300,7 +303,8 @@ class LineGraphStore:
                 datetime.now(UTC).isoformat(),
             ),
         )
-        self.conn.commit()
+        if commit:
+            self.conn.commit()
         return (
             self.get_node(node_id),
             added_node,
@@ -395,6 +399,8 @@ class LineGraphStore:
         line_id: str,
         parent_node_id: str,
         child_node_id: str,
+        *,
+        commit: bool = True,
     ) -> bool:
         if parent_node_id == child_node_id:
             raise ValueError("a Line edge cannot self-reference")
@@ -410,7 +416,8 @@ class LineGraphStore:
             "INSERT OR IGNORE INTO line_edges VALUES (?, ?, ?)",
             (line_id, parent_node_id, child_node_id),
         )
-        self.conn.commit()
+        if commit:
+            self.conn.commit()
         return result.rowcount > 0
 
     def parents(self, node_id: str) -> tuple[str, ...]:
@@ -522,6 +529,7 @@ class LineAssembler:
             line_id,
             parent_node_id,
             child_node_id,
+            commit=False,
         )
 
     def _visible_overlap_counts(
@@ -576,22 +584,24 @@ class LineAssembler:
         if block.state_id is None:
             raise ValueError("Line attachment requires an immutable state")
         self.store.get_line(line_id)
-        node, node_added, state_added = self.store.ensure_node(
-            line_id,
-            block,
-            knowledge_at=self._knowledge_at(block),
-        )
-        added_edges: list[tuple[str, str]] = []
-        for parent_id in tuple(dict.fromkeys(parent_node_ids)):
-            if self.store.get_node(parent_id).line_id != line_id:
-                raise ValueError("parent belongs to another Line")
-            if self._add_edge(line_id, parent_id, node.node_id):
-                added_edges.append((parent_id, node.node_id))
-        for child_id in tuple(dict.fromkeys(child_node_ids)):
-            if self.store.get_node(child_id).line_id != line_id:
-                raise ValueError("child belongs to another Line")
-            if self._add_edge(line_id, node.node_id, child_id):
-                added_edges.append((node.node_id, child_id))
+        with self.store.conn:
+            node, node_added, state_added = self.store.ensure_node(
+                line_id,
+                block,
+                knowledge_at=self._knowledge_at(block),
+                commit=False,
+            )
+            added_edges: list[tuple[str, str]] = []
+            for parent_id in tuple(dict.fromkeys(parent_node_ids)):
+                if self.store.get_node(parent_id).line_id != line_id:
+                    raise ValueError("parent belongs to another Line")
+                if self._add_edge(line_id, parent_id, node.node_id):
+                    added_edges.append((parent_id, node.node_id))
+            for child_id in tuple(dict.fromkeys(child_node_ids)):
+                if self.store.get_node(child_id).line_id != line_id:
+                    raise ValueError("child belongs to another Line")
+                if self._add_edge(line_id, node.node_id, child_id):
+                    added_edges.append((node.node_id, child_id))
         return LineApplyResult(
             line_id=line_id,
             created_line=False,
@@ -636,9 +646,9 @@ class LineAssembler:
         }
 
         created_line = False
-        if not overlaps:
-            line = self.store.create_line(block_ids)
-            line_id = line.line_id
+        new_line_seed = not overlaps
+        if new_line_seed:
+            line_id = self.store._line_id(block_ids)
             created_line = True
         elif len(strong) == 1:
             line_id = next(iter(strong))
@@ -664,30 +674,38 @@ class LineAssembler:
         nodes: list[LineNode] = []
         added_nodes: list[str] = []
         added_states: list[str] = []
-        for block in blocks:
-            node, node_added, state_added = self.store.ensure_node(
-                line_id,
-                block,
-                knowledge_at=self._knowledge_at(block),
-            )
-            nodes.append(node)
-            if node_added:
-                added_nodes.append(node.node_id)
-            if state_added and block.state_id is not None:
-                added_states.append(block.state_id)
-
         added_edges: list[tuple[str, str]] = []
-        for index in range(len(blocks) - 1):
-            parent_block = blocks[index]
-            child_block = blocks[index + 1]
-            if not self._precedes(parent_block, child_block):
-                continue
-            parent = nodes[index]
-            child = nodes[index + 1]
-            if self._add_edge(
-                line_id, parent.node_id, child.node_id
-            ):
-                added_edges.append((parent.node_id, child.node_id))
+        with self.store.conn:
+            if new_line_seed:
+                line = self.store.create_line(
+                    block_ids,
+                    commit=False,
+                )
+                line_id = line.line_id
+            for block in blocks:
+                node, node_added, state_added = self.store.ensure_node(
+                    line_id,
+                    block,
+                    knowledge_at=self._knowledge_at(block),
+                    commit=False,
+                )
+                nodes.append(node)
+                if node_added:
+                    added_nodes.append(node.node_id)
+                if state_added and block.state_id is not None:
+                    added_states.append(block.state_id)
+
+            for index in range(len(blocks) - 1):
+                parent_block = blocks[index]
+                child_block = blocks[index + 1]
+                if not self._precedes(parent_block, child_block):
+                    continue
+                parent = nodes[index]
+                child = nodes[index + 1]
+                if self._add_edge(
+                    line_id, parent.node_id, child.node_id
+                ):
+                    added_edges.append((parent.node_id, child.node_id))
 
         return LineApplyResult(
             line_id=line_id,
