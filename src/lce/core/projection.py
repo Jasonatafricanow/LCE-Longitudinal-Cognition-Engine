@@ -259,6 +259,29 @@ class LceProjectionCore:
         self._mark_line_graph_current()
         return result
 
+    def _legacy_lineage_compatible(self) -> bool:
+        """Whether legacy occurred-at snapshots remain semantically safe.
+
+        Once any source in this lineage is learned at a different time from
+        when it logically occurred, old Frontier/06R snapshots would require a
+        full forward replay from that logical insertion point. Until that
+        replay exists, fail closed for the lineage instead of resuming legacy
+        evaluation on a later ordinary input.
+        """
+        for block in self.memory.list_semantic_blocks(
+            current_valid_only=False
+        ):
+            if block.lineage_id != self.compiler.lineage_id:
+                continue
+            for evidence_id in block.raw_evidence_ids:
+                try:
+                    evidence = self.memory.get_evidence(evidence_id)
+                except KeyError:
+                    return False
+                if evidence.effective_known_at != evidence.occurred_at:
+                    return False
+        return True
+
     def process(
         self, material: RawEvidence, *, mode: str = "nearline"
     ) -> ProcessResult:
@@ -318,9 +341,7 @@ class LceProjectionCore:
         # persisted Line paths.
         surface_candidates: tuple[SurfaceCandidate, ...] = ()
 
-        legacy_compatible = (
-            material.effective_known_at == material.occurred_at
-        )
+        legacy_compatible = self._legacy_lineage_compatible()
         frontier_candidates = (
             self.frontier.candidates(
                 snapshot,
@@ -418,7 +439,7 @@ class LceProjectionCore:
             snapshot = self.discovery.create_snapshot(material.occurred_at)
         candidates = (
             self.discovery.higher_order_candidates(snapshot)
-            if material.effective_known_at == material.occurred_at
+            if self._legacy_lineage_compatible()
             else ()
         )
         return ProcessResult(
