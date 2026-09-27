@@ -13,6 +13,7 @@ from lce.cognition.line_graph import (
     LineGraphStore,
     LineGraphView,
 )
+from lce.core.projection import LceProjectionCore
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
@@ -380,3 +381,43 @@ def test_invalid_historical_node_does_not_count_toward_line_absorption(
         "weak overlap with an existing Line; no clone created"
     )
     assert len(store.list_lines()) == 1
+
+
+def test_core_returns_callable_views_without_persisting_projection_nodes(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"C{index}",
+            block_id=f"CB{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.04, index * 0.04),
+        )
+        for index in range(6)
+    )
+    _rebuild(memory)
+
+    core = LceProjectionCore(
+        tmp_path / "core",
+        memory=memory,
+        callable_projection_config=CallableProjectionConfig(max_nodes=3),
+    )
+    applied = LineAssembler(
+        memory=memory,
+        store=core.lines,
+    ).apply_path(blocks)
+    assert applied.line_id is not None
+    before_nodes = len(core.lines.nodes_for_line(applied.line_id))
+
+    projections = core.callable_line_projections(
+        (blocks[-1].block_id,),
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+
+    assert len(projections) == 1
+    assert projections[0].line_id == applied.line_id
+    assert len(projections[0].node_ids) <= 3
+    assert len(core.lines.nodes_for_line(applied.line_id)) == before_nodes
+    core.close()
