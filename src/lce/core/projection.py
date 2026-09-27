@@ -15,6 +15,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
+from lce.cognition.line_graph import (
+    CallableLineProjection,
+    CallableLineProjector,
+    CallableProjectionConfig,
+    LineAssemblerConfig,
+    LineGraphStore,
+    LineGraphView,
+)
 from lce.cognition.promotion import (
     BoundedInterpretation,
     BoundedInterpretationPackage,
@@ -47,6 +55,11 @@ from lce.structure.frontier import (
     FrontierCandidateDiscovery,
     FrontierDiscoveryConfig,
 )
+from lce.structure.trajectory import (
+    TrajectoryConfig,
+    TrajectoryRuntime,
+    TrajectoryRuntimeResult,
+)
 
 
 def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
@@ -67,6 +80,7 @@ class ProcessResult:
     diff: StructureDiff | None
     higher_order_candidates: tuple[HigherOrderCandidate, ...]
     promotions: tuple[ConsolidationResult, ...]
+    trajectory_result: TrajectoryRuntimeResult | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,6 +108,9 @@ class LceProjectionCore:
         lineage_id: str = "default",
         structure_config: StructureConfig | None = None,
         frontier_config: FrontierDiscoveryConfig | None = None,
+        trajectory_config: TrajectoryConfig | None = None,
+        line_assembler_config: LineAssemblerConfig | None = None,
+        callable_projection_config: CallableProjectionConfig | None = None,
         interpreter: BoundedInterpreter | None = None,
         block_embedder: Callable[
             [SemanticBlock], tuple[float, ...]
@@ -114,6 +131,22 @@ class LceProjectionCore:
         self._close_memory = close_memory
         self.baselines = SqliteBaselineStore(self.root / "baselines")
         self.worktrees = CognitionWorktreeStore(self.root / "worktrees")
+        self.lines = LineGraphStore(self.root / "lines")
+        self.line_view = LineGraphView(
+            memory=self.memory,
+            store=self.lines,
+        )
+        self.trajectory = TrajectoryRuntime(
+            memory=self.memory,
+            line_store=self.lines,
+            trajectory_config=trajectory_config,
+            assembler_config=line_assembler_config,
+        )
+        self.line_projector = CallableLineProjector(
+            memory=self.memory,
+            store=self.lines,
+            config=callable_projection_config,
+        )
         self.discovery = SnapshotStructureDiscovery(
             self.memory,
             self.root / "structures",
@@ -191,6 +224,11 @@ class LceProjectionCore:
             else None
         )
 
+        trajectory_result = self.trajectory.observe(
+            knowledge_cutoff=material.effective_known_at,
+            current_block_ids=compiler_result.block_ids,
+        )
+
         frontier_candidates = self.frontier.candidates(
             snapshot,
             current_block_ids=compiler_result.block_ids,
@@ -256,6 +294,7 @@ class LceProjectionCore:
             diff,
             candidates,
             tuple(promotions),
+            trajectory_result,
         )
 
     def _completed_replay_result(
@@ -279,7 +318,14 @@ class LceProjectionCore:
             # Rebuilding a derived snapshot is safe, but no cognition stage is rerun.
             snapshot = self.discovery.create_snapshot(material.occurred_at)
         candidates = self.discovery.higher_order_candidates(snapshot)
-        return ProcessResult(compiler_result, snapshot, None, candidates, ())
+        return ProcessResult(
+            compiler_result,
+            snapshot,
+            None,
+            candidates,
+            (),
+            None,
+        )
 
     def run_batch(self, materials: Sequence[RawEvidence]) -> tuple[ProcessResult, ...]:
         ordered = sorted(materials, key=lambda item: (item.effective_ordering_key, item.evidence_id))
@@ -814,6 +860,40 @@ class LceProjectionCore:
     def query(self, current_context: str | dict[str, object] | None) -> tuple[UnderstandingView, ...]:
         return self.read_api.query(current_context)
 
+    def line_frontier(
+        self,
+        line_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
+        return self.line_view.frontier(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+
+    def project_line_for_block(
+        self,
+        line_id: str,
+        block_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> CallableLineProjection | None:
+        visible = {
+            block.block_id: block
+            for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
+                knowledge_cutoff,
+                current_valid_only=True,
+            )
+        }
+        block = visible.get(block_id)
+        if block is None:
+            return None
+        return self.line_projector.project_for_block(
+            line_id,
+            block,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+
     def invalidate_and_rebuild(
         self, evidence_id: str, *, cutoff: datetime | None = None
     ) -> InvalidationResult:
@@ -874,6 +954,7 @@ class LceProjectionCore:
 
     def close(self) -> None:
         self.discovery.close()
+        self.lines.close()
         self.worktrees.close()
         self.baselines.close()
         if self._close_memory:
