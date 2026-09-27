@@ -373,6 +373,19 @@ class LineGraphStore:
         ).fetchall()
         return tuple(self.get_node(str(row[0])) for row in rows)
 
+    def _reachable(self, start_node_id: str, target_node_id: str) -> bool:
+        pending = [start_node_id]
+        seen: set[str] = set()
+        while pending:
+            current = pending.pop()
+            if current == target_node_id:
+                return True
+            if current in seen:
+                continue
+            seen.add(current)
+            pending.extend(self.children(current))
+        return False
+
     def add_edge(
         self,
         line_id: str,
@@ -385,6 +398,8 @@ class LineGraphStore:
         child = self.get_node(child_node_id)
         if parent.line_id != line_id or child.line_id != line_id:
             raise ValueError("Line edges cannot cross Line identity")
+        if self._reachable(child_node_id, parent_node_id):
+            raise ValueError("Line edge would create a cycle")
         result = self.conn.execute(
             "INSERT OR IGNORE INTO line_edges VALUES (?, ?, ?)",
             (line_id, parent_node_id, child_node_id),
