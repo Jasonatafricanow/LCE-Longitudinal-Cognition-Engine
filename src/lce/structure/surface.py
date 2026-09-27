@@ -13,6 +13,7 @@ import hashlib
 import math
 from dataclasses import dataclass
 from datetime import datetime
+
 from lce.cognition.line_graph import LineGraphStore, LineGraphView
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort
 
