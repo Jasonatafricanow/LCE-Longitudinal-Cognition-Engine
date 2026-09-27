@@ -42,9 +42,22 @@ compatibility.
 Default ingestion ordering uses `effective_known_at`, while explicit
 `ordering_key` remains authoritative.
 
-The new knowledge-cutoff API makes late-known historical evidence invisible
-before it is known, then allows it to be placed at its original logical time in
-later reconstruction.
+The knowledge-cutoff API makes late-known historical evidence invisible before
+it is known, then allows it to be placed at its original logical time in later
+reconstruction. Standalone persistence also replays Raw Evidence lifecycle
+events as of the requested knowledge cutoff: evidence invalidated in 2026 may
+still appear in a 2023 epistemic replay if it was known and not yet invalidated
+in 2023. "Known later to be wrong" therefore does not rewrite what was knowable
+earlier.
+
+Immutable SemanticBlock-state vectors are retained across later source
+invalidation so historical replay remains rebuildable. Current default vector
+lookup still excludes currently invalid blocks.
+
+An external canonical source may optionally provide the same historical
+`evidence_valid_at` capability. If it exposes only current lifecycle state,
+LCE falls back conservatively to current validity and does not pretend to offer
+exact historical lifecycle replay.
 
 The older snapshot/06R compatibility path still uses logical
 `occurred_at` cutoffs. It has not been silently redefined as bitemporal.
@@ -60,7 +73,9 @@ It currently uses:
 - top-k neighbours;
 - reciprocal/mutual neighbour edges;
 - strict logical partial ordering for edge orientation;
-- bounded overlapping path enumeration.
+- bounded overlapping path enumeration;
+- overlapping continuation segments when one trajectory exceeds the configured
+  per-path node bound, so the bound does not silently discard the tail.
 
 It explicitly does not use:
 
@@ -104,6 +119,11 @@ A multi-parent child remains visible only while every parent ancestry remains
 visible. Multiple parent edges do not mean "A OR B" and must not be used for
 alternative hypotheses, fallback routes, or mutually exclusive interpretations.
 
+Because that is a strong semantic commitment, automatic Line growth does not
+infer a second parent from vector similarity alone. Conjunctive rejoin is
+disabled by default and must be explicitly authorized through the assembler
+configuration until a real semantic rejoin criterion exists.
+
 Those unresolved/alternative semantics remain outside the current Line-edge
 contract until a distinct relation representation is introduced. This boundary
 is intentional: changing the visibility rule from `all(parents)` to
@@ -144,7 +164,9 @@ Branch growth therefore does not imply Line cloning.
 - still supported by current-valid Raw Evidence.
 
 Visibility propagates through graph ancestry using conjunctive parent
-dependency for multi-parent rejoin nodes.
+dependency for multi-parent rejoin nodes. Visibility evaluation and provenance
+closure are iterative, so deep long-lived Lines do not depend on Python
+recursion depth.
 
 Consequences:
 
@@ -190,7 +212,12 @@ It:
    Surface;
 7. returns the union Raw closure of member paths.
 
-Surface discovery is disabled unless a `SurfaceConfig` is explicitly supplied.
+Surface discovery is disabled unless a `SurfaceConfig` is explicitly
+supplied, and it is not part of the per-turn nearline path.
+
+A branch path is used only as the geometric view. Its evidence authority closes
+over the endpoint's complete conjunctive Raw ancestry, so a single displayed
+root-to-frontier route cannot omit another parent required by an AND-rejoin.
 
 The structural constraints are implemented. The current shape comparator and
 threshold are not treated as proven production semantics and remain replaceable.
@@ -239,8 +266,15 @@ The slow bootstrap neighbour source is already abstracted behind
 external vector-store adapter can replace it without changing mutual-neighbour
 confirmation, trajectory formation, or Line identity rules.
 
-Optional Surface discovery remains disabled unless a `SurfaceConfig` is
-explicitly supplied.
+Surface discovery is a higher-order slow-path operation. Supplying a
+`SurfaceConfig` makes the operator available but does not make every nearline
+turn rescan all Lines. Batch processing may run Surface discovery after the
+trajectory bootstrap; callers can otherwise invoke the Surface runtime
+explicitly.
+
+Surface candidate enumeration uses maximal cross-Line cliques only and has
+fail-closed view/search/candidate safety bounds. Hitting a bound raises rather
+than returning an apparently complete partial candidate set.
 
 The pre-existing V1 path remains intact in parallel:
 
@@ -288,9 +322,10 @@ The following are intentionally not frozen:
 - embedding-specific k and similarity thresholds;
 - an ANN/multi-anchor index for sub-linear existing-Line routing at very large scale;
 - the final production local-continuity score;
-- a semantic criterion for declaring branch convergence;
+- a semantic criterion for declaring branch convergence; until then,
+  conjunctive rejoin requires explicit authorization and is off by default;
 - the branch-to-independent-Line transition policy;
-- real-data calibration of Surface shape comparison;
+- real-data calibration of Surface shape comparison and search bounds;
 - richer logical-time representation for intervals, relative order, partial
   order, and UNKNOWN;
 - whether/when optional Surface candidates should be compiled into natural
