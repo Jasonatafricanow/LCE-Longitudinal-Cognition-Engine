@@ -4,9 +4,15 @@ from datetime import UTC, datetime, timedelta
 from itertools import pairwise
 from pathlib import Path
 
+import pytest
+
 from lce.cognition.line_graph import LineAssembler, LineGraphStore
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
-from lce.structure.surface import SurfaceConfig, SurfaceRuntime
+from lce.structure.surface import (
+    SurfaceConfig,
+    SurfaceRuntime,
+    SurfaceSearchLimitExceeded,
+)
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
 BASE = datetime(2020, 1, 1, tzinfo=UTC)
@@ -205,3 +211,64 @@ def test_surface_discovery_is_non_mutating_and_drops_invalid_member(
         line_id: len(store.nodes_for_line(line_id))
         for line_id in line_ids
     } == before_nodes
+
+
+
+def test_surface_returns_only_maximal_cross_line_clique(
+    tmp_path: Path,
+) -> None:
+    memory, store, line_ids = _fixture(tmp_path)
+    fourth_same = _add_line(
+        memory,
+        store,
+        prefix="learn",
+        anchor=(0.0, 0.0, 0.0, 20.0),
+        states=_densify(SHAPE, 3),
+    )
+    _rebuild(memory)
+
+    runtime = SurfaceRuntime(
+        memory=memory,
+        line_store=store,
+        config=SurfaceConfig(min_shape_similarity=0.95),
+    )
+    candidates = runtime.discover(
+        knowledge_cutoff=BASE + timedelta(days=500),
+    )
+
+    assert len(candidates) == 1
+    assert {view.line_id for view in candidates[0].views} == {
+        *line_ids[:3],
+        fourth_same,
+    }
+
+
+def test_surface_search_limit_fails_closed_instead_of_returning_partial_set(
+    tmp_path: Path,
+) -> None:
+    memory, store, _line_ids = _fixture(tmp_path)
+    _add_line(
+        memory,
+        store,
+        prefix="learn",
+        anchor=(0.0, 0.0, 0.0, 20.0),
+        states=_densify(SHAPE, 3),
+    )
+    _rebuild(memory)
+
+    runtime = SurfaceRuntime(
+        memory=memory,
+        line_store=store,
+        config=SurfaceConfig(
+            min_shape_similarity=0.95,
+            max_search_steps=1,
+        ),
+    )
+
+    with pytest.raises(
+        SurfaceSearchLimitExceeded,
+        match="max_search_steps",
+    ):
+        runtime.discover(
+            knowledge_cutoff=BASE + timedelta(days=500),
+        )
