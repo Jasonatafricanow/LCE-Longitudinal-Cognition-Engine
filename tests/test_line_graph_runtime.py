@@ -1435,3 +1435,55 @@ def test_zero_lifetime_failed_line_revision_cannot_claim_retry_identity(
     assert retry.line_id is not None
     assert retry.created_line is True
     assert retry.line_id != partial.line_id
+
+
+
+def test_raw_closure_respects_relation_membership_cutoff(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"CLOSE-{index}",
+            block_id=f"close-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    historical_cutoff = BASE + timedelta(days=50)
+    seeded = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=historical_cutoff,
+    )
+    assert seeded.line_id is not None
+    tail = store.node_for_block(
+        seeded.line_id,
+        blocks[-1].block_id,
+    )
+    assert tail is not None
+    view = LineGraphView(memory=memory, store=store)
+
+    assert set(
+        view.raw_closure(
+            tail.node_id,
+            knowledge_cutoff=historical_cutoff,
+        )
+    ) == {"CLOSE-0", "CLOSE-1", "CLOSE-2"}
+
+    current_cutoff = BASE + timedelta(days=100)
+    store.retire_current_structure(current_cutoff)
+
+    assert view.raw_closure(
+        tail.node_id,
+        knowledge_cutoff=current_cutoff,
+    ) == ()
+    assert set(
+        view.raw_closure(
+            tail.node_id,
+            knowledge_cutoff=historical_cutoff,
+        )
+    ) == {"CLOSE-0", "CLOSE-1", "CLOSE-2"}
