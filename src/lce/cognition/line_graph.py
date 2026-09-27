@@ -601,11 +601,18 @@ class LineGraphStore:
             return False
         iso = knowledge_at.isoformat()
         created_at = datetime.now(UTC).isoformat()
+        ordinal = int(
+            self.conn.execute(
+                "SELECT COUNT(*) FROM line_node_memberships "
+                "WHERE node_id = ?",
+                (node_id,),
+            ).fetchone()[0]
+        ) + 1
         revision_id = self._revision_id(
             "membership",
             node_id,
             iso,
-            created_at,
+            str(ordinal),
         )
         result = self.conn.execute(
             "INSERT OR IGNORE INTO line_node_memberships ("
@@ -811,13 +818,21 @@ class LineGraphStore:
         )
         iso = edge_known_at.isoformat()
         created_at = datetime.now(UTC).isoformat()
+        ordinal = int(
+            self.conn.execute(
+                "SELECT COUNT(*) FROM line_edge_revisions "
+                "WHERE line_id = ? AND parent_node_id = ? "
+                "AND child_node_id = ?",
+                (line_id, parent_node_id, child_node_id),
+            ).fetchone()[0]
+        ) + 1
         revision_id = self._revision_id(
             "edge",
             line_id,
             parent_node_id,
             child_node_id,
             iso,
-            created_at,
+            str(ordinal),
         )
         result = self.conn.execute(
             "INSERT OR IGNORE INTO line_edge_revisions ("
