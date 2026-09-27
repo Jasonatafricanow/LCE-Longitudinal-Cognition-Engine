@@ -751,6 +751,40 @@ class LineGraphStore:
             if parent_id == node_id
         )
 
+    def retire_edge_from(
+        self,
+        line_id: str,
+        parent_node_id: str,
+        child_node_id: str,
+        knowledge_cutoff: datetime,
+        *,
+        commit: bool = True,
+    ) -> bool:
+        """Retire one derived edge from cutoff forward, preserving history."""
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
+        rows = self.conn.execute(
+            "SELECT edge_revision_id FROM line_edge_revisions "
+            "WHERE line_id = ? AND parent_node_id = ? "
+            "AND child_node_id = ? "
+            "AND (retired_at IS NULL OR retired_at > ?)",
+            (
+                line_id,
+                parent_node_id,
+                child_node_id,
+                cutoff,
+            ),
+        ).fetchall()
+        for (revision_id,) in rows:
+            self.conn.execute(
+                "UPDATE line_edge_revisions SET retired_at = ? "
+                "WHERE edge_revision_id = ?",
+                (cutoff, revision_id),
+            )
+        if commit:
+            self.conn.commit()
+        return bool(rows)
+
     def retire_current_structure(
         self,
         knowledge_cutoff: datetime,
@@ -1091,7 +1125,50 @@ class LineAssembler:
                 commit=False,
             )
             added_edges: list[tuple[str, str]] = []
-            for parent_id in tuple(dict.fromkeys(parent_node_ids)):
+            parents = tuple(dict.fromkeys(parent_node_ids))
+            children = tuple(dict.fromkeys(child_node_ids))
+            view = LineGraphView(memory=self.memory, store=self.store)
+
+            # A late-known historical block may sit strictly between an
+            # already-materialized direct edge P->C. That is edge revision,
+            # not a conjunctive rejoin: retire P->C at this knowledge cutoff
+            # and compile P->new->C while preserving P->C historically.
+            for parent_id in parents:
+                if self.store.get_node(parent_id).line_id != line_id:
+                    raise ValueError("parent belongs to another Line")
+                parent_block = view.state_for_node_at_cutoff(
+                    parent_id,
+                    knowledge_cutoff=effective_cutoff,
+                )
+                for child_id in children:
+                    if self.store.get_node(child_id).line_id != line_id:
+                        raise ValueError("child belongs to another Line")
+                    if not self.store.edge_active_at(
+                        line_id,
+                        parent_id,
+                        child_id,
+                        effective_cutoff,
+                    ):
+                        continue
+                    child_block = view.state_for_node_at_cutoff(
+                        child_id,
+                        knowledge_cutoff=effective_cutoff,
+                    )
+                    if (
+                        parent_block is not None
+                        and child_block is not None
+                        and self._precedes(parent_block, block)
+                        and self._precedes(block, child_block)
+                    ):
+                        self.store.retire_edge_from(
+                            line_id,
+                            parent_id,
+                            child_id,
+                            effective_cutoff,
+                            commit=False,
+                        )
+
+            for parent_id in parents:
                 if self.store.get_node(parent_id).line_id != line_id:
                     raise ValueError("parent belongs to another Line")
                 if self._add_edge(
@@ -1101,7 +1178,7 @@ class LineAssembler:
                     knowledge_cutoff=effective_cutoff,
                 ):
                     added_edges.append((parent_id, node.node_id))
-            for child_id in tuple(dict.fromkeys(child_node_ids)):
+            for child_id in children:
                 if self.store.get_node(child_id).line_id != line_id:
                     raise ValueError("child belongs to another Line")
                 if self._add_edge(
