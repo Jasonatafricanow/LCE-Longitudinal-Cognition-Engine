@@ -35,6 +35,9 @@ and are never read by any discovery algorithm.
   seed cognition.
 - **A3 Multiscale Recurrent** — A2-like candidates must survive more than one
   semantic similarity scale before being emitted.
+- **A4 Persistent Mutual-kNN** — keep the low-fragmentation mutual-kNN
+  components, but emit a Worktree seed only when that component recurs across
+  enough support, temporal span, and time buckets.
 
 None of the algorithms uses a maximum-age / hard temporal cutoff.
 
@@ -56,3 +59,18 @@ actually use longitudinal recurrence rather than only static geometry.
 
 Pytest enforces mechanism invariants, not a desired research verdict.  Raw
 benchmark output is printed by GitHub Actions.
+
+
+## Negative controls
+
+Two time controls are reported separately:
+
+- timestamp shuffle: preserves cardinality and semantic points while scrambling
+  exact chronology;
+- temporal collapse: compresses each true long-lived trend into a short episode
+  while preserving its semantic geometry.  A genuinely longitudinal bootstrap
+  supplier should lose support under the collapse control.
+
+A4 also runs a development-only parameter sweep over `k = 3..6` and minimum
+temporal span of 30/60/90 days.  This sweep is for mechanism selection only and
+must not be described as held-out confirmation.
