@@ -682,43 +682,66 @@ class LceProjectionCore:
             for item in snapshot.structures
             if item.structure_id in candidate.supporting_structure_ids
         ]
-        blocks = tuple(
-            sorted(
-                (
-                    item.block_id,
-                    self.memory.get_semantic_block_state(
-                        item.state_id
-                    ).content,
-                )
-                for item in selected_support
-            )
-        )
+
         if candidate.relation_type.startswith("frontier_"):
             regions_raw = candidate.metadata.get(
                 "frontier_region_ids",
                 (),
             )
-            regions = tuple(
-                sorted(
-                    item
-                    for item in regions_raw
-                    if isinstance(item, str) and item.strip()
+            regions = (
+                tuple(
+                    sorted(
+                        item
+                        for item in regions_raw
+                        if isinstance(item, str) and item.strip()
+                    )
                 )
-            ) if isinstance(regions_raw, (list, tuple)) else ()
+                if isinstance(regions_raw, (list, tuple))
+                else ()
+            )
+            blocks = tuple(
+                sorted(
+                    (
+                        item.block_id,
+                        item.state_id,
+                        self.memory.get_semantic_block_state(
+                            item.state_id
+                        ).content,
+                    )
+                    for item in selected_support
+                )
+            )
             payload = {
                 "relation": candidate.relation_type,
                 "frontier_regions": regions,
                 "blocks": blocks,
             }
         else:
-            # Preserve the original V1 candidate-relevant fingerprint exactly.
-            # Recovery equivalence depends on legacy support identity remaining
-            # independent from the new frontier supplier.
+            # Preserve the exact V1 B4 fingerprint rule. Immutable state IDs
+            # remain selected provenance, but support maturity advances only
+            # when the snapshot-visible semantic content/structure changes.
+            blocks = tuple(
+                sorted(
+                    (
+                        item.block_id,
+                        next(
+                            (
+                                block.content
+                                for block in snapshot.block_states
+                                if block.block_id == item.block_id
+                            ),
+                            "",
+                        ),
+                    )
+                    for item in selected_support
+                )
+            )
             payload = {
                 "relation": candidate.relation_type,
                 "structures": structures,
                 "blocks": blocks,
             }
+
         return "support_" + hashlib.sha256(
             json.dumps(
                 payload,
