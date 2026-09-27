@@ -631,7 +631,6 @@ def test_material_semantic_state_drift_rebuilds_line_even_when_time_is_unchanged
             min_similarity=0.8,
             min_support=3,
         ),
-        neighbour_provider=_FixedNeighbourProvider(),
     )
     historical_cutoff = BASE + timedelta(days=30)
     seeded = runtime.bootstrap(
@@ -672,7 +671,7 @@ def test_material_semantic_state_drift_rebuilds_line_even_when_time_is_unchanged
     # local-continuity threshold. The current Line is therefore retired and
     # recompiled instead of treating stable block identity as immutable
     # relation authority.
-    assert result.candidate_paths
+    assert result.candidate_paths == ()
     assert LineGraphView(
         memory=memory,
         store=store,
