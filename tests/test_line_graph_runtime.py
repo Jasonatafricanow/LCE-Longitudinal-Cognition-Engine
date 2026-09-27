@@ -16,6 +16,7 @@ from lce.cognition.line_graph import (
 )
 from lce.core.projection import LceProjectionCore
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
+from lce.structure.trajectory import TrajectoryConfig
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
 BASE = datetime(2020, 1, 1, tzinfo=UTC)
@@ -1013,3 +1014,165 @@ def test_line_relation_rebuild_preserves_history_and_replaces_current_path(
         c_node.node_id,
         d_node.node_id,
     }
+
+
+
+def test_core_source_change_rebuilds_current_line_but_keeps_historical_relation(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    a = _admit(
+        memory,
+        evidence_id="CORE-A",
+        block_id="core-a",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    b = _admit(
+        memory,
+        evidence_id="CORE-B",
+        block_id="core-b",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    c_block = _admit(
+        memory,
+        evidence_id="CORE-C",
+        block_id="core-c",
+        day=20,
+        vector=(0.8, 0.2),
+    )
+    d = _admit(
+        memory,
+        evidence_id="CORE-D",
+        block_id="core-d",
+        day=30,
+        vector=(0.7, 0.3),
+    )
+    _rebuild(memory)
+    core = LceProjectionCore(
+        tmp_path / "core",
+        memory=memory,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.1,
+            min_support=3,
+        ),
+        block_embedder=lambda block: tuple(
+            float(value) for value in block.metadata["vector"]
+        ),
+        block_embedding_version="test-v1",
+    )
+    historical_cutoff = BASE + timedelta(days=100)
+    initial = core.trajectory.assembler.apply_path(
+        (a, b, c_block, d),
+        knowledge_cutoff=historical_cutoff,
+    )
+    assert initial.line_id is not None
+    line_id = initial.line_id
+
+    a_node = core.lines.node_for_block(line_id, a.block_id)
+    b_node = core.lines.node_for_block(line_id, b.block_id)
+    c_node = core.lines.node_for_block(line_id, c_block.block_id)
+    d_node = core.lines.node_for_block(line_id, d.block_id)
+    assert a_node is not None
+    assert b_node is not None
+    assert c_node is not None
+    assert d_node is not None
+
+    memory.invalidate("CORE-B", reason="later correction")
+    core.source_changed_and_rebuild("CORE-B")
+    current_cutoff = datetime.now(UTC)
+
+    assert set(
+        core.lines.edges_for_line_at(line_id, historical_cutoff)
+    ) == {
+        (a_node.node_id, b_node.node_id),
+        (b_node.node_id, c_node.node_id),
+        (c_node.node_id, d_node.node_id),
+    }
+    assert set(
+        core.lines.edges_for_line_at(line_id, current_cutoff)
+    ) == {
+        (a_node.node_id, c_node.node_id),
+        (c_node.node_id, d_node.node_id),
+    }
+    core.close()
+
+
+def test_line_derivation_fingerprint_rebuilds_without_overwriting_old_revision(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"FP-{index}",
+            block_id=f"fp-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    _rebuild(memory)
+    root = tmp_path / "fingerprint-core"
+    config = TrajectoryConfig(
+        k=2,
+        min_similarity=0.1,
+        min_support=3,
+    )
+    embedder = lambda block: tuple(
+        float(value) for value in block.metadata["vector"]
+    )
+
+    first = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        block_embedder=embedder,
+        block_embedding_version="vector-v1",
+    )
+    seeded = first.trajectory.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    old_fingerprint = first.lines.get_metadata(
+        "derivation_fingerprint"
+    )
+    assert old_fingerprint is not None
+    first.close()
+
+    second = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        block_embedder=embedder,
+        block_embedding_version="vector-v2",
+    )
+    second.bootstrap_trajectory(
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    new_fingerprint = second.lines.get_metadata(
+        "derivation_fingerprint"
+    )
+
+    assert new_fingerprint is not None
+    assert new_fingerprint != old_fingerprint
+    all_fingerprints = {
+        str(row[0])
+        for row in second.lines.conn.execute(
+            "SELECT DISTINCT derivation_fingerprint "
+            "FROM line_node_memberships"
+        ).fetchall()
+    }
+    assert {old_fingerprint, new_fingerprint} <= all_fingerprints
+    active_fingerprints = {
+        str(row[0])
+        for row in second.lines.conn.execute(
+            "SELECT DISTINCT derivation_fingerprint "
+            "FROM line_node_memberships WHERE retired_at IS NULL"
+        ).fetchall()
+    }
+    assert active_fingerprints == {new_fingerprint}
+    second.close()
