@@ -652,3 +652,98 @@ def test_default_assembler_does_not_infer_conjunctive_rejoin_from_overlap(
         first.line_id,
         knowledge_cutoff=BASE + timedelta(days=100),
     )
+
+
+
+def test_apply_path_rolls_back_partial_new_line_on_write_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"TX{index}",
+            block_id=f"TXB{index}",
+            day=index * 10,
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    original = store.ensure_node
+    calls = 0
+
+    def failing_ensure_node(*args: object, **kwargs: object):
+        nonlocal calls
+        result = original(*args, **kwargs)
+        calls += 1
+        if calls == 2:
+            raise RuntimeError("injected node write failure")
+        return result
+
+    monkeypatch.setattr(store, "ensure_node", failing_ensure_node)
+
+    with pytest.raises(RuntimeError, match="injected node write failure"):
+        assembler.apply_path(blocks)
+
+    assert store.list_lines() == ()
+    assert store.conn.execute(
+        "SELECT COUNT(*) FROM line_nodes"
+    ).fetchone()[0] == 0
+    assert store.conn.execute(
+        "SELECT COUNT(*) FROM line_node_states"
+    ).fetchone()[0] == 0
+
+
+def test_attach_block_rolls_back_node_when_edge_write_fails(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    seed = tuple(
+        _admit(
+            memory,
+            evidence_id=f"ATX{index}",
+            block_id=f"ATXB{index}",
+            day=index * 10,
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    newcomer = _admit(
+        memory,
+        evidence_id="ATX-new",
+        block_id="ATXB-new",
+        day=40,
+        vector=(1.0, 0.0),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    initial = assembler.apply_path(seed)
+    assert initial.line_id is not None
+    parent = store.node_for_block(initial.line_id, seed[-1].block_id)
+    assert parent is not None
+    before_edges = store.edges_for_line(initial.line_id)
+
+    original = store.add_edge
+
+    def failing_add_edge(*args: object, **kwargs: object):
+        original(*args, **kwargs)
+        raise RuntimeError("injected edge write failure")
+
+    monkeypatch.setattr(store, "add_edge", failing_add_edge)
+
+    with pytest.raises(RuntimeError, match="injected edge write failure"):
+        assembler.attach_block(
+            initial.line_id,
+            newcomer,
+            parent_node_ids=(parent.node_id,),
+        )
+
+    assert store.node_for_block(
+        initial.line_id,
+        newcomer.block_id,
+    ) is None
+    assert store.edges_for_line(initial.line_id) == before_edges
