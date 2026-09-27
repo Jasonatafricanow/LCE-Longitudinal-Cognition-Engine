@@ -251,8 +251,12 @@ class SurfaceRuntime:
                     left.shape_signature,
                     right.shape_signature,
                 )
-                pair = tuple(sorted((left.view_id, right.view_id)))
-                similarity[(pair[0], pair[1])] = score
+                pair = (
+                    (left.view_id, right.view_id)
+                    if left.view_id <= right.view_id
+                    else (right.view_id, left.view_id)
+                )
+                similarity[pair] = score
                 if score >= self.config.min_shape_similarity:
                     adjacency[left.view_id].add(right.view_id)
                     adjacency[right.view_id].add(left.view_id)
@@ -296,8 +300,12 @@ class SurfaceRuntime:
             pair_scores = []
             for left_index, left_id in enumerate(normalized):
                 for right_id in normalized[left_index + 1 :]:
-                    pair = tuple(sorted((left_id, right_id)))
-                    pair_scores.append(similarity[(pair[0], pair[1])])
+                    pair = (
+                        (left_id, right_id)
+                        if left_id <= right_id
+                        else (right_id, left_id)
+                    )
+                    pair_scores.append(similarity[pair])
             member_views = tuple(by_id[view_id] for view_id in normalized)
             raw_ids = {
                 raw_id
