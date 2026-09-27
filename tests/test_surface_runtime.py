@@ -6,7 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from lce.cognition.line_graph import LineAssembler, LineGraphStore
+from lce.cognition.line_graph import (
+    LineAssembler,
+    LineAssemblerConfig,
+    LineGraphStore,
+)
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.structure.surface import (
     SurfaceConfig,
@@ -273,3 +277,68 @@ def test_surface_search_limit_fails_closed_instead_of_returning_partial_set(
         runtime.discover(
             knowledge_cutoff=BASE + timedelta(days=500),
         )
+
+
+
+def test_surface_view_provenance_includes_all_conjunctive_rejoin_parents(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    store = LineGraphStore(tmp_path / "lines")
+
+    def admit(evidence_id: str, block_id: str, day: int) -> SemanticBlock:
+        when = BASE + timedelta(days=day)
+        memory.add_evidence(
+            RawEvidence(
+                evidence_id=evidence_id,
+                content=block_id,
+                occurred_at=when,
+                known_at=when,
+                provenance={"source": "test", "canonical": True},
+            )
+        )
+        return memory.put_semantic_block(
+            SemanticBlock(
+                block_id=block_id,
+                content=block_id,
+                raw_evidence_ids=(evidence_id,),
+                occurred_start=when,
+                occurred_end=when,
+                compiler_version="test",
+                lineage_id="rejoin",
+                metadata={"vector": (1.0, float(day))},
+            )
+        )
+
+    trunk = admit("RT", "r-trunk", 0)
+    branch_a = admit("RA", "r-a", 10)
+    branch_b = admit("RB", "r-b", 12)
+    rejoin = admit("RR", "r-rejoin", 30)
+    _rebuild(memory)
+
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(allow_conjunctive_rejoin=True),
+    )
+    first = assembler.apply_path((trunk, branch_a, rejoin))
+    assembler.apply_path((trunk, branch_b, rejoin))
+    assert first.line_id is not None
+
+    runtime = SurfaceRuntime(
+        memory=memory,
+        line_store=store,
+        config=SurfaceConfig(),
+    )
+    views = runtime._line_path_views(  # noqa: SLF001 - direct invariant test
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    ending_at_rejoin = [
+        view
+        for view in views
+        if store.get_node(view.node_ids[-1]).block_id == "r-rejoin"
+    ]
+
+    assert len(ending_at_rejoin) == 2
+    for view in ending_at_rejoin:
+        assert {"RT", "RA", "RB", "RR"} <= set(view.raw_evidence_ids)
