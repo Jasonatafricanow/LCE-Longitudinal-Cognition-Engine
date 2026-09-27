@@ -63,7 +63,7 @@ class TrajectoryConfig:
     min_support: int = 3
     max_paths: int = 256
     max_path_length: int = 64
-    max_incremental_parents: int = 2
+    max_incremental_parents: int = 1
     line_ambiguity_margin: float = 0.03
     algorithm_version: str = "trajectory-mutual-knn-v1"
 
@@ -562,8 +562,9 @@ class TrajectoryRuntime:
                     (state.occurred_start, score, node_id)
                 )
 
-        # Prefer current frontier parents when growing forward. A true rejoin is
-        # expressed by multiple strongly compatible frontier parents.
+        # Prefer current frontier parents when growing forward. The default
+        # selects one parent only. Multiple candidates are useful only when the
+        # injected LineAssemblerConfig explicitly authorizes conjunctive rejoin.
         frontier_predecessors = [
             item for item in predecessors if item[2] in frontier
         ]
