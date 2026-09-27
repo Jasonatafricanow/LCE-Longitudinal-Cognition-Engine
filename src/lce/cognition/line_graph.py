@@ -755,15 +755,20 @@ class LineGraphStore:
         self,
         knowledge_cutoff: datetime,
     ) -> None:
-        """Retire current derived membership/edges without erasing history."""
+        """Retire derived structure from cutoff forward without erasing history.
+
+        Rebuild/correction invalidates both relations already active at cutoff
+        and any previously materialized future replay revisions. Otherwise an
+        old-algorithm future revision could become visible again after a
+        current rebuild. Revisions retired before cutoff remain untouched.
+        """
         _require_utc(knowledge_cutoff, "knowledge_cutoff")
         cutoff = knowledge_cutoff.isoformat()
         with self.conn:
             edge_rows = self.conn.execute(
                 "SELECT edge_revision_id FROM line_edge_revisions "
-                "WHERE known_at <= ? "
-                "AND (retired_at IS NULL OR retired_at > ?)",
-                (cutoff, cutoff),
+                "WHERE retired_at IS NULL OR retired_at > ?",
+                (cutoff,),
             ).fetchall()
             for (revision_id,) in edge_rows:
                 self.conn.execute(
@@ -773,9 +778,9 @@ class LineGraphStore:
                 )
             membership_rows = self.conn.execute(
                 "SELECT membership_revision_id "
-                "FROM line_node_memberships WHERE known_at <= ? "
-                "AND (retired_at IS NULL OR retired_at > ?)",
-                (cutoff, cutoff),
+                "FROM line_node_memberships "
+                "WHERE retired_at IS NULL OR retired_at > ?",
+                (cutoff,),
             ).fetchall()
             for (revision_id,) in membership_rows:
                 self.conn.execute(
