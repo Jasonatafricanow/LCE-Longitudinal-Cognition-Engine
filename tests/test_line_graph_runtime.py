@@ -389,11 +389,14 @@ def test_invalid_historical_node_does_not_count_toward_line_absorption(
         (invalid_later, stable, newcomer),
         knowledge_cutoff=datetime.now(UTC),
     )
-    assert attempted.line_id is None
-    assert attempted.unresolved_reason == (
-        "weak overlap with an existing Line; no clone created"
-    )
-    assert len(store.list_lines()) == 1
+    assert attempted.line_id is not None
+    assert attempted.line_id != initial.line_id
+    assert attempted.created_line is True
+    assert len(store.list_lines()) == 2
+    assert set(store.lines_for_block(stable.block_id)) == {
+        initial.line_id,
+        attempted.line_id,
+    }
 
 
 def test_core_returns_callable_views_without_persisting_projection_nodes(
