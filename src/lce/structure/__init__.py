@@ -20,7 +20,9 @@ from lce.structure.surface import (
     SurfaceRuntime,
 )
 from lce.structure.trajectory import (
+    ExactCosineNeighbourProvider,
     MutualKnnTrajectorySupplier,
+    NeighbourCandidateProvider,
     TrajectoryConfig,
     TrajectoryPath,
     TrajectoryRuntime,
@@ -28,11 +30,13 @@ from lce.structure.trajectory import (
 )
 
 __all__ = [
+    "ExactCosineNeighbourProvider",
     "FrontierCandidateDiscovery",
     "FrontierDiscoveryConfig",
     "HigherOrderCandidate",
     "LinePathView",
     "MutualKnnTrajectorySupplier",
+    "NeighbourCandidateProvider",
     "SnapshotStructureDiscovery",
     "StructureConfig",
     "StructureDiff",
