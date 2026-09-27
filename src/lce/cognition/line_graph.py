@@ -951,6 +951,33 @@ class LineAssembler:
             for evidence_id in block.raw_evidence_ids
         )
 
+    def _authorized_block_at(
+        self,
+        block: SemanticBlock,
+        knowledge_cutoff: datetime,
+    ) -> bool:
+        if block.state_id is None:
+            return False
+        try:
+            persisted = self.memory.get_semantic_block_state(
+                block.state_id
+            )
+        except KeyError:
+            return False
+        if persisted != block:
+            return False
+        try:
+            return all(
+                _evidence_valid_at(
+                    self.memory,
+                    evidence_id,
+                    knowledge_cutoff,
+                )
+                for evidence_id in persisted.raw_evidence_ids
+            )
+        except KeyError:
+            return False
+
     def _add_edge(
         self,
         line_id: str,
@@ -1039,6 +1066,11 @@ class LineAssembler:
         self.store.get_line(line_id)
         effective_cutoff = knowledge_cutoff or self._knowledge_at(block)
         _require_utc(effective_cutoff, "knowledge_cutoff")
+        if not self._authorized_block_at(block, effective_cutoff):
+            raise ValueError(
+                "Line attachment requires an authorized cutoff-valid "
+                "SemanticBlock state"
+            )
         with self.store.conn:
             node, node_added, state_added = self.store.ensure_node(
                 line_id,
@@ -1101,6 +1133,14 @@ class LineAssembler:
             self._knowledge_at(block) for block in blocks
         )
         _require_utc(effective_cutoff, "knowledge_cutoff")
+        if not all(
+            self._authorized_block_at(block, effective_cutoff)
+            for block in blocks
+        ):
+            raise ValueError(
+                "trajectory path contains an unauthorized or "
+                "cutoff-invalid SemanticBlock state"
+            )
         overlaps = self._visible_overlap_counts(
             block_ids,
             knowledge_cutoff=effective_cutoff,
