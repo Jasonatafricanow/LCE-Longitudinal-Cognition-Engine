@@ -294,3 +294,67 @@ def test_nearline_observe_does_not_seed_line_from_point_cloud(
     assert result.candidate_paths == ()
     assert result.line_updates == ()
     assert line_store.list_lines() == ()
+
+
+def test_nearline_state_revision_updates_existing_line_membership(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            index=index,
+            day=index * 30,
+            vector=_vector(index * 8.0),
+        )
+        for index in range(5)
+    )
+    _rebuild(memory)
+    store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=store,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.95,
+            min_support=3,
+        ),
+    )
+    runtime.bootstrap(
+        knowledge_cutoff=BASE + timedelta(days=150),
+    )
+    line_id = store.list_lines()[0].line_id
+    target = blocks[2]
+    node = store.node_for_block(line_id, target.block_id)
+    assert node is not None
+    assert len(store.states_for_node(node.node_id)) == 1
+
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="REV",
+            content="later revision",
+            occurred_at=BASE + timedelta(days=70),
+            known_at=BASE + timedelta(days=200),
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    revised = memory.extend_semantic_block(
+        target.block_id,
+        content="later revision",
+        evidence_id="REV",
+        occurred_at=BASE + timedelta(days=70),
+    )
+    _rebuild(memory)
+
+    result = runtime.observe(
+        knowledge_cutoff=BASE + timedelta(days=210),
+        current_block_ids=(target.block_id,),
+    )
+
+    assert len(result.line_updates) == 1
+    assert result.line_updates[0].line_id == line_id
+    assert len(store.list_lines()) == 1
+    assert len(store.states_for_node(node.node_id)) == 2
+    assert revised.state_id in {
+        state.state_id for state in store.states_for_node(node.node_id)
+    }
