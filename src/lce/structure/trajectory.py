@@ -319,6 +319,20 @@ class MutualKnnTrajectorySupplier:
                 return
             if len(path) >= self.config.max_path_length:
                 raw_paths.append(path)
+                if len(raw_paths) >= self.config.max_paths:
+                    return
+                children = outgoing.get(path[-1], ())
+                overlap = min(
+                    max(1, self.config.min_support - 1),
+                    self.config.max_path_length - 1,
+                )
+                suffix = path[-overlap:]
+                for child_id in children:
+                    if child_id in suffix:
+                        continue
+                    walk((*suffix, child_id))
+                    if len(raw_paths) >= self.config.max_paths:
+                        return
                 return
             children = outgoing.get(path[-1], ())
             if not children:
@@ -681,6 +695,8 @@ class TrajectoryRuntime:
                 paths,
                 key=lambda path: (
                     -len(path.block_ids),
+                    by_id[path.block_ids[0]].occurred_start,
+                    by_id[path.block_ids[-1]].occurred_end,
                     -path.mean_local_similarity,
                     path.path_id,
                 ),
