@@ -35,11 +35,22 @@ class DraftRevision:
     selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
     processing_input_id: str | None = None
     processing_supplier: str | None = None
+    processing_support_identity: str | None = None
     support_kind: str = "semantic_block"
 
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
             raise ValueError("draft status must be OPEN, MERGED, or DROPPED")
+        if (
+            self.processing_support_identity is not None
+            and (
+                not isinstance(self.processing_support_identity, str)
+                or not self.processing_support_identity.strip()
+            )
+        ):
+            raise ValueError(
+                "processing_support_identity must be nonempty or None"
+            )
         if self.processing_supplier not in {
             None,
             "structure",
@@ -107,7 +118,8 @@ class DraftRevisionStore:
                 processing_input_id TEXT,
                 support_kind TEXT NOT NULL DEFAULT 'semantic_block',
                 supporting_frontier_refs_json TEXT NOT NULL DEFAULT '[]',
-                processing_supplier TEXT
+                processing_supplier TEXT,
+                processing_support_identity TEXT
             );
             CREATE TABLE IF NOT EXISTS support_cycles (
                 worktree_id TEXT NOT NULL,
@@ -144,6 +156,11 @@ class DraftRevisionStore:
             self.conn.execute(
                 "ALTER TABLE worktrees ADD COLUMN processing_supplier TEXT"
             )
+        if "processing_support_identity" not in columns:
+            self.conn.execute(
+                "ALTER TABLE worktrees ADD COLUMN "
+                "processing_support_identity TEXT"
+            )
         self.conn.commit()
 
     @staticmethod
@@ -164,6 +181,7 @@ class DraftRevisionStore:
         selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
         processing_input_id: str | None = None,
         processing_supplier: str | None = None,
+        processing_support_identity: str | None = None,
         support_kind: str = "semantic_block",
         supporting_frontier_refs: tuple[str, ...] = (),
     ) -> DraftRevision:
@@ -190,6 +208,7 @@ class DraftRevisionStore:
             selected_support=selected,
             processing_input_id=processing_input_id,
             processing_supplier=processing_supplier,
+            processing_support_identity=processing_support_identity,
             support_kind=support_kind,
         )
         if not item.supporting_block_ids:
@@ -201,8 +220,9 @@ class DraftRevisionStore:
                 supporting_block_ids_json, supporting_structure_ids_json, created_at, updated_at,
                 status, needs_rebuild, merged_baseline_id, applicability, unresolved,
                 interpretation_trace_json, selected_support_json, processing_input_id,
-                support_kind, supporting_frontier_refs_json, processing_supplier
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                support_kind, supporting_frontier_refs_json, processing_supplier,
+                processing_support_identity
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (item.worktree_id, item.region_id, item.base_baseline_id, item.base_revision, item.candidate_content,
              json.dumps(item.supporting_block_ids), json.dumps(item.supporting_structure_ids), item.created_at.isoformat(),
@@ -211,7 +231,7 @@ class DraftRevisionStore:
              json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in item.selected_support],
                         ensure_ascii=False, sort_keys=True), item.processing_input_id,
              item.support_kind, json.dumps(item.supporting_frontier_refs),
-             item.processing_supplier),
+             item.processing_supplier, item.processing_support_identity),
         )
         self.conn.commit()
         return item
@@ -242,6 +262,11 @@ class DraftRevisionStore:
             processing_supplier=(
                 str(row[19])
                 if len(row) > 19 and row[19] is not None
+                else None
+            ),
+            processing_support_identity=(
+                str(row[20])
+                if len(row) > 20 and row[20] is not None
                 else None
             ),
         )
@@ -284,6 +309,7 @@ class DraftRevisionStore:
         selected_support: tuple[AuthorizedSelectedSupport, ...] | None = None,
         processing_input_id: str | None = None,
         processing_supplier: str | None = None,
+        processing_support_identity: str | None = None,
         add_frontier_refs: tuple[str, ...] = (),
         remove_frontier_refs: tuple[str, ...] = (),
     ) -> DraftRevision:
@@ -311,6 +337,8 @@ class DraftRevisionStore:
             "supporting_frontier_refs_json=?, selected_support_json=?, "
             "processing_input_id=COALESCE(?, processing_input_id), "
             "processing_supplier=COALESCE(?, processing_supplier), "
+            "processing_support_identity=COALESCE("
+            "?, processing_support_identity), "
             "updated_at=? WHERE worktree_id=?",
             (
                 json.dumps(self._tuple(blocks)),
@@ -329,6 +357,7 @@ class DraftRevisionStore:
                 ),
                 processing_input_id,
                 processing_supplier,
+                processing_support_identity,
                 now.isoformat(),
                 worktree_id,
             ),
