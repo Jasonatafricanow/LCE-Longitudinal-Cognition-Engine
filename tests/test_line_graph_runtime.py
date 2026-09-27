@@ -22,6 +22,32 @@ from lce.testing.reference_memory import InMemoryReferenceMemory
 BASE = datetime(2020, 1, 1, tzinfo=UTC)
 
 
+
+class _VersionedFixedNeighbourProvider:
+    def __init__(self, version: str) -> None:
+        self.derivation_fingerprint = version
+
+    def candidates(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        vectors: dict[str, tuple[float, ...]],
+        *,
+        k: int,
+        min_similarity: float,
+    ) -> dict[str, tuple[tuple[float, str], ...]]:
+        del vectors, k, min_similarity
+        ids = [block.block_id for block in blocks]
+        output: dict[str, tuple[tuple[float, str], ...]] = {}
+        for index, block_id in enumerate(ids):
+            neighbours: list[tuple[float, str]] = []
+            if index > 0:
+                neighbours.append((0.99, ids[index - 1]))
+            if index + 1 < len(ids):
+                neighbours.append((0.99, ids[index + 1]))
+            output[block_id] = tuple(neighbours)
+        return output
+
+
 def _admit(
     memory: InMemoryReferenceMemory,
     *,
@@ -1240,3 +1266,129 @@ def test_relation_revision_can_reactivate_twice_at_same_knowledge_cutoff(
         ),
     ).fetchone()[0]
     assert membership_revisions == 3
+
+
+
+def test_same_derivation_fingerprint_restarts_without_spurious_rebuild(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"RST-{index}",
+            block_id=f"rst-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    _rebuild(memory)
+    root = tmp_path / "restart-core"
+    config = TrajectoryConfig(
+        k=2,
+        min_similarity=0.1,
+        min_support=3,
+    )
+    embedder = lambda block: tuple(
+        float(value) for value in block.metadata["vector"]
+    )
+
+    first = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        block_embedder=embedder,
+        block_embedding_version="stable-v1",
+    )
+    seeded = first.trajectory.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    expected_frontier = first.line_frontier(
+        seeded.line_id,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    before_revision_count = first.lines.conn.execute(
+        "SELECT COUNT(*) FROM line_node_memberships"
+    ).fetchone()[0]
+    first.close()
+
+    restarted = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        block_embedder=embedder,
+        block_embedding_version="stable-v1",
+    )
+
+    assert restarted.line_frontier(
+        seeded.line_id,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    ) == expected_frontier
+    assert restarted.lines.conn.execute(
+        "SELECT COUNT(*) FROM line_node_memberships"
+    ).fetchone()[0] == before_revision_count
+    restarted.close()
+
+
+def test_neighbour_provider_declared_version_participates_in_line_fingerprint(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"NP-{index}",
+            block_id=f"np-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    _rebuild(memory)
+    root = tmp_path / "provider-version-core"
+    config = TrajectoryConfig(
+        k=2,
+        min_similarity=0.1,
+        min_support=3,
+    )
+    embedder = lambda block: tuple(
+        float(value) for value in block.metadata["vector"]
+    )
+
+    first = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "fixed-provider-v1"
+        ),
+        block_embedder=embedder,
+        block_embedding_version="vector-v1",
+    )
+    seeded = first.trajectory.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    first.close()
+
+    changed = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "fixed-provider-v2"
+        ),
+        block_embedder=embedder,
+        block_embedding_version="vector-v1",
+    )
+
+    with pytest.raises(StaleLineGraphError):
+        changed.line_frontier(
+            seeded.line_id,
+            knowledge_cutoff=datetime.now(UTC),
+        )
+    changed.close()
