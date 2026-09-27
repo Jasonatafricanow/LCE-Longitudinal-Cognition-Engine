@@ -190,11 +190,6 @@ class DerivedProjectionStatePort(Protocol):
     def list_semantic_blocks_at_cutoff(self, cutoff: datetime) -> tuple[SemanticBlock, ...]:
         ...
 
-    def list_semantic_blocks_at_knowledge_cutoff(
-        self, cutoff: datetime
-    ) -> tuple[SemanticBlock, ...]:
-        ...
-
     def extend_semantic_block(
         self,
         block_id: str,
