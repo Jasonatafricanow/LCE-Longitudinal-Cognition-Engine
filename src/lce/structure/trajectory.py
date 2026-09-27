@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import math
 from dataclasses import dataclass
+from datetime import datetime
 
 from lce.cognition.line_graph import (
     LineApplyResult,
@@ -385,7 +386,7 @@ class TrajectoryRuntime:
     def observe(
         self,
         *,
-        knowledge_cutoff,
+        knowledge_cutoff: datetime,
         current_block_ids: tuple[str, ...],
     ) -> TrajectoryRuntimeResult:
         blocks = self.memory.list_semantic_blocks_at_knowledge_cutoff(
