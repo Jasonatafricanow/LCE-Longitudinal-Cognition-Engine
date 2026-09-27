@@ -1176,3 +1176,61 @@ def test_line_derivation_fingerprint_rebuilds_without_overwriting_old_revision(
     }
     assert active_fingerprints == {new_fingerprint}
     second.close()
+
+
+
+def test_relation_revision_can_reactivate_twice_at_same_knowledge_cutoff(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"RETRY-{index}",
+            block_id=f"retry-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    historical_cutoff = BASE + timedelta(days=50)
+    initial = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=historical_cutoff,
+    )
+    assert initial.line_id is not None
+
+    rebuild_cutoff = BASE + timedelta(days=100)
+    store.retire_current_structure(rebuild_cutoff)
+    first_retry = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=rebuild_cutoff,
+    )
+    assert first_retry.line_id == initial.line_id
+
+    # Simulate a higher-level rebuild abort after one committed path. Retire
+    # that partial current revision and retry at exactly the same knowledge
+    # cutoff. Revision identity must not collide with the retired attempt.
+    store.retire_current_structure(rebuild_cutoff)
+    second_retry = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=rebuild_cutoff,
+    )
+
+    assert second_retry.line_id == initial.line_id
+    line_id = initial.line_id
+    assert len(store.active_node_ids_at(line_id, rebuild_cutoff)) == 3
+    assert len(store.edges_for_line_at(line_id, rebuild_cutoff)) == 2
+    membership_revisions = store.conn.execute(
+        "SELECT COUNT(*) FROM line_node_memberships "
+        "WHERE node_id = ?",
+        (
+            store.node_for_block(
+                line_id,
+                blocks[0].block_id,
+            ).node_id,
+        ),
+    ).fetchone()[0]
+    assert membership_revisions == 3
