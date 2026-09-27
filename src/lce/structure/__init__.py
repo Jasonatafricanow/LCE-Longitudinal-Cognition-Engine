@@ -9,8 +9,14 @@ from lce.structure.contracts import (
     StructureSnapshot,
 )
 from lce.structure.discovery import SnapshotStructureDiscovery
+from lce.structure.frontier import (
+    FrontierCandidateDiscovery,
+    FrontierDiscoveryConfig,
+)
 
 __all__ = [
+    "FrontierCandidateDiscovery",
+    "FrontierDiscoveryConfig",
     "HigherOrderCandidate",
     "SnapshotStructureDiscovery",
     "StructureConfig",
