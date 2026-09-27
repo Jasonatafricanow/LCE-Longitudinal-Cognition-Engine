@@ -836,8 +836,13 @@ class LineAssembler:
         line_id: str,
         parent_node_id: str,
         child_node_id: str,
+        *,
+        knowledge_cutoff: datetime,
     ) -> bool:
-        existing_parents = self.store.parents(child_node_id)
+        existing_parents = self.store.parents_at(
+            child_node_id,
+            knowledge_cutoff,
+        )
         if (
             parent_node_id not in existing_parents
             and existing_parents
@@ -850,6 +855,7 @@ class LineAssembler:
             line_id,
             parent_node_id,
             child_node_id,
+            knowledge_at=knowledge_cutoff,
             commit=False,
         )
 
@@ -890,6 +896,7 @@ class LineAssembler:
         *,
         parent_node_ids: tuple[str, ...] = (),
         child_node_ids: tuple[str, ...] = (),
+        knowledge_cutoff: datetime | None = None,
     ) -> LineApplyResult:
         """Attach one current SemanticBlock to an existing Line.
 
@@ -905,23 +912,36 @@ class LineAssembler:
         if block.state_id is None:
             raise ValueError("Line attachment requires an immutable state")
         self.store.get_line(line_id)
+        effective_cutoff = knowledge_cutoff or self._knowledge_at(block)
+        _require_utc(effective_cutoff, "knowledge_cutoff")
         with self.store.conn:
             node, node_added, state_added = self.store.ensure_node(
                 line_id,
                 block,
                 knowledge_at=self._knowledge_at(block),
+                membership_known_at=effective_cutoff,
                 commit=False,
             )
             added_edges: list[tuple[str, str]] = []
             for parent_id in tuple(dict.fromkeys(parent_node_ids)):
                 if self.store.get_node(parent_id).line_id != line_id:
                     raise ValueError("parent belongs to another Line")
-                if self._add_edge(line_id, parent_id, node.node_id):
+                if self._add_edge(
+                    line_id,
+                    parent_id,
+                    node.node_id,
+                    knowledge_cutoff=effective_cutoff,
+                ):
                     added_edges.append((parent_id, node.node_id))
             for child_id in tuple(dict.fromkeys(child_node_ids)):
                 if self.store.get_node(child_id).line_id != line_id:
                     raise ValueError("child belongs to another Line")
-                if self._add_edge(line_id, node.node_id, child_id):
+                if self._add_edge(
+                    line_id,
+                    node.node_id,
+                    child_id,
+                    knowledge_cutoff=effective_cutoff,
+                ):
                     added_edges.append((node.node_id, child_id))
         return LineApplyResult(
             line_id=line_id,
@@ -996,6 +1016,7 @@ class LineAssembler:
             if new_line_seed:
                 line = self.store.create_line(
                     block_ids,
+                    created_at=effective_cutoff,
                     commit=False,
                 )
                 line_id = line.line_id
@@ -1004,6 +1025,7 @@ class LineAssembler:
                     line_id,
                     block,
                     knowledge_at=self._knowledge_at(block),
+                    membership_known_at=effective_cutoff,
                     commit=False,
                 )
                 nodes.append(node)
@@ -1020,7 +1042,10 @@ class LineAssembler:
                 parent = nodes[index]
                 child = nodes[index + 1]
                 if self._add_edge(
-                    line_id, parent.node_id, child.node_id
+                    line_id,
+                    parent.node_id,
+                    child.node_id,
+                    knowledge_cutoff=effective_cutoff,
                 ):
                     added_edges.append((parent.node_id, child.node_id))
 
@@ -1098,6 +1123,13 @@ class LineGraphView:
             if current_id in memo:
                 continue
 
+            if not self.store.membership_active_at(
+                current_id,
+                cutoff,
+            ):
+                memo[current_id] = False
+                continue
+
             block = self.state_for_node_at_cutoff(
                 current_id,
                 knowledge_cutoff=cutoff,
@@ -1106,7 +1138,7 @@ class LineGraphView:
                 memo[current_id] = False
                 continue
 
-            parents = self.store.parents(current_id)
+            parents = self.store.parents_at(current_id, cutoff)
             if not expanded:
                 unresolved = tuple(
                     parent_id
@@ -1161,7 +1193,10 @@ class LineGraphView:
             return ()
         parents_with_visible_children = {
             parent_id
-            for parent_id, child_id in self.store.edges_for_line(line_id)
+            for parent_id, child_id in self.store.edges_for_line_at(
+                line_id,
+                knowledge_cutoff,
+            )
             if parent_id in visible and child_id in visible
         }
         return tuple(sorted(visible - parents_with_visible_children))
@@ -1203,7 +1238,10 @@ class LineGraphView:
                 return
             parents = tuple(
                 parent_id
-                for parent_id in self.store.parents(node_id)
+                for parent_id in self.store.parents_at(
+                    node_id,
+                    knowledge_cutoff,
+                )
                 if parent_id in visible
             )
             if not parents:
@@ -1261,7 +1299,10 @@ class LineGraphView:
             raw_ids.update(block.raw_evidence_ids)
             pending.extend(
                 parent_id
-                for parent_id in self.store.parents(current_id)
+                for parent_id in self.store.parents_at(
+                    current_id,
+                    knowledge_cutoff,
+                )
                 if parent_id not in seen_nodes
             )
 
@@ -1338,8 +1379,14 @@ class CallableLineProjector:
         while queue and len(distance) < self.config.max_nodes * 3:
             current = queue.popleft()
             neighbours = (
-                *self.store.parents(current),
-                *self.store.children(current),
+                *self.store.parents_at(
+                    current,
+                    knowledge_cutoff,
+                ),
+                *self.store.children_at(
+                    current,
+                    knowledge_cutoff,
+                ),
             )
             for neighbour in neighbours:
                 if neighbour not in visible or neighbour in distance:
