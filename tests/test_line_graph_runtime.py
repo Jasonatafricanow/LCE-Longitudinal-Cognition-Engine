@@ -1567,3 +1567,40 @@ def test_reactivating_existing_line_record_does_not_report_new_line(
 
     assert second.line_id == first.line_id
     assert second.created_line is False
+
+
+
+def test_rebuild_cutoff_cancels_precomputed_future_line_revision(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"FUTURE-{index}",
+            block_id=f"future-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    future_cutoff = BASE + timedelta(days=200)
+    seeded = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=future_cutoff,
+    )
+    assert seeded.line_id is not None
+    line_id = seeded.line_id
+
+    rebuild_cutoff = BASE + timedelta(days=100)
+    store.retire_current_structure(rebuild_cutoff)
+
+    assert store.active_node_ids_at(line_id, future_cutoff) == ()
+    assert store.edges_for_line_at(line_id, future_cutoff) == ()
+    # The revision did not exist at an earlier historical cutoff either.
+    assert store.active_node_ids_at(
+        line_id,
+        BASE + timedelta(days=50),
+    ) == ()
