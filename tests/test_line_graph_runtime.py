@@ -812,3 +812,98 @@ def test_callable_projection_keeps_full_rejoin_provenance_when_content_is_bounde
         "PRB",
         "PRR",
     }
+
+
+
+def test_one_semantic_block_may_support_two_distinct_lines(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    a = _admit(
+        memory,
+        evidence_id="ML-A",
+        block_id="ml-a",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    b = _admit(
+        memory,
+        evidence_id="ML-B",
+        block_id="ml-b",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    shared = _admit(
+        memory,
+        evidence_id="ML-C",
+        block_id="ml-shared",
+        day=20,
+        vector=(0.8, 0.2),
+    )
+    d = _admit(
+        memory,
+        evidence_id="ML-D",
+        block_id="ml-d",
+        day=30,
+        vector=(0.7, 0.3),
+    )
+    e = _admit(
+        memory,
+        evidence_id="ML-E",
+        block_id="ml-e",
+        day=40,
+        vector=(0.6, 0.4),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(
+            min_seed_support=3,
+            min_shared_support=2,
+        ),
+    )
+
+    first = assembler.apply_path((a, b, shared))
+    second = assembler.apply_path((shared, d, e))
+
+    assert first.line_id is not None
+    assert second.line_id is not None
+    assert second.line_id != first.line_id
+    assert len(store.list_lines()) == 2
+    assert set(store.lines_for_block(shared.block_id)) == {
+        first.line_id,
+        second.line_id,
+    }
+
+
+def test_strong_overlap_still_extends_existing_line_instead_of_cloning(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"SO-{index}",
+            block_id=f"so-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.05, index * 0.05),
+        )
+        for index in range(4)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(
+            min_seed_support=3,
+            min_shared_support=2,
+        ),
+    )
+
+    first = assembler.apply_path(blocks[:3])
+    second = assembler.apply_path(blocks[1:])
+
+    assert first.line_id is not None
+    assert second.line_id == first.line_id
+    assert len(store.list_lines()) == 1
