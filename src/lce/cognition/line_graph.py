@@ -600,7 +600,13 @@ class LineGraphStore:
         if self.membership_active_at(node_id, knowledge_at):
             return False
         iso = knowledge_at.isoformat()
-        revision_id = self._revision_id("membership", node_id, iso)
+        created_at = datetime.now(UTC).isoformat()
+        revision_id = self._revision_id(
+            "membership",
+            node_id,
+            iso,
+            created_at,
+        )
         result = self.conn.execute(
             "INSERT OR IGNORE INTO line_node_memberships ("
             "membership_revision_id, node_id, known_at, retired_at, "
@@ -610,7 +616,7 @@ class LineGraphStore:
                 revision_id,
                 node_id,
                 iso,
-                datetime.now(UTC).isoformat(),
+                created_at,
                 self._derivation_fingerprint,
             ),
         )
@@ -804,12 +810,14 @@ class LineGraphStore:
             (line_id, parent_node_id, child_node_id),
         )
         iso = edge_known_at.isoformat()
+        created_at = datetime.now(UTC).isoformat()
         revision_id = self._revision_id(
             "edge",
             line_id,
             parent_node_id,
             child_node_id,
             iso,
+            created_at,
         )
         result = self.conn.execute(
             "INSERT OR IGNORE INTO line_edge_revisions ("
@@ -822,7 +830,7 @@ class LineGraphStore:
                 parent_node_id,
                 child_node_id,
                 iso,
-                datetime.now(UTC).isoformat(),
+                created_at,
                 self._derivation_fingerprint,
             ),
         )
