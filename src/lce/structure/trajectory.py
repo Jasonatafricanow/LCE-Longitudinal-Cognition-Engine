@@ -106,6 +106,8 @@ class ExactCosineNeighbourProvider:
     external-vector-index provider through the same contract.
     """
 
+    derivation_fingerprint = "exact-cosine-v1"
+
     def candidates(
         self,
         blocks: tuple[SemanticBlock, ...],
