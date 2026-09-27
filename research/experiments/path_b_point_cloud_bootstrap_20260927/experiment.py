@@ -395,6 +395,39 @@ def recurrent_density(
     )
 
 
+
+def persistent_mutual_knn(
+    points: tuple[Point, ...],
+    *,
+    k: int = 4,
+    min_similarity: float = 0.10,
+    min_support: int = 4,
+    min_span_days: int = 42,
+    min_time_buckets: int = 3,
+    bucket_days: int = 45,
+) -> tuple[Candidate, ...]:
+    """A4: static semantic components must also persist longitudinally.
+
+    This keeps the low-fragmentation geometry of mutual-kNN, then applies time
+    as evidence that a component is a recurring trend rather than a short burst.
+    No maximum-age cutoff exists.
+    """
+
+    base = mutual_knn(points, k=k, min_similarity=min_similarity)
+    by_id = {point.point_id: point for point in points}
+    kept: list[Candidate] = []
+    for candidate in base:
+        if len(candidate.member_ids) < min_support:
+            continue
+        days = [by_id[point_id].day for point_id in candidate.member_ids]
+        if max(days) - min(days) < min_span_days:
+            continue
+        if len({day // bucket_days for day in days}) < min_time_buckets:
+            continue
+        kept.append(Candidate("A4_PERSISTENT_MUTUAL_KNN", candidate.member_ids))
+    return tuple(kept)
+
+
 def multiscale_recurrent(points: tuple[Point, ...]) -> tuple[Candidate, ...]:
     """A3: keep recurrent structures that survive more than one local scale.
 
@@ -447,6 +480,7 @@ ALGORITHMS = {
     "A1_MUTUAL_KNN": mutual_knn,
     "A2_RECURRENT_DENSITY": recurrent_density,
     "A3_MULTISCALE_RECURRENT": multiscale_recurrent,
+    "A4_PERSISTENT_MUTUAL_KNN": persistent_mutual_knn,
 }
 
 
@@ -551,6 +585,94 @@ def volume_curve() -> dict[str, object]:
     }
 
 
+
+def temporal_collapse_control() -> dict[str, object]:
+    """Collapse each true trend into a short episode while preserving semantics.
+
+    Unlike a plain timestamp shuffle, this specifically destroys long-horizon
+    persistence while keeping the same point count and semantic geometry.
+    Gold labels are used only to construct this offline negative-control corpus;
+    discovery algorithms still never receive them.
+    """
+
+    points = corpus()
+    trend_base_day = {
+        spec.name: 30 + index * 45
+        for index, spec in enumerate(TREND_SPECS)
+    }
+    trend_offsets: Counter[str] = Counter()
+    collapsed: list[Point] = []
+
+    for point in points:
+        if point.gold_trends:
+            trend = sorted(point.gold_trends)[0]
+            offset = trend_offsets[trend]
+            trend_offsets[trend] += 1
+            new_day = trend_base_day[trend] + (offset % 12)
+            collapsed.append(
+                Point(
+                    point.point_id,
+                    new_day,
+                    point.features,
+                    point.gold_trends,
+                    point.decoy_group,
+                )
+            )
+        else:
+            collapsed.append(point)
+
+    collapsed_points = tuple(sorted(collapsed, key=lambda p: (p.day, p.point_id)))
+    report: dict[str, object] = {}
+    for name in ("A2_RECURRENT_DENSITY", "A3_MULTISCALE_RECURRENT", "A4_PERSISTENT_MUTUAL_KNN"):
+        algorithm = ALGORITHMS[name]
+        normal_eval = _evaluate(points, algorithm(points))
+        collapsed_eval = _evaluate(collapsed_points, algorithm(collapsed_points))
+        report[name] = {
+            "normal": {
+                "trend_recall": normal_eval["trend_recall"],
+                "false_candidate_rate": normal_eval["false_candidate_rate"],
+                "candidate_count": normal_eval["candidate_count"],
+            },
+            "collapsed": {
+                "trend_recall": collapsed_eval["trend_recall"],
+                "false_candidate_rate": collapsed_eval["false_candidate_rate"],
+                "candidate_count": collapsed_eval["candidate_count"],
+            },
+        }
+    return report
+
+
+def a4_parameter_sweep() -> list[dict[str, object]]:
+    """Development sweep for the persistent mutual-kNN supplier.
+
+    This is not held-out confirmation.  It maps the recall/false-seed tradeoff
+    so a later untouched corpus can freeze one operating region.
+    """
+
+    points = corpus()
+    rows: list[dict[str, object]] = []
+    for k in (3, 4, 5, 6):
+        for min_span_days in (30, 60, 90):
+            candidates = persistent_mutual_knn(
+                points,
+                k=k,
+                min_span_days=min_span_days,
+            )
+            evaluation = _evaluate(points, candidates)
+            rows.append(
+                {
+                    "k": k,
+                    "min_span_days": min_span_days,
+                    "trend_recall": evaluation["trend_recall"],
+                    "candidate_count": evaluation["candidate_count"],
+                    "false_candidate_rate": evaluation["false_candidate_rate"],
+                    "mean_qualifying_purity": evaluation["mean_qualifying_purity"],
+                    "fragmentation_per_discovered_trend": evaluation["fragmentation_per_discovered_trend"],
+                }
+            )
+    return rows
+
+
 def temporal_shuffle_control() -> dict[str, object]:
     """Preserve semantics/cardinality while destroying longitudinal recurrence."""
 
@@ -608,6 +730,8 @@ def report() -> dict[str, object]:
         },
         "volume_curve": volume_curve(),
         "temporal_shuffle_control": temporal_shuffle_control(),
+        "temporal_collapse_control": temporal_collapse_control(),
+        "a4_parameter_sweep": a4_parameter_sweep(),
     }
 
 
