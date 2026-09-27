@@ -6,7 +6,7 @@ import hashlib
 import json
 from collections.abc import Callable, Mapping
 from dataclasses import replace
-from datetime import datetime
+from datetime import UTC, datetime
 
 from lce.reference_memory.contracts import (
     CompilerCheckpoint,
