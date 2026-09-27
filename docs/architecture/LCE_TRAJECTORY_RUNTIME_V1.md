@@ -216,6 +216,12 @@ nodes for each current block. It is already substantially cheaper than
 all-pairs Point-Cloud discovery, but a future ANN/multi-anchor Line index may
 replace that scan without changing the Line/Worktree contracts.
 
+The slow bootstrap neighbour source is already abstracted behind
+`NeighbourCandidateProvider`. The zero-dependency
+`ExactCosineNeighbourProvider` is the reference O(N²) backend; an ANN/HNSW or
+external vector-store adapter can replace it without changing mutual-neighbour
+confirmation, trajectory formation, or Line identity rules.
+
 Optional Surface discovery remains disabled unless a `SurfaceConfig` is
 explicitly supplied.
 
