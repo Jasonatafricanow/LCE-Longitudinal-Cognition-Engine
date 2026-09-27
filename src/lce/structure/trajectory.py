@@ -650,12 +650,28 @@ class TrajectoryRuntime:
                         node.node_id,
                         knowledge_cutoff=knowledge_cutoff,
                     )
-                    if previous is not None and (
+                    if previous is None:
+                        continue
+                    if (
                         previous.occurred_start != block.occurred_start
                         or previous.occurred_end != block.occurred_end
                     ):
                         temporal_revision = True
                         break
+                    if previous.state_id != block.state_id:
+                        previous_vector = self._vector(previous)
+                        current_vector = self._vector(block)
+                        if (
+                            previous_vector is None
+                            or current_vector is None
+                            or _cosine(
+                                previous_vector,
+                                current_vector,
+                            )
+                            < self.config.min_similarity
+                        ):
+                            temporal_revision = True
+                            break
                 if temporal_revision:
                     return self.rebuild_current(
                         knowledge_cutoff=knowledge_cutoff,
