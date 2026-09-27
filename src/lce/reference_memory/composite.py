@@ -50,6 +50,7 @@ class ProjectionSubstrate:
             left.evidence_id == right.evidence_id
             and left.content == right.content
             and left.occurred_at == right.occurred_at
+            and left.effective_known_at == right.effective_known_at
             and left.effective_ordering_key == right.effective_ordering_key
             and json.dumps(
                 dict(left.provenance),
@@ -154,6 +155,38 @@ class ProjectionSubstrate:
             block
             for block in blocks
             if self._block_is_current(self.source, block)
+        )
+
+    def list_semantic_blocks_at_knowledge_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        if cutoff.tzinfo is None:
+            raise ValueError("cutoff must be timezone-aware")
+        latest: dict[str, SemanticBlock] = {}
+        for block in self.state.list_semantic_block_states():
+            try:
+                visible = all(
+                    self.source.get_evidence(
+                        evidence_id
+                    ).effective_known_at <= cutoff
+                    for evidence_id in block.raw_evidence_ids
+                )
+            except KeyError:
+                visible = False
+            if not visible:
+                continue
+            if current_valid_only and not self._block_is_current(
+                self.source, block
+            ):
+                continue
+            prior = latest.get(block.block_id)
+            if prior is None or block.state_version > prior.state_version:
+                latest[block.block_id] = block
+        return tuple(
+            sorted(
+                latest.values(),
+                key=lambda block: (block.occurred_start, block.block_id),
+            )
         )
 
     def extend_semantic_block(
