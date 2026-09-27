@@ -38,11 +38,14 @@ class RawEvidence:
     ordering_key: str | None = None
     state: str = "VALID"
     superseded_by: str | None = None
+    known_at: datetime | None = None
 
     def __post_init__(self) -> None:
         _require_text(self.evidence_id, "evidence_id")
         _require_text(self.content, "content")
         _require_utc(self.occurred_at, "occurred_at")
+        if self.known_at is not None:
+            _require_utc(self.known_at, "known_at")
         if not isinstance(self.provenance, Mapping):
             raise TypeError("provenance must be a Mapping")
         if self.ordering_key is not None:
@@ -59,6 +62,15 @@ class RawEvidence:
     @property
     def effective_ordering_key(self) -> str:
         return self.ordering_key or self.occurred_at.isoformat()
+
+    @property
+    def effective_known_at(self) -> datetime:
+        """When this evidence became available to LCE.
+
+        Existing callers that do not provide an explicit knowledge time retain
+        historical behavior by falling back to occurred_at.
+        """
+        return self.known_at or self.occurred_at
 
 
 @dataclass(frozen=True, slots=True)
@@ -178,6 +190,11 @@ class DerivedProjectionStatePort(Protocol):
     def list_semantic_blocks_at_cutoff(self, cutoff: datetime) -> tuple[SemanticBlock, ...]:
         ...
 
+    def list_semantic_blocks_at_knowledge_cutoff(
+        self, cutoff: datetime
+    ) -> tuple[SemanticBlock, ...]:
+        ...
+
     def extend_semantic_block(
         self,
         block_id: str,
@@ -289,6 +306,11 @@ class SemanticBlockPort(EvidencePort, Protocol):
         ...
 
     def list_semantic_blocks_at_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def list_semantic_blocks_at_knowledge_cutoff(
         self, cutoff: datetime, *, current_valid_only: bool = True
     ) -> tuple[SemanticBlock, ...]:
         ...
