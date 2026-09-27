@@ -434,11 +434,14 @@ class LceProjectionCore:
                         handled=True,
                         promotion=reconciled,
                     )
-                support_identity = self._support_identity(
-                    candidate,
-                    snapshot,
-                    diff,
-                    durable.selected_support,
+                support_identity = (
+                    durable.processing_support_identity
+                    or self._support_identity(
+                        candidate,
+                        snapshot,
+                        diff,
+                        durable.selected_support,
+                    )
                 )
                 self.worktrees.record_support(
                     durable.worktree_id,
@@ -595,6 +598,7 @@ class LceProjectionCore:
                     if frontier_candidate
                     else "structure"
                 ),
+                processing_support_identity=support_identity,
                 support_kind=(
                     "frontier"
                     if frontier_candidate
@@ -638,6 +642,7 @@ class LceProjectionCore:
                     if frontier_candidate
                     else "structure"
                 ),
+                processing_support_identity=support_identity,
             )
             if existing.candidate_content != content:
                 self.worktrees.update_candidate(
