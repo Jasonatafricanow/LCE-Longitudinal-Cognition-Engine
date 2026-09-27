@@ -14,7 +14,7 @@ from lce.cognition.line_graph import (
     LineGraphView,
     LineTraversalLimitExceeded,
 )
-from lce.core.projection import LceProjectionCore
+from lce.core.projection import LceProjectionCore, StaleLineGraphError
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.structure.trajectory import TrajectoryConfig
 from lce.testing.reference_memory import InMemoryReferenceMemory
@@ -1150,6 +1150,12 @@ def test_line_derivation_fingerprint_rebuilds_without_overwriting_old_revision(
         block_embedder=embedder,
         block_embedding_version="vector-v2",
     )
+    with pytest.raises(StaleLineGraphError):
+        second.line_frontier(
+            seeded.line_id,
+            knowledge_cutoff=datetime.now(UTC),
+        )
+
     second.bootstrap_trajectory(
         knowledge_cutoff=BASE + timedelta(days=100),
     )
