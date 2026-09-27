@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
+
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.semantic.compiler import SemanticCompiler
@@ -159,4 +161,78 @@ def test_sqlite_historical_validity_replays_lifecycle_at_cutoff(
     assert store.list_semantic_blocks_at_knowledge_cutoff(
         after_invalidation
     ) == ()
+    store.close()
+
+
+
+def test_historical_state_vector_survives_later_invalidation_and_rebuild() -> None:
+    memory = InMemoryReferenceMemory()
+    item = _raw("E-vector", occurred_year=2020, known_year=2020)
+    memory.add_evidence(item)
+    state = memory.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-vector",
+            content="vector history",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test",
+            lineage_id="main",
+        )
+    )
+    memory.rebuild_vector_index(
+        lambda block: (float(block.state_version), 1.0),
+        index_version="v1",
+    )
+    assert state.state_id is not None
+
+    memory.invalidate(item.evidence_id, reason="later correction")
+    memory.rebuild_vector_index(
+        lambda block: (float(block.state_version), 1.0),
+        index_version="v2",
+    )
+
+    assert memory.get_vector(
+        state.block_id,
+        state_id=state.state_id,
+    ).values == (1.0, 1.0)
+    with pytest.raises(KeyError):
+        memory.get_vector(state.block_id)
+
+
+def test_sqlite_historical_state_vector_survives_rebuild(
+    tmp_path: Path,
+) -> None:
+    store = ReferenceMemoryStore(tmp_path / "vector-history")
+    item = _raw("E-sql-vector", occurred_year=2020, known_year=2020)
+    store.add_evidence(item)
+    state = store.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-sql-vector",
+            content="vector history",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test",
+            lineage_id="main",
+        )
+    )
+    store.rebuild_vector_index(
+        lambda block: (float(block.state_version), 2.0),
+        index_version="v1",
+    )
+    assert state.state_id is not None
+
+    store.invalidate(item.evidence_id, reason="later correction")
+    store.rebuild_vector_index(
+        lambda block: (float(block.state_version), 2.0),
+        index_version="v2",
+    )
+
+    assert store.get_vector(
+        state.block_id,
+        state_id=state.state_id,
+    ).values == (1.0, 2.0)
+    with pytest.raises(KeyError):
+        store.get_vector(state.block_id)
     store.close()
