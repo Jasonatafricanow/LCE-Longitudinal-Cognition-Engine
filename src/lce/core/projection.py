@@ -251,13 +251,10 @@ class LceProjectionCore:
             if mode == "nearline"
             else None
         )
-        surface_candidates = (
-            self.surface_runtime.discover(
-                knowledge_cutoff=material.effective_known_at,
-            )
-            if mode == "nearline" and self.surface_runtime is not None
-            else ()
-        )
+        # Surface discovery is a higher-order slow-path operation. Merely
+        # configuring the operator must not make every nearline turn rescan all
+        # persisted Line paths.
+        surface_candidates: tuple[SurfaceCandidate, ...] = ()
 
         frontier_candidates = self.frontier.candidates(
             snapshot,
