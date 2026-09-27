@@ -4,7 +4,7 @@ import math
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from lce.cognition.line_graph import LineGraphStore
+from lce.cognition.line_graph import LineGraphStore, LineGraphView
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.structure.trajectory import (
     MutualKnnTrajectorySupplier,
@@ -511,3 +511,86 @@ def test_deep_trajectory_segmentation_does_not_depend_on_python_recursion() -> N
     }
     assert blocks[0].block_id in covered
     assert blocks[-1].block_id in covered
+
+
+
+def test_logical_time_revision_rebuilds_current_line_without_rewriting_history(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            index=index,
+            day=index * 10,
+            vector=_vector(index * 4.0),
+        )
+        for index in range(4)
+    )
+    _rebuild(memory)
+    store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=store,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.0,
+            min_support=3,
+        ),
+        neighbour_provider=_FixedNeighbourProvider(),
+    )
+    historical_cutoff = BASE + timedelta(days=35)
+    seeded = runtime.bootstrap(
+        knowledge_cutoff=historical_cutoff,
+    )
+    assert seeded.candidate_paths
+    assert len(store.list_lines()) == 1
+    line_id = store.list_lines()[0].line_id
+    historical_visible = set(
+        LineGraphView(memory=memory, store=store).visible_node_ids(
+            line_id,
+            knowledge_cutoff=historical_cutoff,
+        )
+    )
+    assert len(historical_visible) == 4
+
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="E-revision",
+            content="retroactive interval extension",
+            occurred_at=BASE + timedelta(days=35),
+            known_at=BASE + timedelta(days=40),
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    revised = memory.extend_semantic_block(
+        blocks[1].block_id,
+        content="retroactive interval extension",
+        evidence_id="E-revision",
+        occurred_at=BASE + timedelta(days=35),
+    )
+    _rebuild(memory)
+
+    current_cutoff = BASE + timedelta(days=100)
+    result = runtime.observe(
+        knowledge_cutoff=current_cutoff,
+        current_block_ids=(revised.block_id,),
+    )
+
+    # The old B0->B1->B2->B3 ordering is no longer valid because B1 now
+    # overlaps B2/B3. Rebuild retires that current structure instead of
+    # preserving stale edges merely because block identity stayed stable.
+    assert result.candidate_paths == ()
+    assert LineGraphView(memory=memory, store=store).visible_node_ids(
+        line_id,
+        knowledge_cutoff=current_cutoff,
+    ) == ()
+
+    # Earlier epistemic replay still sees the graph that existed before the
+    # later state revision was known.
+    assert set(
+        LineGraphView(memory=memory, store=store).visible_node_ids(
+            line_id,
+            knowledge_cutoff=historical_cutoff,
+        )
+    ) == historical_visible
