@@ -274,3 +274,56 @@ def test_bitemporal_divergence_skips_legacy_cognition_evaluation(
     assert result.higher_order_candidates == ()
     assert result.promotions == ()
     core.close()
+
+
+
+def test_legacy_path_stays_closed_after_lineage_becomes_bitemporal(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    core = LceProjectionCore(
+        tmp_path / "core-lineage-barrier",
+        memory=memory,
+        lineage_id="main",
+    )
+
+    core.process(
+        _raw(
+            "ordinary-before",
+            occurred_year=2024,
+            known_year=2024,
+        )
+    )
+    core.process(
+        _raw(
+            "retro-lineage",
+            occurred_year=2020,
+            known_year=2026,
+        )
+    )
+
+    def forbidden(*args: object, **kwargs: object) -> object:
+        del args, kwargs
+        raise AssertionError(
+            "legacy cognition must remain closed after bitemporal divergence"
+        )
+
+    monkeypatch.setattr(core.frontier, "candidates", forbidden)
+    monkeypatch.setattr(
+        core.discovery,
+        "higher_order_candidates",
+        forbidden,
+    )
+
+    result = core.process(
+        _raw(
+            "ordinary-after",
+            occurred_year=2027,
+            known_year=2027,
+        )
+    )
+
+    assert result.higher_order_candidates == ()
+    assert result.promotions == ()
+    core.close()
