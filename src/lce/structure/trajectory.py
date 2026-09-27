@@ -301,8 +301,9 @@ class MutualKnnTrajectorySupplier:
         ):
             if any(
                 len(path) < len(other)
-                and all(
-                    item in other for item in path
+                and any(
+                    other[index : index + len(path)] == path
+                    for index in range(len(other) - len(path) + 1)
                 )
                 for other in maximal
             ):
@@ -322,7 +323,7 @@ class MutualKnnTrajectorySupplier:
                 state_ids.append(state_id)
             if not valid:
                 continue
-            for parent_id, child_id in zip(path, path[1:], strict=True):
+            for parent_id, child_id in zip(path, path[1:]):
                 similarities.append(edge_scores[(parent_id, child_id)])
             digest = hashlib.sha256(
                 "|".join(state_ids).encode()
