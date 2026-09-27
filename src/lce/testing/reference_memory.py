@@ -65,9 +65,16 @@ class InMemoryReferenceMemory:
             if (
                 existing.content,
                 existing.occurred_at,
+                existing.effective_known_at,
                 existing.effective_ordering_key,
                 dict(existing.provenance),
-            ) != (item.content, item.occurred_at, item.effective_ordering_key, dict(item.provenance)):
+            ) != (
+                item.content,
+                item.occurred_at,
+                item.effective_known_at,
+                item.effective_ordering_key,
+                dict(item.provenance),
+            ):
                 raise ValueError(f"evidence_id '{item.evidence_id}' already has different immutable content")
             return existing
         self._evidence[item.evidence_id] = item
@@ -175,6 +182,34 @@ class InMemoryReferenceMemory:
             ):
                 latest[block.block_id] = block
         return tuple(sorted(latest.values(), key=lambda block: (block.occurred_start, block.block_id)))
+
+    def list_semantic_blocks_at_knowledge_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
+        latest: dict[str, SemanticBlock] = {}
+        for block in self.list_semantic_block_states(
+            current_valid_only=current_valid_only
+        ):
+            try:
+                visible = all(
+                    self.get_evidence(evidence_id).effective_known_at <= cutoff
+                    for evidence_id in block.raw_evidence_ids
+                )
+            except KeyError:
+                visible = False
+            if not visible:
+                continue
+            prior = latest.get(block.block_id)
+            if prior is None or block.state_version > prior.state_version:
+                latest[block.block_id] = block
+        return tuple(
+            sorted(
+                latest.values(),
+                key=lambda block: (block.occurred_start, block.block_id),
+            )
+        )
 
     def rebuild_vector_index(
         self, embedder: Callable[[SemanticBlock], tuple[float, ...]], *, index_version: str
