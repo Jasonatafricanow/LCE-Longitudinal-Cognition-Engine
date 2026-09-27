@@ -631,6 +631,29 @@ class LineGraphStore:
             self.conn.commit()
         return result.rowcount > 0
 
+    def membership_supports_identity_at(
+        self,
+        node_id: str,
+        knowledge_cutoff: datetime,
+    ) -> bool:
+        """Whether this membership may carry stable Line identity at cutoff.
+
+        Active membership qualifies. A prior revision retired exactly at this
+        cutoff also qualifies only when it existed before the cutoff. A
+        zero-lifetime revision created and retired at the same cutoff (for
+        example by a failed rebuild attempt) must not influence retry identity.
+        """
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
+        return self.conn.execute(
+            "SELECT 1 FROM line_node_memberships "
+            "WHERE node_id = ? AND known_at <= ? AND ("
+            "retired_at IS NULL OR retired_at > ? OR "
+            "(retired_at = ? AND known_at < ?)"
+            ") ORDER BY known_at DESC LIMIT 1",
+            (node_id, cutoff, cutoff, cutoff, cutoff),
+        ).fetchone() is not None
+
     def active_node_ids_at(
         self,
         line_id: str,
@@ -968,6 +991,11 @@ class LineAssembler:
             for line_id in self.store.lines_for_block(block_id):
                 node = self.store.node_for_block(line_id, block_id)
                 if node is None:
+                    continue
+                if not self.store.membership_supports_identity_at(
+                    node.node_id,
+                    knowledge_cutoff,
+                ):
                     continue
                 if view.state_for_node_at_cutoff(
                     node.node_id,
