@@ -1392,3 +1392,46 @@ def test_neighbour_provider_declared_version_participates_in_line_fingerprint(
             knowledge_cutoff=datetime.now(UTC),
         )
     changed.close()
+
+
+
+def test_zero_lifetime_failed_line_revision_cannot_claim_retry_identity(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"FAILID-{index}",
+            block_id=f"failid-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.05, index * 0.05),
+        )
+        for index in range(4)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(
+            min_seed_support=3,
+            min_shared_support=2,
+        ),
+    )
+    cutoff = BASE + timedelta(days=100)
+
+    partial = assembler.apply_path(
+        blocks[:3],
+        knowledge_cutoff=cutoff,
+    )
+    assert partial.line_id is not None
+    store.retire_current_structure(cutoff)
+
+    retry = assembler.apply_path(
+        blocks[1:],
+        knowledge_cutoff=cutoff,
+    )
+
+    assert retry.line_id is not None
+    assert retry.created_line is True
+    assert retry.line_id != partial.line_id
