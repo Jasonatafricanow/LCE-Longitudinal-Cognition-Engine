@@ -251,6 +251,33 @@ class ReferenceMemoryStore:
         ).fetchall()
         return tuple(self.get_evidence(row[0]) for row in rows)
 
+    def evidence_valid_at(
+        self,
+        evidence_id: str,
+        cutoff: datetime,
+    ) -> bool:
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
+        item = self.get_evidence(evidence_id)
+        if item.effective_known_at > cutoff:
+            return False
+        lifecycle = self._db().execute(
+            """
+            SELECT event_type, occurred_at
+            FROM raw_evidence_events
+            WHERE evidence_id = ?
+              AND event_type IN ('INVALIDATED', 'SUPERSEDED')
+            ORDER BY event_id
+            """,
+            (evidence_id,),
+        ).fetchall()
+        if lifecycle:
+            return not any(
+                self._parse_datetime(str(row[1])) <= cutoff
+                for row in lifecycle
+            )
+        return item.current_valid
+
     def invalidate(self, evidence_id: str, *, reason: str) -> None:
         item = self.get_evidence(evidence_id)
         db = self._db()
@@ -556,11 +583,17 @@ class ReferenceMemoryStore:
             raise ValueError("cutoff must be UTC")
         latest: dict[str, SemanticBlock] = {}
         for state in self.list_semantic_block_states(
-            current_valid_only=current_valid_only
+            current_valid_only=False
         ):
             try:
                 visible = all(
-                    self.get_evidence(evidence_id).effective_known_at <= cutoff
+                    (
+                        self.evidence_valid_at(evidence_id, cutoff)
+                        if current_valid_only
+                        else self.get_evidence(
+                            evidence_id
+                        ).effective_known_at <= cutoff
+                    )
                     for evidence_id in state.raw_evidence_ids
                 )
             except KeyError:
