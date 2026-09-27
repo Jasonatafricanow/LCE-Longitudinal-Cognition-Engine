@@ -1527,3 +1527,43 @@ def test_line_assembler_rejects_forged_payload_for_real_state_id(
         )
 
     assert store.list_lines() == ()
+
+
+
+def test_reactivating_existing_line_record_does_not_report_new_line(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"CREATEFLAG-{index}",
+            block_id=f"createflag-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    cutoff = BASE + timedelta(days=100)
+
+    first = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=cutoff,
+    )
+    assert first.line_id is not None
+    assert first.created_line is True
+
+    # Retiring at the same cutoff gives the first revision zero lifetime, so it
+    # is not eligible to carry identity into the retry. The deterministic Line
+    # record still exists, however, and reactivation must not claim it was
+    # created again.
+    store.retire_current_structure(cutoff)
+    second = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=cutoff,
+    )
+
+    assert second.line_id == first.line_id
+    assert second.created_line is False
