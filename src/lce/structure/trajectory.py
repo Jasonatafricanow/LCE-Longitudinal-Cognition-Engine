@@ -19,6 +19,7 @@ import hashlib
 import math
 from dataclasses import dataclass
 from datetime import datetime
+from itertools import pairwise
 
 from lce.cognition.line_graph import (
     LineApplyResult,
@@ -327,7 +328,7 @@ class MutualKnnTrajectorySupplier:
                 state_ids.append(state_id)
             if not valid:
                 continue
-            for parent_id, child_id in zip(path, path[1:]):
+            for parent_id, child_id in pairwise(path):
                 similarities.append(edge_scores[(parent_id, child_id)])
             digest = hashlib.sha256(
                 "|".join(state_ids).encode()
