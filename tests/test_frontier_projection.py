@@ -44,6 +44,7 @@ class _RecordingInterpreter:
     def __init__(self, *, frontier_status: str = "PROPOSED") -> None:
         self.frontier_status = frontier_status
         self.calls: list[str] = []
+        self.contexts: list[dict[str, object]] = []
 
     def interpret(
         self,
@@ -51,6 +52,7 @@ class _RecordingInterpreter:
     ) -> BoundedInterpretation:
         relation = package.candidate.relation_type
         self.calls.append(relation)
+        self.contexts.append(dict(package.context))
         if relation.startswith("frontier_"):
             if self.frontier_status != "PROPOSED":
                 return BoundedInterpretation(
@@ -176,6 +178,14 @@ def test_frontier_handled_input_skips_legacy_candidate_evaluation(
     )
     assert interpreter.calls[-1] == "frontier_absorption"
     assert "structure_relation" not in interpreter.calls
+    frontier_contexts = interpreter.contexts[-1]["frontier_contexts"]
+    assert frontier_contexts == (
+        {
+            "region_id": "career-region",
+            "kind": "baseline",
+            "content": "User is considering a career change.",
+        },
+    )
     assert core.baselines.get_head("career-region").revision_number == 2
 
     monkeypatch.setattr(

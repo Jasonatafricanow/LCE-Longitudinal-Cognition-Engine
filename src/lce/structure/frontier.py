@@ -629,6 +629,14 @@ class FrontierCandidateDiscovery:
             "frontier_source_refs": tuple(
                 match.item.source_ref for match in matches
             ),
+            "frontier_contexts": tuple(
+                {
+                    "region_id": match.item.region_id,
+                    "kind": match.item.kind,
+                    "content": match.item.content,
+                }
+                for match in matches
+            ),
             "current_block_ids": tuple(
                 match.current_block_id for match in matches
             ),

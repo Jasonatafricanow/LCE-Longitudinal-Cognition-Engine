@@ -542,6 +542,10 @@ class LceProjectionCore:
                         (),
                     )
                 ),
+                "frontier_contexts": candidate.metadata.get(
+                    "frontier_contexts",
+                    (),
+                ),
                 "supplier": candidate.metadata.get("supplier"),
             },
         )
