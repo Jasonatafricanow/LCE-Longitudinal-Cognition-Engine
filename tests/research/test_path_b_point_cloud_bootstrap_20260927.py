@@ -42,6 +42,7 @@ def test_recurrent_density_rejects_short_coherent_burst() -> None:
 
     assert exp.recurrent_density(burst) == ()
     assert exp.multiscale_recurrent(burst) == ()
+    assert exp.persistent_mutual_knn(burst) == ()
 
 
 def test_recurrent_density_can_seed_long_lived_semantic_recurrence() -> None:
@@ -93,3 +94,27 @@ def test_temporal_shuffle_control_keeps_same_semantic_points() -> None:
     assert set(report) == {"A2_RECURRENT_DENSITY", "A3_MULTISCALE_RECURRENT"}
     for values in report.values():
         assert set(values) == {"normal", "shuffled"}
+
+
+def test_temporal_collapse_control_is_reported_for_recurrent_suppliers() -> None:
+    report = exp.temporal_collapse_control()
+
+    assert set(report) == {
+        "A2_RECURRENT_DENSITY",
+        "A3_MULTISCALE_RECURRENT",
+        "A4_PERSISTENT_MUTUAL_KNN",
+    }
+    for values in report.values():
+        assert set(values) == {"normal", "collapsed"}
+
+
+def test_a4_parameter_sweep_is_bounded_and_reproducible() -> None:
+    rows = exp.a4_parameter_sweep()
+
+    assert len(rows) == 12
+    for row in rows:
+        assert row["k"] in {3, 4, 5, 6}
+        assert row["min_span_days"] in {30, 60, 90}
+        assert 0.0 <= row["false_candidate_rate"] <= 1.0
+        if row["trend_recall"] is not None:
+            assert 0.0 <= row["trend_recall"] <= 1.0
