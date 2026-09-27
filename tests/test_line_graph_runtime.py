@@ -367,7 +367,7 @@ def test_line_store_rejects_cycle_even_if_assembler_is_bypassed(
         store.add_edge(applied.line_id, last.node_id, first.node_id)
 
 
-def test_invalid_historical_node_does_not_count_toward_line_absorption(
+def test_line_assembler_rejects_cutoff_invalid_candidate_state(
     tmp_path: Path,
 ) -> None:
     memory = InMemoryReferenceMemory()
@@ -412,18 +412,16 @@ def test_invalid_historical_node_does_not_count_toward_line_absorption(
 
     memory.invalidate("OLD", reason="source correction")
 
-    attempted = assembler.apply_path(
-        (invalid_later, stable, newcomer),
-        knowledge_cutoff=datetime.now(UTC),
-    )
-    assert attempted.line_id is not None
-    assert attempted.line_id != initial.line_id
-    assert attempted.created_line is True
-    assert len(store.list_lines()) == 2
-    assert set(store.lines_for_block(stable.block_id)) == {
-        initial.line_id,
-        attempted.line_id,
-    }
+    with pytest.raises(
+        ValueError,
+        match="cutoff-invalid SemanticBlock state",
+    ):
+        assembler.apply_path(
+            (invalid_later, stable, newcomer),
+            knowledge_cutoff=datetime.now(UTC),
+        )
+
+    assert len(store.list_lines()) == 1
 
 
 def test_core_returns_callable_views_without_persisting_projection_nodes(
@@ -1487,3 +1485,45 @@ def test_raw_closure_respects_relation_membership_cutoff(
             knowledge_cutoff=historical_cutoff,
         )
     ) == {"CLOSE-0", "CLOSE-1", "CLOSE-2"}
+
+
+
+def test_line_assembler_rejects_forged_payload_for_real_state_id(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"AUTH-{index}",
+            block_id=f"auth-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    forged = SemanticBlock(
+        block_id=blocks[1].block_id,
+        content="forged derived payload",
+        raw_evidence_ids=blocks[1].raw_evidence_ids,
+        occurred_start=blocks[1].occurred_start,
+        occurred_end=blocks[1].occurred_end,
+        compiler_version=blocks[1].compiler_version,
+        lineage_id=blocks[1].lineage_id,
+        metadata=blocks[1].metadata,
+        state_id=blocks[1].state_id,
+        state_version=blocks[1].state_version,
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+
+    with pytest.raises(
+        ValueError,
+        match="unauthorized or cutoff-invalid",
+    ):
+        assembler.apply_path(
+            (blocks[0], forged, blocks[2]),
+            knowledge_cutoff=BASE + timedelta(days=100),
+        )
+
+    assert store.list_lines() == ()
