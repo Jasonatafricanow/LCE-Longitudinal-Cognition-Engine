@@ -36,6 +36,10 @@ def _require_utc(value: datetime, name: str) -> None:
         raise ValueError(f"{name} must be an aware UTC datetime")
 
 
+class LineTraversalLimitExceeded(RuntimeError):
+    """Exact graph/provenance traversal could not finish within its safety ceiling."""
+
+
 def _cosine(
     left: tuple[float, ...],
     right: tuple[float, ...],
@@ -540,6 +544,10 @@ class LineAssembler:
         ambiguous identity must remain unresolved upstream. Multiple parents
         express rejoin, while multiple children can place late-known historical
         evidence into an already-grown Line without rewriting old edges.
+
+        Multiple parents mean conjunctive rejoin in V1: every parent ancestry
+        must remain visible. Alternative/OR hypotheses are not represented by
+        multiple parent edges and must remain separate unresolved structure.
         """
         if block.state_id is None:
             raise ValueError("Line attachment requires an immutable state")
@@ -727,6 +735,10 @@ class LineGraphView:
             memo[node_id] = False
             return False
         parents = self.store.parents(node_id)
+        # V1 parent edges are conjunctive ancestry, not alternative routes.
+        # Therefore every parent must remain visible for a multi-parent rejoin
+        # node to remain visible. OR/alternative semantics require a distinct
+        # future relation contract rather than changing this to any(...).
         visible = all(
             self._node_visible(parent_id, cutoff, memo)
             for parent_id in parents
@@ -829,25 +841,45 @@ class LineGraphView:
         node_id: str,
         *,
         knowledge_cutoff: datetime,
+        max_nodes: int = 100_000,
     ) -> tuple[str, ...]:
+        """Return the exact visible Raw Evidence ancestry for one Line node.
+
+        Traversal is iterative so deep long-lived Lines do not depend on
+        Python recursion depth. The safety ceiling is fail-closed: exceeding it
+        raises instead of returning a truncated closure, because an incomplete
+        provenance closure must never be presented as authoritative.
+        """
+        if max_nodes < 1:
+            raise ValueError("max_nodes must be positive")
+
+        pending = [node_id]
         seen_nodes: set[str] = set()
         raw_ids: set[str] = set()
 
-        def visit(current_id: str) -> None:
+        while pending:
+            current_id = pending.pop()
             if current_id in seen_nodes:
-                return
+                continue
+            if len(seen_nodes) >= max_nodes:
+                raise LineTraversalLimitExceeded(
+                    "raw provenance closure exceeded max_nodes="
+                    f"{max_nodes}; exact closure was not returned"
+                )
             seen_nodes.add(current_id)
             block = self.state_for_node_at_cutoff(
                 current_id,
                 knowledge_cutoff=knowledge_cutoff,
             )
             if block is None:
-                return
+                continue
             raw_ids.update(block.raw_evidence_ids)
-            for parent_id in self.store.parents(current_id):
-                visit(parent_id)
+            pending.extend(
+                parent_id
+                for parent_id in self.store.parents(current_id)
+                if parent_id not in seen_nodes
+            )
 
-        visit(node_id)
         return tuple(sorted(raw_ids))
 
 
