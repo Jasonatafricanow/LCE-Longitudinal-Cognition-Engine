@@ -1106,7 +1106,6 @@ class LceProjectionCore:
         *,
         knowledge_cutoff: datetime,
     ) -> tuple[CallableLineProjection, ...]:
-        self._require_line_graph_current()
         """Return bounded consumer views for Lines touched by current blocks.
 
         This is intentionally narrower than a global semantic search. A Line
@@ -1115,6 +1114,7 @@ class LceProjectionCore:
         operators may be added later without weakening this consumption
         boundary.
         """
+        self._require_line_graph_current()
         visible = {
             block.block_id: block
             for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
