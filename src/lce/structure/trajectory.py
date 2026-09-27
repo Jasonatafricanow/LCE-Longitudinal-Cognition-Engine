@@ -313,44 +313,48 @@ class MutualKnnTrajectorySupplier:
         )
 
         raw_paths: list[tuple[str, ...]] = []
+        overlap = min(
+            max(1, self.config.min_support - 1),
+            self.config.max_path_length - 1,
+        )
 
-        def walk(path: tuple[str, ...]) -> None:
-            if len(raw_paths) >= self.config.max_paths:
-                return
-            if len(path) >= self.config.max_path_length:
-                raw_paths.append(path)
-                if len(raw_paths) >= self.config.max_paths:
-                    return
+        def enumerate_from(start_id: str) -> None:
+            pending: list[tuple[str, ...]] = [(start_id,)]
+            while pending and len(raw_paths) < self.config.max_paths:
+                path = pending.pop()
                 children = outgoing.get(path[-1], ())
-                overlap = min(
-                    max(1, self.config.min_support - 1),
-                    self.config.max_path_length - 1,
-                )
-                suffix = path[-overlap:]
-                for child_id in children:
-                    if child_id in suffix:
-                        continue
-                    walk((*suffix, child_id))
+
+                if len(path) >= self.config.max_path_length:
+                    raw_paths.append(path)
                     if len(raw_paths) >= self.config.max_paths:
                         return
-                return
-            children = outgoing.get(path[-1], ())
-            if not children:
-                raw_paths.append(path)
-                return
-            extended = False
-            for child_id in children:
-                if child_id in path:
+                    suffix = path[-overlap:]
+                    continuation = tuple(
+                        child_id
+                        for child_id in children
+                        if child_id not in suffix
+                    )
+                    pending.extend(
+                        (*suffix, child_id)
+                        for child_id in reversed(continuation)
+                    )
                     continue
-                extended = True
-                walk((*path, child_id))
-                if len(raw_paths) >= self.config.max_paths:
-                    return
-            if not extended:
-                raw_paths.append(path)
 
-        for start in starts:
-            walk((start,))
+                continuation = tuple(
+                    child_id
+                    for child_id in children
+                    if child_id not in path
+                )
+                if not continuation:
+                    raw_paths.append(path)
+                    continue
+                pending.extend(
+                    (*path, child_id)
+                    for child_id in reversed(continuation)
+                )
+
+        for start_id in starts:
+            enumerate_from(start_id)
             if len(raw_paths) >= self.config.max_paths:
                 break
 
@@ -360,7 +364,7 @@ class MutualKnnTrajectorySupplier:
         if not raw_paths:
             for block_id in sorted(outgoing):
                 if outgoing[block_id]:
-                    walk((block_id,))
+                    enumerate_from(block_id)
                     if len(raw_paths) >= self.config.max_paths:
                         break
 
