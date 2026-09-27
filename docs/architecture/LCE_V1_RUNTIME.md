@@ -6,9 +6,10 @@ LCE V1 uses one cognition pipeline for historical and nearline material:
 Raw Evidence
   -> Reference Memory validity/provenance
   -> semantic-stream Semantic Blocks
-  -> rebuildable Semantic Block vectors
-  -> cutoff-bounded structure snapshots
-  -> higher-order candidate
+  -> rebuildable state-bound vectors
+  -> cognition frontier: accepted Baselines + OPEN Worktrees
+       -> frontier absorption / boundary candidate
+       -> if not handled: cutoff-bounded 06R structure fallback
   -> bounded interpretation in an OPEN cognition worktree
   -> conservative promotion through Baseline/HEAD
   -> accepted Understanding read API
@@ -35,6 +36,47 @@ snapshot records the visible state and state-bound vector used for each point;
 its identity includes those inputs and the algorithm/config versions. A
 snapshot cutoff excludes blocks after that cutoff, so future material cannot
 leak into an earlier structure state.
+
+## Frontier-first discovery
+
+The incremental discovery path treats already compiled cognition as a search
+frontier rather than rediscovering every relation from the raw point cloud on
+every arrival.
+
+For each newly compiled block, the frontier supplier compares it with one
+active item per region: the OPEN Worktree when one exists, otherwise the
+accepted Baseline HEAD. Matching is additive rather than a chain of hard gates:
+
+```text
+direct frontier-centroid similarity
++ nearest immutable support-state similarity
++ lexical overlap
++ soft temporal prior
+= absorption score
+```
+
+The temporal term decays toward a configurable floor; it is not a hard age
+cutoff. A strong match to one immutable support state can rescue a branch whose
+centroid is weak. Two moderate matches to distinct regions can jointly propose
+a `frontier_boundary` candidate even when neither independently reaches the
+absorption threshold.
+
+Baseline and Worktree support is resolved through its recorded immutable
+`state_id` before scoring. This prevents a later continuation of the same
+Semantic Block ID from rewriting the representation that an older Baseline
+actually used.
+
+Frontier candidates have no source authority. They still pass through the same
+bounded interpreter, authorized support checks, durable Worktree, and promotion
+boundary. A revision of an already accepted region may promote after one new
+qualifying support observation; a newly proposed cross-frontier boundary
+requires repeated support. If frontier interpretation returns `UNKNOWN` or
+`REJECTED`, the legacy structure supplier remains available as fallback.
+
+`FrontierDiscoveryConfig(enabled=False)` provides the clean legacy ablation.
+The block embedder is injectable; standalone operation keeps the dependency-free
+deterministic fallback while embedded runtimes may supply the same production
+embedding capability used by their retrieval layer.
 
 ## Structures
 
