@@ -514,9 +514,9 @@ class LceProjectionCore:
         for block_id in candidate.supporting_block_ids:
             if block_id in covered_ids:
                 continue
-            block = blocks_by_id.get(block_id)
-            if block is not None:
-                package_blocks.append(block)
+            candidate_block = blocks_by_id.get(block_id)
+            if candidate_block is not None:
+                package_blocks.append(candidate_block)
                 covered_ids.add(block_id)
         blocks = tuple(package_blocks)
         source_refs = tuple(
@@ -740,7 +740,7 @@ class LceProjectionCore:
                 if isinstance(regions_raw, (list, tuple))
                 else ()
             )
-            blocks = tuple(
+            frontier_blocks = tuple(
                 sorted(
                     (
                         item.block_id,
@@ -752,24 +752,26 @@ class LceProjectionCore:
                     for item in selected_support
                 )
             )
-            payload = {
+            payload: dict[str, object] = {
                 "relation": candidate.relation_type,
                 "frontier_regions": regions,
-                "blocks": blocks,
+                "blocks": frontier_blocks,
             }
         else:
             # Preserve the exact V1 B4 fingerprint rule. Immutable state IDs
             # remain selected provenance, but support maturity advances only
             # when the snapshot-visible semantic content/structure changes.
-            blocks = tuple(
+            legacy_blocks = tuple(
                 sorted(
                     (
                         item.block_id,
                         next(
                             (
-                                block.content
-                                for block in snapshot.block_states
-                                if block.block_id == item.block_id
+                                snapshot_block.content
+                                for snapshot_block
+                                in snapshot.block_states
+                                if snapshot_block.block_id
+                                == item.block_id
                             ),
                             "",
                         ),
@@ -780,7 +782,7 @@ class LceProjectionCore:
             payload = {
                 "relation": candidate.relation_type,
                 "structures": structures,
-                "blocks": blocks,
+                "blocks": legacy_blocks,
             }
 
         return "support_" + hashlib.sha256(
