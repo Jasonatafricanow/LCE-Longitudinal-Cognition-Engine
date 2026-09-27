@@ -18,6 +18,7 @@ from lce.structure.surface import (
     SurfaceCandidate,
     SurfaceConfig,
     SurfaceRuntime,
+    SurfaceSearchLimitExceeded,
 )
 from lce.structure.trajectory import (
     ExactCosineNeighbourProvider,
@@ -46,6 +47,7 @@ __all__ = [
     "SurfaceCandidate",
     "SurfaceConfig",
     "SurfaceRuntime",
+    "SurfaceSearchLimitExceeded",
     "TrajectoryConfig",
     "TrajectoryPath",
     "TrajectoryRuntime",
