@@ -538,6 +538,62 @@ class TrajectoryRuntime:
             )
         )
 
+    def _existing_relations_still_valid(
+        self,
+        line_id: str,
+        node_id: str,
+        previous: SemanticBlock,
+        current: SemanticBlock,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> bool:
+        """Revalidate only the local persisted relations touched by a revision."""
+        current_vector = self._vector(current)
+        if current_vector is None:
+            return False
+
+        parents = self.store.parents_at(node_id, knowledge_cutoff)
+        children = self.store.children_at(node_id, knowledge_cutoff)
+        if not parents and not children:
+            previous_vector = self._vector(previous)
+            return (
+                previous_vector is not None
+                and _cosine(previous_vector, current_vector)
+                >= self.config.min_similarity
+            )
+
+        for parent_id in parents:
+            parent = self.view.state_for_node_at_cutoff(
+                parent_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if parent is None or not self._precedes(parent, current):
+                return False
+            parent_vector = self._vector(parent)
+            if (
+                parent_vector is None
+                or _cosine(parent_vector, current_vector)
+                < self.config.min_similarity
+            ):
+                return False
+
+        for child_id in children:
+            child = self.view.state_for_node_at_cutoff(
+                child_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if child is None or not self._precedes(current, child):
+                return False
+            child_vector = self._vector(child)
+            if (
+                child_vector is None
+                or _cosine(current_vector, child_vector)
+                < self.config.min_similarity
+            ):
+                return False
+
+        return True
+
     def _attachment_neighbours(
         self,
         line_id: str,
@@ -641,7 +697,7 @@ class TrajectoryRuntime:
                 )
             )
             if existing_memberships:
-                temporal_revision = False
+                relation_revision_required = False
                 for line_id in existing_memberships:
                     node = self.store.node_for_block(line_id, block_id)
                     if node is None:
@@ -653,26 +709,18 @@ class TrajectoryRuntime:
                     if previous is None:
                         continue
                     if (
-                        previous.occurred_start != block.occurred_start
-                        or previous.occurred_end != block.occurred_end
+                        previous.state_id != block.state_id
+                        and not self._existing_relations_still_valid(
+                            line_id,
+                            node.node_id,
+                            previous,
+                            block,
+                            knowledge_cutoff=knowledge_cutoff,
+                        )
                     ):
-                        temporal_revision = True
+                        relation_revision_required = True
                         break
-                    if previous.state_id != block.state_id:
-                        previous_vector = self._vector(previous)
-                        current_vector = self._vector(block)
-                        if (
-                            previous_vector is None
-                            or current_vector is None
-                            or _cosine(
-                                previous_vector,
-                                current_vector,
-                            )
-                            < self.config.min_similarity
-                        ):
-                            temporal_revision = True
-                            break
-                if temporal_revision:
+                if relation_revision_required:
                     return self.rebuild_current(
                         knowledge_cutoff=knowledge_cutoff,
                     )
