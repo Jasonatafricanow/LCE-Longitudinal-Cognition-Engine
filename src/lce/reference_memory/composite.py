@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping
-from datetime import datetime
+from datetime import UTC, datetime
 
 from lce.reference_memory.contracts import (
     CanonicalEvidenceSourcePort,
@@ -160,8 +160,8 @@ class ProjectionSubstrate:
     def list_semantic_blocks_at_knowledge_cutoff(
         self, cutoff: datetime, *, current_valid_only: bool = True
     ) -> tuple[SemanticBlock, ...]:
-        if cutoff.tzinfo is None:
-            raise ValueError("cutoff must be timezone-aware")
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
         latest: dict[str, SemanticBlock] = {}
         for block in self.state.list_semantic_block_states():
             try:
