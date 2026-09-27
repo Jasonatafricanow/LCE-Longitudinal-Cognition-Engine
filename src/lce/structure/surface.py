@@ -18,6 +18,10 @@ from lce.cognition.line_graph import LineGraphStore, LineGraphView
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort
 
 
+class SurfaceSearchLimitExceeded(RuntimeError):
+    """Surface discovery could not complete within configured safety bounds."""
+
+
 def _cosine(left: tuple[float, ...], right: tuple[float, ...]) -> float:
     if len(left) != len(right) or not left:
         return 0.0
@@ -108,6 +112,8 @@ class SurfaceConfig:
     resample_points: int = 17
     max_paths_per_line: int = 32
     max_path_nodes: int = 64
+    max_views: int = 512
+    max_search_steps: int = 100_000
     max_candidates: int = 64
 
     def __post_init__(self) -> None:
@@ -120,6 +126,8 @@ class SurfaceConfig:
         if (
             self.max_paths_per_line < 1
             or self.max_path_nodes < self.min_path_nodes
+            or self.max_views < self.min_lines
+            or self.max_search_steps < 1
             or self.max_candidates < 1
         ):
             raise ValueError("Surface bounds are inconsistent")
@@ -226,6 +234,11 @@ class SurfaceRuntime:
                         shape_signature=signature,
                     )
                 )
+                if len(output) > self.config.max_views:
+                    raise SurfaceSearchLimitExceeded(
+                        "Surface path views exceeded max_views="
+                        f"{self.config.max_views}"
+                    )
         return tuple(sorted(output, key=lambda item: item.view_id))
 
     def discover(
@@ -261,33 +274,53 @@ class SurfaceRuntime:
                     adjacency[right.view_id].add(left.view_id)
 
         maximal: list[tuple[str, ...]] = []
+        search_steps = 0
 
         def expand(
-            clique: tuple[str, ...],
-            candidates: tuple[str, ...],
+            clique: set[str],
+            candidates: set[str],
+            excluded: set[str],
         ) -> None:
-            if len(maximal) >= self.config.max_candidates:
-                return
-            owners = {by_id[view_id].line_id for view_id in clique}
-            viable = tuple(
-                view_id
-                for view_id in candidates
-                if by_id[view_id].line_id not in owners
-                and all(
-                    view_id in adjacency[member_id]
-                    for member_id in clique
+            nonlocal search_steps
+            search_steps += 1
+            if search_steps > self.config.max_search_steps:
+                raise SurfaceSearchLimitExceeded(
+                    "Surface clique search exceeded max_search_steps="
+                    f"{self.config.max_search_steps}"
                 )
-            )
-            if not viable:
-                if len(clique) >= self.config.min_lines:
-                    maximal.append(clique)
-                return
-            for index, view_id in enumerate(viable):
-                expand((*clique, view_id), viable[index + 1 :])
-                if len(maximal) >= self.config.max_candidates:
-                    return
 
-        expand((), tuple(sorted(by_id)))
+            if not candidates and not excluded:
+                if len(clique) >= self.config.min_lines:
+                    if len(maximal) >= self.config.max_candidates:
+                        raise SurfaceSearchLimitExceeded(
+                            "Surface candidates exceeded max_candidates="
+                            f"{self.config.max_candidates}"
+                        )
+                    maximal.append(tuple(sorted(clique)))
+                return
+
+            pivot_pool = candidates | excluded
+            pivot = (
+                max(
+                    pivot_pool,
+                    key=lambda view_id: len(
+                        candidates & adjacency[view_id]
+                    ),
+                )
+                if pivot_pool
+                else None
+            )
+            blocked = adjacency[pivot] if pivot is not None else set()
+            for view_id in sorted(candidates - blocked):
+                expand(
+                    clique | {view_id},
+                    candidates & adjacency[view_id],
+                    excluded & adjacency[view_id],
+                )
+                candidates.remove(view_id)
+                excluded.add(view_id)
+
+        expand(set(), set(by_id), set())
 
         output: list[SurfaceCandidate] = []
         seen_groups: set[tuple[str, ...]] = set()
@@ -333,4 +366,5 @@ __all__ = [
     "SurfaceCandidate",
     "SurfaceConfig",
     "SurfaceRuntime",
+    "SurfaceSearchLimitExceeded",
 ]
