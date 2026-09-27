@@ -327,3 +327,47 @@ def test_legacy_path_stays_closed_after_lineage_becomes_bitemporal(
     assert result.higher_order_candidates == ()
     assert result.promotions == ()
     core.close()
+
+
+
+def test_bitemporal_lineage_barrier_also_applies_to_source_rebuild(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    core = LceProjectionCore(
+        tmp_path / "core-rebuild-barrier",
+        memory=memory,
+        lineage_id="main",
+    )
+    core.process(
+        _raw(
+            "barrier-before",
+            occurred_year=2024,
+            known_year=2024,
+        )
+    )
+    core.process(
+        _raw(
+            "barrier-retro",
+            occurred_year=2020,
+            known_year=2026,
+        )
+    )
+
+    memory.invalidate("barrier-before", reason="later correction")
+
+    def forbidden(*args: object, **kwargs: object) -> object:
+        del args, kwargs
+        raise AssertionError(
+            "legacy higher-order evaluation must stay closed during rebuild"
+        )
+
+    monkeypatch.setattr(
+        core.discovery,
+        "higher_order_candidates",
+        forbidden,
+    )
+
+    core.source_changed_and_rebuild("barrier-before")
+    core.close()
