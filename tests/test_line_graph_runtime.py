@@ -910,3 +910,100 @@ def test_strong_overlap_still_extends_existing_line_instead_of_cloning(
     assert first.line_id is not None
     assert second.line_id == first.line_id
     assert len(store.list_lines()) == 1
+
+
+
+def test_line_relation_rebuild_preserves_history_and_replaces_current_path(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    a = _admit(
+        memory,
+        evidence_id="RB-A",
+        block_id="rb-a",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    b = _admit(
+        memory,
+        evidence_id="RB-B",
+        block_id="rb-b",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    c_block = _admit(
+        memory,
+        evidence_id="RB-C",
+        block_id="rb-c",
+        day=20,
+        vector=(0.8, 0.2),
+    )
+    d = _admit(
+        memory,
+        evidence_id="RB-D",
+        block_id="rb-d",
+        day=30,
+        vector=(0.7, 0.3),
+    )
+
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    initial = assembler.apply_path((a, b, c_block, d))
+    assert initial.line_id is not None
+    line_id = initial.line_id
+    historical_cutoff = BASE + timedelta(days=100)
+
+    a_node = store.node_for_block(line_id, a.block_id)
+    b_node = store.node_for_block(line_id, b.block_id)
+    c_node = store.node_for_block(line_id, c_block.block_id)
+    d_node = store.node_for_block(line_id, d.block_id)
+    assert a_node is not None
+    assert b_node is not None
+    assert c_node is not None
+    assert d_node is not None
+    assert store.edges_for_line_at(line_id, historical_cutoff) == (
+        (a_node.node_id, b_node.node_id),
+        (b_node.node_id, c_node.node_id),
+        (c_node.node_id, d_node.node_id),
+    )
+
+    memory.invalidate(b.raw_evidence_ids[0], reason="later correction")
+    current_cutoff = datetime.now(UTC)
+    store.retire_current_structure(current_cutoff)
+    rebuilt = assembler.apply_path(
+        (a, c_block, d),
+        knowledge_cutoff=current_cutoff,
+    )
+
+    assert rebuilt.line_id == line_id
+    assert store.edges_for_line_at(line_id, historical_cutoff) == (
+        (a_node.node_id, b_node.node_id),
+        (b_node.node_id, c_node.node_id),
+        (c_node.node_id, d_node.node_id),
+    )
+    assert store.edges_for_line_at(line_id, current_cutoff) == (
+        (a_node.node_id, c_node.node_id),
+        (c_node.node_id, d_node.node_id),
+    )
+    view = LineGraphView(memory=memory, store=store)
+    assert set(
+        view.visible_node_ids(
+            line_id,
+            knowledge_cutoff=historical_cutoff,
+        )
+    ) == {
+        a_node.node_id,
+        b_node.node_id,
+        c_node.node_id,
+        d_node.node_id,
+    }
+    assert set(
+        view.visible_node_ids(
+            line_id,
+            knowledge_cutoff=current_cutoff,
+        )
+    ) == {
+        a_node.node_id,
+        c_node.node_id,
+        d_node.node_id,
+    }
