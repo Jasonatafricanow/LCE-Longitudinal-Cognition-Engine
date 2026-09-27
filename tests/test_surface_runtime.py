@@ -330,7 +330,7 @@ def test_surface_view_provenance_includes_all_conjunctive_rejoin_parents(
         line_store=store,
         config=SurfaceConfig(),
     )
-    views = runtime._line_path_views(  # noqa: SLF001 - direct invariant test
+    views = runtime._line_path_views(
         knowledge_cutoff=BASE + timedelta(days=100),
     )
     ending_at_rejoin = [
