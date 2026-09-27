@@ -278,16 +278,20 @@ class EvidencePort(ReferenceMemoryPort, Protocol):
     def get_evidence(self, evidence_id: str) -> RawEvidence:
         ...
 
-    def evidence_valid_at(
-        self, evidence_id: str, cutoff: datetime
-    ) -> bool:
-        """Whether evidence was valid in the system's knowledge state at cutoff."""
-        ...
-
     def invalidate(self, evidence_id: str, *, reason: str) -> None:
         ...
 
     def supersede(self, evidence_id: str, replacement_evidence_id: str) -> None:
+        ...
+
+
+@runtime_checkable
+class HistoricalEvidenceValidityPort(Protocol):
+    """Optional capability for exact source lifecycle replay at a knowledge cutoff."""
+
+    def evidence_valid_at(
+        self, evidence_id: str, cutoff: datetime
+    ) -> bool:
         ...
 
 
