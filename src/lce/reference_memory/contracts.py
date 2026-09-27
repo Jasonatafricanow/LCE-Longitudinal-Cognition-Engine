@@ -44,7 +44,9 @@ class RawEvidence:
         _require_text(self.evidence_id, "evidence_id")
         _require_text(self.content, "content")
         _require_utc(self.occurred_at, "occurred_at")
-        if self.known_at is not None:
+        if self.known_at is None:
+            object.__setattr__(self, "known_at", self.occurred_at)
+        else:
             _require_utc(self.known_at, "known_at")
         if not isinstance(self.provenance, Mapping):
             raise TypeError("provenance must be a Mapping")
