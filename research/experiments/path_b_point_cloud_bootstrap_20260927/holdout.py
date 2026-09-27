@@ -240,6 +240,44 @@ def volume_curve() -> dict[str, object]:
     }
 
 
+def discovery_latency() -> dict[str, object]:
+    """First point-cloud size at which each gold trend becomes a valid seed."""
+
+    points = corpus()
+    first: dict[str, dict[str, int]] = {}
+    all_trends = {spec.name for spec in SPECS}
+
+    for prefix in range(20, len(points) + 1):
+        visible = points[:prefix]
+        evaluation = _evaluate(visible, persistent_mutual_knn(visible))
+        discovered = set(evaluation["discovered_trend_names"])
+        for trend in sorted(discovered - set(first)):
+            support_count = sum(trend in point.gold_trends for point in visible)
+            first[trend] = {
+                "visible_points": prefix,
+                "trend_support_points": support_count,
+            }
+        if set(first) == all_trends:
+            break
+
+    return {
+        "per_trend": first,
+        "all_discovered": set(first) == all_trends,
+        "max_visible_points_to_discover_all": max(
+            (value["visible_points"] for value in first.values()),
+            default=None,
+        ),
+        "max_support_points_to_seed": max(
+            (value["trend_support_points"] for value in first.values()),
+            default=None,
+        ),
+        "min_support_points_to_seed": min(
+            (value["trend_support_points"] for value in first.values()),
+            default=None,
+        ),
+    }
+
+
 def temporal_collapse_control() -> dict[str, object]:
     points = corpus()
     bases = {spec.name: 20 + idx * 50 for idx, spec in enumerate(SPECS)}
@@ -300,6 +338,7 @@ def report() -> dict[str, object]:
             "noise_points": sum(not point.gold_trends and point.decoy_group is None for point in corpus()),
         },
         "volume_curve": volume_curve(),
+        "discovery_latency": discovery_latency(),
         "temporal_collapse_control": temporal_collapse_control(),
     }
 
