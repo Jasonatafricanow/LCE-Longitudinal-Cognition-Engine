@@ -13,6 +13,12 @@ from lce.structure.frontier import (
     FrontierCandidateDiscovery,
     FrontierDiscoveryConfig,
 )
+from lce.structure.surface import (
+    LinePathView,
+    SurfaceCandidate,
+    SurfaceConfig,
+    SurfaceRuntime,
+)
 from lce.structure.trajectory import (
     MutualKnnTrajectorySupplier,
     TrajectoryConfig,
@@ -26,12 +32,16 @@ __all__ = [
     "FrontierDiscoveryConfig",
     "HigherOrderCandidate",
     "MutualKnnTrajectorySupplier",
+    "LinePathView",
     "SnapshotStructureDiscovery",
     "StructureConfig",
     "StructureDiff",
     "StructureObservation",
     "StructureRelationCandidate",
     "StructureSnapshot",
+    "SurfaceCandidate",
+    "SurfaceConfig",
+    "SurfaceRuntime",
     "TrajectoryConfig",
     "TrajectoryPath",
     "TrajectoryRuntime",
