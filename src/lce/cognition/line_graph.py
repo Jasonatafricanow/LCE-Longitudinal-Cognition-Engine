@@ -196,13 +196,123 @@ class LineGraphStore:
                     ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS line_node_memberships (
+                membership_revision_id TEXT PRIMARY KEY,
+                node_id TEXT NOT NULL,
+                known_at TEXT NOT NULL,
+                retired_at TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(node_id) REFERENCES line_nodes(node_id)
+                    ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS line_edge_revisions (
+                edge_revision_id TEXT PRIMARY KEY,
+                line_id TEXT NOT NULL,
+                parent_node_id TEXT NOT NULL,
+                child_node_id TEXT NOT NULL,
+                known_at TEXT NOT NULL,
+                retired_at TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(line_id, parent_node_id, child_node_id)
+                    REFERENCES line_edges(
+                        line_id, parent_node_id, child_node_id
+                    )
+                    ON DELETE CASCADE
+            );
+
             CREATE INDEX IF NOT EXISTS idx_line_nodes_block
                 ON line_nodes(block_id);
             CREATE INDEX IF NOT EXISTS idx_line_node_states_state
                 ON line_node_states(state_id);
+            CREATE INDEX IF NOT EXISTS idx_line_membership_node_time
+                ON line_node_memberships(node_id, known_at);
+            CREATE INDEX IF NOT EXISTS idx_line_edge_revision_time
+                ON line_edge_revisions(
+                    line_id, parent_node_id, child_node_id, known_at
+                );
             """
         )
+        self._backfill_structure_revisions()
         self.conn.commit()
+
+    @staticmethod
+    def _revision_id(kind: str, *parts: str) -> str:
+        digest = hashlib.sha256(
+            "|".join((kind, *parts)).encode()
+        ).hexdigest()[:24]
+        return f"{kind}_{digest}"
+
+    def _backfill_structure_revisions(self) -> None:
+        """Make pre-revision feature-branch graphs cutoff-queryable.
+
+        LineGraph has not shipped on master yet, but preserving existing
+        experimental databases makes the migration deterministic instead of
+        silently treating old relations as timeless.
+        """
+        nodes = self.conn.execute(
+            "SELECT node_id, created_at FROM line_nodes"
+        ).fetchall()
+        for node_id, created_at in nodes:
+            exists = self.conn.execute(
+                "SELECT 1 FROM line_node_memberships "
+                "WHERE node_id = ? LIMIT 1",
+                (node_id,),
+            ).fetchone()
+            if exists is not None:
+                continue
+            row = self.conn.execute(
+                "SELECT MIN(knowledge_at) FROM line_node_states "
+                "WHERE node_id = ?",
+                (node_id,),
+            ).fetchone()
+            known_at = str(row[0]) if row and row[0] else str(created_at)
+            revision_id = self._revision_id(
+                "membership", str(node_id), known_at
+            )
+            self.conn.execute(
+                "INSERT OR IGNORE INTO line_node_memberships VALUES "
+                "(?, ?, ?, NULL, ?)",
+                (revision_id, node_id, known_at, created_at),
+            )
+
+        edges = self.conn.execute(
+            "SELECT line_id, parent_node_id, child_node_id FROM line_edges"
+        ).fetchall()
+        for line_id, parent_id, child_id in edges:
+            exists = self.conn.execute(
+                "SELECT 1 FROM line_edge_revisions "
+                "WHERE line_id = ? AND parent_node_id = ? "
+                "AND child_node_id = ? LIMIT 1",
+                (line_id, parent_id, child_id),
+            ).fetchone()
+            if exists is not None:
+                continue
+            rows = self.conn.execute(
+                "SELECT created_at FROM line_nodes "
+                "WHERE node_id IN (?, ?)",
+                (parent_id, child_id),
+            ).fetchall()
+            known_at = max(str(row[0]) for row in rows)
+            revision_id = self._revision_id(
+                "edge",
+                str(line_id),
+                str(parent_id),
+                str(child_id),
+                known_at,
+            )
+            self.conn.execute(
+                "INSERT OR IGNORE INTO line_edge_revisions VALUES "
+                "(?, ?, ?, ?, ?, NULL, ?)",
+                (
+                    revision_id,
+                    line_id,
+                    parent_id,
+                    child_id,
+                    known_at,
+                    known_at,
+                ),
+            )
 
     @staticmethod
     def _parse_datetime(value: str) -> datetime:
