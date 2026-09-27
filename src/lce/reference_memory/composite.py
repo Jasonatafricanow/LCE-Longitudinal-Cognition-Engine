@@ -230,7 +230,7 @@ class ProjectionSubstrate:
         index_version: str,
     ) -> None:
         self.state.replace_vector_index(
-            self.list_semantic_block_states(current_valid_only=True),
+            self.list_semantic_block_states(current_valid_only=False),
             embedder,
             index_version=index_version,
         )
@@ -241,10 +241,21 @@ class ProjectionSubstrate:
     def get_vector(
         self, block_id: str, *, state_id: str | None = None
     ) -> VectorProjection:
+        if state_id is None:
+            block = self.state.get_semantic_block(block_id)
+            if not self._block_is_current(self.source, block):
+                raise KeyError(block_id)
         return self.state.get_vector(block_id, state_id=state_id)
 
     def vector_projection_ids(self) -> tuple[str, ...]:
-        return self.state.vector_projection_ids()
+        return tuple(
+            block_id
+            for block_id in self.state.vector_projection_ids()
+            if self._block_is_current(
+                self.source,
+                self.state.get_semantic_block(block_id),
+            )
+        )
 
     def get_checkpoint(
         self, lineage_id: str
