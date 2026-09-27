@@ -144,24 +144,30 @@ The store rejects:
 
 A trajectory can:
 
-- seed a new Line when it has no overlap with an existing Line;
-- extend one existing Line when it has sufficient current-valid shared support;
-- remain unresolved when overlap is weak;
-- remain unresolved when it overlaps multiple stable Lines.
+- seed a new Line when no existing Line reaches the identity-inheritance
+  threshold, even if one or more SemanticBlocks already participate in other
+  Lines;
+- extend one existing Line when it has sufficient cutoff-valid shared support;
+- remain unresolved when multiple stable Lines independently reach the
+  identity-inheritance threshold.
 
-It does not auto-merge Lines.
+It does not auto-merge Lines. Weak overlap is not exclusive ownership: one
+SemanticBlock may legitimately participate in multiple local Lines.
 
-Historical nodes whose underlying Raw Evidence is no longer valid remain
-auditable but do not contribute to current Line identity matching.
+Historical nodes whose underlying Raw Evidence is not valid at the requested
+knowledge cutoff remain auditable but do not contribute to Line identity
+matching at that cutoff.
 
-Branch growth therefore does not imply Line cloning.
+Branch growth therefore does not imply Line cloning, while overlapping Line
+membership remains legal.
 
 ## 6. Knowledge-cutoff Line view
 
 `LineGraphView` selects the latest immutable SemanticBlock state that is both:
 
 - known by the requested knowledge cutoff; and
-- still supported by current-valid Raw Evidence.
+- supported by Raw Evidence that was valid at that same knowledge cutoff when
+  the source substrate can replay historical lifecycle state.
 
 Visibility propagates through graph ancestry using conjunctive parent
 dependency for multi-parent rejoin nodes. Visibility evaluation and provenance
@@ -170,10 +176,23 @@ recursion depth.
 
 Consequences:
 
-- invalidating a rejoin source hides the rejoin and its descendants;
+- a later invalidation does not erase what was visible before that invalidation;
+- current reconstruction can retire prior Line membership/edge revisions and
+  compile replacement relations without deleting historical revisions;
+- invalidating a rejoin source hides the rejoin and its descendants in the
+  current reconstruction;
 - prior branch frontiers become current again automatically;
-- historical graph rows are preserved for audit;
 - a late-known historical state does not leak into an earlier knowledge cutoff.
+
+Line membership and Line edges are themselves knowledge-time revisioned. A
+relation has a `known_at -> retired_at` lifetime. Rebuild therefore means
+"retire the current derived relation and compile another revision", not "rewrite
+the old graph in place".
+
+If a SemanticBlock keeps the same stable `block_id` but a later immutable state
+changes its logical interval enough to invalidate existing ordering, the current
+Line graph is rebuilt. Stable node identity does not freeze stale temporal
+edges.
 
 ## 7. Callable Line projection
 
@@ -289,8 +308,20 @@ This is intentional. The new trajectory runtime can be pressure-tested without
 silently changing accepted Baseline semantics.
 
 Completed pipeline replay does not rerun cognition stages. Partial replay is
-idempotent because Line nodes, node-state revisions, and edges have stable
-identities.
+idempotent because Line nodes, immutable block states, membership revisions, and
+edge revisions have stable identities.
+
+Every current membership/edge revision records a Line derivation fingerprint
+covering the embedding version, trajectory config, assembler policy, and
+neighbour-provider identity. If that fingerprint changes, LCE rebuilds vectors
+and compiles a new current graph revision instead of silently treating an old
+graph as if it came from the new algorithm. Historical revisions retain their
+old fingerprint.
+
+Bitemporal-divergent input (`known_at != occurred_at`) is compiled into the new
+trajectory path but is not sent through legacy Frontier/06R cognition
+evaluation. This avoids inserting a new logical-history snapshot into the old
+Baseline path without replaying all later legacy snapshots.
 
 A nearline system that starts with no Lines is expected to accumulate evidence
 until an explicit/periodic bootstrap is run. Nearline traffic alone does not
@@ -305,9 +336,13 @@ usage != evidence
 projection != fact
 branch != new Line
 state revision != new trajectory point
+weak overlap != exclusive ownership
+one SemanticBlock may support multiple Lines
 Surface membership != independent support
 rejoin != history rewrite
-invalid historical node != current identity support
+relation rebuild != history rewrite
+invalid historical node != cutoff-valid identity support
+derivation fingerprint mismatch != reusable current graph
 known_at controls visibility
 occurred_at controls logical placement
 ```
@@ -340,7 +375,12 @@ The branch has focused production tests for:
 
 - knowledge-time visibility and late historical evidence;
 - stable Line identity under immutable state revision;
+- overlapping Line membership without clone-by-default behavior;
 - branch/rejoin and rollback after Raw invalidation;
+- current Line relation rebuild while preserving historical relation replay;
+- logical-time state revision invalidating stale ordering edges;
+- same-cutoff rebuild retry after partial relation retirement;
+- derivation-fingerprint rebuild across embedding/config changes;
 - cycle and transitive-edge rejection;
 - bounded non-persistent callable projections;
 - local-drift trajectory recovery;
