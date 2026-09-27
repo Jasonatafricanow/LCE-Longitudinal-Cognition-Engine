@@ -276,6 +276,12 @@ class EvidencePort(ReferenceMemoryPort, Protocol):
     def get_evidence(self, evidence_id: str) -> RawEvidence:
         ...
 
+    def evidence_valid_at(
+        self, evidence_id: str, cutoff: datetime
+    ) -> bool:
+        """Whether evidence was valid in the system's knowledge state at cutoff."""
+        ...
+
     def invalidate(self, evidence_id: str, *, reason: str) -> None:
         ...
 
