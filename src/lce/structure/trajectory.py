@@ -626,13 +626,44 @@ class TrajectoryRuntime:
             block = visible.get(block_id)
             if block is None:
                 continue
-            existing_memberships = self.store.lines_for_block(block_id)
+            existing_memberships = tuple(
+                line_id
+                for line_id in self.store.lines_for_block(block_id)
+                if (
+                    (node := self.store.node_for_block(line_id, block_id))
+                    is not None
+                    and self.store.membership_active_at(
+                        node.node_id,
+                        knowledge_cutoff,
+                    )
+                )
+            )
             if existing_memberships:
+                temporal_revision = False
+                for line_id in existing_memberships:
+                    node = self.store.node_for_block(line_id, block_id)
+                    if node is None:
+                        continue
+                    previous = self.view.state_for_node_at_cutoff(
+                        node.node_id,
+                        knowledge_cutoff=knowledge_cutoff,
+                    )
+                    if previous is not None and (
+                        previous.occurred_start != block.occurred_start
+                        or previous.occurred_end != block.occurred_end
+                    ):
+                        temporal_revision = True
+                        break
+                if temporal_revision:
+                    return self.rebuild_current(
+                        knowledge_cutoff=knowledge_cutoff,
+                    )
                 for line_id in existing_memberships:
                     updates.append(
                         self.assembler.attach_block(
                             line_id,
                             block,
+                            knowledge_cutoff=knowledge_cutoff,
                         )
                     )
                 continue
@@ -673,6 +704,7 @@ class TrajectoryRuntime:
                     block,
                     parent_node_ids=parents,
                     child_node_ids=children,
+                    knowledge_cutoff=knowledge_cutoff,
                 )
             )
 
@@ -681,6 +713,22 @@ class TrajectoryRuntime:
             candidate_paths=(),
             line_updates=tuple(updates),
         )
+
+    def rebuild_current(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> TrajectoryRuntimeResult:
+        """Recompile current Line membership/relations without erasing history."""
+        self.store.retire_current_structure(knowledge_cutoff)
+        try:
+            return self.bootstrap(
+                knowledge_cutoff=knowledge_cutoff,
+            )
+        except Exception:
+            # A failed rebuild must not expose a partially reactivated graph.
+            self.store.retire_current_structure(knowledge_cutoff)
+            raise
 
     def bootstrap(
         self,
