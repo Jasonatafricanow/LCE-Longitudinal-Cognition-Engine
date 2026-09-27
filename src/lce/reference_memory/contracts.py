@@ -61,7 +61,9 @@ class RawEvidence:
 
     @property
     def effective_ordering_key(self) -> str:
-        return self.ordering_key or self.occurred_at.isoformat()
+        # Knowledge time orders ingestion; logical occurrence time only places
+        # the evidence inside the reconstructed longitudinal history.
+        return self.ordering_key or self.effective_known_at.isoformat()
 
     @property
     def effective_known_at(self) -> datetime:
