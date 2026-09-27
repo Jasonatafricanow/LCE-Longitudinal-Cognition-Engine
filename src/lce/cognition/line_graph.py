@@ -725,6 +725,61 @@ class LineGraphView:
         }
         return tuple(sorted(visible - parents_with_visible_children))
 
+    def paths_to_frontier(
+        self,
+        line_id: str,
+        *,
+        knowledge_cutoff: datetime,
+        max_paths: int = 128,
+        max_nodes: int = 64,
+    ) -> tuple[tuple[str, ...], ...]:
+        """Enumerate visible root-to-frontier paths without creating view nodes."""
+        if max_paths < 1 or max_nodes < 1:
+            raise ValueError("path bounds must be positive")
+        visible = set(
+            self.visible_node_ids(
+                line_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+        )
+        if not visible:
+            return ()
+        frontiers = self.frontier(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+        paths: list[tuple[str, ...]] = []
+
+        def ascend(
+            node_id: str,
+            suffix: tuple[str, ...],
+        ) -> None:
+            if len(paths) >= max_paths:
+                return
+            path = (node_id, *suffix)
+            if len(path) >= max_nodes:
+                paths.append(path)
+                return
+            parents = tuple(
+                parent_id
+                for parent_id in self.store.parents(node_id)
+                if parent_id in visible
+            )
+            if not parents:
+                paths.append(path)
+                return
+            for parent_id in parents:
+                ascend(parent_id, path)
+                if len(paths) >= max_paths:
+                    return
+
+        for frontier_id in frontiers:
+            ascend(frontier_id, ())
+            if len(paths) >= max_paths:
+                break
+
+        return tuple(sorted(set(paths)))
+
     def raw_closure(
         self,
         node_id: str,
