@@ -13,15 +13,27 @@ from lce.structure.frontier import (
     FrontierCandidateDiscovery,
     FrontierDiscoveryConfig,
 )
+from lce.structure.trajectory import (
+    MutualKnnTrajectorySupplier,
+    TrajectoryConfig,
+    TrajectoryPath,
+    TrajectoryRuntime,
+    TrajectoryRuntimeResult,
+)
 
 __all__ = [
     "FrontierCandidateDiscovery",
     "FrontierDiscoveryConfig",
     "HigherOrderCandidate",
+    "MutualKnnTrajectorySupplier",
     "SnapshotStructureDiscovery",
     "StructureConfig",
     "StructureDiff",
     "StructureObservation",
     "StructureRelationCandidate",
     "StructureSnapshot",
+    "TrajectoryConfig",
+    "TrajectoryPath",
+    "TrajectoryRuntime",
+    "TrajectoryRuntimeResult",
 ]
