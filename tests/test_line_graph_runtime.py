@@ -327,3 +327,56 @@ def test_line_store_rejects_cycle_even_if_assembler_is_bypassed(
 
     with pytest.raises(ValueError, match="cycle"):
         store.add_edge(applied.line_id, last.node_id, first.node_id)
+
+
+def test_invalid_historical_node_does_not_count_toward_line_absorption(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    trunk = _admit(
+        memory,
+        evidence_id="T",
+        block_id="trunk",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    invalid_later = _admit(
+        memory,
+        evidence_id="OLD",
+        block_id="old",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    stable = _admit(
+        memory,
+        evidence_id="S",
+        block_id="stable",
+        day=20,
+        vector=(0.8, 0.2),
+    )
+    newcomer = _admit(
+        memory,
+        evidence_id="N",
+        block_id="new",
+        day=30,
+        vector=(0.7, 0.3),
+    )
+    _rebuild(memory)
+
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(min_seed_support=3, min_shared_support=2),
+    )
+    initial = assembler.apply_path((trunk, invalid_later, stable))
+    assert initial.line_id is not None
+
+    memory.invalidate("OLD", reason="source correction")
+
+    attempted = assembler.apply_path((invalid_later, stable, newcomer))
+    assert attempted.line_id is None
+    assert attempted.unresolved_reason == (
+        "weak overlap with an existing Line; no clone created"
+    )
+    assert len(store.list_lines()) == 1
