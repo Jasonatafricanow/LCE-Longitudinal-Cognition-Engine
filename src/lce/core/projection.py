@@ -55,6 +55,11 @@ from lce.structure.frontier import (
     FrontierCandidateDiscovery,
     FrontierDiscoveryConfig,
 )
+from lce.structure.surface import (
+    SurfaceCandidate,
+    SurfaceConfig,
+    SurfaceRuntime,
+)
 from lce.structure.trajectory import (
     TrajectoryConfig,
     TrajectoryRuntime,
@@ -81,6 +86,7 @@ class ProcessResult:
     higher_order_candidates: tuple[HigherOrderCandidate, ...]
     promotions: tuple[ConsolidationResult, ...]
     trajectory_result: TrajectoryRuntimeResult | None = None
+    surface_candidates: tuple[SurfaceCandidate, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -111,6 +117,7 @@ class LceProjectionCore:
         trajectory_config: TrajectoryConfig | None = None,
         line_assembler_config: LineAssemblerConfig | None = None,
         callable_projection_config: CallableProjectionConfig | None = None,
+        surface_config: SurfaceConfig | None = None,
         interpreter: BoundedInterpreter | None = None,
         block_embedder: Callable[
             [SemanticBlock], tuple[float, ...]
@@ -146,6 +153,15 @@ class LceProjectionCore:
             memory=self.memory,
             store=self.lines,
             config=callable_projection_config,
+        )
+        self.surface_runtime = (
+            SurfaceRuntime(
+                memory=self.memory,
+                line_store=self.lines,
+                config=surface_config,
+            )
+            if surface_config is not None
+            else None
         )
         self.discovery = SnapshotStructureDiscovery(
             self.memory,
@@ -228,6 +244,13 @@ class LceProjectionCore:
             knowledge_cutoff=material.effective_known_at,
             current_block_ids=compiler_result.block_ids,
         )
+        surface_candidates = (
+            self.surface_runtime.discover(
+                knowledge_cutoff=material.effective_known_at,
+            )
+            if self.surface_runtime is not None
+            else ()
+        )
 
         frontier_candidates = self.frontier.candidates(
             snapshot,
@@ -295,6 +318,7 @@ class LceProjectionCore:
             candidates,
             tuple(promotions),
             trajectory_result,
+            surface_candidates,
         )
 
     def _completed_replay_result(
@@ -325,6 +349,7 @@ class LceProjectionCore:
             candidates,
             (),
             None,
+            (),
         )
 
     def run_batch(self, materials: Sequence[RawEvidence]) -> tuple[ProcessResult, ...]:
@@ -891,6 +916,17 @@ class LceProjectionCore:
         return self.line_projector.project_for_block(
             line_id,
             block,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+
+    def discover_surfaces(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[SurfaceCandidate, ...]:
+        if self.surface_runtime is None:
+            return ()
+        return self.surface_runtime.discover(
             knowledge_cutoff=knowledge_cutoff,
         )
 
