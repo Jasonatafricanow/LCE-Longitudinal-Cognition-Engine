@@ -60,19 +60,27 @@ Raw historical items are first compiled into semantic blocks under `src/lce/sema
 
 The compiler keeps block identity, source references, timestamps, and validity information so later stages can be traced back to the original evidence.
 
-### 2. Vector projection and local structure
+### 2. Frontier-first longitudinal discovery
 
-Vectors are rebuildable. They are used for neighborhood/structure discovery rather than stored as the source of truth.
+Vectors are rebuildable and state-bound. For each newly compiled Semantic Block, LCE first compares the arriving edge with the current cognition frontier: accepted Baseline HEADs plus OPEN Worktrees.
 
-`src/lce/structure/` builds local, overlapping structures at several neighborhood sizes. A single block may participate in more than one local structure.
+The frontier supplier uses an additive combination of vector similarity, nearest supporting-state similarity, lexical overlap, and a soft temporal prior. Old cognition is never hard-expired only because of age. A strong match to one frozen support state can rescue a branch even when a centroid is weak; two moderate frontier matches can propose a bounded cross-frontier boundary candidate.
 
-### 3. Structure changes and relation candidates
+Frontier scoring uses the immutable `selected_support.state_id` recorded when a Baseline/Worktree was formed, so later Semantic Block continuation cannot leak future text backward into an earlier cognition state.
 
-Snapshots and diffs record how local structures change across cutoffs.
+### 3. Local structure fallback
 
-Candidate relations are derived from those structures and may remain `UNKNOWN`; the pipeline does not require every stable geometric pattern to receive a semantic interpretation.
+If no frontier candidate is semantically accepted for the arriving input, the existing multi-scale 06R local-structure supplier remains the fallback. It builds overlapping k-neighbourhood observations, cutoff snapshots, diffs, and bounded structure↔structure candidates.
 
-### 4. Draft and accepted revisions
+This makes the two mechanisms directly ablatable: frontier discovery can be disabled without removing the legacy structural baseline.
+
+### 4. Bounded interpretation and revisions
+
+Both frontier and structure candidates remain derived proposals and may return `UNKNOWN`. A bounded interpreter sees only authorized Semantic Block states, source references, and the previous accepted Baseline where applicable.
+
+Frontier absorption updates an existing region. A new cross-frontier boundary remains provisional and requires repeated support before promotion.
+
+### 5. Draft and accepted revisions
 
 The current implementation stores provisional interpretations separately from accepted revisions.
 
@@ -87,7 +95,7 @@ draft candidate
 
 Accepted revisions keep explicit source support, revision numbers, hashes, and predecessor links.
 
-### 5. Read API
+### 6. Read API
 
 `src/lce/read_api.py` serves only accepted revisions whose supporting semantic blocks and underlying evidence are still valid.
 
