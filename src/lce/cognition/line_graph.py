@@ -386,12 +386,15 @@ class LineGraphStore:
         block: SemanticBlock,
         *,
         knowledge_at: datetime,
+        membership_known_at: datetime | None = None,
         commit: bool = True,
     ) -> tuple[LineNode, bool, bool]:
         self.get_line(line_id)
         if block.state_id is None:
             raise ValueError("Line nodes require immutable SemanticBlock states")
         _require_utc(knowledge_at, "knowledge_at")
+        membership_at = membership_known_at or knowledge_at
+        _require_utc(membership_at, "membership_known_at")
         node_id = self._node_id(line_id, block.block_id)
         existing = self.conn.execute(
             "SELECT node_id FROM line_nodes "
@@ -409,6 +412,11 @@ class LineGraphStore:
         else:
             node_id = str(existing[0])
 
+        self._activate_membership(
+            node_id,
+            membership_at,
+            commit=False,
+        )
         state_result = self.conn.execute(
             """
             INSERT OR IGNORE INTO line_node_states (
@@ -503,7 +511,173 @@ class LineGraphStore:
         ).fetchall()
         return tuple(self.get_node(str(row[0])) for row in rows)
 
-    def _reachable(self, start_node_id: str, target_node_id: str) -> bool:
+    def membership_active_at(
+        self,
+        node_id: str,
+        knowledge_cutoff: datetime,
+    ) -> bool:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
+        return self.conn.execute(
+            "SELECT 1 FROM line_node_memberships "
+            "WHERE node_id = ? AND known_at <= ? "
+            "AND (retired_at IS NULL OR retired_at > ?) "
+            "ORDER BY known_at DESC LIMIT 1",
+            (node_id, cutoff, cutoff),
+        ).fetchone() is not None
+
+    def _activate_membership(
+        self,
+        node_id: str,
+        knowledge_at: datetime,
+        *,
+        commit: bool = True,
+    ) -> bool:
+        _require_utc(knowledge_at, "knowledge_at")
+        if self.membership_active_at(node_id, knowledge_at):
+            return False
+        iso = knowledge_at.isoformat()
+        revision_id = self._revision_id("membership", node_id, iso)
+        result = self.conn.execute(
+            "INSERT OR IGNORE INTO line_node_memberships VALUES "
+            "(?, ?, ?, NULL, ?)",
+            (revision_id, node_id, iso, datetime.now(UTC).isoformat()),
+        )
+        if commit:
+            self.conn.commit()
+        return result.rowcount > 0
+
+    def active_node_ids_at(
+        self,
+        line_id: str,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        return tuple(
+            node.node_id
+            for node in self.nodes_for_line(line_id)
+            if self.membership_active_at(
+                node.node_id,
+                knowledge_cutoff,
+            )
+        )
+
+    def edge_active_at(
+        self,
+        line_id: str,
+        parent_node_id: str,
+        child_node_id: str,
+        knowledge_cutoff: datetime,
+    ) -> bool:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
+        return self.conn.execute(
+            "SELECT 1 FROM line_edge_revisions "
+            "WHERE line_id = ? AND parent_node_id = ? "
+            "AND child_node_id = ? AND known_at <= ? "
+            "AND (retired_at IS NULL OR retired_at > ?) "
+            "ORDER BY known_at DESC LIMIT 1",
+            (
+                line_id,
+                parent_node_id,
+                child_node_id,
+                cutoff,
+                cutoff,
+            ),
+        ).fetchone() is not None
+
+    def edges_for_line_at(
+        self,
+        line_id: str,
+        knowledge_cutoff: datetime,
+    ) -> tuple[tuple[str, str], ...]:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        rows = self.conn.execute(
+            "SELECT parent_node_id, child_node_id FROM line_edges "
+            "WHERE line_id = ? ORDER BY parent_node_id, child_node_id",
+            (line_id,),
+        ).fetchall()
+        return tuple(
+            (str(parent_id), str(child_id))
+            for parent_id, child_id in rows
+            if self.edge_active_at(
+                line_id,
+                str(parent_id),
+                str(child_id),
+                knowledge_cutoff,
+            )
+        )
+
+    def parents_at(
+        self,
+        node_id: str,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
+        node = self.get_node(node_id)
+        return tuple(
+            parent_id
+            for parent_id, child_id in self.edges_for_line_at(
+                node.line_id,
+                knowledge_cutoff,
+            )
+            if child_id == node_id
+        )
+
+    def children_at(
+        self,
+        node_id: str,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
+        node = self.get_node(node_id)
+        return tuple(
+            child_id
+            for parent_id, child_id in self.edges_for_line_at(
+                node.line_id,
+                knowledge_cutoff,
+            )
+            if parent_id == node_id
+        )
+
+    def retire_current_structure(
+        self,
+        knowledge_cutoff: datetime,
+    ) -> None:
+        """Retire current derived membership/edges without erasing history."""
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
+        with self.conn:
+            edge_rows = self.conn.execute(
+                "SELECT edge_revision_id FROM line_edge_revisions "
+                "WHERE known_at <= ? "
+                "AND (retired_at IS NULL OR retired_at > ?)",
+                (cutoff, cutoff),
+            ).fetchall()
+            for (revision_id,) in edge_rows:
+                self.conn.execute(
+                    "UPDATE line_edge_revisions SET retired_at = ? "
+                    "WHERE edge_revision_id = ?",
+                    (cutoff, revision_id),
+                )
+            membership_rows = self.conn.execute(
+                "SELECT membership_revision_id "
+                "FROM line_node_memberships WHERE known_at <= ? "
+                "AND (retired_at IS NULL OR retired_at > ?)",
+                (cutoff, cutoff),
+            ).fetchall()
+            for (revision_id,) in membership_rows:
+                self.conn.execute(
+                    "UPDATE line_node_memberships SET retired_at = ? "
+                    "WHERE membership_revision_id = ?",
+                    (cutoff, revision_id),
+                )
+
+    def _reachable(
+        self,
+        start_node_id: str,
+        target_node_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> bool:
         pending = [start_node_id]
         seen: set[str] = set()
         while pending:
@@ -513,7 +687,9 @@ class LineGraphStore:
             if current in seen:
                 continue
             seen.add(current)
-            pending.extend(self.children(current))
+            pending.extend(
+                self.children_at(current, knowledge_cutoff)
+            )
         return False
 
     def add_edge(
@@ -522,51 +698,74 @@ class LineGraphStore:
         parent_node_id: str,
         child_node_id: str,
         *,
+        knowledge_at: datetime | None = None,
         commit: bool = True,
     ) -> bool:
         if parent_node_id == child_node_id:
             raise ValueError("a Line edge cannot self-reference")
+        edge_known_at = knowledge_at or datetime.now(UTC)
+        _require_utc(edge_known_at, "knowledge_at")
         parent = self.get_node(parent_node_id)
         child = self.get_node(child_node_id)
         if parent.line_id != line_id or child.line_id != line_id:
             raise ValueError("Line edges cannot cross Line identity")
-        if self._reachable(parent_node_id, child_node_id):
+        if self.edge_active_at(
+            line_id,
+            parent_node_id,
+            child_node_id,
+            edge_known_at,
+        ):
             return False
-        if self._reachable(child_node_id, parent_node_id):
+        if self._reachable(
+            parent_node_id,
+            child_node_id,
+            knowledge_cutoff=edge_known_at,
+        ):
+            return False
+        if self._reachable(
+            child_node_id,
+            parent_node_id,
+            knowledge_cutoff=edge_known_at,
+        ):
             raise ValueError("Line edge would create a cycle")
-        result = self.conn.execute(
+        self.conn.execute(
             "INSERT OR IGNORE INTO line_edges VALUES (?, ?, ?)",
             (line_id, parent_node_id, child_node_id),
+        )
+        iso = edge_known_at.isoformat()
+        revision_id = self._revision_id(
+            "edge",
+            line_id,
+            parent_node_id,
+            child_node_id,
+            iso,
+        )
+        result = self.conn.execute(
+            "INSERT OR IGNORE INTO line_edge_revisions VALUES "
+            "(?, ?, ?, ?, ?, NULL, ?)",
+            (
+                revision_id,
+                line_id,
+                parent_node_id,
+                child_node_id,
+                iso,
+                datetime.now(UTC).isoformat(),
+            ),
         )
         if commit:
             self.conn.commit()
         return result.rowcount > 0
 
     def parents(self, node_id: str) -> tuple[str, ...]:
-        rows = self.conn.execute(
-            "SELECT parent_node_id FROM line_edges "
-            "WHERE child_node_id = ? ORDER BY parent_node_id",
-            (node_id,),
-        ).fetchall()
-        return tuple(str(row[0]) for row in rows)
+        return self.parents_at(node_id, datetime.now(UTC))
 
     def children(self, node_id: str) -> tuple[str, ...]:
-        rows = self.conn.execute(
-            "SELECT child_node_id FROM line_edges "
-            "WHERE parent_node_id = ? ORDER BY child_node_id",
-            (node_id,),
-        ).fetchall()
-        return tuple(str(row[0]) for row in rows)
+        return self.children_at(node_id, datetime.now(UTC))
 
     def edges_for_line(
         self, line_id: str
     ) -> tuple[tuple[str, str], ...]:
-        rows = self.conn.execute(
-            "SELECT parent_node_id, child_node_id FROM line_edges "
-            "WHERE line_id = ? ORDER BY parent_node_id, child_node_id",
-            (line_id,),
-        ).fetchall()
-        return tuple((str(row[0]), str(row[1])) for row in rows)
+        return self.edges_for_line_at(line_id, datetime.now(UTC))
 
     def lines_for_block(self, block_id: str) -> tuple[str, ...]:
         rows = self.conn.execute(
