@@ -170,7 +170,11 @@ def test_same_line_can_branch_and_rejoin_without_line_clone(
     assembler = LineAssembler(
         memory=memory,
         store=store,
-        config=LineAssemblerConfig(min_seed_support=3, min_shared_support=2),
+        config=LineAssemblerConfig(
+            min_seed_support=3,
+            min_shared_support=2,
+            allow_conjunctive_rejoin=True,
+        ),
     )
     first = assembler.apply_path((trunk, branch_a, rejoin))
     second = assembler.apply_path((trunk, branch_b, rejoin))
@@ -229,7 +233,11 @@ def test_invalid_rejoin_evidence_reopens_old_branch_frontier(
     assembler = LineAssembler(
         memory=memory,
         store=store,
-        config=LineAssemblerConfig(min_seed_support=3, min_shared_support=2),
+        config=LineAssemblerConfig(
+            min_seed_support=3,
+            min_shared_support=2,
+            allow_conjunctive_rejoin=True,
+        ),
     )
     first = assembler.apply_path((trunk, branch_a, rejoin))
     assembler.apply_path((trunk, branch_b, rejoin))
@@ -547,7 +555,11 @@ def test_multi_parent_visibility_is_conjunctive_rejoin_not_alternative_or(
     )
 
     store = LineGraphStore(tmp_path / "lines")
-    assembler = LineAssembler(memory=memory, store=store)
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(allow_conjunctive_rejoin=True),
+    )
     first = assembler.apply_path((trunk, branch_a, rejoin))
     assembler.apply_path((trunk, branch_b, rejoin))
     assert first.line_id is not None
