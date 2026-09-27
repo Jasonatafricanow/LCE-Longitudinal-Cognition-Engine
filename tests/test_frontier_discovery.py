@@ -5,7 +5,12 @@ from pathlib import Path
 
 from lce.cognition.worktree import CognitionWorktreeStore
 from lce.contracts.baseline import Baseline, compute_content_hash
-from lce.reference_memory.contracts import SemanticBlock
+from lce.reference_memory.contracts import (
+    AuthorizedSelectedSupport,
+    RawEvidence,
+    SemanticBlock,
+    VectorProjection,
+)
 from lce.store.sqlite_store import SqliteBaselineStore
 from lce.structure.contracts import StructureConfig, StructureSnapshot
 from lce.structure.frontier import (
@@ -14,6 +19,70 @@ from lce.structure.frontier import (
 )
 
 BASE = datetime(2026, 1, 1, tzinfo=UTC)
+
+
+class _Memory:
+    def __init__(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        vectors: dict[tuple[str, str | None], tuple[float, ...]],
+    ) -> None:
+        self._states = {
+            block.state_id: block
+            for block in blocks
+            if block.state_id is not None
+        }
+        self._vectors = vectors
+        self._evidence = {
+            evidence_id: RawEvidence(
+                evidence_id=evidence_id,
+                content=block.content,
+                occurred_at=block.occurred_end,
+                provenance={"source": "test", "canonical": True},
+            )
+            for block in blocks
+            for evidence_id in block.raw_evidence_ids
+        }
+
+    def get_semantic_block_state(self, state_id: str) -> SemanticBlock:
+        block = self._states.get(state_id)
+        if block is None:
+            raise KeyError(state_id)
+        return block
+
+    def get_evidence(self, evidence_id: str) -> RawEvidence:
+        item = self._evidence.get(evidence_id)
+        if item is None:
+            raise KeyError(evidence_id)
+        return item
+
+    def get_vector(
+        self,
+        block_id: str,
+        *,
+        state_id: str | None = None,
+    ) -> VectorProjection:
+        key = (block_id, state_id)
+        if key not in self._vectors:
+            raise KeyError(key)
+        return VectorProjection(
+            block_id=block_id,
+            values=self._vectors[key],
+            index_version="test",
+        )
+
+
+def _memory(
+    blocks: tuple[SemanticBlock, ...],
+    vectors: dict[str, tuple[float, ...]],
+) -> _Memory:
+    return _Memory(
+        blocks,
+        {
+            (block.block_id, block.state_id): vectors[block.block_id]
+            for block in blocks
+        },
+    )
 
 
 def _block(
@@ -60,6 +129,7 @@ def _save_baseline(
     baseline_id: str,
     content: str,
     block_ids: tuple[str, ...],
+    selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
 ) -> None:
     store.save_revision(
         Baseline(
@@ -70,6 +140,10 @@ def _save_baseline(
             content_hash=compute_content_hash(content),
             supporting_memory_ids=block_ids,
             created_at=BASE,
+            supporting_state_ids=tuple(
+                item.state_id for item in selected_support
+            ),
+            selected_support=selected_support,
         )
     )
 
@@ -97,6 +171,13 @@ def test_frontier_absorption_works_without_structure_candidate(
     )
 
     discovery = FrontierCandidateDiscovery(
+        memory=_memory(
+            (old, current),
+            {
+                "old": (1.0, 0.0),
+                "current": (0.98, 0.05),
+            },
+        ),
         baselines=baselines,
         worktrees=worktrees,
     )
@@ -145,6 +226,14 @@ def test_branch_rescue_uses_a_matching_support_even_when_centroid_is_weak(
         },
     )
     discovery = FrontierCandidateDiscovery(
+        memory=_memory(
+            (left, right, current),
+            {
+                "left": (1.0, 0.0),
+                "right": (-1.0, 0.0),
+                "current": (0.99, 0.01),
+            },
+        ),
         baselines=baselines,
         worktrees=worktrees,
         config=FrontierDiscoveryConfig(
@@ -195,6 +284,13 @@ def test_temporal_prior_is_soft_not_a_hard_cutoff(
         },
     )
     discovery = FrontierCandidateDiscovery(
+        memory=_memory(
+            (old, current),
+            {
+                "old": (1.0, 0.0),
+                "current": (1.0, 0.0),
+            },
+        ),
         baselines=baselines,
         worktrees=worktrees,
         config=FrontierDiscoveryConfig(
@@ -250,6 +346,14 @@ def test_additive_boundary_rescue_combines_two_moderate_frontiers(
         },
     )
     discovery = FrontierCandidateDiscovery(
+        memory=_memory(
+            (a, b, current),
+            {
+                "a": (1.0, 0.0),
+                "b": (0.0, 1.0),
+                "current": (0.71, 0.71),
+            },
+        ),
         baselines=baselines,
         worktrees=worktrees,
         config=FrontierDiscoveryConfig(
@@ -284,15 +388,84 @@ def test_frontier_supplier_can_be_disabled_for_ablation(
 ) -> None:
     baselines = SqliteBaselineStore(tmp_path / "baselines")
     worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    current = _block("current", 0, "Anything")
     discovery = FrontierCandidateDiscovery(
+        memory=_memory(
+            (current,),
+            {"current": (1.0, 0.0)},
+        ),
         baselines=baselines,
         worktrees=worktrees,
         config=FrontierDiscoveryConfig(enabled=False),
     )
-    current = _block("current", 0, "Anything")
     assert discovery.candidates(
         _snapshot((current,), {"current": (1.0, 0.0)}),
         current_block_ids=("current",),
     ) == ()
+    baselines.close()
+    worktrees.close()
+
+
+def test_frontier_scoring_uses_frozen_baseline_state_not_latest_block(
+    tmp_path: Path,
+) -> None:
+    baselines = SqliteBaselineStore(tmp_path / "baselines")
+    worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    old_state = _block("same", 0, "Old accepted direction.")
+    current_state = SemanticBlock(
+        block_id="same",
+        content="Completely reversed direction.",
+        raw_evidence_ids=("E-same", "E-current"),
+        occurred_start=old_state.occurred_start,
+        occurred_end=BASE + timedelta(days=5),
+        compiler_version="test",
+        lineage_id="lineage",
+        metadata={"subject": "same"},
+        state_id="state-same-current",
+        state_version=2,
+    )
+    _save_baseline(
+        baselines,
+        region_id="same-region",
+        baseline_id="b-old",
+        content="Old accepted direction.",
+        block_ids=("same",),
+        selected_support=(
+            AuthorizedSelectedSupport(
+                block_id="same",
+                state_id=old_state.state_id or "",
+            ),
+        ),
+    )
+    memory = _Memory(
+        (old_state, current_state),
+        {
+            ("same", old_state.state_id): (1.0, 0.0),
+            ("same", current_state.state_id): (0.0, 1.0),
+        },
+    )
+    snapshot = _snapshot(
+        (current_state,),
+        {"same": (0.0, 1.0)},
+    )
+    discovery = FrontierCandidateDiscovery(
+        memory=memory,
+        baselines=baselines,
+        worktrees=worktrees,
+        config=FrontierDiscoveryConfig(
+            min_absorption_score=0.90,
+            branch_rescue_similarity=0.95,
+            boundary_sum_threshold=2.0,
+        ),
+    )
+
+    candidates = discovery.candidates(
+        snapshot,
+        current_block_ids=("same",),
+    )
+    assert not any(
+        item.relation_type == "frontier_absorption"
+        for item in candidates
+    )
     baselines.close()
     worktrees.close()
