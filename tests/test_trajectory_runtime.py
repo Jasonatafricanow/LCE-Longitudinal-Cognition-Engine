@@ -463,3 +463,51 @@ def test_long_bootstrap_path_is_segmented_without_losing_tail(
     assert {
         node.block_id for node in store.nodes_for_line(line_id)
     } == covered
+
+
+
+def test_deep_trajectory_segmentation_does_not_depend_on_python_recursion() -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        SemanticBlock(
+            block_id=f"deep-{index}",
+            content=f"deep-{index}",
+            raw_evidence_ids=(f"raw-{index}",),
+            occurred_start=BASE + timedelta(days=index),
+            occurred_end=BASE + timedelta(days=index),
+            compiler_version="test",
+            lineage_id="deep",
+            state_id=f"state-deep-{index}",
+        )
+        for index in range(1500)
+    )
+    outgoing = {
+        block.block_id: (
+            (blocks[index + 1].block_id,)
+            if index + 1 < len(blocks)
+            else ()
+        )
+        for index, block in enumerate(blocks)
+    }
+    edge_scores = {
+        (blocks[index].block_id, blocks[index + 1].block_id): 0.99
+        for index in range(len(blocks) - 1)
+    }
+    supplier = MutualKnnTrajectorySupplier(
+        memory=memory,
+        config=TrajectoryConfig(
+            min_support=3,
+            max_path_length=16,
+            max_paths=128,
+        ),
+    )
+
+    paths = supplier._paths(blocks, outgoing, edge_scores)
+
+    covered = {
+        block_id
+        for path in paths
+        for block_id in path.block_ids
+    }
+    assert blocks[0].block_id in covered
+    assert blocks[-1].block_id in covered
