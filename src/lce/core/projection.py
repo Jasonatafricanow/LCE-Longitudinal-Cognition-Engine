@@ -120,6 +120,7 @@ class LceProjectionCore:
             config=structure_config,
         )
         self.frontier = FrontierCandidateDiscovery(
+            memory=self.memory,
             baselines=self.baselines,
             worktrees=self.worktrees,
             config=frontier_config,
@@ -298,6 +299,39 @@ class LceProjectionCore:
             )
         )
 
+    @staticmethod
+    def _frontier_selected_support(
+        candidate: HigherOrderCandidate,
+    ) -> tuple[AuthorizedSelectedSupport, ...]:
+        raw = candidate.metadata.get(
+            "frontier_selected_support",
+            (),
+        )
+        if not isinstance(raw, (list, tuple)):
+            return ()
+        selected: list[AuthorizedSelectedSupport] = []
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            block_id = item.get("block_id")
+            state_id = item.get("state_id")
+            if (
+                isinstance(block_id, str)
+                and block_id.strip()
+                and isinstance(state_id, str)
+                and state_id.strip()
+            ):
+                selected.append(
+                    AuthorizedSelectedSupport(
+                        block_id=block_id,
+                        state_id=state_id,
+                    )
+                )
+        by_block: dict[str, AuthorizedSelectedSupport] = {}
+        for item in selected:
+            by_block.setdefault(item.block_id, item)
+        return tuple(by_block.values())
+
     @classmethod
     def _candidate_region_id(
         cls,
@@ -415,11 +449,47 @@ class LceProjectionCore:
             block.block_id: block
             for block in snapshot.block_states
         }
-        blocks = tuple(
-            blocks_by_id[block_id]
-            for block_id in candidate.supporting_block_ids
-            if block_id in blocks_by_id
+        current_ids_raw = candidate.metadata.get(
+            "current_block_ids",
+            (),
         )
+        current_ids = {
+            item
+            for item in current_ids_raw
+            if isinstance(item, str)
+        } if isinstance(current_ids_raw, (list, tuple)) else set()
+
+        package_blocks: list[SemanticBlock] = []
+        covered_ids: set[str] = set()
+        if frontier_candidate:
+            for selected in self._frontier_selected_support(
+                candidate
+            ):
+                # If the arriving edge updates the same Semantic Block ID,
+                # expose the current immutable state plus previous Baseline
+                # content rather than leaking the new state backward into the
+                # frontier side of the comparison.
+                if selected.block_id in current_ids:
+                    continue
+                try:
+                    block = self.memory.get_semantic_block_state(
+                        selected.state_id
+                    )
+                except KeyError:
+                    continue
+                if block.block_id != selected.block_id:
+                    continue
+                package_blocks.append(block)
+                covered_ids.add(block.block_id)
+
+        for block_id in candidate.supporting_block_ids:
+            if block_id in covered_ids:
+                continue
+            block = blocks_by_id.get(block_id)
+            if block is not None:
+                package_blocks.append(block)
+                covered_ids.add(block_id)
+        blocks = tuple(package_blocks)
         source_refs = tuple(
             sorted(
                 {
@@ -437,6 +507,12 @@ class LceProjectionCore:
             previous_baseline=head,
             context={
                 "frontier_refs": frontier_refs,
+                "frontier_selected_support": (
+                    candidate.metadata.get(
+                        "frontier_selected_support",
+                        (),
+                    )
+                ),
                 "supplier": candidate.metadata.get("supplier"),
             },
         )
@@ -610,14 +686,17 @@ class LceProjectionCore:
             "relation": candidate.relation_type,
             "frontier_refs": self._frontier_refs(candidate),
             "structures": structures,
-            "blocks": tuple(sorted(
-                # State IDs retain exact immutable provenance, but a newer
-                # state with identical semantic/structural meaning is not
-                # new cognition support (for example, a pure recap). Canonical
-                # block order here must not change selected provenance order.
-                (item.block_id, next((block.content for block in snapshot.block_states if block.block_id == item.block_id), ""))
-                for item in selected_support
-            )),
+            "blocks": tuple(
+                sorted(
+                    (
+                        item.block_id,
+                        self.memory.get_semantic_block_state(
+                            item.state_id
+                        ).content,
+                    )
+                    for item in selected_support
+                )
+            ),
         }
         return "support_" + hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()[:24]
 
