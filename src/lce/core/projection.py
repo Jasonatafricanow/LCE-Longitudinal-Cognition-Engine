@@ -1064,6 +1064,10 @@ class LceProjectionCore:
             self._block_embedder,
             index_version=self._block_embedding_version,
         )
+        line_cutoff = datetime.now(UTC)
+        self.trajectory.rebuild_current(
+            knowledge_cutoff=line_cutoff,
+        )
         latest = cutoff or max(
             (
                 snapshot.cutoff
