@@ -99,6 +99,16 @@ A node may have:
 - multiple children: branch/divergence;
 - multiple parents: merge/rejoin.
 
+In V1, multiple parents have one narrow meaning: **conjunctive rejoin**.
+A multi-parent child remains visible only while every parent ancestry remains
+visible. Multiple parent edges do not mean "A OR B" and must not be used for
+alternative hypotheses, fallback routes, or mutually exclusive interpretations.
+
+Those unresolved/alternative semantics remain outside the current Line-edge
+contract until a distinct relation representation is introduced. This boundary
+is intentional: changing the visibility rule from `all(parents)` to
+`any(parents)` would silently change rejoin authority.
+
 The public concept remains Worktree/Line even though the internal graph is
 DAG-like.
 
@@ -133,7 +143,8 @@ Branch growth therefore does not imply Line cloning.
 - known by the requested knowledge cutoff; and
 - still supported by current-valid Raw Evidence.
 
-Visibility propagates through graph ancestry.
+Visibility propagates through graph ancestry using conjunctive parent
+dependency for multi-parent rejoin nodes.
 
 Consequences:
 
@@ -148,6 +159,12 @@ Consequences:
 Line node most relevant to the current SemanticBlock.
 
 The view is graph-distance bounded and preserves exact state and Raw provenance.
+
+Exact Raw provenance closure uses iterative traversal rather than recursive DFS,
+so long-lived deep Lines are not constrained by Python recursion depth. The
+closure has an explicit node safety ceiling, but the ceiling is fail-closed:
+if the traversal cannot finish exactly, LCE raises
+`LineTraversalLimitExceeded` instead of returning truncated provenance.
 
 It is not inserted as a persistent cognition node.
 
