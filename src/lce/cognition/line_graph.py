@@ -153,6 +153,7 @@ class LineGraphStore:
         self.root.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(str(self.root / "line_graph.sqlite"))
         self.conn.execute("PRAGMA foreign_keys = ON")
+        self._derivation_fingerprint = "legacy-unknown"
         self.conn.executescript(
             """
             CREATE TABLE IF NOT EXISTS lines (
@@ -202,6 +203,7 @@ class LineGraphStore:
                 known_at TEXT NOT NULL,
                 retired_at TEXT,
                 created_at TEXT NOT NULL,
+                derivation_fingerprint TEXT NOT NULL,
                 FOREIGN KEY(node_id) REFERENCES line_nodes(node_id)
                     ON DELETE CASCADE
             );
@@ -214,6 +216,7 @@ class LineGraphStore:
                 known_at TEXT NOT NULL,
                 retired_at TEXT,
                 created_at TEXT NOT NULL,
+                derivation_fingerprint TEXT NOT NULL,
                 FOREIGN KEY(line_id, parent_node_id, child_node_id)
                     REFERENCES line_edges(
                         line_id, parent_node_id, child_node_id
@@ -231,9 +234,58 @@ class LineGraphStore:
                 ON line_edge_revisions(
                     line_id, parent_node_id, child_node_id, known_at
                 );
+
+            CREATE TABLE IF NOT EXISTS line_graph_metadata (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            );
             """
         )
+        self._ensure_revision_fingerprint_columns()
         self._backfill_structure_revisions()
+        self.conn.commit()
+
+    def _ensure_revision_fingerprint_columns(self) -> None:
+        for table in (
+            "line_node_memberships",
+            "line_edge_revisions",
+        ):
+            columns = {
+                str(row[1])
+                for row in self.conn.execute(
+                    f"PRAGMA table_info({table})"
+                )
+            }
+            if "derivation_fingerprint" not in columns:
+                self.conn.execute(
+                    f"ALTER TABLE {table} ADD COLUMN "
+                    "derivation_fingerprint TEXT NOT NULL "
+                    "DEFAULT 'legacy-unknown'"
+                )
+
+    @staticmethod
+    def _require_fingerprint(value: str) -> str:
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("derivation fingerprint must be nonempty")
+        return value.strip()
+
+    def set_derivation_fingerprint(self, value: str) -> None:
+        self._derivation_fingerprint = self._require_fingerprint(value)
+
+    def get_metadata(self, key: str) -> str | None:
+        row = self.conn.execute(
+            "SELECT value FROM line_graph_metadata WHERE key = ?",
+            (key,),
+        ).fetchone()
+        return str(row[0]) if row is not None else None
+
+    def set_metadata(self, key: str, value: str) -> None:
+        if not key.strip():
+            raise ValueError("metadata key must be nonempty")
+        self.conn.execute(
+            "INSERT OR REPLACE INTO line_graph_metadata VALUES (?, ?)",
+            (key, value),
+        )
         self.conn.commit()
 
     @staticmethod
@@ -271,9 +323,17 @@ class LineGraphStore:
                 "membership", str(node_id), known_at
             )
             self.conn.execute(
-                "INSERT OR IGNORE INTO line_node_memberships VALUES "
-                "(?, ?, ?, NULL, ?)",
-                (revision_id, node_id, known_at, created_at),
+                "INSERT OR IGNORE INTO line_node_memberships ("
+                "membership_revision_id, node_id, known_at, retired_at, "
+                "created_at, derivation_fingerprint"
+                ") VALUES (?, ?, ?, NULL, ?, ?)",
+                (
+                    revision_id,
+                    node_id,
+                    known_at,
+                    created_at,
+                    "legacy-unknown",
+                ),
             )
 
         edges = self.conn.execute(
@@ -302,8 +362,10 @@ class LineGraphStore:
                 known_at,
             )
             self.conn.execute(
-                "INSERT OR IGNORE INTO line_edge_revisions VALUES "
-                "(?, ?, ?, ?, ?, NULL, ?)",
+                "INSERT OR IGNORE INTO line_edge_revisions ("
+                "edge_revision_id, line_id, parent_node_id, child_node_id, "
+                "known_at, retired_at, created_at, derivation_fingerprint"
+                ") VALUES (?, ?, ?, ?, ?, NULL, ?, ?)",
                 (
                     revision_id,
                     line_id,
@@ -311,6 +373,7 @@ class LineGraphStore:
                     child_id,
                     known_at,
                     known_at,
+                    "legacy-unknown",
                 ),
             )
 
@@ -539,9 +602,17 @@ class LineGraphStore:
         iso = knowledge_at.isoformat()
         revision_id = self._revision_id("membership", node_id, iso)
         result = self.conn.execute(
-            "INSERT OR IGNORE INTO line_node_memberships VALUES "
-            "(?, ?, ?, NULL, ?)",
-            (revision_id, node_id, iso, datetime.now(UTC).isoformat()),
+            "INSERT OR IGNORE INTO line_node_memberships ("
+            "membership_revision_id, node_id, known_at, retired_at, "
+            "created_at, derivation_fingerprint"
+            ") VALUES (?, ?, ?, NULL, ?, ?)",
+            (
+                revision_id,
+                node_id,
+                iso,
+                datetime.now(UTC).isoformat(),
+                self._derivation_fingerprint,
+            ),
         )
         if commit:
             self.conn.commit()
@@ -741,8 +812,10 @@ class LineGraphStore:
             iso,
         )
         result = self.conn.execute(
-            "INSERT OR IGNORE INTO line_edge_revisions VALUES "
-            "(?, ?, ?, ?, ?, NULL, ?)",
+            "INSERT OR IGNORE INTO line_edge_revisions ("
+            "edge_revision_id, line_id, parent_node_id, child_node_id, "
+            "known_at, retired_at, created_at, derivation_fingerprint"
+            ") VALUES (?, ?, ?, ?, ?, NULL, ?, ?)",
             (
                 revision_id,
                 line_id,
@@ -750,6 +823,7 @@ class LineGraphStore:
                 child_node_id,
                 iso,
                 datetime.now(UTC).isoformat(),
+                self._derivation_fingerprint,
             ),
         )
         if commit:
