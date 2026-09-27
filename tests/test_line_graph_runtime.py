@@ -747,3 +747,68 @@ def test_attach_block_rolls_back_node_when_edge_write_fails(
         newcomer.block_id,
     ) is None
     assert store.edges_for_line(initial.line_id) == before_edges
+
+
+
+def test_callable_projection_keeps_full_rejoin_provenance_when_content_is_bounded(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    trunk = _admit(
+        memory,
+        evidence_id="PRT",
+        block_id="pr-trunk",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    branch_a = _admit(
+        memory,
+        evidence_id="PRA",
+        block_id="pr-a",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    branch_b = _admit(
+        memory,
+        evidence_id="PRB",
+        block_id="pr-b",
+        day=12,
+        vector=(0.88, 0.12),
+    )
+    rejoin = _admit(
+        memory,
+        evidence_id="PRR",
+        block_id="pr-rejoin",
+        day=30,
+        vector=(0.8, 0.2),
+    )
+    _rebuild(memory)
+
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(
+        memory=memory,
+        store=store,
+        config=LineAssemblerConfig(allow_conjunctive_rejoin=True),
+    )
+    first = assembler.apply_path((trunk, branch_a, rejoin))
+    assembler.apply_path((trunk, branch_b, rejoin))
+    assert first.line_id is not None
+
+    projection = CallableLineProjector(
+        memory=memory,
+        store=store,
+        config=CallableProjectionConfig(max_nodes=1),
+    ).project_for_block(
+        first.line_id,
+        rejoin,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+
+    assert projection is not None
+    assert len(projection.node_ids) == 1
+    assert set(projection.raw_evidence_ids) == {
+        "PRT",
+        "PRA",
+        "PRB",
+        "PRR",
+    }
