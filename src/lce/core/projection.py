@@ -256,13 +256,22 @@ class LceProjectionCore:
         # persisted Line paths.
         surface_candidates: tuple[SurfaceCandidate, ...] = ()
 
-        frontier_candidates = self.frontier.candidates(
-            snapshot,
-            current_block_ids=compiler_result.block_ids,
-            processing_input_id=material.evidence_id,
+        legacy_compatible = (
+            material.effective_known_at == material.occurred_at
         )
-        structure_candidates = self.discovery.higher_order_candidates(
-            snapshot
+        frontier_candidates = (
+            self.frontier.candidates(
+                snapshot,
+                current_block_ids=compiler_result.block_ids,
+                processing_input_id=material.evidence_id,
+            )
+            if legacy_compatible
+            else ()
+        )
+        structure_candidates = (
+            self.discovery.higher_order_candidates(snapshot)
+            if legacy_compatible
+            else ()
         )
         candidates = (*frontier_candidates, *structure_candidates)
         promotions: list[ConsolidationResult] = []
@@ -345,7 +354,11 @@ class LceProjectionCore:
         if snapshot is None:
             # Rebuilding a derived snapshot is safe, but no cognition stage is rerun.
             snapshot = self.discovery.create_snapshot(material.occurred_at)
-        candidates = self.discovery.higher_order_candidates(snapshot)
+        candidates = (
+            self.discovery.higher_order_candidates(snapshot)
+            if material.effective_known_at == material.occurred_at
+            else ()
+        )
         return ProcessResult(
             compiler_result,
             snapshot,
