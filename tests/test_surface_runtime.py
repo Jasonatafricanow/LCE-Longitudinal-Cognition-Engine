@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
+from itertools import pairwise
 from pathlib import Path
 
 from lce.cognition.line_graph import LineAssembler, LineGraphStore
@@ -30,7 +31,7 @@ def _densify(
     subdivisions: int,
 ) -> tuple[tuple[float, float], ...]:
     output = [vertices[0]]
-    for left, right in zip(vertices, vertices[1:]):
+    for left, right in pairwise(vertices):
         for step in range(1, subdivisions + 1):
             ratio = step / subdivisions
             output.append(
