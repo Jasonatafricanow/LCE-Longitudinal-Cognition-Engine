@@ -1,0 +1,35 @@
+name: Path B Point Cloud Bootstrap
+
+on:
+  push:
+    branches:
+      - "verification/path-b-point-cloud-bootstrap-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-verification.txt
+
+      - name: Install verification dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . -r requirements-verification.txt
+
+      - name: Run point-cloud bootstrap benchmark
+        run: python research/experiments/path_b_point_cloud_bootstrap_20260927/experiment.py
+
+      - name: Run bootstrap mechanism invariants
+        run: python -m pytest tests/research/test_path_b_point_cloud_bootstrap_20260927.py -q
