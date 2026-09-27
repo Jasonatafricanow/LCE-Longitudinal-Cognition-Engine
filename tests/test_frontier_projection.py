@@ -78,6 +78,94 @@ class _RecordingInterpreter:
         )
 
 
+
+class _HistoricalOnlyFrontierInterpreter:
+    """Invalid frontier proposal that omits the arriving edge."""
+
+    def interpret(
+        self,
+        package: BoundedInterpretationPackage,
+    ) -> BoundedInterpretation:
+        current_ids_raw = package.candidate.metadata.get(
+            "current_block_ids",
+            (),
+        )
+        current_ids = {
+            item
+            for item in current_ids_raw
+            if isinstance(item, str)
+        } if isinstance(current_ids_raw, (list, tuple)) else set()
+        historical_ids = tuple(
+            block_id
+            for block_id in package.candidate.supporting_block_ids
+            if block_id not in current_ids
+        )
+        if package.candidate.relation_type.startswith("frontier_"):
+            return BoundedInterpretation(
+                content="Restated historical cognition only.",
+                supporting_block_ids=historical_ids,
+                model_trace={
+                    "provider": "test",
+                    "model": "historical-only",
+                },
+            )
+        return BoundedInterpretation(
+            content=None,
+            supporting_block_ids=(),
+            status="UNKNOWN",
+        )
+
+
+class _LatestEdgeInterpreter:
+    """Deterministic interpreter used to compare nearline vs batch replay."""
+
+    def interpret(
+        self,
+        package: BoundedInterpretationPackage,
+    ) -> BoundedInterpretation:
+        if not package.candidate.relation_type.startswith("frontier_"):
+            return BoundedInterpretation(
+                content=None,
+                supporting_block_ids=(),
+                status="UNKNOWN",
+            )
+        current_ids_raw = package.candidate.metadata.get(
+            "current_block_ids",
+            (),
+        )
+        current_ids = tuple(
+            item
+            for item in current_ids_raw
+            if isinstance(item, str)
+        ) if isinstance(current_ids_raw, (list, tuple)) else ()
+        by_id = {
+            block.block_id: block
+            for block in package.semantic_blocks
+        }
+        current = next(
+            (
+                by_id[block_id]
+                for block_id in current_ids
+                if block_id in by_id
+            ),
+            None,
+        )
+        if current is None:
+            return BoundedInterpretation(
+                content=None,
+                supporting_block_ids=(),
+                status="UNKNOWN",
+            )
+        return BoundedInterpretation(
+            content=f"Frontier state through: {current.content}",
+            supporting_block_ids=package.candidate.supporting_block_ids,
+            model_trace={
+                "provider": "test",
+                "model": "latest-edge",
+            },
+        )
+
+
 def _evidence(evidence_id: str, day: int, content: str) -> RawEvidence:
     return RawEvidence(
         evidence_id=evidence_id,
@@ -261,3 +349,111 @@ def test_injected_block_embedder_is_used_for_vector_rebuild(
     assert vector.index_version == "external-embed-v3"
     core.close()
     memory.close()
+
+
+
+def test_frontier_proposal_must_select_arriving_state(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = ReferenceMemoryStore(tmp_path / "memory-arriving")
+    core = LceProjectionCore(
+        tmp_path / "projection-arriving",
+        memory=memory,
+        provider=_NewBlockProvider(),
+        interpreter=_HistoricalOnlyFrontierInterpreter(),
+        block_embedder=_embed,
+        block_embedding_version="test-embed-v1",
+    )
+    first = core.process(_evidence("E1", 0, "career change idea"))
+    first_block = first.compiler_result.block_ids[0]
+    _seed_baseline(core, memory, first_block)
+
+    monkeypatch.setattr(
+        core.discovery,
+        "higher_order_candidates",
+        lambda snapshot: (),
+    )
+    result = core.process(
+        _evidence("E2", 2, "career applications started")
+    )
+
+    assert any(
+        item.relation_type == "frontier_absorption"
+        for item in result.higher_order_candidates
+    )
+    head = core.baselines.get_head("career-region")
+    assert head is not None
+    assert head.revision_number == 1
+    assert core.worktrees.find_open_by_region("career-region") is None
+
+    core.close()
+    memory.close()
+
+
+def _frontier_replay_state(
+    tmp_path: Path,
+    *,
+    batch: bool,
+) -> tuple[
+    str,
+    int,
+    tuple[str, ...],
+    tuple[str, ...],
+    tuple[str, ...],
+]:
+    suffix = "batch" if batch else "nearline"
+    memory = ReferenceMemoryStore(tmp_path / f"memory-{suffix}")
+    core = LceProjectionCore(
+        tmp_path / f"projection-{suffix}",
+        memory=memory,
+        provider=_NewBlockProvider(),
+        interpreter=_LatestEdgeInterpreter(),
+        block_embedder=_embed,
+        block_embedding_version="test-embed-v1",
+    )
+
+    first = core.process(_evidence("E1", 0, "career change idea"))
+    _seed_baseline(core, memory, first.compiler_result.block_ids[0])
+    later = (
+        _evidence("E2", 2, "career applications started"),
+        _evidence("E3", 4, "career interviews started"),
+    )
+    if batch:
+        core.run_batch(tuple(reversed(later)))
+    else:
+        for material in later:
+            core.process(material)
+
+    head = core.baselines.get_head("career-region")
+    assert head is not None
+    views = core.query("career")
+    source_refs = next(
+        view.supporting_source_refs
+        for view in views
+        if view.region_id == "career-region"
+    )
+    state = (
+        head.content,
+        head.revision_number,
+        head.supporting_memory_ids,
+        head.supporting_state_ids,
+        source_refs,
+    )
+    core.close()
+    memory.close()
+    return state
+
+
+def test_frontier_chronological_batch_replay_matches_nearline_semantics(
+    tmp_path: Path,
+) -> None:
+    nearline = _frontier_replay_state(tmp_path, batch=False)
+    batch = _frontier_replay_state(tmp_path, batch=True)
+
+    assert batch == nearline
+    assert nearline[0] == (
+        "Frontier state through: career interviews started"
+    )
+    assert nearline[1] == 3
+    assert set(nearline[4]) == {"E1", "E2", "E3"}
