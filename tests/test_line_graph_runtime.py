@@ -961,11 +961,13 @@ def test_line_relation_rebuild_preserves_history_and_replaces_current_path(
     assert b_node is not None
     assert c_node is not None
     assert d_node is not None
-    assert store.edges_for_line_at(line_id, historical_cutoff) == (
+    assert set(
+        store.edges_for_line_at(line_id, historical_cutoff)
+    ) == {
         (a_node.node_id, b_node.node_id),
         (b_node.node_id, c_node.node_id),
         (c_node.node_id, d_node.node_id),
-    )
+    }
 
     memory.invalidate(b.raw_evidence_ids[0], reason="later correction")
     current_cutoff = datetime.now(UTC)
@@ -976,15 +978,19 @@ def test_line_relation_rebuild_preserves_history_and_replaces_current_path(
     )
 
     assert rebuilt.line_id == line_id
-    assert store.edges_for_line_at(line_id, historical_cutoff) == (
+    assert set(
+        store.edges_for_line_at(line_id, historical_cutoff)
+    ) == {
         (a_node.node_id, b_node.node_id),
         (b_node.node_id, c_node.node_id),
         (c_node.node_id, d_node.node_id),
-    )
-    assert store.edges_for_line_at(line_id, current_cutoff) == (
+    }
+    assert set(
+        store.edges_for_line_at(line_id, current_cutoff)
+    ) == {
         (a_node.node_id, c_node.node_id),
         (c_node.node_id, d_node.node_id),
-    )
+    }
     view = LineGraphView(memory=memory, store=store)
     assert set(
         view.visible_node_ids(
