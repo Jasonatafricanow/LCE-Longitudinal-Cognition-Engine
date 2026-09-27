@@ -374,6 +374,24 @@ class LceProjectionCore:
             candidate.supporting_structure_ids
         )
 
+    @staticmethod
+    def _durable_matches_candidate(
+        durable: object,
+        *,
+        frontier_candidate: bool,
+    ) -> bool:
+        support_kind = getattr(durable, "support_kind", None)
+        frontier_refs = getattr(
+            durable,
+            "supporting_frontier_refs",
+            (),
+        )
+        durable_frontier = (
+            support_kind == "frontier"
+            or bool(frontier_refs)
+        )
+        return durable_frontier == frontier_candidate
+
     def _evaluate_candidate(
         self,
         candidate: HigherOrderCandidate,
@@ -399,6 +417,15 @@ class LceProjectionCore:
                 processing_input_id,
             )
             if durable is not None:
+                if not self._durable_matches_candidate(
+                    durable,
+                    frontier_candidate=frontier_candidate,
+                ):
+                    # A partially persisted effect from another discovery
+                    # supplier must be resumed by that supplier. In particular,
+                    # a newly generated frontier view of a half-finished legacy
+                    # worktree cannot claim the legacy processing input.
+                    return _CandidateEvaluation(handled=False)
                 if durable.status != "OPEN":
                     return _CandidateEvaluation(handled=True)
                 reconciled = self.promoter.reconcile_committed(
