@@ -61,3 +61,23 @@ def test_drop_changes_only_the_worktree(tmp_path) -> None:
     assert dropped.status == "DROPPED"
     assert worktrees.get(item.worktree_id).status == "DROPPED"
     worktrees.close()
+
+
+def test_frontier_refs_and_support_kind_survive_restart(tmp_path) -> None:
+    worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    item = worktrees.create(
+        region_id="frontier-region",
+        candidate_content="candidate update",
+        supporting_block_ids=("SB1",),
+        supporting_structure_ids=(),
+        supporting_frontier_refs=("baseline:b1",),
+        base_baseline=None,
+        support_kind="frontier",
+    )
+    worktrees.close()
+
+    reopened = CognitionWorktreeStore(tmp_path / "worktrees")
+    restored = reopened.get(item.worktree_id)
+    assert restored.support_kind == "frontier"
+    assert restored.supporting_frontier_refs == ("baseline:b1",)
+    reopened.close()
