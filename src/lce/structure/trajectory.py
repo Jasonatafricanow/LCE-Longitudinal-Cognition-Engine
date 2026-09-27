@@ -554,6 +554,16 @@ class TrajectoryRuntime:
             block = visible.get(block_id)
             if block is None:
                 continue
+            existing_memberships = self.store.lines_for_block(block_id)
+            if existing_memberships:
+                for line_id in existing_memberships:
+                    updates.append(
+                        self.assembler.attach_block(
+                            line_id,
+                            block,
+                        )
+                    )
+                continue
             matches = self._line_matches(
                 block,
                 knowledge_cutoff=knowledge_cutoff,
