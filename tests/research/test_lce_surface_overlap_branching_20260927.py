@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from research.experiments.lce_surface_overlap_branching_20260927 import experiment as exp
+from research.experiments.lce_surface_overlap_branching_20260927 import (\n    experiment as exp,\n)
 
 
 def test_same_polyline_survives_different_state_counts() -> None:
