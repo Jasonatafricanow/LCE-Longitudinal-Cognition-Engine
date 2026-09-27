@@ -577,7 +577,7 @@ def test_multi_parent_visibility_is_conjunctive_rejoin_not_alternative_or(
     cutoff = BASE + timedelta(days=100)
     assert rejoin_node.node_id in view.visible_node_ids(
         first.line_id,
-        knowledge_cutoff=current_cutoff,
+        knowledge_cutoff=cutoff,
     )
 
     # One parent remains fully valid, but invalidating the other parent must
@@ -592,7 +592,7 @@ def test_multi_parent_visibility_is_conjunctive_rejoin_not_alternative_or(
     )
     assert branch_b_node.node_id in view.frontier(
         first.line_id,
-        knowledge_cutoff=cutoff,
+        knowledge_cutoff=current_cutoff,
     )
 
 
