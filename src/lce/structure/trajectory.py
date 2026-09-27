@@ -26,6 +26,7 @@ from lce.cognition.line_graph import (
     LineAssembler,
     LineAssemblerConfig,
     LineGraphStore,
+    LineGraphView,
 )
 from lce.reference_memory.contracts import (
     ReferenceMemorySubstratePort,
@@ -61,6 +62,8 @@ class TrajectoryConfig:
     min_support: int = 3
     max_paths: int = 256
     max_path_length: int = 64
+    max_incremental_parents: int = 2
+    line_ambiguity_margin: float = 0.03
     algorithm_version: str = "trajectory-mutual-knn-v1"
 
     def __post_init__(self) -> None:
@@ -72,6 +75,10 @@ class TrajectoryConfig:
             raise ValueError("min_support must be >= 2")
         if self.max_paths < 1 or self.max_path_length < self.min_support:
             raise ValueError("path limits are inconsistent")
+        if self.max_incremental_parents < 1:
+            raise ValueError("max_incremental_parents must be positive")
+        if not 0.0 <= self.line_ambiguity_margin <= 1.0:
+            raise ValueError("line_ambiguity_margin must be within [0, 1]")
         if not self.algorithm_version.strip():
             raise ValueError("algorithm_version must be nonempty")
 
@@ -368,7 +375,13 @@ class MutualKnnTrajectorySupplier:
 
 
 class TrajectoryRuntime:
-    """Observe current knowledge and increment stable Line DAGs conservatively."""
+    """Separate slow Point-Cloud bootstrap from cheap nearline Line growth.
+
+    Nearline observation never rescans the whole Point Cloud. It compares only
+    the current SemanticBlocks against existing stable Line nodes. Full
+    mutual-kNN discovery is an explicit bootstrap operation intended for batch
+    or periodic slow-path execution.
+    """
 
     def __init__(
         self,
@@ -379,15 +392,148 @@ class TrajectoryRuntime:
         assembler_config: LineAssemblerConfig | None = None,
     ) -> None:
         self.memory = memory
+        self.store = line_store
+        self.config = trajectory_config or TrajectoryConfig()
         self.supplier = MutualKnnTrajectorySupplier(
             memory=memory,
-            config=trajectory_config,
+            config=self.config,
         )
         self.assembler = LineAssembler(
             memory=memory,
             store=line_store,
             config=assembler_config,
         )
+        self.view = LineGraphView(memory=memory, store=line_store)
+
+    @staticmethod
+    def _precedes(left: SemanticBlock, right: SemanticBlock) -> bool:
+        return (
+            left.occurred_start < right.occurred_start
+            and left.occurred_end <= right.occurred_start
+        )
+
+    def _vector(self, block: SemanticBlock) -> tuple[float, ...] | None:
+        if block.state_id is None:
+            return None
+        try:
+            return self.memory.get_vector(
+                block.block_id,
+                state_id=block.state_id,
+            ).values
+        except KeyError:
+            return None
+
+    def _line_matches(
+        self,
+        block: SemanticBlock,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[tuple[float, str, str], ...]:
+        query = self._vector(block)
+        if query is None:
+            return ()
+        matches: list[tuple[float, str, str]] = []
+        for line in self.store.list_lines():
+            best_score = -1.0
+            best_node_id: str | None = None
+            for node_id in self.view.visible_node_ids(
+                line.line_id,
+                knowledge_cutoff=knowledge_cutoff,
+            ):
+                state = self.view.state_for_node_at_cutoff(
+                    node_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                if state is None:
+                    continue
+                vector = self._vector(state)
+                if vector is None:
+                    continue
+                score = _cosine(query, vector)
+                if score > best_score:
+                    best_score = score
+                    best_node_id = node_id
+            if (
+                best_node_id is not None
+                and best_score >= self.config.min_similarity
+            ):
+                matches.append((best_score, line.line_id, best_node_id))
+        return tuple(
+            sorted(
+                matches,
+                key=lambda item: (-item[0], item[1], item[2]),
+            )
+        )
+
+    def _attachment_neighbours(
+        self,
+        line_id: str,
+        block: SemanticBlock,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[tuple[str, ...], tuple[str, ...]]:
+        query = self._vector(block)
+        if query is None:
+            return (), ()
+        predecessors: list[tuple[datetime, float, str]] = []
+        successors: list[tuple[datetime, float, str]] = []
+        visible_ids = self.view.visible_node_ids(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+        frontier = set(
+            self.view.frontier(
+                line_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+        )
+        for node_id in visible_ids:
+            state = self.view.state_for_node_at_cutoff(
+                node_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if state is None:
+                continue
+            vector = self._vector(state)
+            if vector is None:
+                continue
+            score = _cosine(query, vector)
+            if score < self.config.min_similarity:
+                continue
+            if self._precedes(state, block):
+                predecessors.append(
+                    (state.occurred_end, score, node_id)
+                )
+            elif self._precedes(block, state):
+                successors.append(
+                    (state.occurred_start, score, node_id)
+                )
+
+        # Prefer current frontier parents when growing forward. A true rejoin is
+        # expressed by multiple strongly compatible frontier parents.
+        frontier_predecessors = [
+            item for item in predecessors if item[2] in frontier
+        ]
+        parent_pool = frontier_predecessors or predecessors
+        parents = tuple(
+            node_id
+            for _time, _score, node_id in sorted(
+                parent_pool,
+                key=lambda item: (-item[0].timestamp(), -item[1], item[2]),
+            )[: self.config.max_incremental_parents]
+        )
+
+        # For late-known historical evidence, connect to the nearest logical
+        # successor(s) while leaving old history intact. This creates another
+        # auditable path instead of destructively rewiring the DAG.
+        children = tuple(
+            node_id
+            for _time, _score, node_id in sorted(
+                successors,
+                key=lambda item: (item[0], -item[1], item[2]),
+            )[: self.config.max_incremental_parents]
+        )
+        return parents, children
 
     def observe(
         self,
@@ -395,25 +541,80 @@ class TrajectoryRuntime:
         knowledge_cutoff: datetime,
         current_block_ids: tuple[str, ...],
     ) -> TrajectoryRuntimeResult:
+        """Nearline growth: route only current blocks into existing Lines."""
+        visible = {
+            block.block_id: block
+            for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
+                knowledge_cutoff,
+                current_valid_only=True,
+            )
+        }
+        updates: list[LineApplyResult] = []
+        for block_id in current_block_ids:
+            block = visible.get(block_id)
+            if block is None:
+                continue
+            matches = self._line_matches(
+                block,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if not matches:
+                continue
+            if (
+                len(matches) > 1
+                and matches[0][0] - matches[1][0]
+                <= self.config.line_ambiguity_margin
+            ):
+                updates.append(
+                    LineApplyResult(
+                        line_id=None,
+                        created_line=False,
+                        added_node_ids=(),
+                        added_state_ids=(),
+                        added_edges=(),
+                        unresolved_reason=(
+                            "current block matches multiple stable Lines; "
+                            "no auto-merge or clone"
+                        ),
+                    )
+                )
+                continue
+            _score, line_id, _anchor_id = matches[0]
+            parents, children = self._attachment_neighbours(
+                line_id,
+                block,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            updates.append(
+                self.assembler.attach_block(
+                    line_id,
+                    block,
+                    parent_node_ids=parents,
+                    child_node_ids=children,
+                )
+            )
+
+        return TrajectoryRuntimeResult(
+            knowledge_cutoff_iso=knowledge_cutoff.isoformat(),
+            candidate_paths=(),
+            line_updates=tuple(updates),
+        )
+
+    def bootstrap(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> TrajectoryRuntimeResult:
+        """Slow-path Point-Cloud discovery, run explicitly or once per batch."""
         blocks = self.memory.list_semantic_blocks_at_knowledge_cutoff(
             knowledge_cutoff,
             current_valid_only=True,
         )
         by_id = {block.block_id: block for block in blocks}
         paths = self.supplier.propose(blocks)
-        current = set(current_block_ids)
-        relevant = tuple(
-            path
-            for path in paths
-            if current & set(path.block_ids)
-        )
-
-        # Prefer longer / stronger paths first. If they share a real trunk,
-        # LineAssembler absorbs later paths into the same stable Line; weak
-        # overlap does not clone a new Line.
         ordered = tuple(
             sorted(
-                relevant,
+                paths,
                 key=lambda path: (
                     -len(path.block_ids),
                     -path.mean_local_similarity,
@@ -427,7 +628,6 @@ class TrajectoryRuntime:
                 by_id[block_id] for block_id in path.block_ids
             )
             updates.append(self.assembler.apply_path(path_blocks))
-
         return TrajectoryRuntimeResult(
             knowledge_cutoff_iso=knowledge_cutoff.isoformat(),
             candidate_paths=ordered,
