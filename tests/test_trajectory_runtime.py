@@ -13,7 +13,6 @@ from lce.structure.trajectory import (
 )
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
-
 BASE = datetime(2020, 1, 1, tzinfo=UTC)
 
 
