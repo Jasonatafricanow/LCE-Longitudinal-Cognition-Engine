@@ -11,6 +11,7 @@ from lce.cognition.line_graph import (
     LineGraphStore,
     LineGraphView,
     LineNode,
+    LineTraversalLimitExceeded,
     LineNodeState,
     LineRecord,
 )
@@ -47,6 +48,7 @@ __all__ = [
     "LineGraphStore",
     "LineGraphView",
     "LineNode",
+    "LineTraversalLimitExceeded",
     "LineNodeState",
     "LineRecord",
     "PrecomputedDraftInput",
