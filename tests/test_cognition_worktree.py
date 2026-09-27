@@ -72,6 +72,9 @@ def test_frontier_refs_and_support_kind_survive_restart(tmp_path) -> None:
         supporting_structure_ids=(),
         supporting_frontier_refs=("baseline:b1",),
         base_baseline=None,
+        processing_input_id="input-1",
+        processing_supplier="frontier",
+        processing_support_identity="support-1",
         support_kind="frontier",
     )
     worktrees.close()
