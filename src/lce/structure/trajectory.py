@@ -707,7 +707,12 @@ class TrajectoryRuntime:
             path_blocks = tuple(
                 by_id[block_id] for block_id in path.block_ids
             )
-            updates.append(self.assembler.apply_path(path_blocks))
+            updates.append(
+                self.assembler.apply_path(
+                    path_blocks,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+            )
         return TrajectoryRuntimeResult(
             knowledge_cutoff_iso=knowledge_cutoff.isoformat(),
             candidate_paths=ordered,
