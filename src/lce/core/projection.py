@@ -240,15 +240,19 @@ class LceProjectionCore:
             else None
         )
 
-        trajectory_result = self.trajectory.observe(
-            knowledge_cutoff=material.effective_known_at,
-            current_block_ids=compiler_result.block_ids,
+        trajectory_result = (
+            self.trajectory.observe(
+                knowledge_cutoff=material.effective_known_at,
+                current_block_ids=compiler_result.block_ids,
+            )
+            if mode == "nearline"
+            else None
         )
         surface_candidates = (
             self.surface_runtime.discover(
                 knowledge_cutoff=material.effective_known_at,
             )
-            if self.surface_runtime is not None
+            if mode == "nearline" and self.surface_runtime is not None
             else ()
         )
 
@@ -352,9 +356,52 @@ class LceProjectionCore:
             (),
         )
 
-    def run_batch(self, materials: Sequence[RawEvidence]) -> tuple[ProcessResult, ...]:
-        ordered = sorted(materials, key=lambda item: (item.effective_ordering_key, item.evidence_id))
-        return tuple(self.process(material, mode="batch") for material in ordered)
+    def run_batch(
+        self,
+        materials: Sequence[RawEvidence],
+    ) -> tuple[ProcessResult, ...]:
+        ordered = sorted(
+            materials,
+            key=lambda item: (
+                item.effective_ordering_key,
+                item.evidence_id,
+            ),
+        )
+        if not ordered:
+            return ()
+        results = [
+            self.process(material, mode="batch")
+            for material in ordered
+        ]
+        cutoff = max(
+            material.effective_known_at for material in ordered
+        )
+        trajectory_result = self.trajectory.bootstrap(
+            knowledge_cutoff=cutoff,
+        )
+        surface_candidates = (
+            self.surface_runtime.discover(
+                knowledge_cutoff=cutoff,
+            )
+            if self.surface_runtime is not None
+            else ()
+        )
+        results[-1] = replace(
+            results[-1],
+            trajectory_result=trajectory_result,
+            surface_candidates=surface_candidates,
+        )
+        return tuple(results)
+
+    def bootstrap_trajectory(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> TrajectoryRuntimeResult:
+        """Run the slow Point-Cloud bootstrap explicitly."""
+        return self.trajectory.bootstrap(
+            knowledge_cutoff=knowledge_cutoff,
+        )
 
     @staticmethod
     def _frontier_refs(
