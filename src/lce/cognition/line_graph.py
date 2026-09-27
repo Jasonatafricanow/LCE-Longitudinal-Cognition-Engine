@@ -472,12 +472,15 @@ class LineGraphStore:
 class LineAssemblerConfig:
     min_seed_support: int = 3
     min_shared_support: int = 2
+    allow_conjunctive_rejoin: bool = False
 
     def __post_init__(self) -> None:
         if self.min_seed_support < 2:
             raise ValueError("min_seed_support must be >= 2")
         if self.min_shared_support < 1:
             raise ValueError("min_shared_support must be >= 1")
+        if type(self.allow_conjunctive_rejoin) is not bool:
+            raise TypeError("allow_conjunctive_rejoin must be bool")
 
 
 class LineAssembler:
@@ -498,6 +501,27 @@ class LineAssembler:
         return max(
             self.memory.get_evidence(evidence_id).effective_known_at
             for evidence_id in block.raw_evidence_ids
+        )
+
+    def _add_edge(
+        self,
+        line_id: str,
+        parent_node_id: str,
+        child_node_id: str,
+    ) -> bool:
+        existing_parents = self.store.parents(child_node_id)
+        if (
+            parent_node_id not in existing_parents
+            and existing_parents
+            and not self.config.allow_conjunctive_rejoin
+        ):
+            # A second parent changes the child into an AND-rejoin. Similarity
+            # alone is not enough authority to make that semantic commitment.
+            return False
+        return self.store.add_edge(
+            line_id,
+            parent_node_id,
+            child_node_id,
         )
 
     def _visible_overlap_counts(
@@ -561,12 +585,12 @@ class LineAssembler:
         for parent_id in tuple(dict.fromkeys(parent_node_ids)):
             if self.store.get_node(parent_id).line_id != line_id:
                 raise ValueError("parent belongs to another Line")
-            if self.store.add_edge(line_id, parent_id, node.node_id):
+            if self._add_edge(line_id, parent_id, node.node_id):
                 added_edges.append((parent_id, node.node_id))
         for child_id in tuple(dict.fromkeys(child_node_ids)):
             if self.store.get_node(child_id).line_id != line_id:
                 raise ValueError("child belongs to another Line")
-            if self.store.add_edge(line_id, node.node_id, child_id):
+            if self._add_edge(line_id, node.node_id, child_id):
                 added_edges.append((node.node_id, child_id))
         return LineApplyResult(
             line_id=line_id,
@@ -657,7 +681,7 @@ class LineAssembler:
                 continue
             parent = nodes[index]
             child = nodes[index + 1]
-            if self.store.add_edge(
+            if self._add_edge(
                 line_id, parent.node_id, child.node_id
             ):
                 added_edges.append((parent.node_id, child.node_id))
