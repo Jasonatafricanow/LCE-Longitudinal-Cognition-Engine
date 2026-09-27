@@ -589,3 +589,61 @@ def test_multi_parent_visibility_is_conjunctive_rejoin_not_alternative_or(
         first.line_id,
         knowledge_cutoff=cutoff,
     )
+
+
+
+def test_default_assembler_does_not_infer_conjunctive_rejoin_from_overlap(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    trunk = _admit(
+        memory,
+        evidence_id="DT",
+        block_id="d-trunk",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    branch_a = _admit(
+        memory,
+        evidence_id="DA",
+        block_id="d-a",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    branch_b = _admit(
+        memory,
+        evidence_id="DB",
+        block_id="d-b",
+        day=12,
+        vector=(0.89, 0.11),
+    )
+    later = _admit(
+        memory,
+        evidence_id="DL",
+        block_id="d-later",
+        day=30,
+        vector=(0.8, 0.2),
+    )
+
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    first = assembler.apply_path((trunk, branch_a, later))
+    second = assembler.apply_path((trunk, branch_b, later))
+    assert first.line_id is not None
+    assert second.line_id == first.line_id
+
+    later_node = store.node_for_block(first.line_id, "d-later")
+    branch_a_node = store.node_for_block(first.line_id, "d-a")
+    branch_b_node = store.node_for_block(first.line_id, "d-b")
+    assert later_node is not None
+    assert branch_a_node is not None
+    assert branch_b_node is not None
+
+    assert store.parents(later_node.node_id) == (branch_a_node.node_id,)
+    assert branch_b_node.node_id in LineGraphView(
+        memory=memory,
+        store=store,
+    ).frontier(
+        first.line_id,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
