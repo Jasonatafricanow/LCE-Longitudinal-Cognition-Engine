@@ -61,6 +61,7 @@ from lce.structure.surface import (
     SurfaceRuntime,
 )
 from lce.structure.trajectory import (
+    NeighbourCandidateProvider,
     TrajectoryConfig,
     TrajectoryRuntime,
     TrajectoryRuntimeResult,
@@ -115,6 +116,7 @@ class LceProjectionCore:
         structure_config: StructureConfig | None = None,
         frontier_config: FrontierDiscoveryConfig | None = None,
         trajectory_config: TrajectoryConfig | None = None,
+        trajectory_neighbour_provider: NeighbourCandidateProvider | None = None,
         line_assembler_config: LineAssemblerConfig | None = None,
         callable_projection_config: CallableProjectionConfig | None = None,
         surface_config: SurfaceConfig | None = None,
@@ -148,6 +150,7 @@ class LceProjectionCore:
             line_store=self.lines,
             trajectory_config=trajectory_config,
             assembler_config=line_assembler_config,
+            neighbour_provider=trajectory_neighbour_provider,
         )
         self.line_projector = CallableLineProjector(
             memory=self.memory,
