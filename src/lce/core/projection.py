@@ -682,23 +682,50 @@ class LceProjectionCore:
             for item in snapshot.structures
             if item.structure_id in candidate.supporting_structure_ids
         ]
-        payload = {
-            "relation": candidate.relation_type,
-            "frontier_refs": self._frontier_refs(candidate),
-            "structures": structures,
-            "blocks": tuple(
-                sorted(
-                    (
-                        item.block_id,
-                        self.memory.get_semantic_block_state(
-                            item.state_id
-                        ).content,
-                    )
-                    for item in selected_support
+        blocks = tuple(
+            sorted(
+                (
+                    item.block_id,
+                    self.memory.get_semantic_block_state(
+                        item.state_id
+                    ).content,
                 )
-            ),
-        }
-        return "support_" + hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()[:24]
+                for item in selected_support
+            )
+        )
+        if candidate.relation_type.startswith("frontier_"):
+            regions_raw = candidate.metadata.get(
+                "frontier_region_ids",
+                (),
+            )
+            regions = tuple(
+                sorted(
+                    item
+                    for item in regions_raw
+                    if isinstance(item, str) and item.strip()
+                )
+            ) if isinstance(regions_raw, (list, tuple)) else ()
+            payload = {
+                "relation": candidate.relation_type,
+                "frontier_regions": regions,
+                "blocks": blocks,
+            }
+        else:
+            # Preserve the original V1 candidate-relevant fingerprint exactly.
+            # Recovery equivalence depends on legacy support identity remaining
+            # independent from the new frontier supplier.
+            payload = {
+                "relation": candidate.relation_type,
+                "structures": structures,
+                "blocks": blocks,
+            }
+        return "support_" + hashlib.sha256(
+            json.dumps(
+                payload,
+                sort_keys=True,
+                default=str,
+            ).encode()
+        ).hexdigest()[:24]
 
     def query(self, current_context: str | dict[str, object] | None) -> tuple[UnderstandingView, ...]:
         return self.read_api.query(current_context)
