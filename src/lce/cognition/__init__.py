@@ -11,9 +11,9 @@ from lce.cognition.line_graph import (
     LineGraphStore,
     LineGraphView,
     LineNode,
-    LineTraversalLimitExceeded,
     LineNodeState,
     LineRecord,
+    LineTraversalLimitExceeded,
 )
 from lce.cognition.promotion import (
     BoundedInterpretation,
@@ -48,9 +48,9 @@ __all__ = [
     "LineGraphStore",
     "LineGraphView",
     "LineNode",
-    "LineTraversalLimitExceeded",
     "LineNodeState",
     "LineRecord",
+    "LineTraversalLimitExceeded",
     "PrecomputedDraftInput",
     "PrecomputedDraftIntake",
     "RuleBasedBoundedInterpreter",
