@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from lce.core.projection import LceProjectionCore
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.semantic.compiler import SemanticCompiler
@@ -236,3 +237,40 @@ def test_sqlite_historical_state_vector_survives_rebuild(
     with pytest.raises(KeyError):
         store.get_vector(state.block_id)
     store.close()
+
+
+
+def test_bitemporal_divergence_skips_legacy_cognition_evaluation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    core = LceProjectionCore(
+        tmp_path / "core",
+        memory=memory,
+    )
+
+    def forbidden(*args: object, **kwargs: object) -> object:
+        del args, kwargs
+        raise AssertionError(
+            "legacy cognition must not evaluate bitemporal-divergent input"
+        )
+
+    monkeypatch.setattr(core.frontier, "candidates", forbidden)
+    monkeypatch.setattr(
+        core.discovery,
+        "higher_order_candidates",
+        forbidden,
+    )
+
+    result = core.process(
+        _raw(
+            "retro",
+            occurred_year=2020,
+            known_year=2026,
+        )
+    )
+
+    assert result.higher_order_candidates == ()
+    assert result.promotions == ()
+    core.close()
