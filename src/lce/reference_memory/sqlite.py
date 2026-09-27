@@ -624,7 +624,7 @@ class ReferenceMemoryStore:
         db = self._db()
         db.execute("DELETE FROM vector_projections")
         db.execute("DELETE FROM vector_state_projections")
-        for block in self.list_semantic_block_states(current_valid_only=True):
+        for block in self.list_semantic_block_states(current_valid_only=False):
             values = tuple(float(value) for value in embedder(block))
             projection = VectorProjection(block.block_id, values, index_version)
             db.execute(
@@ -632,7 +632,11 @@ class ReferenceMemoryStore:
                 (projection.block_id, block.state_id, json.dumps(projection.values), projection.index_version, datetime.now(UTC).isoformat()),
             )
             current = self.get_semantic_block(block.block_id)
-            if current.state_id == block.state_id:
+            current_valid = all(
+                self.get_evidence(evidence_id).current_valid
+                for evidence_id in current.raw_evidence_ids
+            )
+            if current_valid and current.state_id == block.state_id:
                 db.execute(
                     "INSERT OR REPLACE INTO vector_projections VALUES (?, ?, ?, ?)",
                     (projection.block_id, json.dumps(projection.values), projection.index_version, datetime.now(UTC).isoformat()),
