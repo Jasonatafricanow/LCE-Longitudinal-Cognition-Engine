@@ -421,3 +421,32 @@ def test_core_returns_callable_views_without_persisting_projection_nodes(
     assert len(projections[0].node_ids) <= 3
     assert len(core.lines.nodes_for_line(applied.line_id)) == before_nodes
     core.close()
+
+
+def test_line_store_suppresses_redundant_transitive_shortcut(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"R{index}",
+            block_id=f"RB{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    _rebuild(memory)
+
+    store = LineGraphStore(tmp_path / "lines")
+    applied = LineAssembler(memory=memory, store=store).apply_path(blocks)
+    assert applied.line_id is not None
+
+    first = store.node_for_block(applied.line_id, "RB0")
+    last = store.node_for_block(applied.line_id, "RB2")
+    assert first is not None
+    assert last is not None
+
+    assert store.add_edge(applied.line_id, first.node_id, last.node_id) is False
+    assert len(store.edges_for_line(applied.line_id)) == 2
