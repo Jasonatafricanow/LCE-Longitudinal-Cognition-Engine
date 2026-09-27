@@ -1179,12 +1179,15 @@ class LceProjectionCore:
             if previous
             else None
         )
-        for candidate in self.discovery.higher_order_candidates(
-            corrected_snapshot
-        ):
-            self._evaluate_candidate(
-                candidate, corrected_snapshot, corrected_diff
-            )
+        if self._legacy_lineage_compatible():
+            for candidate in self.discovery.higher_order_candidates(
+                corrected_snapshot
+            ):
+                self._evaluate_candidate(
+                    candidate,
+                    corrected_snapshot,
+                    corrected_diff,
+                )
 
     def close(self) -> None:
         self.discovery.close()
