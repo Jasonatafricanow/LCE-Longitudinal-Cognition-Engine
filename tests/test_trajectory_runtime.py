@@ -712,7 +712,8 @@ def test_state_revision_revalidates_incident_edges_not_only_self_similarity(
             return _vector(5.0)
         raw = block.metadata["vector"]
         assert isinstance(raw, tuple)
-        return tuple(float(value) for value in raw)  # type: ignore[return-value]
+        assert len(raw) == 2
+        return (float(raw[0]), float(raw[1]))
 
     memory.rebuild_vector_index(
         embed,
