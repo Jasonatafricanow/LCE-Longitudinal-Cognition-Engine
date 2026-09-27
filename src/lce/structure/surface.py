@@ -185,7 +185,6 @@ class SurfaceRuntime:
                     continue
                 states = []
                 vectors = []
-                raw_ids: set[str] = set()
                 valid = True
                 for node_id in node_ids:
                     node = self.store.get_node(node_id)
@@ -206,7 +205,6 @@ class SurfaceRuntime:
                         break
                     states.append(block.state_id)
                     vectors.append(vector)
-                    raw_ids.update(block.raw_evidence_ids)
                 if not valid:
                     continue
                 signature = _shape_signature(
@@ -230,7 +228,10 @@ class SurfaceRuntime:
                         line_id=line.line_id,
                         node_ids=node_ids,
                         state_ids=tuple(states),
-                        raw_evidence_ids=tuple(sorted(raw_ids)),
+                        raw_evidence_ids=self.view.raw_closure(
+                            node_ids[-1],
+                            knowledge_cutoff=knowledge_cutoff,
+                        ),
                         shape_signature=signature,
                     )
                 )
