@@ -81,6 +81,24 @@ class ProjectionSubstrate:
     def list_current_valid_evidence(self) -> tuple[RawEvidence, ...]:
         return self.source.list_current_valid_evidence()
 
+    def evidence_valid_at(
+        self,
+        evidence_id: str,
+        cutoff: datetime,
+    ) -> bool:
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
+        item = self.source.get_evidence(evidence_id)
+        if item.effective_known_at > cutoff:
+            return False
+        reader = getattr(self.source, "evidence_valid_at", None)
+        if callable(reader):
+            return bool(reader(evidence_id, cutoff))
+        # External sources that expose only current lifecycle state cannot
+        # reconstruct past validity exactly. Fall back conservatively to the
+        # current authoritative state rather than fabricating history.
+        return item.current_valid
+
     def invalidate(self, evidence_id: str, *, reason: str) -> None:
         del evidence_id, reason
         raise ExternalSourceMutationError(
@@ -166,18 +184,18 @@ class ProjectionSubstrate:
         for block in self.state.list_semantic_block_states():
             try:
                 visible = all(
-                    self.source.get_evidence(
-                        evidence_id
-                    ).effective_known_at <= cutoff
+                    (
+                        self.evidence_valid_at(evidence_id, cutoff)
+                        if current_valid_only
+                        else self.source.get_evidence(
+                            evidence_id
+                        ).effective_known_at <= cutoff
+                    )
                     for evidence_id in block.raw_evidence_ids
                 )
             except KeyError:
                 visible = False
             if not visible:
-                continue
-            if current_valid_only and not self._block_is_current(
-                self.source, block
-            ):
                 continue
             prior = latest.get(block.block_id)
             if prior is None or block.state_version > prior.state_version:
