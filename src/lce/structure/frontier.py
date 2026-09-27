@@ -65,6 +65,7 @@ def _centroid(vectors: tuple[tuple[float, ...], ...]) -> tuple[float, ...]:
 class FrontierDiscoveryConfig:
     """Replaceable policy for frontier candidate generation."""
 
+    enabled: bool = True
     direct_weight: float = 0.45
     support_weight: float = 0.30
     lexical_weight: float = 0.15
@@ -80,6 +81,8 @@ class FrontierDiscoveryConfig:
     algorithm_version: str = "frontier-01-v1"
 
     def __post_init__(self) -> None:
+        if type(self.enabled) is not bool:
+            raise TypeError("enabled must be bool")
         weights = (
             self.direct_weight,
             self.support_weight,
@@ -164,7 +167,7 @@ class FrontierCandidateDiscovery:
         *,
         current_block_ids: tuple[str, ...],
     ) -> tuple[StructureRelationCandidate, ...]:
-        if not current_block_ids:
+        if not self.config.enabled or not current_block_ids:
             return ()
         block_by_id = {
             block.block_id: block
