@@ -398,6 +398,8 @@ class LineGraphStore:
         child = self.get_node(child_node_id)
         if parent.line_id != line_id or child.line_id != line_id:
             raise ValueError("Line edges cannot cross Line identity")
+        if self._reachable(parent_node_id, child_node_id):
+            return False
         if self._reachable(child_node_id, parent_node_id):
             raise ValueError("Line edge would create a cycle")
         result = self.conn.execute(
