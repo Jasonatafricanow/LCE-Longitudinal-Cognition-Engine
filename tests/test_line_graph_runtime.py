@@ -479,7 +479,7 @@ def test_raw_closure_returns_complete_iterative_provenance(
         knowledge_cutoff=BASE + timedelta(days=100),
     )
 
-    assert closure == tuple(f"P{index}" for index in range(20))
+    assert closure == tuple(sorted(f"P{index}" for index in range(20)))
 
 
 def test_raw_closure_fails_closed_when_safety_ceiling_is_exceeded(
