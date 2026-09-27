@@ -689,3 +689,108 @@ def test_material_semantic_state_drift_rebuilds_line_even_when_time_is_unchanged
             knowledge_cutoff=historical_cutoff,
         )
     ) == 3
+
+
+
+def test_state_revision_revalidates_incident_edges_not_only_self_similarity(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    initial_degrees = (0.0, 30.0, 60.0)
+    blocks = tuple(
+        _admit(
+            memory,
+            index=200 + index,
+            day=index * 10,
+            vector=_vector(degrees),
+        )
+        for index, degrees in enumerate(initial_degrees)
+    )
+
+    def embed(block: SemanticBlock) -> tuple[float, float]:
+        if "edge-drift" in block.content:
+            return _vector(5.0)
+        raw = block.metadata["vector"]
+        assert isinstance(raw, tuple)
+        return tuple(float(value) for value in raw)  # type: ignore[return-value]
+
+    memory.rebuild_vector_index(
+        embed,
+        index_version="edge-revalidation-v1",
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=store,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.8,
+            min_support=3,
+        ),
+    )
+    historical_cutoff = BASE + timedelta(days=30)
+    seeded = runtime.bootstrap(
+        knowledge_cutoff=historical_cutoff,
+    )
+    assert seeded.candidate_paths
+    line_id = store.list_lines()[0].line_id
+
+    middle = blocks[1]
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="edge-drift-evidence",
+            content="edge-drift",
+            occurred_at=middle.occurred_start,
+            known_at=BASE + timedelta(days=40),
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    revised = memory.extend_semantic_block(
+        middle.block_id,
+        content="edge-drift",
+        evidence_id="edge-drift-evidence",
+        occurred_at=middle.occurred_start,
+    )
+    memory.rebuild_vector_index(
+        embed,
+        index_version="edge-revalidation-v1",
+    )
+
+    previous_vector = memory.get_vector(
+        middle.block_id,
+        state_id=middle.state_id,
+    ).values
+    current_vector = memory.get_vector(
+        revised.block_id,
+        state_id=revised.state_id,
+    ).values
+    assert math.isclose(
+        sum(a * b for a, b in zip(previous_vector, current_vector)),
+        math.cos(math.radians(25.0)),
+        rel_tol=1e-6,
+    )
+    assert sum(
+        a * b
+        for a, b in zip(
+            current_vector,
+            memory.get_vector(
+                blocks[2].block_id,
+                state_id=blocks[2].state_id,
+            ).values,
+        )
+    ) < 0.8
+
+    current_cutoff = BASE + timedelta(days=100)
+    result = runtime.observe(
+        knowledge_cutoff=current_cutoff,
+        current_block_ids=(revised.block_id,),
+    )
+
+    assert result.candidate_paths == ()
+    assert LineGraphView(
+        memory=memory,
+        store=store,
+    ).visible_node_ids(
+        line_id,
+        knowledge_cutoff=current_cutoff,
+    ) == ()
