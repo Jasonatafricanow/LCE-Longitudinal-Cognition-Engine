@@ -526,6 +526,48 @@ class LineAssembler:
             and left.occurred_end <= right.occurred_start
         )
 
+    def attach_block(
+        self,
+        line_id: str,
+        block: SemanticBlock,
+        *,
+        parent_node_ids: tuple[str, ...] = (),
+        child_node_ids: tuple[str, ...] = (),
+    ) -> LineApplyResult:
+        """Attach one current SemanticBlock to an existing Line.
+
+        This is the nearline growth primitive. It never creates a new Line;
+        ambiguous identity must remain unresolved upstream. Multiple parents
+        express rejoin, while multiple children can place late-known historical
+        evidence into an already-grown Line without rewriting old edges.
+        """
+        if block.state_id is None:
+            raise ValueError("Line attachment requires an immutable state")
+        self.store.get_line(line_id)
+        node, node_added, state_added = self.store.ensure_node(
+            line_id,
+            block,
+            knowledge_at=self._knowledge_at(block),
+        )
+        added_edges: list[tuple[str, str]] = []
+        for parent_id in tuple(dict.fromkeys(parent_node_ids)):
+            if self.store.get_node(parent_id).line_id != line_id:
+                raise ValueError("parent belongs to another Line")
+            if self.store.add_edge(line_id, parent_id, node.node_id):
+                added_edges.append((parent_id, node.node_id))
+        for child_id in tuple(dict.fromkeys(child_node_ids)):
+            if self.store.get_node(child_id).line_id != line_id:
+                raise ValueError("child belongs to another Line")
+            if self.store.add_edge(line_id, node.node_id, child_id):
+                added_edges.append((node.node_id, child_id))
+        return LineApplyResult(
+            line_id=line_id,
+            created_line=False,
+            added_node_ids=(node.node_id,) if node_added else (),
+            added_state_ids=(block.state_id,) if state_added else (),
+            added_edges=tuple(added_edges),
+        )
+
     def apply_path(
         self,
         blocks: tuple[SemanticBlock, ...],
