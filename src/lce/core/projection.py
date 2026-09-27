@@ -96,6 +96,10 @@ class _CandidateEvaluation:
     promotion: ConsolidationResult | None = None
 
 
+class StaleLineGraphError(RuntimeError):
+    """Current Line graph was compiled by a different derivation fingerprint."""
+
+
 class LceProjectionCore:
     """Source-store-independent cognition pipeline.
 
@@ -220,15 +224,20 @@ class LceProjectionCore:
 
     def _compute_line_graph_fingerprint(self) -> str:
         provider = self.trajectory.supplier.neighbour_provider
+        provider_fingerprint = getattr(
+            provider,
+            "derivation_fingerprint",
+            (
+                f"{type(provider).__module__}."
+                f"{type(provider).__qualname__}"
+            ),
+        )
         payload = {
             "runtime": "trajectory-runtime-v1",
             "embedding_version": self._block_embedding_version,
             "trajectory": asdict(self.trajectory.config),
             "assembler": asdict(self.trajectory.assembler.config),
-            "neighbour_provider": (
-                f"{type(provider).__module__}."
-                f"{type(provider).__qualname__}"
-            ),
+            "neighbour_provider": str(provider_fingerprint),
         }
         return "linegraph_" + hashlib.sha256(
             json.dumps(payload, sort_keys=True).encode()
@@ -240,6 +249,13 @@ class LceProjectionCore:
             self._line_graph_expected_fingerprint,
         )
         self._line_graph_requires_rebuild = False
+
+    def _require_line_graph_current(self) -> None:
+        if self._line_graph_requires_rebuild:
+            raise StaleLineGraphError(
+                "Line graph derivation is stale; run process() or "
+                "bootstrap_trajectory() before consuming Line projections"
+            )
 
     def _ensure_line_graph_current(
         self,
@@ -477,9 +493,12 @@ class LceProjectionCore:
             trajectory_result = self.trajectory.bootstrap(
                 knowledge_cutoff=cutoff,
             )
+        surface_cutoff = datetime.fromisoformat(
+            trajectory_result.knowledge_cutoff_iso
+        )
         surface_candidates = (
             self.surface_runtime.discover(
-                knowledge_cutoff=cutoff,
+                knowledge_cutoff=surface_cutoff,
             )
             if self.surface_runtime is not None
             else ()
@@ -1039,6 +1058,7 @@ class LceProjectionCore:
         *,
         knowledge_cutoff: datetime,
     ) -> tuple[str, ...]:
+        self._require_line_graph_current()
         return self.line_view.frontier(
             line_id,
             knowledge_cutoff=knowledge_cutoff,
@@ -1051,6 +1071,7 @@ class LceProjectionCore:
         *,
         knowledge_cutoff: datetime,
     ) -> CallableLineProjection | None:
+        self._require_line_graph_current()
         visible = {
             block.block_id: block
             for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
@@ -1072,6 +1093,7 @@ class LceProjectionCore:
         *,
         knowledge_cutoff: datetime,
     ) -> tuple[SurfaceCandidate, ...]:
+        self._require_line_graph_current()
         if self.surface_runtime is None:
             return ()
         return self.surface_runtime.discover(
@@ -1084,6 +1106,7 @@ class LceProjectionCore:
         *,
         knowledge_cutoff: datetime,
     ) -> tuple[CallableLineProjection, ...]:
+        self._require_line_graph_current()
         """Return bounded consumer views for Lines touched by current blocks.
 
         This is intentionally narrower than a global semantic search. A Line
