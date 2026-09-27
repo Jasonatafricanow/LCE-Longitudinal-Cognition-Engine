@@ -26,6 +26,7 @@ class DraftRevision:
     created_at: datetime
     updated_at: datetime
     status: str
+    supporting_frontier_refs: tuple[str, ...] = ()
     needs_rebuild: bool = False
     merged_baseline_id: str | None = None
     applicability: str | None = None
@@ -38,8 +39,23 @@ class DraftRevision:
     def __post_init__(self) -> None:
         if self.status not in {"OPEN", "MERGED", "DROPPED"}:
             raise ValueError("draft status must be OPEN, MERGED, or DROPPED")
-        if self.support_kind not in {"semantic_block", "external_memory"}:
-            raise ValueError("support_kind must be semantic_block or external_memory")
+        if self.support_kind not in {
+            "semantic_block",
+            "external_memory",
+            "frontier",
+        }:
+            raise ValueError(
+                "support_kind must be semantic_block, external_memory, or frontier"
+            )
+        if len(set(self.supporting_frontier_refs)) != len(
+            self.supporting_frontier_refs
+        ):
+            raise ValueError("supporting_frontier_refs contains duplicates")
+        if any(
+            not isinstance(ref, str) or not ref.strip()
+            for ref in self.supporting_frontier_refs
+        ):
+            raise ValueError("supporting_frontier_refs must be nonempty strings")
         if not self.candidate_content.strip():
             raise ValueError("candidate_content must be non-empty")
         if len({item.block_id for item in self.selected_support}) != len(self.selected_support):
@@ -79,7 +95,8 @@ class DraftRevisionStore:
                 interpretation_trace_json TEXT NOT NULL DEFAULT '{}',
                 selected_support_json TEXT NOT NULL DEFAULT '[]',
                 processing_input_id TEXT,
-                support_kind TEXT NOT NULL DEFAULT 'semantic_block'
+                support_kind TEXT NOT NULL DEFAULT 'semantic_block',
+                supporting_frontier_refs_json TEXT NOT NULL DEFAULT '[]'
             );
             CREATE TABLE IF NOT EXISTS support_cycles (
                 worktree_id TEXT NOT NULL,
@@ -107,6 +124,11 @@ class DraftRevisionStore:
                 "ALTER TABLE worktrees ADD COLUMN support_kind TEXT NOT NULL "
                 "DEFAULT 'semantic_block'"
             )
+        if "supporting_frontier_refs_json" not in columns:
+            self.conn.execute(
+                "ALTER TABLE worktrees ADD COLUMN supporting_frontier_refs_json "
+                "TEXT NOT NULL DEFAULT '[]'"
+            )
         self.conn.commit()
 
     @staticmethod
@@ -127,6 +149,7 @@ class DraftRevisionStore:
         selected_support: tuple[AuthorizedSelectedSupport, ...] = (),
         processing_input_id: str | None = None,
         support_kind: str = "semantic_block",
+        supporting_frontier_refs: tuple[str, ...] = (),
     ) -> DraftRevision:
         now = _now()
         selected = tuple(selected_support)
@@ -142,6 +165,9 @@ class DraftRevisionStore:
             created_at=now,
             updated_at=now,
             status="OPEN",
+            supporting_frontier_refs=self._tuple(
+                supporting_frontier_refs
+            ),
             applicability=applicability,
             unresolved=unresolved,
             interpretation_trace=interpretation_trace or {},
@@ -158,8 +184,8 @@ class DraftRevisionStore:
                 supporting_block_ids_json, supporting_structure_ids_json, created_at, updated_at,
                 status, needs_rebuild, merged_baseline_id, applicability, unresolved,
                 interpretation_trace_json, selected_support_json, processing_input_id,
-                support_kind
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                support_kind, supporting_frontier_refs_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (item.worktree_id, item.region_id, item.base_baseline_id, item.base_revision, item.candidate_content,
              json.dumps(item.supporting_block_ids), json.dumps(item.supporting_structure_ids), item.created_at.isoformat(),
@@ -167,7 +193,7 @@ class DraftRevisionStore:
              json.dumps(dict(item.interpretation_trace), ensure_ascii=False, sort_keys=True),
              json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in item.selected_support],
                         ensure_ascii=False, sort_keys=True), item.processing_input_id,
-             item.support_kind),
+             item.support_kind, json.dumps(item.supporting_frontier_refs)),
         )
         self.conn.commit()
         return item
@@ -192,6 +218,9 @@ class DraftRevisionStore:
             ) if len(row) > 15 and row[15] is not None else (),
             processing_input_id=str(row[16]) if len(row) > 16 and row[16] is not None else None,
             support_kind=str(row[17]) if len(row) > 17 and row[17] is not None else "semantic_block",
+            supporting_frontier_refs=tuple(
+                json.loads(str(row[18]))
+            ) if len(row) > 18 and row[18] is not None else (),
         )
 
     def get(self, worktree_id: str) -> DraftRevision:
@@ -231,6 +260,8 @@ class DraftRevisionStore:
         remove_structure_ids: tuple[str, ...] = (),
         selected_support: tuple[AuthorizedSelectedSupport, ...] | None = None,
         processing_input_id: str | None = None,
+        add_frontier_refs: tuple[str, ...] = (),
+        remove_frontier_refs: tuple[str, ...] = (),
     ) -> DraftRevision:
         item = self.get(worktree_id)
         if item.status != "OPEN":
@@ -239,6 +270,12 @@ class DraftRevisionStore:
         structures = [value for value in item.supporting_structure_ids if value not in remove_structure_ids]
         blocks.extend(add_block_ids)
         structures.extend(add_structure_ids)
+        frontier_refs = [
+            value
+            for value in item.supporting_frontier_refs
+            if value not in remove_frontier_refs
+        ]
+        frontier_refs.extend(add_frontier_refs)
         selected = item.selected_support
         if selected_support is not None:
             selected = tuple(selected_support)
@@ -246,10 +283,29 @@ class DraftRevisionStore:
             raise ValueError("an OPEN draft must retain at least one supporting block")
         now = _now()
         self.conn.execute(
-            "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, selected_support_json=?, processing_input_id=COALESCE(?, processing_input_id), updated_at=? WHERE worktree_id=?",
-            (json.dumps(self._tuple(blocks)), json.dumps(self._tuple(structures)),
-             json.dumps([{"block_id": value.block_id, "state_id": value.state_id} for value in selected],
-                        ensure_ascii=False, sort_keys=True), processing_input_id, now.isoformat(), worktree_id),
+            "UPDATE worktrees SET supporting_block_ids_json=?, supporting_structure_ids_json=?, "
+            "supporting_frontier_refs_json=?, selected_support_json=?, "
+            "processing_input_id=COALESCE(?, processing_input_id), updated_at=? "
+            "WHERE worktree_id=?",
+            (
+                json.dumps(self._tuple(blocks)),
+                json.dumps(self._tuple(structures)),
+                json.dumps(self._tuple(frontier_refs)),
+                json.dumps(
+                    [
+                        {
+                            "block_id": value.block_id,
+                            "state_id": value.state_id,
+                        }
+                        for value in selected
+                    ],
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ),
+                processing_input_id,
+                now.isoformat(),
+                worktree_id,
+            ),
         )
         self.conn.commit()
         return self.get(worktree_id)
