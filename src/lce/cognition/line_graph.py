@@ -433,6 +433,14 @@ class LineGraphStore:
         ).fetchall()
         return tuple((str(row[0]), str(row[1])) for row in rows)
 
+    def lines_for_block(self, block_id: str) -> tuple[str, ...]:
+        rows = self.conn.execute(
+            "SELECT DISTINCT line_id FROM line_nodes "
+            "WHERE block_id = ? ORDER BY line_id",
+            (block_id,),
+        ).fetchall()
+        return tuple(str(row[0]) for row in rows)
+
     def overlap_counts(
         self, block_ids: tuple[str, ...]
     ) -> dict[str, int]:
@@ -486,6 +494,27 @@ class LineAssembler:
             for evidence_id in block.raw_evidence_ids
         )
 
+    def _visible_overlap_counts(
+        self,
+        block_ids: tuple[str, ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> dict[str, int]:
+        view = LineGraphView(memory=self.memory, store=self.store)
+        counts: dict[str, int] = {}
+        for block_id in block_ids:
+            for line_id in self.store.lines_for_block(block_id):
+                node = self.store.node_for_block(line_id, block_id)
+                if node is None:
+                    continue
+                if view.state_for_node_at_cutoff(
+                    node.node_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                ) is None:
+                    continue
+                counts[line_id] = counts.get(line_id, 0) + 1
+        return counts
+
     @staticmethod
     def _precedes(left: SemanticBlock, right: SemanticBlock) -> bool:
         # Same-time/overlapping points stay unordered. This is intentionally a
@@ -514,7 +543,13 @@ class LineAssembler:
         if len(set(block_ids)) != len(block_ids):
             raise ValueError("trajectory path contains duplicate blocks")
 
-        overlaps = self.store.overlap_counts(block_ids)
+        knowledge_cutoff = max(
+            self._knowledge_at(block) for block in blocks
+        )
+        overlaps = self._visible_overlap_counts(
+            block_ids,
+            knowledge_cutoff=knowledge_cutoff,
+        )
         strong = {
             line_id: count
             for line_id, count in overlaps.items()
