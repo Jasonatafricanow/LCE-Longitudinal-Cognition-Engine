@@ -12,6 +12,7 @@ from lce.cognition.line_graph import (
     LineAssemblerConfig,
     LineGraphStore,
     LineGraphView,
+    LineTraversalLimitExceeded,
 )
 from lce.core.projection import LceProjectionCore
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
@@ -450,3 +451,129 @@ def test_line_store_suppresses_redundant_transitive_shortcut(
 
     assert store.add_edge(applied.line_id, first.node_id, last.node_id) is False
     assert len(store.edges_for_line(applied.line_id)) == 2
+
+
+
+def test_raw_closure_returns_complete_iterative_provenance(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"P{index}",
+            block_id=f"PB{index}",
+            day=index,
+            vector=(1.0, 0.0),
+        )
+        for index in range(20)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    applied = LineAssembler(memory=memory, store=store).apply_path(blocks)
+    assert applied.line_id is not None
+
+    tail = store.node_for_block(applied.line_id, "PB19")
+    assert tail is not None
+    closure = LineGraphView(memory=memory, store=store).raw_closure(
+        tail.node_id,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+
+    assert closure == tuple(f"P{index}" for index in range(20))
+
+
+def test_raw_closure_fails_closed_when_safety_ceiling_is_exceeded(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"L{index}",
+            block_id=f"LB{index}",
+            day=index,
+            vector=(1.0, 0.0),
+        )
+        for index in range(8)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    applied = LineAssembler(memory=memory, store=store).apply_path(blocks)
+    assert applied.line_id is not None
+
+    tail = store.node_for_block(applied.line_id, "LB7")
+    assert tail is not None
+    with pytest.raises(
+        LineTraversalLimitExceeded,
+        match="exact closure was not returned",
+    ):
+        LineGraphView(memory=memory, store=store).raw_closure(
+            tail.node_id,
+            knowledge_cutoff=BASE + timedelta(days=100),
+            max_nodes=4,
+        )
+
+
+def test_multi_parent_visibility_is_conjunctive_rejoin_not_alternative_or(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    trunk = _admit(
+        memory,
+        evidence_id="CT",
+        block_id="c-trunk",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    branch_a = _admit(
+        memory,
+        evidence_id="CA",
+        block_id="c-a",
+        day=10,
+        vector=(0.9, 0.1),
+    )
+    branch_b = _admit(
+        memory,
+        evidence_id="CB",
+        block_id="c-b",
+        day=12,
+        vector=(0.88, 0.12),
+    )
+    rejoin = _admit(
+        memory,
+        evidence_id="CR",
+        block_id="c-rejoin",
+        day=30,
+        vector=(0.8, 0.2),
+    )
+
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    first = assembler.apply_path((trunk, branch_a, rejoin))
+    assembler.apply_path((trunk, branch_b, rejoin))
+    assert first.line_id is not None
+
+    rejoin_node = store.node_for_block(first.line_id, "c-rejoin")
+    branch_b_node = store.node_for_block(first.line_id, "c-b")
+    assert rejoin_node is not None
+    assert branch_b_node is not None
+
+    view = LineGraphView(memory=memory, store=store)
+    cutoff = BASE + timedelta(days=100)
+    assert rejoin_node.node_id in view.visible_node_ids(
+        first.line_id,
+        knowledge_cutoff=cutoff,
+    )
+
+    # One parent remains fully valid, but invalidating the other parent must
+    # hide the conjunctive rejoin. Alternative/OR semantics are intentionally
+    # not represented by multi-parent Line edges in V1.
+    memory.invalidate("CA", reason="parent hypothesis falsified")
+
+    assert rejoin_node.node_id not in view.visible_node_ids(
+        first.line_id,
+        knowledge_cutoff=cutoff,
+    )
+    assert branch_b_node.node_id in view.frontier(
+        first.line_id,
+        knowledge_cutoff=cutoff,
+    )
