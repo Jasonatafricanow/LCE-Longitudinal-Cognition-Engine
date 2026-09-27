@@ -16,7 +16,11 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from lce.cognition.worktree import DraftRevisionStore
-from lce.reference_memory.contracts import SemanticBlock
+from lce.reference_memory.contracts import (
+    AuthorizedSelectedSupport,
+    ReferenceMemorySubstratePort,
+    SemanticBlock,
+)
 from lce.store.interface import BaselineStorePort
 from lce.structure.contracts import (
     StructureRelationCandidate,
@@ -130,7 +134,7 @@ class _FrontierItem:
     frontier_ref: str
     kind: str
     content: str
-    block_ids: tuple[str, ...]
+    support_blocks: tuple[SemanticBlock, ...]
     occurred_end: datetime
 
 
@@ -153,10 +157,12 @@ class FrontierCandidateDiscovery:
     def __init__(
         self,
         *,
+        memory: ReferenceMemorySubstratePort,
         baselines: BaselineStorePort,
         worktrees: DraftRevisionStore,
         config: FrontierDiscoveryConfig | None = None,
     ) -> None:
+        self.memory = memory
         self.baselines = baselines
         self.worktrees = worktrees
         self.config = config or FrontierDiscoveryConfig()
@@ -210,18 +216,17 @@ class FrontierCandidateDiscovery:
         items: list[_FrontierItem] = []
 
         for region_id, worktree in sorted(open_by_region.items()):
-            block_ids = tuple(
-                block_id
-                for block_id in worktree.supporting_block_ids
-                if block_id in block_by_id
+            support_blocks = self._resolve_support_blocks(
+                selected=worktree.selected_support,
+                fallback_block_ids=worktree.supporting_block_ids,
+                block_by_id=block_by_id,
             )
             frontier_item = self._make_item(
                 region_id=region_id,
                 frontier_ref=f"worktree:{worktree.worktree_id}",
                 kind="worktree",
                 content=worktree.candidate_content,
-                block_ids=block_ids,
-                block_by_id=block_by_id,
+                support_blocks=support_blocks,
             )
             if frontier_item is not None:
                 items.append(frontier_item)
@@ -232,23 +237,62 @@ class FrontierCandidateDiscovery:
             baseline = self.baselines.get_head(region_id)
             if baseline is None:
                 continue
-            block_ids = tuple(
-                block_id
-                for block_id in baseline.supporting_memory_ids
-                if block_id in block_by_id
+            support_blocks = self._resolve_support_blocks(
+                selected=baseline.selected_support,
+                fallback_block_ids=baseline.supporting_memory_ids,
+                block_by_id=block_by_id,
             )
             frontier_item = self._make_item(
                 region_id=region_id,
                 frontier_ref=f"baseline:{baseline.baseline_id}",
                 kind="baseline",
                 content=baseline.content,
-                block_ids=block_ids,
-                block_by_id=block_by_id,
+                support_blocks=support_blocks,
             )
             if frontier_item is not None:
                 items.append(frontier_item)
 
         return tuple(items)
+
+    def _resolve_support_blocks(
+        self,
+        *,
+        selected: tuple[AuthorizedSelectedSupport, ...],
+        fallback_block_ids: tuple[str, ...],
+        block_by_id: dict[str, SemanticBlock],
+    ) -> tuple[SemanticBlock, ...]:
+        blocks: list[SemanticBlock] = []
+        if selected:
+            for item in selected:
+                try:
+                    block = self.memory.get_semantic_block_state(
+                        item.state_id
+                    )
+                except KeyError:
+                    return ()
+                if block.block_id != item.block_id:
+                    return ()
+                if not self._state_is_current(block):
+                    return ()
+                blocks.append(block)
+            return tuple(blocks)
+
+        # Legacy baselines/worktrees without frozen state IDs can still be
+        # consumed, but only through the visible no-future snapshot state.
+        for block_id in fallback_block_ids:
+            block = block_by_id.get(block_id)
+            if block is not None and self._state_is_current(block):
+                blocks.append(block)
+        return tuple(blocks)
+
+    def _state_is_current(self, block: SemanticBlock) -> bool:
+        try:
+            return all(
+                self.memory.get_evidence(evidence_id).current_valid
+                for evidence_id in block.raw_evidence_ids
+            )
+        except KeyError:
+            return False
 
     @staticmethod
     def _make_item(
@@ -257,21 +301,19 @@ class FrontierCandidateDiscovery:
         frontier_ref: str,
         kind: str,
         content: str,
-        block_ids: tuple[str, ...],
-        block_by_id: dict[str, SemanticBlock],
+        support_blocks: tuple[SemanticBlock, ...],
     ) -> _FrontierItem | None:
-        if not block_ids:
+        if not support_blocks:
             return None
         occurred_end = max(
-            block_by_id[block_id].occurred_end
-            for block_id in block_ids
+            block.occurred_end for block in support_blocks
         )
         return _FrontierItem(
             region_id=region_id,
             frontier_ref=frontier_ref,
             kind=kind,
             content=content,
-            block_ids=block_ids,
+            support_blocks=support_blocks,
             occurred_end=occurred_end,
         )
 
@@ -294,6 +336,21 @@ class FrontierCandidateDiscovery:
             1.0 - self.config.temporal_floor
         ) * decay
 
+    def _vector_for_support(
+        self,
+        snapshot: StructureSnapshot,
+        block: SemanticBlock,
+    ) -> tuple[float, ...] | None:
+        if block.state_id is not None:
+            try:
+                return self.memory.get_vector(
+                    block.block_id,
+                    state_id=block.state_id,
+                ).values
+            except KeyError:
+                return None
+        return snapshot.vectors.get(block.block_id)
+
     def _score(
         self,
         snapshot: StructureSnapshot,
@@ -308,11 +365,11 @@ class FrontierCandidateDiscovery:
         if current_vector is None:
             return None
 
-        support_pairs = [
-            (block_id, snapshot.vectors[block_id])
-            for block_id in frontier.block_ids
-            if block_id in snapshot.vectors
-        ]
+        support_pairs = []
+        for block in frontier.support_blocks:
+            vector = self._vector_for_support(snapshot, block)
+            if vector is not None:
+                support_pairs.append((block, vector))
         if not support_pairs:
             return None
 
@@ -323,21 +380,30 @@ class FrontierCandidateDiscovery:
         )
         ranked_support = sorted(
             (
-                (_cosine(current_vector, vector), block_id)
-                for block_id, vector in support_pairs
+                (
+                    _cosine(current_vector, vector),
+                    block,
+                )
+                for block, vector in support_pairs
             ),
-            key=lambda item: (-item[0], item[1]),
+            key=lambda item: (
+                -item[0],
+                item[1].block_id,
+                item[1].state_version,
+            ),
         )
         support_similarity = ranked_support[0][0]
-        selected_support_ids = tuple(
-            block_id
-            for _, block_id in ranked_support[
+        selected_support_blocks = tuple(
+            block
+            for _, block in ranked_support[
                 : self.config.max_frontier_support_blocks
             ]
         )
+        selected_support_ids = tuple(
+            block.block_id for block in selected_support_blocks
+        )
         support_text = " ".join(
-            block_by_id[block_id].content
-            for block_id in selected_support_ids
+            block.content for block in selected_support_blocks
         )
         lexical = max(
             _lexical_overlap(current.content, frontier.content),
@@ -350,7 +416,10 @@ class FrontierCandidateDiscovery:
             + self.config.lexical_weight * lexical
             + self.config.temporal_weight * temporal
         )
-        rescued = support_similarity >= self.config.branch_rescue_similarity
+        rescued = (
+            support_similarity
+            >= self.config.branch_rescue_similarity
+        )
         return _Match(
             item=frontier,
             current_block_id=current.block_id,
@@ -479,10 +548,20 @@ class FrontierCandidateDiscovery:
         candidate_id = "frontier_" + hashlib.sha256(
             json.dumps(identity, sort_keys=True).encode()
         ).hexdigest()[:20]
+        immutable_frontier_support = tuple(
+            {
+                "block_id": block.block_id,
+                "state_id": block.state_id,
+            }
+            for match in matches
+            for block in match.item.support_blocks
+            if block.state_id is not None
+        )
         metadata: dict[str, object] = {
             "supplier": self.config.algorithm_version,
             "frontier_refs": frontier_refs,
             "frontier_region_ids": region_ids,
+            "frontier_selected_support": immutable_frontier_support,
             "current_block_ids": tuple(
                 match.current_block_id for match in matches
             ),
