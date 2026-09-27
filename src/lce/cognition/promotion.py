@@ -77,9 +77,20 @@ class RuleBasedBoundedInterpreter:
         frontier_candidate = package.candidate.relation_type.startswith(
             "frontier_"
         )
-        if not package.semantic_blocks or (
-            not package.structures and not frontier_candidate
-        ):
+        if frontier_candidate:
+            # Frontier is a discovery supplier, not semantic authority.
+            # Standalone/reference mode therefore leaves its meaning UNKNOWN;
+            # embedded runtimes may inject a bounded model interpreter.
+            return BoundedInterpretation(
+                content=None,
+                supporting_block_ids=(),
+                status="UNKNOWN",
+                model_trace={
+                    "provider": "reference-bounded-interpreter",
+                    "model": "rule-based-v1",
+                },
+            )
+        if not package.semantic_blocks or not package.structures:
             return BoundedInterpretation(
                 content=None,
                 supporting_block_ids=(),
@@ -95,12 +106,9 @@ class RuleBasedBoundedInterpreter:
                 for block in package.semantic_blocks
             )
         )
-        prefix = (
-            "Longitudinal frontier update supported by: "
-            if frontier_candidate
-            else "Longitudinal relation supported by: "
+        content = "Longitudinal relation supported by: " + "; ".join(
+            fragments
         )
-        content = prefix + "; ".join(fragments)
         return BoundedInterpretation(
             content=content,
             supporting_block_ids=package.candidate.supporting_block_ids,
