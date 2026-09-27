@@ -1415,6 +1415,11 @@ class LineGraphView:
                     f"{max_nodes}; exact closure was not returned"
                 )
             seen_nodes.add(current_id)
+            if not self.store.membership_active_at(
+                current_id,
+                knowledge_cutoff,
+            ):
+                continue
             block = self.state_for_node_at_cutoff(
                 current_id,
                 knowledge_cutoff=knowledge_cutoff,
