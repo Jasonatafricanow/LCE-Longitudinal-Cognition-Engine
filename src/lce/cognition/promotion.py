@@ -71,16 +71,36 @@ class BoundedInterpreter(Protocol):
 class RuleBasedBoundedInterpreter:
     """Deterministic reference interpreter over the supplied bounded package only."""
 
-    def interpret(self, package: BoundedInterpretationPackage) -> BoundedInterpretation:
-        if not package.semantic_blocks or not package.structures:
+    def interpret(
+        self, package: BoundedInterpretationPackage
+    ) -> BoundedInterpretation:
+        frontier_candidate = package.candidate.relation_type.startswith(
+            "frontier_"
+        )
+        if not package.semantic_blocks or (
+            not package.structures and not frontier_candidate
+        ):
             return BoundedInterpretation(
                 content=None,
                 supporting_block_ids=(),
                 status="UNKNOWN",
-                model_trace={"provider": "reference-bounded-interpreter", "model": "rule-based-v1"},
+                model_trace={
+                    "provider": "reference-bounded-interpreter",
+                    "model": "rule-based-v1",
+                },
             )
-        fragments = tuple(dict.fromkeys(block.content.strip() for block in package.semantic_blocks))
-        content = "Longitudinal relation supported by: " + "; ".join(fragments)
+        fragments = tuple(
+            dict.fromkeys(
+                block.content.strip()
+                for block in package.semantic_blocks
+            )
+        )
+        prefix = (
+            "Longitudinal frontier update supported by: "
+            if frontier_candidate
+            else "Longitudinal relation supported by: "
+        )
+        content = prefix + "; ".join(fragments)
         return BoundedInterpretation(
             content=content,
             supporting_block_ids=package.candidate.supporting_block_ids,
@@ -93,11 +113,29 @@ class ConservativePromotionPolicy:
     min_blocks: int = 2
     min_structures: int = 2
     min_support_cycles: int = 2
+    frontier_update_min_support_cycles: int = 1
+    frontier_boundary_min_support_cycles: int = 2
 
-    def should_promote(self, worktree: DraftRevision, support_cycles: int) -> bool:
+    def should_promote(
+        self, worktree: DraftRevision, support_cycles: int
+    ) -> bool:
+        if worktree.support_kind == "frontier":
+            if not worktree.supporting_frontier_refs:
+                return False
+            required_cycles = (
+                self.frontier_update_min_support_cycles
+                if worktree.base_baseline_id is not None
+                and len(worktree.supporting_frontier_refs) == 1
+                else self.frontier_boundary_min_support_cycles
+            )
+            return (
+                bool(worktree.supporting_block_ids)
+                and support_cycles >= required_cycles
+            )
         return (
             len(worktree.supporting_block_ids) >= self.min_blocks
-            and len(worktree.supporting_structure_ids) >= self.min_structures
+            and len(worktree.supporting_structure_ids)
+            >= self.min_structures
             and support_cycles >= self.min_support_cycles
         )
 
