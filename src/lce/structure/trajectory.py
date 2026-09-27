@@ -20,6 +20,7 @@ import math
 from dataclasses import dataclass
 from datetime import datetime
 from itertools import pairwise
+from typing import Protocol
 
 from lce.cognition.line_graph import (
     LineApplyResult,
@@ -83,6 +84,56 @@ class TrajectoryConfig:
             raise ValueError("algorithm_version must be nonempty")
 
 
+class NeighbourCandidateProvider(Protocol):
+    """Replaceable neighbour-candidate source for slow-path bootstrap."""
+
+    def candidates(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        vectors: dict[str, tuple[float, ...]],
+        *,
+        k: int,
+        min_similarity: float,
+    ) -> dict[str, tuple[tuple[float, str], ...]]:
+        ...
+
+
+class ExactCosineNeighbourProvider:
+    """Zero-dependency reference implementation.
+
+    This implementation is O(N²) and is intended as a correctness/reference
+    backend for explicit bootstrap. Large deployments should inject an ANN or
+    external-vector-index provider through the same contract.
+    """
+
+    def candidates(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        vectors: dict[str, tuple[float, ...]],
+        *,
+        k: int,
+        min_similarity: float,
+    ) -> dict[str, tuple[tuple[float, str], ...]]:
+        output: dict[str, tuple[tuple[float, str], ...]] = {}
+        for block in blocks:
+            left = vectors.get(block.block_id)
+            if left is None:
+                continue
+            ranked: list[tuple[float, str]] = []
+            for other in blocks:
+                if other.block_id == block.block_id:
+                    continue
+                right = vectors.get(other.block_id)
+                if right is None:
+                    continue
+                similarity = _cosine(left, right)
+                if similarity >= min_similarity:
+                    ranked.append((similarity, other.block_id))
+            ranked.sort(key=lambda item: (-item[0], item[1]))
+            output[block.block_id] = tuple(ranked[:k])
+        return output
+
+
 @dataclass(frozen=True, slots=True)
 class TrajectoryPath:
     path_id: str
@@ -116,9 +167,13 @@ class MutualKnnTrajectorySupplier:
         *,
         memory: ReferenceMemorySubstratePort,
         config: TrajectoryConfig | None = None,
+        neighbour_provider: NeighbourCandidateProvider | None = None,
     ) -> None:
         self.memory = memory
         self.config = config or TrajectoryConfig()
+        self.neighbour_provider = (
+            neighbour_provider or ExactCosineNeighbourProvider()
+        )
 
     @staticmethod
     def _precedes(left: SemanticBlock, right: SemanticBlock) -> bool:
@@ -151,44 +206,40 @@ class MutualKnnTrajectorySupplier:
         blocks: tuple[SemanticBlock, ...],
         vectors: dict[str, tuple[float, ...]],
     ) -> dict[tuple[str, str], float]:
-        neighbours: dict[str, tuple[str, ...]] = {}
-        scores: dict[tuple[str, str], float] = {}
-
-        for block in blocks:
-            left = vectors.get(block.block_id)
-            if left is None:
-                continue
-            ranked: list[tuple[float, str]] = []
-            for other in blocks:
-                if other.block_id == block.block_id:
-                    continue
-                right = vectors.get(other.block_id)
-                if right is None:
-                    continue
-                similarity = _cosine(left, right)
-                if similarity < self.config.min_similarity:
-                    continue
-                ranked.append((similarity, other.block_id))
-                scores[(block.block_id, other.block_id)] = similarity
-            ranked.sort(key=lambda item: (-item[0], item[1]))
-            neighbours[block.block_id] = tuple(
-                block_id for _score, block_id in ranked[: self.config.k]
+        ranked = self.neighbour_provider.candidates(
+            blocks,
+            vectors,
+            k=self.config.k,
+            min_similarity=self.config.min_similarity,
+        )
+        neighbours = {
+            block_id: tuple(
+                neighbour_id
+                for _score, neighbour_id in candidates
             )
+            for block_id, candidates in ranked.items()
+        }
+        scores = {
+            (block_id, neighbour_id): score
+            for block_id, candidates in ranked.items()
+            for score, neighbour_id in candidates
+        }
 
         mutual: dict[tuple[str, str], float] = {}
         for left_id, right_ids in neighbours.items():
             for right_id in right_ids:
                 if left_id not in neighbours.get(right_id, ()):
                     continue
+                left_score = scores.get((left_id, right_id))
+                right_score = scores.get((right_id, left_id))
+                if left_score is None or right_score is None:
+                    continue
                 pair = (
                     (left_id, right_id)
                     if left_id <= right_id
                     else (right_id, left_id)
                 )
-                mutual[pair] = min(
-                    scores[(left_id, right_id)],
-                    scores[(right_id, left_id)],
-                )
+                mutual[pair] = min(left_score, right_score)
         return mutual
 
     def _directed_graph(
@@ -390,6 +441,7 @@ class TrajectoryRuntime:
         line_store: LineGraphStore,
         trajectory_config: TrajectoryConfig | None = None,
         assembler_config: LineAssemblerConfig | None = None,
+        neighbour_provider: NeighbourCandidateProvider | None = None,
     ) -> None:
         self.memory = memory
         self.store = line_store
@@ -397,6 +449,7 @@ class TrajectoryRuntime:
         self.supplier = MutualKnnTrajectorySupplier(
             memory=memory,
             config=self.config,
+            neighbour_provider=neighbour_provider,
         )
         self.assembler = LineAssembler(
             memory=memory,
