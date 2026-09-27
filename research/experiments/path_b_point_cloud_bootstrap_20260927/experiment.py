@@ -405,6 +405,7 @@ def persistent_mutual_knn(
     min_span_days: int = 42,
     min_time_buckets: int = 3,
     bucket_days: int = 45,
+    min_cohesion: float = 0.0,
 ) -> tuple[Candidate, ...]:
     """A4: static semantic components must also persist longitudinally.
 
@@ -415,6 +416,7 @@ def persistent_mutual_knn(
 
     base = mutual_knn(points, k=k, min_similarity=min_similarity)
     by_id = {point.point_id: point for point in points}
+    weights = _weights(points)
     kept: list[Candidate] = []
     for candidate in base:
         if len(candidate.member_ids) < min_support:
@@ -423,6 +425,8 @@ def persistent_mutual_knn(
         if max(days) - min(days) < min_span_days:
             continue
         if len({day // bucket_days for day in days}) < min_time_buckets:
+            continue
+        if _pairwise_mean(candidate.member_ids, by_id, weights) < min_cohesion:
             continue
         kept.append(Candidate("A4_PERSISTENT_MUTUAL_KNN", candidate.member_ids))
     return tuple(kept)
@@ -642,6 +646,46 @@ def temporal_collapse_control() -> dict[str, object]:
     return report
 
 
+def a4_candidate_diagnostics() -> list[dict[str, object]]:
+    points = corpus()
+    by_id = {point.point_id: point for point in points}
+    weights = _weights(points)
+    rows: list[dict[str, object]] = []
+    for candidate in persistent_mutual_knn(points):
+        trend_counts: Counter[str] = Counter()
+        for point_id in candidate.member_ids:
+            trend_counts.update(by_id[point_id].gold_trends)
+        rows.append(
+            {
+                "member_ids": sorted(candidate.member_ids),
+                "size": len(candidate.member_ids),
+                "pairwise_mean_similarity": _pairwise_mean(candidate.member_ids, by_id, weights),
+                "trend_counts": dict(trend_counts),
+                "span_days": max(by_id[i].day for i in candidate.member_ids) - min(by_id[i].day for i in candidate.member_ids),
+            }
+        )
+    return rows
+
+
+def a4_cohesion_sweep() -> list[dict[str, object]]:
+    points = corpus()
+    rows: list[dict[str, object]] = []
+    for min_cohesion in (0.00, 0.03, 0.05, 0.07, 0.09, 0.11):
+        candidates = persistent_mutual_knn(points, min_cohesion=min_cohesion)
+        evaluation = _evaluate(points, candidates)
+        rows.append(
+            {
+                "min_cohesion": min_cohesion,
+                "trend_recall": evaluation["trend_recall"],
+                "candidate_count": evaluation["candidate_count"],
+                "false_candidate_rate": evaluation["false_candidate_rate"],
+                "mean_qualifying_purity": evaluation["mean_qualifying_purity"],
+                "fragmentation_per_discovered_trend": evaluation["fragmentation_per_discovered_trend"],
+            }
+        )
+    return rows
+
+
 def a4_parameter_sweep() -> list[dict[str, object]]:
     """Development sweep for the persistent mutual-kNN supplier.
 
@@ -732,6 +776,8 @@ def report() -> dict[str, object]:
         "temporal_shuffle_control": temporal_shuffle_control(),
         "temporal_collapse_control": temporal_collapse_control(),
         "a4_parameter_sweep": a4_parameter_sweep(),
+        "a4_cohesion_sweep": a4_cohesion_sweep(),
+        "a4_candidate_diagnostics": a4_candidate_diagnostics(),
     }
 
 
