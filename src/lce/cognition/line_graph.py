@@ -725,26 +725,48 @@ class LineGraphView:
         cutoff: datetime,
         memo: dict[str, bool],
     ) -> bool:
+        """Evaluate conjunctive ancestry without Python recursion."""
         if node_id in memo:
             return memo[node_id]
-        block = self.state_for_node_at_cutoff(
-            node_id,
-            knowledge_cutoff=cutoff,
-        )
-        if block is None:
-            memo[node_id] = False
-            return False
-        parents = self.store.parents(node_id)
-        # V1 parent edges are conjunctive ancestry, not alternative routes.
-        # Therefore every parent must remain visible for a multi-parent rejoin
-        # node to remain visible. OR/alternative semantics require a distinct
-        # future relation contract rather than changing this to any(...).
-        visible = all(
-            self._node_visible(parent_id, cutoff, memo)
-            for parent_id in parents
-        )
-        memo[node_id] = visible
-        return visible
+
+        pending: list[tuple[str, bool]] = [(node_id, False)]
+        while pending:
+            current_id, expanded = pending.pop()
+            if current_id in memo:
+                continue
+
+            block = self.state_for_node_at_cutoff(
+                current_id,
+                knowledge_cutoff=cutoff,
+            )
+            if block is None:
+                memo[current_id] = False
+                continue
+
+            parents = self.store.parents(current_id)
+            if not expanded:
+                unresolved = tuple(
+                    parent_id
+                    for parent_id in parents
+                    if parent_id not in memo
+                )
+                if unresolved:
+                    pending.append((current_id, True))
+                    pending.extend(
+                        (parent_id, False)
+                        for parent_id in reversed(unresolved)
+                    )
+                    continue
+
+            # V1 parent edges are conjunctive ancestry, not alternative routes.
+            # Every parent must remain visible. Cycles are rejected by storage,
+            # so all parents are resolved after the expanded pass.
+            memo[current_id] = all(
+                memo.get(parent_id, False)
+                for parent_id in parents
+            )
+
+        return memo[node_id]
 
     def visible_node_ids(
         self,
