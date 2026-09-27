@@ -132,6 +132,7 @@ class FrontierDiscoveryConfig:
 class _FrontierItem:
     region_id: str
     frontier_ref: str
+    source_ref: str
     kind: str
     content: str
     support_blocks: tuple[SemanticBlock, ...]
@@ -142,6 +143,7 @@ class _FrontierItem:
 class _Match:
     item: _FrontierItem
     current_block_id: str
+    current_state_id: str | None
     score: float
     direct_similarity: float
     support_similarity: float
@@ -223,7 +225,8 @@ class FrontierCandidateDiscovery:
             )
             frontier_item = self._make_item(
                 region_id=region_id,
-                frontier_ref=f"worktree:{worktree.worktree_id}",
+                frontier_ref=f"region:{region_id}",
+                source_ref=f"worktree:{worktree.worktree_id}",
                 kind="worktree",
                 content=worktree.candidate_content,
                 support_blocks=support_blocks,
@@ -244,7 +247,8 @@ class FrontierCandidateDiscovery:
             )
             frontier_item = self._make_item(
                 region_id=region_id,
-                frontier_ref=f"baseline:{baseline.baseline_id}",
+                frontier_ref=f"region:{region_id}",
+                source_ref=f"baseline:{baseline.baseline_id}",
                 kind="baseline",
                 content=baseline.content,
                 support_blocks=support_blocks,
@@ -299,6 +303,7 @@ class FrontierCandidateDiscovery:
         *,
         region_id: str,
         frontier_ref: str,
+        source_ref: str,
         kind: str,
         content: str,
         support_blocks: tuple[SemanticBlock, ...],
@@ -311,6 +316,7 @@ class FrontierCandidateDiscovery:
         return _FrontierItem(
             region_id=region_id,
             frontier_ref=frontier_ref,
+            source_ref=source_ref,
             kind=kind,
             content=content,
             support_blocks=support_blocks,
@@ -364,6 +370,16 @@ class FrontierCandidateDiscovery:
         current_vector = snapshot.vectors.get(current.block_id)
         if current_vector is None:
             return None
+
+        # Exact replay/self-support is not new frontier evidence. The same
+        # block ID is eligible only when the arriving immutable state changed.
+        for support in frontier.support_blocks:
+            if (
+                support.block_id == current.block_id
+                and support.state_id is not None
+                and support.state_id == current.state_id
+            ):
+                return None
 
         support_pairs = []
         for block in frontier.support_blocks:
@@ -423,6 +439,7 @@ class FrontierCandidateDiscovery:
         return _Match(
             item=frontier,
             current_block_id=current.block_id,
+            current_state_id=current.state_id,
             score=min(1.0, score),
             direct_similarity=direct_similarity,
             support_similarity=support_similarity,
@@ -536,32 +553,55 @@ class FrontierCandidateDiscovery:
             block_ids.extend(match.selected_support_ids)
             block_ids.append(match.current_block_id)
         support = tuple(dict.fromkeys(block_ids))
+        immutable_frontier_support = tuple(
+            sorted(
+                {
+                    (
+                        block.block_id,
+                        block.state_id,
+                    )
+                    for match in matches
+                    for block in match.item.support_blocks
+                    if block.state_id is not None
+                }
+            )
+        )
+        current_states = tuple(
+            sorted(
+                (
+                    match.current_block_id,
+                    match.current_state_id,
+                )
+                for match in matches
+            )
+        )
         identity = {
             "algorithm": self.config.algorithm_version,
-            "snapshot": snapshot.snapshot_id,
             "relation": relation_type,
-            "frontier_refs": frontier_refs,
-            "current_blocks": tuple(
-                match.current_block_id for match in matches
-            ),
+            "frontier_regions": tuple(sorted(region_ids)),
+            "frontier_support": immutable_frontier_support,
+            "current_states": current_states,
         }
         candidate_id = "frontier_" + hashlib.sha256(
             json.dumps(identity, sort_keys=True).encode()
         ).hexdigest()[:20]
-        immutable_frontier_support = tuple(
+        immutable_frontier_support_metadata = tuple(
             {
-                "block_id": block.block_id,
-                "state_id": block.state_id,
+                "block_id": block_id,
+                "state_id": state_id,
             }
-            for match in matches
-            for block in match.item.support_blocks
-            if block.state_id is not None
+            for block_id, state_id in immutable_frontier_support
         )
         metadata: dict[str, object] = {
             "supplier": self.config.algorithm_version,
             "frontier_refs": frontier_refs,
             "frontier_region_ids": region_ids,
-            "frontier_selected_support": immutable_frontier_support,
+            "frontier_selected_support": (
+                immutable_frontier_support_metadata
+            ),
+            "frontier_source_refs": tuple(
+                match.item.source_ref for match in matches
+            ),
             "current_block_ids": tuple(
                 match.current_block_id for match in matches
             ),
