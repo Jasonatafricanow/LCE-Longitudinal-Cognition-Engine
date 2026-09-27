@@ -10,7 +10,7 @@ import hashlib
 import json
 import re
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -188,6 +188,25 @@ class LceProjectionCore:
             block_embedder or deterministic_block_embedding
         )
         self._block_embedding_version = block_embedding_version.strip()
+        self._line_graph_expected_fingerprint = (
+            self._compute_line_graph_fingerprint()
+        )
+        prior_line_fingerprint = self.lines.get_metadata(
+            "derivation_fingerprint"
+        )
+        self._line_graph_requires_rebuild = (
+            bool(self.lines.list_lines())
+            and prior_line_fingerprint
+            != self._line_graph_expected_fingerprint
+        )
+        self.lines.set_derivation_fingerprint(
+            self._line_graph_expected_fingerprint
+        )
+        if not self._line_graph_requires_rebuild:
+            self.lines.set_metadata(
+                "derivation_fingerprint",
+                self._line_graph_expected_fingerprint,
+            )
         self.promoter = UnderstandingPromoter(
             memory=self.memory,
             baseline_store=self.baselines,
@@ -199,6 +218,47 @@ class LceProjectionCore:
             baseline_store=self.baselines,
         )
 
+    def _compute_line_graph_fingerprint(self) -> str:
+        provider = self.trajectory.supplier.neighbour_provider
+        payload = {
+            "runtime": "trajectory-runtime-v1",
+            "embedding_version": self._block_embedding_version,
+            "trajectory": asdict(self.trajectory.config),
+            "assembler": asdict(self.trajectory.assembler.config),
+            "neighbour_provider": (
+                f"{type(provider).__module__}."
+                f"{type(provider).__qualname__}"
+            ),
+        }
+        return "linegraph_" + hashlib.sha256(
+            json.dumps(payload, sort_keys=True).encode()
+        ).hexdigest()[:24]
+
+    def _mark_line_graph_current(self) -> None:
+        self.lines.set_metadata(
+            "derivation_fingerprint",
+            self._line_graph_expected_fingerprint,
+        )
+        self._line_graph_requires_rebuild = False
+
+    def _ensure_line_graph_current(
+        self,
+    ) -> TrajectoryRuntimeResult | None:
+        if not self._line_graph_requires_rebuild:
+            return None
+        # A changed embedding/config/provider invalidates derived graph
+        # structure, not Raw Evidence. Rebuild the vector projection and
+        # compile a new current relation revision at system knowledge time.
+        self.memory.rebuild_vector_index(
+            self._block_embedder,
+            index_version=self._block_embedding_version,
+        )
+        result = self.trajectory.rebuild_current(
+            knowledge_cutoff=datetime.now(UTC),
+        )
+        self._mark_line_graph_current()
+        return result
+
     def process(
         self, material: RawEvidence, *, mode: str = "nearline"
     ) -> ProcessResult:
@@ -207,6 +267,8 @@ class LceProjectionCore:
         compiler_result = self.compiler.process(material)
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
+            if mode == "nearline":
+                self._ensure_line_graph_current()
             return self._completed_replay_result(
                 material,
                 compiler_result,
@@ -243,14 +305,14 @@ class LceProjectionCore:
             else None
         )
 
-        trajectory_result = (
-            self.trajectory.observe(
-                knowledge_cutoff=material.effective_known_at,
-                current_block_ids=compiler_result.block_ids,
-            )
-            if mode == "nearline"
-            else None
-        )
+        trajectory_result: TrajectoryRuntimeResult | None = None
+        if mode == "nearline":
+            trajectory_result = self._ensure_line_graph_current()
+            if trajectory_result is None:
+                trajectory_result = self.trajectory.observe(
+                    knowledge_cutoff=material.effective_known_at,
+                    current_block_ids=compiler_result.block_ids,
+                )
         # Surface discovery is a higher-order slow-path operation. Merely
         # configuring the operator must not make every nearline turn rescan all
         # persisted Line paths.
@@ -389,9 +451,11 @@ class LceProjectionCore:
         cutoff = max(
             material.effective_known_at for material in ordered
         )
-        trajectory_result = self.trajectory.bootstrap(
-            knowledge_cutoff=cutoff,
-        )
+        trajectory_result = self._ensure_line_graph_current()
+        if trajectory_result is None:
+            trajectory_result = self.trajectory.bootstrap(
+                knowledge_cutoff=cutoff,
+            )
         surface_candidates = (
             self.surface_runtime.discover(
                 knowledge_cutoff=cutoff,
@@ -412,6 +476,9 @@ class LceProjectionCore:
         knowledge_cutoff: datetime,
     ) -> TrajectoryRuntimeResult:
         """Run the slow Point-Cloud bootstrap explicitly."""
+        rebuilt = self._ensure_line_graph_current()
+        if rebuilt is not None:
+            return rebuilt
         return self.trajectory.bootstrap(
             knowledge_cutoff=knowledge_cutoff,
         )
@@ -1068,6 +1135,7 @@ class LceProjectionCore:
         self.trajectory.rebuild_current(
             knowledge_cutoff=line_cutoff,
         )
+        self._mark_line_graph_current()
         latest = cutoff or max(
             (
                 snapshot.cutoff
