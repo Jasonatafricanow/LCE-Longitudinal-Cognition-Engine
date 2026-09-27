@@ -180,17 +180,44 @@ threshold are not treated as proven production semantics and remain replaceable.
 
 ## 9. Runtime integration
 
-`LceProjectionCore.process()` now runs the new trajectory path after semantic
-compilation/vector readiness:
+The Point-Cloud bootstrap and nearline growth paths are intentionally separate.
+
+Nearline `process()` does **not** rescan the whole SemanticBlock history.
+It only compares the current compiled block(s) with already-stable Line nodes
+and either:
+
+- attaches to one unambiguous Line;
+- creates a branch/rejoin inside that Line;
+- or stops unresolved when Line identity is ambiguous.
 
 ```text
-Raw Evidence
+new Raw Evidence
     -> Semantic compiler
     -> vector projection
-    -> knowledge-cutoff trajectory proposal
-    -> stable Line DAG update
-    -> optional Surface discovery
+    -> current block vs existing Line retrieval surface
+    -> conservative Line growth / UNKNOWN
 ```
+
+Full mutual-kNN Point-Cloud discovery is a slow path:
+
+```text
+accumulated SemanticBlocks
+    -> explicit bootstrap_trajectory()
+       or one bootstrap at the end of run_batch()
+    -> overlapping trajectory proposals
+    -> stable Line seeds / branch structure
+```
+
+This separation prevents a five- or ten-year Raw/Semantic history from being
+rescanned on every conversation turn.
+
+The current nearline router is linear in the number of visible persisted Line
+nodes for each current block. It is already substantially cheaper than
+all-pairs Point-Cloud discovery, but a future ANN/multi-anchor Line index may
+replace that scan without changing the Line/Worktree contracts.
+
+Optional Surface discovery remains disabled unless a `SurfaceConfig` is
+explicitly supplied.
 
 The pre-existing V1 path remains intact in parallel:
 
@@ -207,6 +234,10 @@ silently changing accepted Baseline semantics.
 Completed pipeline replay does not rerun cognition stages. Partial replay is
 idempotent because Line nodes, node-state revisions, and edges have stable
 identities.
+
+A nearline system that starts with no Lines is expected to accumulate evidence
+until an explicit/periodic bootstrap is run. Nearline traffic alone does not
+silently promote a Point Cloud into a new Line.
 
 ## 10. Implemented failure boundaries
 
@@ -232,6 +263,7 @@ underdetermined.
 The following are intentionally not frozen:
 
 - embedding-specific k and similarity thresholds;
+- an ANN/multi-anchor index for sub-linear existing-Line routing at very large scale;
 - the final production local-continuity score;
 - a semantic criterion for declaring branch convergence;
 - the branch-to-independent-Line transition policy;
