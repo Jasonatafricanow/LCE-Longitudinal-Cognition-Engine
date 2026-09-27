@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 from lce.cognition.promotion import ConservativePromotionPolicy, UnderstandingPromoter
 from lce.cognition.worktree import CognitionWorktreeStore
+from lce.contracts.baseline import Baseline, compute_content_hash
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.store.sqlite_store import SqliteBaselineStore
@@ -103,3 +104,48 @@ def test_same_understanding_does_not_create_a_revision_but_changed_text_does(tmp
     memory.close()
     baselines.close()
     worktrees.close()
+
+
+def test_frontier_promotion_distinguishes_revision_from_new_boundary(
+    tmp_path,
+) -> None:
+    baselines = SqliteBaselineStore(tmp_path / "baselines")
+    baselines.save_revision(
+        Baseline(
+            baseline_id="base-frontier",
+            region_id="existing",
+            revision_number=1,
+            content="old",
+            content_hash=compute_content_hash("old"),
+            supporting_memory_ids=("SB1",),
+            created_at=datetime(2026, 6, 1, tzinfo=UTC),
+        )
+    )
+    worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    policy = ConservativePromotionPolicy()
+
+    revision = worktrees.create(
+        region_id="existing",
+        candidate_content="updated",
+        supporting_block_ids=("SB1",),
+        supporting_structure_ids=(),
+        supporting_frontier_refs=("baseline:base-frontier",),
+        base_baseline=baselines.get_head("existing"),
+        support_kind="frontier",
+    )
+    assert policy.should_promote(revision, 1) is True
+
+    boundary = worktrees.create(
+        region_id="boundary",
+        candidate_content="cross-frontier relation",
+        supporting_block_ids=("SB1", "SB2"),
+        supporting_structure_ids=(),
+        supporting_frontier_refs=("baseline:a", "baseline:b"),
+        base_baseline=None,
+        support_kind="frontier",
+    )
+    assert policy.should_promote(boundary, 1) is False
+    assert policy.should_promote(boundary, 2) is True
+
+    worktrees.close()
+    baselines.close()
