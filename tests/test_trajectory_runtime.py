@@ -16,6 +16,32 @@ from lce.testing.reference_memory import InMemoryReferenceMemory
 BASE = datetime(2020, 1, 1, tzinfo=UTC)
 
 
+class _FixedNeighbourProvider:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def candidates(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        vectors: dict[str, tuple[float, ...]],
+        *,
+        k: int,
+        min_similarity: float,
+    ) -> dict[str, tuple[tuple[float, str], ...]]:
+        del vectors, k, min_similarity
+        self.calls += 1
+        ids = [block.block_id for block in blocks]
+        output: dict[str, tuple[tuple[float, str], ...]] = {}
+        for index, block_id in enumerate(ids):
+            neighbours: list[tuple[float, str]] = []
+            if index > 0:
+                neighbours.append((0.99, ids[index - 1]))
+            if index + 1 < len(ids):
+                neighbours.append((0.99, ids[index + 1]))
+            output[block_id] = tuple(neighbours)
+        return output
+
+
 def _vector(degrees: float) -> tuple[float, float]:
     radians = math.radians(degrees)
     return (math.cos(radians), math.sin(radians))
@@ -358,3 +384,35 @@ def test_nearline_state_revision_updates_existing_line_membership(
     assert revised.state_id in {
         state.state_id for state in store.states_for_node(node.node_id)
     }
+
+
+def test_bootstrap_neighbour_candidate_source_is_replaceable() -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            index=index,
+            day=index * 30,
+            vector=_vector(index * 20.0),
+        )
+        for index in range(4)
+    )
+    _rebuild(memory)
+    provider = _FixedNeighbourProvider()
+    supplier = MutualKnnTrajectorySupplier(
+        memory=memory,
+        config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.95,
+            min_support=3,
+        ),
+        neighbour_provider=provider,
+    )
+
+    paths = supplier.propose(blocks)
+
+    assert provider.calls == 1
+    assert any(
+        path.block_ids == tuple(block.block_id for block in blocks)
+        for path in paths
+    )
