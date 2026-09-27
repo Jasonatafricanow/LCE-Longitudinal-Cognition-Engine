@@ -5,6 +5,10 @@ injected Memory substrate. Branches are implicit paths inside one Line; a node
 may have multiple parents, allowing historical divergence and later rejoin
 without cloning Line identity.
 
+A Line node is keyed by stable SemanticBlock identity, not immutable state
+revision. State revisions are stored under the node so recap/continuation cannot
+manufacture new trajectory points.
+
 Callable projections are materialized on demand and are never persisted as
 cognition nodes.
 """
@@ -49,16 +53,16 @@ def _cosine(
 @dataclass(frozen=True, slots=True)
 class LineRecord:
     line_id: str
-    seed_state_ids: tuple[str, ...]
+    seed_block_ids: tuple[str, ...]
     created_at: datetime
 
     def __post_init__(self) -> None:
         if not self.line_id.strip():
             raise ValueError("line_id must be nonempty")
-        if not self.seed_state_ids:
-            raise ValueError("seed_state_ids must be nonempty")
-        if len(set(self.seed_state_ids)) != len(self.seed_state_ids):
-            raise ValueError("seed_state_ids must be unique")
+        if not self.seed_block_ids:
+            raise ValueError("seed_block_ids must be nonempty")
+        if len(set(self.seed_block_ids)) != len(self.seed_block_ids):
+            raise ValueError("seed_block_ids must be unique")
         _require_utc(self.created_at, "created_at")
 
 
@@ -67,10 +71,6 @@ class LineNode:
     node_id: str
     line_id: str
     block_id: str
-    state_id: str
-    occurred_start: datetime
-    occurred_end: datetime
-    knowledge_at: datetime
     created_at: datetime
 
     def __post_init__(self) -> None:
@@ -78,10 +78,24 @@ class LineNode:
             (self.node_id, "node_id"),
             (self.line_id, "line_id"),
             (self.block_id, "block_id"),
-            (self.state_id, "state_id"),
         ):
             if not value.strip():
                 raise ValueError(f"{name} must be nonempty")
+        _require_utc(self.created_at, "created_at")
+
+
+@dataclass(frozen=True, slots=True)
+class LineNodeState:
+    node_id: str
+    state_id: str
+    occurred_start: datetime
+    occurred_end: datetime
+    knowledge_at: datetime
+    created_at: datetime
+
+    def __post_init__(self) -> None:
+        if not self.node_id.strip() or not self.state_id.strip():
+            raise ValueError("node_id and state_id must be nonempty")
         for value, name in (
             (self.occurred_start, "occurred_start"),
             (self.occurred_end, "occurred_end"),
@@ -98,6 +112,7 @@ class LineApplyResult:
     line_id: str | None
     created_line: bool
     added_node_ids: tuple[str, ...]
+    added_state_ids: tuple[str, ...]
     added_edges: tuple[tuple[str, str], ...]
     unresolved_reason: str | None = None
 
@@ -126,7 +141,7 @@ class LineGraphStore:
             """
             CREATE TABLE IF NOT EXISTS lines (
                 line_id TEXT PRIMARY KEY,
-                seed_state_ids_json TEXT NOT NULL,
+                seed_block_ids_json TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
 
@@ -134,13 +149,21 @@ class LineGraphStore:
                 node_id TEXT PRIMARY KEY,
                 line_id TEXT NOT NULL,
                 block_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                UNIQUE(line_id, block_id),
+                FOREIGN KEY(line_id) REFERENCES lines(line_id)
+                    ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS line_node_states (
+                node_id TEXT NOT NULL,
                 state_id TEXT NOT NULL,
                 occurred_start TEXT NOT NULL,
                 occurred_end TEXT NOT NULL,
                 knowledge_at TEXT NOT NULL,
                 created_at TEXT NOT NULL,
-                UNIQUE(line_id, state_id),
-                FOREIGN KEY(line_id) REFERENCES lines(line_id)
+                PRIMARY KEY(node_id, state_id),
+                FOREIGN KEY(node_id) REFERENCES line_nodes(node_id)
                     ON DELETE CASCADE
             );
 
@@ -157,10 +180,10 @@ class LineGraphStore:
                     ON DELETE CASCADE
             );
 
-            CREATE INDEX IF NOT EXISTS idx_line_nodes_state
-                ON line_nodes(state_id);
             CREATE INDEX IF NOT EXISTS idx_line_nodes_block
                 ON line_nodes(block_id);
+            CREATE INDEX IF NOT EXISTS idx_line_node_states_state
+                ON line_node_states(state_id);
             """
         )
         self.conn.commit()
@@ -172,27 +195,27 @@ class LineGraphStore:
         return parsed
 
     @staticmethod
-    def _line_id(seed_state_ids: tuple[str, ...]) -> str:
-        payload = json.dumps(seed_state_ids, separators=(",", ":"))
+    def _line_id(seed_block_ids: tuple[str, ...]) -> str:
+        payload = json.dumps(seed_block_ids, separators=(",", ":"))
         digest = hashlib.sha256(payload.encode()).hexdigest()[:24]
         return f"line_{digest}"
 
     @staticmethod
-    def _node_id(line_id: str, state_id: str) -> str:
+    def _node_id(line_id: str, block_id: str) -> str:
         digest = hashlib.sha256(
-            f"{line_id}|{state_id}".encode()
+            f"{line_id}|{block_id}".encode()
         ).hexdigest()[:24]
         return f"lnode_{digest}"
 
     def create_line(
         self,
-        seed_state_ids: tuple[str, ...],
+        seed_block_ids: tuple[str, ...],
         *,
         created_at: datetime | None = None,
     ) -> LineRecord:
-        if not seed_state_ids:
-            raise ValueError("a Line seed requires at least one state")
-        ordered = tuple(dict.fromkeys(seed_state_ids))
+        if not seed_block_ids:
+            raise ValueError("a Line seed requires at least one block")
+        ordered = tuple(dict.fromkeys(seed_block_ids))
         line_id = self._line_id(ordered)
         existing = self.conn.execute(
             "SELECT line_id FROM lines WHERE line_id = ?",
@@ -211,7 +234,7 @@ class LineGraphStore:
 
     def get_line(self, line_id: str) -> LineRecord:
         row = self.conn.execute(
-            "SELECT line_id, seed_state_ids_json, created_at "
+            "SELECT line_id, seed_block_ids_json, created_at "
             "FROM lines WHERE line_id = ?",
             (line_id,),
         ).fetchone()
@@ -219,7 +242,7 @@ class LineGraphStore:
             raise KeyError(line_id)
         return LineRecord(
             line_id=str(row[0]),
-            seed_state_ids=tuple(json.loads(str(row[1]))),
+            seed_block_ids=tuple(json.loads(str(row[1]))),
             created_at=self._parse_datetime(str(row[2])),
         )
 
@@ -235,48 +258,55 @@ class LineGraphStore:
         block: SemanticBlock,
         *,
         knowledge_at: datetime,
-    ) -> tuple[LineNode, bool]:
+    ) -> tuple[LineNode, bool, bool]:
         self.get_line(line_id)
         if block.state_id is None:
             raise ValueError("Line nodes require immutable SemanticBlock states")
         _require_utc(knowledge_at, "knowledge_at")
-        node_id = self._node_id(line_id, block.state_id)
+        node_id = self._node_id(line_id, block.block_id)
         existing = self.conn.execute(
             "SELECT node_id FROM line_nodes "
-            "WHERE line_id = ? AND state_id = ?",
-            (line_id, block.state_id),
+            "WHERE line_id = ? AND block_id = ?",
+            (line_id, block.block_id),
         ).fetchone()
-        if existing is not None:
-            return self.get_node(str(existing[0])), False
-        now = datetime.now(UTC)
-        self.conn.execute(
+        added_node = False
+        if existing is None:
+            now = datetime.now(UTC)
+            self.conn.execute(
+                "INSERT INTO line_nodes VALUES (?, ?, ?, ?)",
+                (node_id, line_id, block.block_id, now.isoformat()),
+            )
+            added_node = True
+        else:
+            node_id = str(existing[0])
+
+        state_result = self.conn.execute(
             """
-            INSERT INTO line_nodes (
-                node_id, line_id, block_id, state_id, occurred_start,
-                occurred_end, knowledge_at, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO line_node_states (
+                node_id, state_id, occurred_start, occurred_end,
+                knowledge_at, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
                 node_id,
-                line_id,
-                block.block_id,
                 block.state_id,
                 block.occurred_start.isoformat(),
                 block.occurred_end.isoformat(),
                 knowledge_at.isoformat(),
-                now.isoformat(),
+                datetime.now(UTC).isoformat(),
             ),
         )
         self.conn.commit()
-        return self.get_node(node_id), True
+        return (
+            self.get_node(node_id),
+            added_node,
+            state_result.rowcount > 0,
+        )
 
     def get_node(self, node_id: str) -> LineNode:
         row = self.conn.execute(
-            """
-            SELECT node_id, line_id, block_id, state_id, occurred_start,
-                   occurred_end, knowledge_at, created_at
-            FROM line_nodes WHERE node_id = ?
-            """,
+            "SELECT node_id, line_id, block_id, created_at "
+            "FROM line_nodes WHERE node_id = ?",
             (node_id,),
         ).fetchone()
         if row is None:
@@ -285,29 +315,60 @@ class LineGraphStore:
             node_id=str(row[0]),
             line_id=str(row[1]),
             block_id=str(row[2]),
-            state_id=str(row[3]),
-            occurred_start=self._parse_datetime(str(row[4])),
-            occurred_end=self._parse_datetime(str(row[5])),
-            knowledge_at=self._parse_datetime(str(row[6])),
-            created_at=self._parse_datetime(str(row[7])),
+            created_at=self._parse_datetime(str(row[3])),
         )
 
-    def node_for_state(
+    def get_node_state(
+        self,
+        node_id: str,
+        state_id: str,
+    ) -> LineNodeState:
+        row = self.conn.execute(
+            """
+            SELECT node_id, state_id, occurred_start, occurred_end,
+                   knowledge_at, created_at
+            FROM line_node_states
+            WHERE node_id = ? AND state_id = ?
+            """,
+            (node_id, state_id),
+        ).fetchone()
+        if row is None:
+            raise KeyError((node_id, state_id))
+        return LineNodeState(
+            node_id=str(row[0]),
+            state_id=str(row[1]),
+            occurred_start=self._parse_datetime(str(row[2])),
+            occurred_end=self._parse_datetime(str(row[3])),
+            knowledge_at=self._parse_datetime(str(row[4])),
+            created_at=self._parse_datetime(str(row[5])),
+        )
+
+    def states_for_node(self, node_id: str) -> tuple[LineNodeState, ...]:
+        rows = self.conn.execute(
+            "SELECT state_id FROM line_node_states "
+            "WHERE node_id = ? ORDER BY knowledge_at, created_at, state_id",
+            (node_id,),
+        ).fetchall()
+        return tuple(
+            self.get_node_state(node_id, str(row[0])) for row in rows
+        )
+
+    def node_for_block(
         self,
         line_id: str,
-        state_id: str,
+        block_id: str,
     ) -> LineNode | None:
         row = self.conn.execute(
             "SELECT node_id FROM line_nodes "
-            "WHERE line_id = ? AND state_id = ?",
-            (line_id, state_id),
+            "WHERE line_id = ? AND block_id = ?",
+            (line_id, block_id),
         ).fetchone()
         return self.get_node(str(row[0])) if row is not None else None
 
     def nodes_for_line(self, line_id: str) -> tuple[LineNode, ...]:
         rows = self.conn.execute(
             "SELECT node_id FROM line_nodes WHERE line_id = ? "
-            "ORDER BY occurred_start, occurred_end, node_id",
+            "ORDER BY created_at, node_id",
             (line_id,),
         ).fetchall()
         return tuple(self.get_node(str(row[0])) for row in rows)
@@ -324,11 +385,6 @@ class LineGraphStore:
         child = self.get_node(child_node_id)
         if parent.line_id != line_id or child.line_id != line_id:
             raise ValueError("Line edges cannot cross Line identity")
-        if not parent.occurred_start < child.occurred_start:
-            raise ValueError(
-                "Line edges require strict logical ordering; "
-                "same-time or reversed points stay unordered"
-            )
         result = self.conn.execute(
             "INSERT OR IGNORE INTO line_edges VALUES (?, ?, ?)",
             (line_id, parent_node_id, child_node_id),
@@ -363,19 +419,19 @@ class LineGraphStore:
         return tuple((str(row[0]), str(row[1])) for row in rows)
 
     def overlap_counts(
-        self, state_ids: tuple[str, ...]
+        self, block_ids: tuple[str, ...]
     ) -> dict[str, int]:
-        if not state_ids:
+        if not block_ids:
             return {}
-        placeholders = ",".join("?" for _ in state_ids)
+        placeholders = ",".join("?" for _ in block_ids)
         rows = self.conn.execute(
             f"""
-            SELECT line_id, COUNT(DISTINCT state_id)
+            SELECT line_id, COUNT(DISTINCT block_id)
             FROM line_nodes
-            WHERE state_id IN ({placeholders})
+            WHERE block_id IN ({placeholders})
             GROUP BY line_id
             """,
-            state_ids,
+            block_ids,
         ).fetchall()
         return {str(row[0]): int(row[1]) for row in rows}
 
@@ -415,6 +471,15 @@ class LineAssembler:
             for evidence_id in block.raw_evidence_ids
         )
 
+    @staticmethod
+    def _precedes(left: SemanticBlock, right: SemanticBlock) -> bool:
+        # Same-time/overlapping points stay unordered. This is intentionally a
+        # partial order rather than an arbitrary tie-break.
+        return (
+            left.occurred_start < right.occurred_start
+            and left.occurred_end <= right.occurred_start
+        )
+
     def apply_path(
         self,
         blocks: tuple[SemanticBlock, ...],
@@ -425,17 +490,16 @@ class LineAssembler:
                 False,
                 (),
                 (),
+                (),
                 "insufficient support for a persistent Line",
             )
         if any(block.state_id is None for block in blocks):
             raise ValueError("trajectory path requires immutable states")
-        state_ids = tuple(
-            block.state_id or "" for block in blocks
-        )
-        if len(set(state_ids)) != len(state_ids):
-            raise ValueError("trajectory path contains duplicate states")
+        block_ids = tuple(block.block_id for block in blocks)
+        if len(set(block_ids)) != len(block_ids):
+            raise ValueError("trajectory path contains duplicate blocks")
 
-        overlaps = self.store.overlap_counts(state_ids)
+        overlaps = self.store.overlap_counts(block_ids)
         strong = {
             line_id: count
             for line_id, count in overlaps.items()
@@ -444,7 +508,7 @@ class LineAssembler:
 
         created_line = False
         if not overlaps:
-            line = self.store.create_line(state_ids)
+            line = self.store.create_line(block_ids)
             line_id = line.line_id
             created_line = True
         elif len(strong) == 1:
@@ -455,6 +519,7 @@ class LineAssembler:
                 False,
                 (),
                 (),
+                (),
                 "trajectory overlaps multiple stable Lines; no auto-merge",
             )
         else:
@@ -463,25 +528,33 @@ class LineAssembler:
                 False,
                 (),
                 (),
+                (),
                 "weak overlap with an existing Line; no clone created",
             )
 
         nodes: list[LineNode] = []
         added_nodes: list[str] = []
+        added_states: list[str] = []
         for block in blocks:
-            node, added = self.store.ensure_node(
+            node, node_added, state_added = self.store.ensure_node(
                 line_id,
                 block,
                 knowledge_at=self._knowledge_at(block),
             )
             nodes.append(node)
-            if added:
+            if node_added:
                 added_nodes.append(node.node_id)
+            if state_added and block.state_id is not None:
+                added_states.append(block.state_id)
 
         added_edges: list[tuple[str, str]] = []
-        for parent, child in zip(nodes, nodes[1:], strict=True):
-            if not parent.occurred_start < child.occurred_start:
+        for index in range(len(blocks) - 1):
+            parent_block = blocks[index]
+            child_block = blocks[index + 1]
+            if not self._precedes(parent_block, child_block):
                 continue
+            parent = nodes[index]
+            child = nodes[index + 1]
             if self.store.add_edge(
                 line_id, parent.node_id, child.node_id
             ):
@@ -491,12 +564,13 @@ class LineAssembler:
             line_id=line_id,
             created_line=created_line,
             added_node_ids=tuple(added_nodes),
+            added_state_ids=tuple(added_states),
             added_edges=tuple(added_edges),
         )
 
 
 class LineGraphView:
-    """Cutoff-aware view over derived Line structure."""
+    """Knowledge-cutoff-aware view over derived Line structure."""
 
     def __init__(
         self,
@@ -507,6 +581,42 @@ class LineGraphView:
         self.memory = memory
         self.store = store
 
+    def state_for_node_at_cutoff(
+        self,
+        node_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> SemanticBlock | None:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        candidates: list[SemanticBlock] = []
+        for node_state in self.store.states_for_node(node_id):
+            if node_state.knowledge_at > knowledge_cutoff:
+                continue
+            try:
+                block = self.memory.get_semantic_block_state(
+                    node_state.state_id
+                )
+                if not all(
+                    self.memory.get_evidence(evidence_id).current_valid
+                    and self.memory.get_evidence(
+                        evidence_id
+                    ).effective_known_at <= knowledge_cutoff
+                    for evidence_id in block.raw_evidence_ids
+                ):
+                    continue
+            except KeyError:
+                continue
+            candidates.append(block)
+        if not candidates:
+            return None
+        return max(
+            candidates,
+            key=lambda block: (
+                block.state_version,
+                block.state_id or "",
+            ),
+        )
+
     def _node_visible(
         self,
         node_id: str,
@@ -515,24 +625,11 @@ class LineGraphView:
     ) -> bool:
         if node_id in memo:
             return memo[node_id]
-        node = self.store.get_node(node_id)
-        if node.knowledge_at > cutoff:
-            memo[node_id] = False
-            return False
-        try:
-            block = self.memory.get_semantic_block_state(node.state_id)
-            source_visible = all(
-                self.memory.get_evidence(
-                    evidence_id
-                ).current_valid
-                and self.memory.get_evidence(
-                    evidence_id
-                ).effective_known_at <= cutoff
-                for evidence_id in block.raw_evidence_ids
-            )
-        except KeyError:
-            source_visible = False
-        if not source_visible:
+        block = self.state_for_node_at_cutoff(
+            node_id,
+            knowledge_cutoff=cutoff,
+        )
+        if block is None:
             memo[node_id] = False
             return False
         parents = self.store.parents(node_id)
@@ -578,7 +675,12 @@ class LineGraphView:
         }
         return tuple(sorted(visible - parents_with_visible_children))
 
-    def raw_closure(self, node_id: str) -> tuple[str, ...]:
+    def raw_closure(
+        self,
+        node_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
         seen_nodes: set[str] = set()
         raw_ids: set[str] = set()
 
@@ -586,8 +688,12 @@ class LineGraphView:
             if current_id in seen_nodes:
                 return
             seen_nodes.add(current_id)
-            node = self.store.get_node(current_id)
-            block = self.memory.get_semantic_block_state(node.state_id)
+            block = self.state_for_node_at_cutoff(
+                current_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if block is None:
+                return
             raw_ids.update(block.raw_evidence_ids)
             for parent_id in self.store.parents(current_id):
                 visit(parent_id)
@@ -641,10 +747,16 @@ class CallableLineProjector:
         scored: list[tuple[float, str]] = []
         for node_id in visible_ids:
             node = self.store.get_node(node_id)
+            block = self.view.state_for_node_at_cutoff(
+                node_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if block is None:
+                continue
             try:
                 vector = self.memory.get_vector(
                     node.block_id,
-                    state_id=node.state_id,
+                    state_id=block.state_id,
                 ).values
             except KeyError:
                 continue
@@ -672,7 +784,7 @@ class CallableLineProjector:
         similarity_by_id = {node_id: score for score, node_id in scored}
         selected_ids = tuple(
             node_id
-            for node_id, _dist in sorted(
+            for node_id, _distance in sorted(
                 distance.items(),
                 key=lambda item: (
                     item[1],
@@ -687,20 +799,35 @@ class CallableLineProjector:
         fragments: list[str] = []
         for node_id in selected_ids:
             node = self.store.get_node(node_id)
-            block = self.memory.get_semantic_block_state(node.state_id)
+            block = self.view.state_for_node_at_cutoff(
+                node_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if block is None or block.state_id is None:
+                continue
             support.append(
                 AuthorizedSelectedSupport(
                     block_id=node.block_id,
-                    state_id=node.state_id,
+                    state_id=block.state_id,
                 )
             )
             raw_ids.update(block.raw_evidence_ids)
             fragments.append(block.content)
 
+        if not support:
+            return None
         return CallableLineProjection(
             line_id=line_id,
             anchor_node_id=anchor_id,
-            node_ids=selected_ids,
+            node_ids=tuple(
+                node_id
+                for node_id in selected_ids
+                if self.view.state_for_node_at_cutoff(
+                    node_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                is not None
+            ),
             selected_support=tuple(support),
             raw_evidence_ids=tuple(sorted(raw_ids)),
             content_fragments=tuple(fragments),
