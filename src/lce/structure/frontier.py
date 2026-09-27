@@ -137,6 +137,8 @@ class _FrontierItem:
     content: str
     support_blocks: tuple[SemanticBlock, ...]
     occurred_end: datetime
+    processing_input_id: str | None = None
+    processing_supplier: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -174,6 +176,7 @@ class FrontierCandidateDiscovery:
         snapshot: StructureSnapshot,
         *,
         current_block_ids: tuple[str, ...],
+        processing_input_id: str | None = None,
     ) -> tuple[StructureRelationCandidate, ...]:
         if not self.config.enabled or not current_block_ids:
             return ()
@@ -196,7 +199,13 @@ class FrontierCandidateDiscovery:
         matches: list[_Match] = []
         for block in current_blocks:
             for item in frontier:
-                match = self._score(snapshot, block, item, block_by_id)
+                match = self._score(
+                    snapshot,
+                    block,
+                    item,
+                    block_by_id,
+                    processing_input_id=processing_input_id,
+                )
                 if match is not None:
                     matches.append(match)
 
@@ -230,6 +239,8 @@ class FrontierCandidateDiscovery:
                 kind="worktree",
                 content=worktree.candidate_content,
                 support_blocks=support_blocks,
+                processing_input_id=worktree.processing_input_id,
+                processing_supplier=worktree.processing_supplier,
             )
             if frontier_item is not None:
                 items.append(frontier_item)
@@ -307,6 +318,8 @@ class FrontierCandidateDiscovery:
         kind: str,
         content: str,
         support_blocks: tuple[SemanticBlock, ...],
+        processing_input_id: str | None = None,
+        processing_supplier: str | None = None,
     ) -> _FrontierItem | None:
         if not support_blocks:
             return None
@@ -321,6 +334,8 @@ class FrontierCandidateDiscovery:
             content=content,
             support_blocks=support_blocks,
             occurred_end=occurred_end,
+            processing_input_id=processing_input_id,
+            processing_supplier=processing_supplier,
         )
 
     def _temporal_prior(
@@ -363,6 +378,8 @@ class FrontierCandidateDiscovery:
         current: SemanticBlock,
         frontier: _FrontierItem,
         block_by_id: dict[str, SemanticBlock],
+        *,
+        processing_input_id: str | None,
     ) -> _Match | None:
         # A future-created frontier must never participate in historical replay.
         if frontier.occurred_end > current.occurred_end:
@@ -379,7 +396,14 @@ class FrontierCandidateDiscovery:
                 and support.state_id is not None
                 and support.state_id == current.state_id
             ):
-                return None
+                recovering_same_frontier_effect = (
+                    processing_input_id is not None
+                    and frontier.processing_input_id
+                    == processing_input_id
+                    and frontier.processing_supplier == "frontier"
+                )
+                if not recovering_same_frontier_effect:
+                    return None
 
         support_pairs = []
         for block in frontier.support_blocks:
