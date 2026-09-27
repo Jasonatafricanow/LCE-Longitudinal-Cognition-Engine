@@ -16,7 +16,6 @@ from lce.cognition.line_graph import (
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
-
 BASE = datetime(2020, 1, 1, tzinfo=UTC)
 
 
