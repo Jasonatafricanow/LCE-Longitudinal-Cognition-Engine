@@ -31,6 +31,17 @@ jobs:
       - name: Run canonical verification
         run: python scripts/verify.py
 
+      - name: Show Ruff import repair
+        if: failure()
+        run: |
+          python -m ruff check \
+            tests/test_line_graph_runtime.py \
+            tests/test_trajectory_runtime.py \
+            --select I --fix || true
+          sed -n '1,24p' tests/test_line_graph_runtime.py
+          echo "--- trajectory imports ---"
+          sed -n '1,22p' tests/test_trajectory_runtime.py
+
       - name: Run focused trajectory runtime tests
         run: |
           python -m pytest \
