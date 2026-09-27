@@ -172,7 +172,11 @@ class MutualKnnTrajectorySupplier:
             for right_id in right_ids:
                 if left_id not in neighbours.get(right_id, ()):
                     continue
-                pair = tuple(sorted((left_id, right_id)))
+                pair = (
+                    (left_id, right_id)
+                    if left_id <= right_id
+                    else (right_id, left_id)
+                )
                 mutual[pair] = min(
                     scores[(left_id, right_id)],
                     scores[(right_id, left_id)],
