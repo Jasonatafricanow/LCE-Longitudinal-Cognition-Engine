@@ -260,7 +260,7 @@ class InMemoryReferenceMemory:
         self, embedder: Callable[[SemanticBlock], tuple[float, ...]], *, index_version: str
     ) -> None:
         self._vectors.clear()
-        for block in self.list_semantic_block_states(current_valid_only=True):
+        for block in self.list_semantic_block_states(current_valid_only=False):
             self._vectors[(block.block_id, block.state_id or "")] = VectorProjection(
                 block.block_id, tuple(float(value) for value in embedder(block)), index_version
             )
@@ -269,10 +269,30 @@ class InMemoryReferenceMemory:
         self._vectors.clear()
 
     def vector_projection_ids(self) -> tuple[str, ...]:
-        return tuple(sorted({block_id for block_id, state_id in self._vectors if self._current_blocks.get(block_id, None) and self._current_blocks[block_id].state_id == state_id}))
+        return tuple(
+            sorted(
+                {
+                    block_id
+                    for block_id, state_id in self._vectors
+                    if self._current_blocks.get(block_id) is not None
+                    and self._current_blocks[block_id].state_id == state_id
+                    and all(
+                        self.get_evidence(evidence_id).current_valid
+                        for evidence_id in self._current_blocks[
+                            block_id
+                        ].raw_evidence_ids
+                    )
+                }
+            )
+        )
 
     def get_vector(self, block_id: str, *, state_id: str | None = None) -> VectorProjection:
         current = self.get_semantic_block(block_id)
+        if state_id is None and not all(
+            self.get_evidence(evidence_id).current_valid
+            for evidence_id in current.raw_evidence_ids
+        ):
+            raise KeyError(block_id)
         key = (block_id, state_id or current.state_id or "")
         try:
             return self._vectors[key]
