@@ -253,6 +253,7 @@ def test_invalid_rejoin_evidence_reopens_old_branch_frontier(
     ) == (rejoin_node.node_id,)
 
     memory.invalidate("R", reason="correction")
+    current_cutoff = datetime.now(UTC)
     branch_a_node = store.node_for_block(first.line_id, "branch-a")
     branch_b_node = store.node_for_block(first.line_id, "branch-b")
     assert branch_a_node is not None
@@ -260,7 +261,7 @@ def test_invalid_rejoin_evidence_reopens_old_branch_frontier(
     assert set(
         view.frontier(
             first.line_id,
-            knowledge_cutoff=cutoff,
+            knowledge_cutoff=current_cutoff,
         )
     ) == {
         branch_a_node.node_id,
@@ -384,7 +385,10 @@ def test_invalid_historical_node_does_not_count_toward_line_absorption(
 
     memory.invalidate("OLD", reason="source correction")
 
-    attempted = assembler.apply_path((invalid_later, stable, newcomer))
+    attempted = assembler.apply_path(
+        (invalid_later, stable, newcomer),
+        knowledge_cutoff=datetime.now(UTC),
+    )
     assert attempted.line_id is None
     assert attempted.unresolved_reason == (
         "weak overlap with an existing Line; no clone created"
@@ -573,17 +577,18 @@ def test_multi_parent_visibility_is_conjunctive_rejoin_not_alternative_or(
     cutoff = BASE + timedelta(days=100)
     assert rejoin_node.node_id in view.visible_node_ids(
         first.line_id,
-        knowledge_cutoff=cutoff,
+        knowledge_cutoff=current_cutoff,
     )
 
     # One parent remains fully valid, but invalidating the other parent must
     # hide the conjunctive rejoin. Alternative/OR semantics are intentionally
     # not represented by multi-parent Line edges in V1.
     memory.invalidate("CA", reason="parent hypothesis falsified")
+    current_cutoff = datetime.now(UTC)
 
     assert rejoin_node.node_id not in view.visible_node_ids(
         first.line_id,
-        knowledge_cutoff=cutoff,
+        knowledge_cutoff=current_cutoff,
     )
     assert branch_b_node.node_id in view.frontier(
         first.line_id,
