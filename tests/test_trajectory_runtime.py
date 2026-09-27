@@ -152,9 +152,8 @@ def test_trajectory_runtime_materializes_one_stable_line_from_current_path(
         ),
     )
 
-    result = runtime.observe(
+    result = runtime.bootstrap(
         knowledge_cutoff=BASE + timedelta(days=200),
-        current_block_ids=(blocks[-1].block_id,),
     )
 
     assert result.candidate_paths
@@ -204,3 +203,94 @@ def test_trajectory_runtime_does_not_emit_unrelated_historical_path(
     assert history
     assert result.candidate_paths == ()
     assert result.line_updates == ()
+
+
+def test_nearline_observe_extends_existing_line_without_full_bootstrap(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    history = tuple(
+        _admit(
+            memory,
+            index=index,
+            day=index * 30,
+            vector=_vector(index * 8.0),
+        )
+        for index in range(5)
+    )
+    _rebuild(memory)
+
+    line_store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=line_store,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.95,
+            min_support=3,
+        ),
+    )
+    bootstrap = runtime.bootstrap(
+        knowledge_cutoff=BASE + timedelta(days=150),
+    )
+    assert bootstrap.candidate_paths
+    assert len(line_store.list_lines()) == 1
+    line_id = line_store.list_lines()[0].line_id
+    before = {
+        node.block_id for node in line_store.nodes_for_line(line_id)
+    }
+    assert before == {block.block_id for block in history}
+
+    current = _admit(
+        memory,
+        index=99,
+        day=180,
+        vector=_vector(5 * 8.0),
+    )
+    _rebuild(memory)
+    result = runtime.observe(
+        knowledge_cutoff=BASE + timedelta(days=200),
+        current_block_ids=(current.block_id,),
+    )
+
+    assert result.candidate_paths == ()
+    assert len(result.line_updates) == 1
+    assert result.line_updates[0].line_id == line_id
+    assert {
+        node.block_id for node in line_store.nodes_for_line(line_id)
+    } == {*before, current.block_id}
+
+
+def test_nearline_observe_does_not_seed_line_from_point_cloud(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            index=index,
+            day=index * 30,
+            vector=_vector(index * 8.0),
+        )
+        for index in range(5)
+    )
+    _rebuild(memory)
+    line_store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=line_store,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.95,
+            min_support=3,
+        ),
+    )
+
+    result = runtime.observe(
+        knowledge_cutoff=BASE + timedelta(days=150),
+        current_block_ids=(blocks[-1].block_id,),
+    )
+
+    assert result.candidate_paths == ()
+    assert result.line_updates == ()
+    assert line_store.list_lines() == ()
