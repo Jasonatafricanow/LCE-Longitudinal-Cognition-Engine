@@ -204,8 +204,9 @@ def test_surface_discovery_is_non_mutating_and_drops_invalid_member(
     assert len(runtime.discover(knowledge_cutoff=cutoff)) == 1
 
     memory.invalidate("trade-E1", reason="source correction")
+    current_cutoff = datetime.now(UTC)
 
-    assert runtime.discover(knowledge_cutoff=cutoff) == ()
+    assert runtime.discover(knowledge_cutoff=current_cutoff) == ()
     assert len(store.list_lines()) == before_lines
     assert {
         line_id: len(store.nodes_for_line(line_id))
