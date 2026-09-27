@@ -576,6 +576,20 @@ class LceProjectionCore:
             selected_support=selected_support,
         )
 
+        # A frontier proposal is only a new longitudinal edge if it selects
+        # at least one immutable state produced by the arriving input. Without
+        # this guard, an interpreter could restate historical support and give
+        # a newly formed cognition an effective time in the past.
+        if (
+            frontier_candidate
+            and current_ids
+            and not any(
+                item.block_id in current_ids
+                for item in selected_support
+            )
+        ):
+            return _CandidateEvaluation(handled=False)
+
         if head is not None and head.content.strip() == content.strip():
             return _CandidateEvaluation(handled=True)
 
