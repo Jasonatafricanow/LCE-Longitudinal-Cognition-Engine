@@ -423,6 +423,12 @@ class LineGraphStore:
             self.conn.commit()
         return LineRecord(line_id, ordered, now)
 
+    def has_line(self, line_id: str) -> bool:
+        return self.conn.execute(
+            "SELECT 1 FROM lines WHERE line_id = ?",
+            (line_id,),
+        ).fetchone() is not None
+
     def get_line(self, line_id: str) -> LineRecord:
         row = self.conn.execute(
             "SELECT line_id, seed_block_ids_json, created_at "
@@ -1160,7 +1166,7 @@ class LineAssembler:
         new_line_seed = not strong
         if new_line_seed:
             line_id = self.store._line_id(block_ids)
-            created_line = True
+            created_line = not self.store.has_line(line_id)
         elif len(strong) == 1:
             line_id = next(iter(strong))
         else:
