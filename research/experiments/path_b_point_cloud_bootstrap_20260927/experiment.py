@@ -405,7 +405,7 @@ def persistent_mutual_knn(
     min_span_days: int = 42,
     min_time_buckets: int = 3,
     bucket_days: int = 45,
-    min_cohesion: float = 0.0,
+    min_cohesion: float = 0.15,
 ) -> tuple[Candidate, ...]:
     """A4: static semantic components must also persist longitudinally.
 
