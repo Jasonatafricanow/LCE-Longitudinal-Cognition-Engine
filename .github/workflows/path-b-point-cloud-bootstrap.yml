@@ -32,7 +32,7 @@ jobs:
         run: python research/experiments/path_b_point_cloud_bootstrap_20260927/experiment.py
 
       - name: Run fresh frozen-A4 holdout
-        run: python research/experiments/path_b_point_cloud_bootstrap_20260927/holdout.py
+        run: python -m research.experiments.path_b_point_cloud_bootstrap_20260927.holdout
 
       - name: Run bootstrap mechanism invariants
         run: python -m pytest tests/research/test_path_b_point_cloud_bootstrap_20260927.py -q
