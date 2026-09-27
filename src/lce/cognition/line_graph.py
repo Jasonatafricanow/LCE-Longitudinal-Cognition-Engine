@@ -658,21 +658,17 @@ class LineAssembler:
         }
 
         created_line = False
-        new_line_seed = not overlaps
+        # Local structures are allowed to overlap. A candidate path that does
+        # not share enough support to inherit any existing Line identity seeds
+        # a distinct Line even when one or more of its SemanticBlocks already
+        # participate elsewhere. This prevents weak exclusive ownership from
+        # reappearing through the admission rule.
+        new_line_seed = not strong
         if new_line_seed:
             line_id = self.store._line_id(block_ids)
             created_line = True
         elif len(strong) == 1:
             line_id = next(iter(strong))
-        elif len(strong) > 1:
-            return LineApplyResult(
-                None,
-                False,
-                (),
-                (),
-                (),
-                "trajectory overlaps multiple stable Lines; no auto-merge",
-            )
         else:
             return LineApplyResult(
                 None,
@@ -680,7 +676,7 @@ class LineAssembler:
                 (),
                 (),
                 (),
-                "weak overlap with an existing Line; no clone created",
+                "trajectory overlaps multiple stable Lines; no auto-merge",
             )
 
         nodes: list[LineNode] = []
