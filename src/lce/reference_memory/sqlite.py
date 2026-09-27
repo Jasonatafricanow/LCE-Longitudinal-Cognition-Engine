@@ -45,6 +45,7 @@ class ReferenceMemoryStore:
                 evidence_id TEXT PRIMARY KEY,
                 content TEXT NOT NULL,
                 occurred_at TEXT NOT NULL,
+                known_at TEXT,
                 ordering_key TEXT NOT NULL,
                 provenance_json TEXT NOT NULL,
                 state TEXT NOT NULL,
@@ -127,6 +128,17 @@ class ReferenceMemoryStore:
             );
             """
         )
+        columns = {
+            str(row[1])
+            for row in self._conn.execute("PRAGMA table_info(raw_evidence)")
+        }
+        if "known_at" not in columns:
+            self._conn.execute(
+                "ALTER TABLE raw_evidence ADD COLUMN known_at TEXT"
+            )
+        self._conn.execute(
+            "UPDATE raw_evidence SET known_at = occurred_at WHERE known_at IS NULL"
+        )
         self._conn.commit()
         self._backfill_block_states()
 
@@ -163,7 +175,7 @@ class ReferenceMemoryStore:
         provenance_json = self._canonical_provenance(item.provenance)
         db = self._db()
         existing = db.execute(
-            "SELECT content, occurred_at, ordering_key, provenance_json, state, superseded_by "
+            "SELECT content, occurred_at, known_at, ordering_key, provenance_json, state, superseded_by "
             "FROM raw_evidence WHERE evidence_id = ?",
             (item.evidence_id,),
         ).fetchone()
@@ -171,26 +183,34 @@ class ReferenceMemoryStore:
             expected = (
                 item.content,
                 item.occurred_at.isoformat(),
+                item.effective_known_at.isoformat(),
                 item.effective_ordering_key,
                 provenance_json,
             )
-            if tuple(existing[:4]) != expected:
+            if tuple(existing[:5]) != expected:
                 raise ValueError(f"evidence_id '{item.evidence_id}' already has different immutable content")
             return RawEvidence(
                 evidence_id=item.evidence_id,
                 content=existing[0],
                 occurred_at=self._parse_datetime(existing[1]),
-                ordering_key=existing[2],
-                provenance=json.loads(existing[3]),
-                state=existing[4],
-                superseded_by=existing[5],
+                known_at=self._parse_datetime(existing[2]),
+                ordering_key=existing[3],
+                provenance=json.loads(existing[4]),
+                state=existing[5],
+                superseded_by=existing[6],
             )
         db.execute(
-            "INSERT INTO raw_evidence VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            """
+            INSERT INTO raw_evidence (
+                evidence_id, content, occurred_at, known_at, ordering_key,
+                provenance_json, state, superseded_by, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
             (
                 item.evidence_id,
                 item.content,
                 item.occurred_at.isoformat(),
+                item.effective_known_at.isoformat(),
                 item.effective_ordering_key,
                 provenance_json,
                 item.state,
@@ -207,7 +227,7 @@ class ReferenceMemoryStore:
 
     def get_evidence(self, evidence_id: str) -> RawEvidence:
         row = self._db().execute(
-            "SELECT evidence_id, content, occurred_at, ordering_key, provenance_json, state, superseded_by "
+            "SELECT evidence_id, content, occurred_at, known_at, ordering_key, provenance_json, state, superseded_by "
             "FROM raw_evidence WHERE evidence_id = ?",
             (evidence_id,),
         ).fetchone()
@@ -217,10 +237,11 @@ class ReferenceMemoryStore:
             evidence_id=row[0],
             content=row[1],
             occurred_at=self._parse_datetime(row[2]),
-            ordering_key=row[3],
-            provenance=json.loads(row[4]),
-            state=row[5],
-            superseded_by=row[6],
+            known_at=self._parse_datetime(row[3]),
+            ordering_key=row[4],
+            provenance=json.loads(row[5]),
+            state=row[6],
+            superseded_by=row[7],
         )
 
     def list_current_valid_evidence(self) -> tuple[RawEvidence, ...]:
@@ -520,6 +541,41 @@ class ReferenceMemoryStore:
                 if prior is None or state.state_version > prior.state_version:
                     latest[state.block_id] = state
         return tuple(sorted(latest.values(), key=lambda block: (block.occurred_start, block.block_id)))
+
+    def list_semantic_blocks_at_knowledge_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        """Return the latest block states whose source evidence was known by cutoff.
+
+        Logical placement remains on SemanticBlock.occurred_*; this method only
+        controls epistemic visibility. A late-known historical state can
+        therefore enter the current reconstruction without leaking into an
+        earlier knowledge cutoff.
+        """
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
+        latest: dict[str, SemanticBlock] = {}
+        for state in self.list_semantic_block_states(
+            current_valid_only=current_valid_only
+        ):
+            try:
+                visible = all(
+                    self.get_evidence(evidence_id).effective_known_at <= cutoff
+                    for evidence_id in state.raw_evidence_ids
+                )
+            except KeyError:
+                visible = False
+            if not visible:
+                continue
+            prior = latest.get(state.block_id)
+            if prior is None or state.state_version > prior.state_version:
+                latest[state.block_id] = state
+        return tuple(
+            sorted(
+                latest.values(),
+                key=lambda block: (block.occurred_start, block.block_id),
+            )
+        )
 
     def delete_vector_index(self) -> None:
         self._db().execute("DELETE FROM vector_projections")
