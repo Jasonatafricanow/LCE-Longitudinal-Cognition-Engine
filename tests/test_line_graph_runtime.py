@@ -1604,3 +1604,104 @@ def test_rebuild_cutoff_cancels_precomputed_future_line_revision(
         line_id,
         BASE + timedelta(days=50),
     ) == ()
+
+
+
+def test_late_historical_block_revises_direct_edge_without_rewriting_history(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    parent = _admit(
+        memory,
+        evidence_id="INSERT-P",
+        block_id="insert-p",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    child = _admit(
+        memory,
+        evidence_id="INSERT-C",
+        block_id="insert-c",
+        day=20,
+        vector=(0.9, 0.1),
+    )
+    tail = _admit(
+        memory,
+        evidence_id="INSERT-T",
+        block_id="insert-t",
+        day=30,
+        vector=(0.8, 0.2),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    historical_cutoff = BASE + timedelta(days=50)
+    seeded = assembler.apply_path(
+        (parent, child, tail),
+        knowledge_cutoff=historical_cutoff,
+    )
+    assert seeded.line_id is not None
+    line_id = seeded.line_id
+    parent_node = store.node_for_block(line_id, parent.block_id)
+    child_node = store.node_for_block(line_id, child.block_id)
+    assert parent_node is not None
+    assert child_node is not None
+    assert store.edge_active_at(
+        line_id,
+        parent_node.node_id,
+        child_node.node_id,
+        historical_cutoff,
+    )
+
+    occurred = BASE + timedelta(days=10)
+    known = BASE + timedelta(days=100)
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="INSERT-H",
+            content="late historical middle",
+            occurred_at=occurred,
+            known_at=known,
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    middle = memory.put_semantic_block(
+        SemanticBlock(
+            block_id="insert-h",
+            content="late historical middle",
+            raw_evidence_ids=("INSERT-H",),
+            occurred_start=occurred,
+            occurred_end=occurred,
+            compiler_version="test",
+            lineage_id="main",
+            metadata={"vector": (0.95, 0.05)},
+        )
+    )
+    result = assembler.attach_block(
+        line_id,
+        middle,
+        parent_node_ids=(parent_node.node_id,),
+        child_node_ids=(child_node.node_id,),
+        knowledge_cutoff=known,
+    )
+    middle_node = store.node_for_block(line_id, middle.block_id)
+    assert middle_node is not None
+    assert result.added_edges == (
+        (parent_node.node_id, middle_node.node_id),
+        (middle_node.node_id, child_node.node_id),
+    )
+
+    assert store.edge_active_at(
+        line_id,
+        parent_node.node_id,
+        child_node.node_id,
+        historical_cutoff,
+    )
+    assert not store.edge_active_at(
+        line_id,
+        parent_node.node_id,
+        child_node.node_id,
+        known,
+    )
+    assert set(store.edges_for_line_at(line_id, known)) >= {
+        (parent_node.node_id, middle_node.node_id),
+        (middle_node.node_id, child_node.node_id),
+    }
