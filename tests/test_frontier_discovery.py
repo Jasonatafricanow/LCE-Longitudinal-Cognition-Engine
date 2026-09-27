@@ -469,3 +469,124 @@ def test_frontier_scoring_uses_frozen_baseline_state_not_latest_block(
     )
     baselines.close()
     worktrees.close()
+
+
+def test_exact_frontier_state_replay_does_not_self_support(
+    tmp_path: Path,
+) -> None:
+    baselines = SqliteBaselineStore(tmp_path / "baselines")
+    worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    block = _block("same", 0, "Stable accepted state.")
+    _save_baseline(
+        baselines,
+        region_id="stable",
+        baseline_id="b-stable",
+        content="Stable accepted state.",
+        block_ids=("same",),
+        selected_support=(
+            AuthorizedSelectedSupport(
+                block_id="same",
+                state_id=block.state_id or "",
+            ),
+        ),
+    )
+    memory = _memory(
+        (block,),
+        {"same": (1.0, 0.0)},
+    )
+    discovery = FrontierCandidateDiscovery(
+        memory=memory,
+        baselines=baselines,
+        worktrees=worktrees,
+    )
+    snapshot = _snapshot(
+        (block,),
+        {"same": (1.0, 0.0)},
+    )
+
+    assert discovery.candidates(
+        snapshot,
+        current_block_ids=("same",),
+    ) == ()
+    baselines.close()
+    worktrees.close()
+
+
+def test_frontier_candidate_identity_ignores_baseline_instance_identity(
+    tmp_path: Path,
+) -> None:
+    old = _block("old", 0, "Career direction.")
+    current = _block("current", 3, "Career applications.")
+    memory = _memory(
+        (old, current),
+        {
+            "old": (1.0, 0.0),
+            "current": (0.99, 0.02),
+        },
+    )
+    snapshot = _snapshot(
+        (old, current),
+        {
+            "old": (1.0, 0.0),
+            "current": (0.99, 0.02),
+        },
+    )
+
+    first_baselines = SqliteBaselineStore(tmp_path / "first-baselines")
+    first_worktrees = CognitionWorktreeStore(tmp_path / "first-worktrees")
+    _save_baseline(
+        first_baselines,
+        region_id="career",
+        baseline_id="baseline-instance-a",
+        content="Career direction.",
+        block_ids=("old",),
+        selected_support=(
+            AuthorizedSelectedSupport(
+                block_id="old",
+                state_id=old.state_id or "",
+            ),
+        ),
+    )
+    first = FrontierCandidateDiscovery(
+        memory=memory,
+        baselines=first_baselines,
+        worktrees=first_worktrees,
+    ).candidates(
+        snapshot,
+        current_block_ids=("current",),
+    )
+
+    second_baselines = SqliteBaselineStore(tmp_path / "second-baselines")
+    second_worktrees = CognitionWorktreeStore(tmp_path / "second-worktrees")
+    _save_baseline(
+        second_baselines,
+        region_id="career",
+        baseline_id="baseline-instance-b",
+        content="Career direction.",
+        block_ids=("old",),
+        selected_support=(
+            AuthorizedSelectedSupport(
+                block_id="old",
+                state_id=old.state_id or "",
+            ),
+        ),
+    )
+    second = FrontierCandidateDiscovery(
+        memory=memory,
+        baselines=second_baselines,
+        worktrees=second_worktrees,
+    ).candidates(
+        snapshot,
+        current_block_ids=("current",),
+    )
+
+    assert first
+    assert second
+    assert first[0].candidate_id == second[0].candidate_id
+    assert first[0].metadata["frontier_refs"] == ("region:career",)
+    assert second[0].metadata["frontier_refs"] == ("region:career",)
+
+    first_baselines.close()
+    first_worktrees.close()
+    second_baselines.close()
+    second_worktrees.close()
