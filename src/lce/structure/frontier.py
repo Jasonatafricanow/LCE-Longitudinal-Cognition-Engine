@@ -295,9 +295,12 @@ class FrontierCandidateDiscovery:
         # Legacy baselines/worktrees without frozen state IDs can still be
         # consumed, but only through the visible no-future snapshot state.
         for block_id in fallback_block_ids:
-            block = block_by_id.get(block_id)
-            if block is not None and self._state_is_current(block):
-                blocks.append(block)
+            fallback_block = block_by_id.get(block_id)
+            if (
+                fallback_block is not None
+                and self._state_is_current(fallback_block)
+            ):
+                blocks.append(fallback_block)
         return tuple(blocks)
 
     def _state_is_current(self, block: SemanticBlock) -> bool:
