@@ -603,6 +603,8 @@ class LineAssembler:
     def apply_path(
         self,
         blocks: tuple[SemanticBlock, ...],
+        *,
+        knowledge_cutoff: datetime | None = None,
     ) -> LineApplyResult:
         if len(blocks) < self.config.min_seed_support:
             return LineApplyResult(
@@ -619,12 +621,13 @@ class LineAssembler:
         if len(set(block_ids)) != len(block_ids):
             raise ValueError("trajectory path contains duplicate blocks")
 
-        knowledge_cutoff = max(
+        effective_cutoff = knowledge_cutoff or max(
             self._knowledge_at(block) for block in blocks
         )
+        _require_utc(effective_cutoff, "knowledge_cutoff")
         overlaps = self._visible_overlap_counts(
             block_ids,
-            knowledge_cutoff=knowledge_cutoff,
+            knowledge_cutoff=effective_cutoff,
         )
         strong = {
             line_id: count
