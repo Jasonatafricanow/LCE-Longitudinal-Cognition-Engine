@@ -18,7 +18,6 @@ from lce.reference_memory.contracts import RawEvidence, SemanticBlock
 from lce.structure.trajectory import TrajectoryPath, TrajectoryRuntimeResult
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
-
 BASE = datetime(2026, 1, 1, tzinfo=UTC)
 
 
