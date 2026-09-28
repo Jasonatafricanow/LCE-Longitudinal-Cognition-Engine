@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from lce.cognition.convergence import AuthorityConfig
 from lce.cognition.line_graph import (
     CallableLineProjector,
     CallableProjectionConfig,
@@ -1329,6 +1330,67 @@ def test_same_derivation_fingerprint_restarts_without_spurious_rebuild(
         "SELECT COUNT(*) FROM line_node_memberships"
     ).fetchone()[0] == before_revision_count
     restarted.close()
+
+
+
+def test_authority_policy_change_marks_line_graph_stale(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"AUTHFP-{index}",
+            block_id=f"authfp-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(3)
+    )
+    _rebuild(memory)
+    root = tmp_path / "authority-fingerprint-core"
+    config = TrajectoryConfig(
+        k=2,
+        min_similarity=0.1,
+        min_support=3,
+    )
+    embedder = lambda block: tuple(
+        float(value) for value in block.metadata["vector"]
+    )
+
+    first = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        authority_config=AuthorityConfig(
+            min_independent_support=2,
+        ),
+        block_embedder=embedder,
+        block_embedding_version="vector-v1",
+    )
+    seeded = first.trajectory.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    first.close()
+
+    changed = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=config,
+        authority_config=AuthorityConfig(
+            min_independent_support=3,
+        ),
+        block_embedder=embedder,
+        block_embedding_version="vector-v1",
+    )
+    with pytest.raises(StaleLineGraphError):
+        changed.line_frontier(
+            seeded.line_id,
+            knowledge_cutoff=datetime.now(UTC),
+        )
+    changed.close()
 
 
 def test_neighbour_provider_declared_version_participates_in_line_fingerprint(
