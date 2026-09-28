@@ -13,7 +13,6 @@ from lce.cognition.convergence import (
 from lce.reference_memory.contracts import RawEvidence
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
-
 BASE = datetime(2026, 1, 1, tzinfo=UTC)
 
 
