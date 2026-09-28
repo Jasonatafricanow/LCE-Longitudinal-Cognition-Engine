@@ -15,12 +15,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from lce.cognition.convergence import AuthorityConfig
-from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
 from lce.cognition.inspiration import (
     InspirationConfig,
     InspirationInterpreter,
     InspirationRuntime,
 )
+from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
 from lce.cognition.line_graph import (
     CallableLineProjection,
     CallableLineProjector,
