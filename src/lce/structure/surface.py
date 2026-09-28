@@ -14,7 +14,11 @@ import math
 from dataclasses import dataclass
 from datetime import datetime
 
-from lce.cognition.line_graph import LineGraphStore, LineGraphView
+from lce.cognition.line_graph import (
+    LineGraphStore,
+    LineGraphView,
+    LineTraversalLimitExceeded,
+)
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort
 
 
@@ -174,12 +178,18 @@ class SurfaceRuntime:
     ) -> tuple[LinePathView, ...]:
         output: list[LinePathView] = []
         for line in self.store.list_lines():
-            paths = self.view.paths_to_frontier(
-                line.line_id,
-                knowledge_cutoff=knowledge_cutoff,
-                max_paths=self.config.max_paths_per_line,
-                max_nodes=self.config.max_path_nodes,
-            )
+            try:
+                paths = self.view.paths_to_frontier(
+                    line.line_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                    max_paths=self.config.max_paths_per_line,
+                    max_nodes=self.config.max_path_nodes,
+                )
+            except LineTraversalLimitExceeded as exc:
+                raise SurfaceSearchLimitExceeded(
+                    "Surface requires complete Line paths; "
+                    f"{exc}"
+                ) from exc
             for node_ids in paths:
                 if len(node_ids) < self.config.min_path_nodes:
                     continue

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -371,3 +371,86 @@ def test_bitemporal_lineage_barrier_also_applies_to_source_rebuild(
 
     core.source_changed_and_rebuild("barrier-before")
     core.close()
+
+def test_derived_state_known_at_prevents_reinterpretation_time_travel_in_memory() -> None:
+    memory = InMemoryReferenceMemory()
+    item = _raw("E-derived", occurred_year=2020, known_year=2020)
+    memory.add_evidence(item)
+    original = memory.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-derived",
+            content="original interpretation",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test",
+            lineage_id="main",
+        )
+    )
+    revised_time = datetime(2026, 6, 1, tzinfo=UTC)
+    revised = memory.extend_semantic_block(
+        original.block_id,
+        content="later reinterpretation",
+        evidence_id=item.evidence_id,
+        occurred_at=item.occurred_at,
+        derived_known_at=revised_time,
+    )
+
+    before = memory.list_semantic_blocks_at_knowledge_cutoff(
+        datetime(2025, 1, 1, tzinfo=UTC)
+    )
+    after = memory.list_semantic_blocks_at_knowledge_cutoff(
+        revised_time
+    )
+
+    assert len(before) == 1
+    assert before[0].state_id == original.state_id
+    assert len(after) == 1
+    assert after[0].state_id == revised.state_id
+    assert revised.derived_known_at == revised_time
+
+
+def test_derived_state_known_at_survives_sqlite_restart(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "derived-state-time"
+    item = _raw("E-derived-sql", occurred_year=2020, known_year=2020)
+    first = ReferenceMemoryStore(root)
+    first.add_evidence(item)
+    original = first.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-derived-sql",
+            content="original interpretation",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test",
+            lineage_id="main",
+        )
+    )
+    revised_time = datetime(2026, 6, 1, tzinfo=UTC)
+    revised = first.extend_semantic_block(
+        original.block_id,
+        content="later reinterpretation",
+        evidence_id=item.evidence_id,
+        occurred_at=item.occurred_at,
+        derived_known_at=revised_time,
+    )
+    first.close()
+
+    restarted = ReferenceMemoryStore(root)
+    before = restarted.list_semantic_blocks_at_knowledge_cutoff(
+        datetime(2025, 1, 1, tzinfo=UTC)
+    )
+    after = restarted.list_semantic_blocks_at_knowledge_cutoff(
+        revised_time + timedelta(seconds=1)
+    )
+
+    assert len(before) == 1
+    assert before[0].state_id == original.state_id
+    assert len(after) == 1
+    assert after[0].state_id == revised.state_id
+    assert restarted.get_semantic_block_state(
+        revised.state_id or ""
+    ).derived_known_at == revised_time
+    restarted.close()

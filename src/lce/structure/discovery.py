@@ -94,6 +94,11 @@ class SnapshotStore:
                     "metadata": dict(block.metadata),
                     "state_id": block.state_id,
                     "state_version": block.state_version,
+                    "derived_known_at": (
+                        block.derived_known_at.isoformat()
+                        if block.derived_known_at is not None
+                        else None
+                    ),
                 }
                 for block in snapshot.block_states
             ],
@@ -135,6 +140,11 @@ class SnapshotStore:
                 metadata=item["metadata"],
                 state_id=item.get("state_id"),
                 state_version=int(item.get("state_version", 1)),
+                derived_known_at=(
+                    datetime.fromisoformat(item["derived_known_at"])
+                    if item.get("derived_known_at") is not None
+                    else None
+                ),
             )
             for item in raw.get("block_states", [])
         )

@@ -101,6 +101,25 @@ class AuthoritySignal:
         ).hexdigest()[:24]
 
     @property
+    def relation_id(self) -> str:
+        """Reusable authority relation identity independent of one decision."""
+        payload = json.dumps(
+            {
+                "candidate": self.candidate_id,
+                "support_group": self.support_group_id,
+                "variant": self.derivation_variant_id,
+                "polarity": self.polarity,
+                "reciprocal": self.reciprocal,
+                "context": self.context_id,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        return "authrel_" + hashlib.sha256(
+            payload.encode()
+        ).hexdigest()[:24]
+
+    @property
     def signal_id(self) -> str:
         payload = json.dumps(
             {
@@ -425,7 +444,12 @@ def evaluate_convergence(
 
 
 class AuthorityLedger:
-    """Durable, bitemporal-aware ledger of source-grounded signals."""
+    """Normalized durable ledger of reusable source-grounded authority.
+
+    Raw closures are stored once as authority materials. Candidate/support
+    relations are stored once independently of any one decision. Decisions then
+    reference those reusable relations with their own bitemporal known-at.
+    """
 
     def __init__(self, root: Path | str) -> None:
         self.root = Path(root)
@@ -447,19 +471,127 @@ class AuthorityLedger:
                 reciprocal INTEGER NOT NULL,
                 context_id TEXT
             );
-            CREATE INDEX IF NOT EXISTS idx_authority_decision_time
-                ON authority_signals(decision_key, known_at);
-            CREATE INDEX IF NOT EXISTS idx_authority_candidate
-                ON authority_signals(decision_key, candidate_id);
+
+            CREATE TABLE IF NOT EXISTS authority_materials (
+                material_id TEXT PRIMARY KEY,
+                raw_evidence_ids_json TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS authority_relations (
+                relation_id TEXT PRIMARY KEY,
+                candidate_id TEXT NOT NULL,
+                material_id TEXT NOT NULL,
+                derivation_variant_id TEXT NOT NULL,
+                polarity TEXT NOT NULL,
+                reciprocal INTEGER NOT NULL,
+                context_id TEXT,
+                FOREIGN KEY(material_id)
+                    REFERENCES authority_materials(material_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS authority_decision_refs (
+                decision_key TEXT NOT NULL,
+                relation_id TEXT NOT NULL,
+                known_at TEXT NOT NULL,
+                PRIMARY KEY(decision_key, relation_id),
+                FOREIGN KEY(relation_id)
+                    REFERENCES authority_relations(relation_id)
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_authority_ref_time
+                ON authority_decision_refs(decision_key, known_at);
+            CREATE INDEX IF NOT EXISTS idx_authority_relation_candidate
+                ON authority_relations(candidate_id);
+
+            CREATE TABLE IF NOT EXISTS authority_ledger_metadata (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            );
             """
         )
+        self._migrate_legacy_signals()
         self.conn.commit()
 
-    def record(self, signal: AuthoritySignal, *, commit: bool = True) -> bool:
-        result = self.conn.execute(
+    def _record_normalized(
+        self,
+        signal: AuthoritySignal,
+        *,
+        commit: bool,
+    ) -> bool:
+        material_id = signal.support_group_id
+        raw_json = json.dumps(
+            tuple(sorted(signal.raw_evidence_ids)),
+            separators=(",", ":"),
+        )
+        self.conn.execute(
+            "INSERT OR IGNORE INTO authority_materials "
+            "(material_id, raw_evidence_ids_json) VALUES (?, ?)",
+            (material_id, raw_json),
+        )
+        self.conn.execute(
             """
-            INSERT OR IGNORE INTO authority_signals (
-                signal_id,
+            INSERT OR IGNORE INTO authority_relations (
+                relation_id,
+                candidate_id,
+                material_id,
+                derivation_variant_id,
+                polarity,
+                reciprocal,
+                context_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                signal.relation_id,
+                signal.candidate_id,
+                material_id,
+                signal.derivation_variant_id,
+                signal.polarity,
+                1 if signal.reciprocal else 0,
+                signal.context_id,
+            ),
+        )
+        existing = self.conn.execute(
+            "SELECT known_at FROM authority_decision_refs "
+            "WHERE decision_key = ? AND relation_id = ?",
+            (signal.decision_key, signal.relation_id),
+        ).fetchone()
+        added = existing is None
+        if existing is None:
+            self.conn.execute(
+                "INSERT INTO authority_decision_refs "
+                "(decision_key, relation_id, known_at) VALUES (?, ?, ?)",
+                (
+                    signal.decision_key,
+                    signal.relation_id,
+                    signal.known_at.isoformat(),
+                ),
+            )
+        else:
+            existing_known_at = datetime.fromisoformat(str(existing[0]))
+            if signal.known_at < existing_known_at:
+                self.conn.execute(
+                    "UPDATE authority_decision_refs SET known_at = ? "
+                    "WHERE decision_key = ? AND relation_id = ?",
+                    (
+                        signal.known_at.isoformat(),
+                        signal.decision_key,
+                        signal.relation_id,
+                    ),
+                )
+        if commit:
+            self.conn.commit()
+        return added
+
+    def _migrate_legacy_signals(self) -> None:
+        marker = self.conn.execute(
+            "SELECT value FROM authority_ledger_metadata "
+            "WHERE key = 'normalized_v1'"
+        ).fetchone()
+        if marker is not None:
+            return
+        rows = self.conn.execute(
+            """
+            SELECT
                 decision_key,
                 candidate_id,
                 raw_evidence_ids_json,
@@ -468,26 +600,34 @@ class AuthorityLedger:
                 polarity,
                 reciprocal,
                 context_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                signal.signal_id,
-                signal.decision_key,
-                signal.candidate_id,
-                json.dumps(
-                    tuple(sorted(signal.raw_evidence_ids)),
-                    separators=(",", ":"),
-                ),
-                signal.derivation_variant_id,
-                signal.known_at.isoformat(),
-                signal.polarity,
-                1 if signal.reciprocal else 0,
-                signal.context_id,
-            ),
-        )
-        if commit:
-            self.conn.commit()
-        return result.rowcount > 0
+            FROM authority_signals
+            ORDER BY known_at, signal_id
+            """
+        ).fetchall()
+        with self.conn:
+            for row in rows:
+                self._record_normalized(
+                    AuthoritySignal(
+                        decision_key=str(row[0]),
+                        candidate_id=str(row[1]),
+                        raw_evidence_ids=tuple(json.loads(str(row[2]))),
+                        derivation_variant_id=str(row[3]),
+                        known_at=datetime.fromisoformat(str(row[4])),
+                        polarity=str(row[5]),  # type: ignore[arg-type]
+                        reciprocal=bool(row[6]),
+                        context_id=(
+                            str(row[7]) if row[7] is not None else None
+                        ),
+                    ),
+                    commit=False,
+                )
+            self.conn.execute(
+                "INSERT OR REPLACE INTO authority_ledger_metadata "
+                "(key, value) VALUES ('normalized_v1', '1')"
+            )
+
+    def record(self, signal: AuthoritySignal, *, commit: bool = True) -> bool:
+        return self._record_normalized(signal, commit=commit)
 
     def record_many(
         self,
@@ -496,7 +636,9 @@ class AuthorityLedger:
         added = 0
         with self.conn:
             for signal in signals:
-                added += int(self.record(signal, commit=False))
+                added += int(
+                    self._record_normalized(signal, commit=False)
+                )
         return added
 
     def signals(
@@ -511,23 +653,30 @@ class AuthorityLedger:
         rows = self.conn.execute(
             """
             SELECT
-                decision_key,
-                candidate_id,
-                raw_evidence_ids_json,
-                derivation_variant_id,
-                known_at,
-                polarity,
-                reciprocal,
-                context_id
-            FROM authority_signals
-            WHERE decision_key = ? AND known_at <= ?
-            ORDER BY candidate_id, known_at, signal_id
+                relation.candidate_id,
+                material.raw_evidence_ids_json,
+                relation.derivation_variant_id,
+                decision_ref.known_at,
+                relation.polarity,
+                relation.reciprocal,
+                relation.context_id
+            FROM authority_decision_refs AS decision_ref
+            JOIN authority_relations AS relation
+              ON relation.relation_id = decision_ref.relation_id
+            JOIN authority_materials AS material
+              ON material.material_id = relation.material_id
+            WHERE decision_ref.decision_key = ?
+              AND decision_ref.known_at <= ?
+            ORDER BY
+                relation.candidate_id,
+                decision_ref.known_at,
+                relation.relation_id
             """,
             (decision_key, knowledge_cutoff.isoformat()),
         ).fetchall()
         output: list[AuthoritySignal] = []
         for row in rows:
-            raw_ids = tuple(json.loads(str(row[2])))
+            raw_ids = tuple(json.loads(str(row[1])))
             try:
                 if not all(
                     _evidence_valid_at(
@@ -542,15 +691,15 @@ class AuthorityLedger:
                 continue
             output.append(
                 AuthoritySignal(
-                    decision_key=str(row[0]),
-                    candidate_id=str(row[1]),
+                    decision_key=decision_key,
+                    candidate_id=str(row[0]),
                     raw_evidence_ids=raw_ids,
-                    derivation_variant_id=str(row[3]),
-                    known_at=datetime.fromisoformat(str(row[4])),
-                    polarity=str(row[5]),  # type: ignore[arg-type]
-                    reciprocal=bool(row[6]),
+                    derivation_variant_id=str(row[2]),
+                    known_at=datetime.fromisoformat(str(row[3])),
+                    polarity=str(row[4]),  # type: ignore[arg-type]
+                    reciprocal=bool(row[5]),
                     context_id=(
-                        str(row[7]) if row[7] is not None else None
+                        str(row[6]) if row[6] is not None else None
                     ),
                 )
             )
@@ -576,7 +725,7 @@ class AuthorityLedger:
 
     def decision_keys(self) -> tuple[str, ...]:
         rows = self.conn.execute(
-            "SELECT DISTINCT decision_key FROM authority_signals "
+            "SELECT DISTINCT decision_key FROM authority_decision_refs "
             "ORDER BY decision_key"
         ).fetchall()
         return tuple(str(row[0]) for row in rows)

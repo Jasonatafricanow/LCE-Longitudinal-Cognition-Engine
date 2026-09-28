@@ -41,6 +41,20 @@ class InMemoryReferenceMemory:
             str, list[tuple[str, datetime]]
         ] = {}
 
+    def _with_derived_known_at(
+        self,
+        block: SemanticBlock,
+    ) -> SemanticBlock:
+        if block.derived_known_at is not None:
+            return block
+        return replace(
+            block,
+            derived_known_at=max(
+                self.get_evidence(evidence_id).effective_known_at
+                for evidence_id in block.raw_evidence_ids
+            ),
+        )
+
     @staticmethod
     def _state_id(block: SemanticBlock) -> str:
         payload = {
@@ -51,6 +65,11 @@ class InMemoryReferenceMemory:
             "occurred_start": block.occurred_start.isoformat(),
             "occurred_end": block.occurred_end.isoformat(),
             "metadata": dict(block.metadata),
+            "derived_known_at": (
+                block.derived_known_at.isoformat()
+                if block.derived_known_at is not None
+                else None
+            ),
         }
         return "state_" + hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()[:24]
 
@@ -147,6 +166,7 @@ class InMemoryReferenceMemory:
     def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
         for evidence_id in block.raw_evidence_ids:
             self.get_evidence(evidence_id)
+        block = self._with_derived_known_at(block)
         existing = self._current_blocks.get(block.block_id)
         if existing is not None:
             if replace(existing, state_id=None) != replace(block, state_id=None):
@@ -155,13 +175,20 @@ class InMemoryReferenceMemory:
         return self._write_current(block)
 
     def _write_current(self, block: SemanticBlock) -> SemanticBlock:
+        block = self._with_derived_known_at(block)
         stored = replace(block, state_id=block.state_id or self._state_id(block))
         self._states[stored.state_id or ""] = stored
         self._current_blocks[stored.block_id] = stored
         return stored
 
     def extend_semantic_block(
-        self, block_id: str, *, content: str | None, evidence_id: str, occurred_at: datetime
+        self,
+        block_id: str,
+        *,
+        content: str | None,
+        evidence_id: str,
+        occurred_at: datetime,
+        derived_known_at: datetime | None = None,
     ) -> SemanticBlock:
         current = self.get_semantic_block(block_id)
         self.get_evidence(evidence_id)
@@ -178,6 +205,18 @@ class InMemoryReferenceMemory:
                 occurred_end=max(current.occurred_end, occurred_at),
                 state_id=None,
                 state_version=current.state_version + 1,
+                derived_known_at=(
+                    derived_known_at
+                    or max(
+                        current.derived_known_at
+                        or self.get_evidence(
+                            evidence_id
+                        ).effective_known_at,
+                        self.get_evidence(
+                            evidence_id
+                        ).effective_known_at,
+                    )
+                ),
             )
         )
 
@@ -244,7 +283,11 @@ class InMemoryReferenceMemory:
                 )
             except KeyError:
                 visible = False
-            if not visible:
+            if (
+                not visible
+                or block.derived_known_at is None
+                or block.derived_known_at > cutoff
+            ):
                 continue
             prior = latest.get(block.block_id)
             if prior is None or block.state_version > prior.state_version:

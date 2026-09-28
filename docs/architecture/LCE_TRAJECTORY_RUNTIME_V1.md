@@ -57,6 +57,12 @@ still appear in a 2023 epistemic replay if it was known and not yet invalidated
 in 2023. "Known later to be wrong" therefore does not rewrite what was knowable
 earlier.
 
+Each immutable SemanticBlock state also carries its own `derived_known_at`:
+the knowledge time at which that particular interpretation/state revision was
+materialized. State visibility at cutoff `T` therefore requires both
+`derived_known_at <= T` and cutoff-valid source dependencies. Old Raw Evidence
+does not backdate a later reinterpretation into history.
+
 Immutable SemanticBlock-state vectors are retained across later source
 invalidation so historical replay remains rebuildable. Current default vector
 lookup still excludes currently invalid blocks.
@@ -254,6 +260,14 @@ so long-lived deep Lines are not constrained by Python recursion depth. The
 closure has an explicit node safety ceiling, but the ceiling is fail-closed:
 if the traversal cannot finish exactly, LCE raises
 `LineTraversalLimitExceeded` instead of returning truncated provenance.
+
+Root-to-frontier path enumeration follows the same rule. `max_nodes` and
+`max_paths` are resource safety ceilings, not hidden semantic windows. If an
+exact path or exact path set cannot fit inside those ceilings,
+`paths_to_frontier` raises `LineTraversalLimitExceeded`; it never returns a
+truncated suffix/subset as though it were the complete Line shape. Surface
+discovery converts that condition into `SurfaceSearchLimitExceeded` and does
+not calculate a shape signature from incomplete structure.
 
 It is not inserted as a persistent cognition node.
 

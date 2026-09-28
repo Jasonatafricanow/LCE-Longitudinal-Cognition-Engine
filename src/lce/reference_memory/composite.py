@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping
+from dataclasses import replace
 from datetime import UTC, datetime
 
 from lce.reference_memory.contracts import (
@@ -129,9 +130,27 @@ class ProjectionSubstrate:
         for evidence_id in block.raw_evidence_ids:
             self.source.get_evidence(evidence_id)
 
+    def _with_derived_known_at(
+        self,
+        block: SemanticBlock,
+    ) -> SemanticBlock:
+        if block.derived_known_at is not None:
+            return block
+        return replace(
+            block,
+            derived_known_at=max(
+                self.source.get_evidence(
+                    evidence_id
+                ).effective_known_at
+                for evidence_id in block.raw_evidence_ids
+            ),
+        )
+
     def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
         self._validate_source_refs(block)
-        return self.state.put_semantic_block(block)
+        return self.state.put_semantic_block(
+            self._with_derived_known_at(block)
+        )
 
     def get_semantic_block(self, block_id: str) -> SemanticBlock:
         return self.state.get_semantic_block(block_id)
@@ -195,7 +214,11 @@ class ProjectionSubstrate:
                 )
             except KeyError:
                 visible = False
-            if not visible:
+            if (
+                not visible
+                or block.derived_known_at is None
+                or block.derived_known_at > cutoff
+            ):
                 continue
             prior = latest.get(block.block_id)
             if prior is None or block.state_version > prior.state_version:
@@ -214,13 +237,24 @@ class ProjectionSubstrate:
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
+        derived_known_at: datetime | None = None,
     ) -> SemanticBlock:
-        self.source.get_evidence(evidence_id)
+        evidence = self.source.get_evidence(evidence_id)
+        current = self.state.get_semantic_block(block_id)
+        effective_derived_known_at = (
+            derived_known_at
+            or max(
+                current.derived_known_at
+                or evidence.effective_known_at,
+                evidence.effective_known_at,
+            )
+        )
         return self.state.extend_semantic_block(
             block_id,
             content=content,
             evidence_id=evidence_id,
             occurred_at=occurred_at,
+            derived_known_at=effective_derived_known_at,
         )
 
     def rebuild_vector_index(
@@ -276,12 +310,16 @@ class ProjectionSubstrate:
         checkpoint: CompilerCheckpoint,
     ) -> None:
         self.source.get_evidence(evidence_id)
+        normalized_states = []
         for block in block_states:
             self._validate_source_refs(block)
+            normalized_states.append(
+                self._with_derived_known_at(block)
+            )
         self.state.commit_compilation(
             evidence_id=evidence_id,
             lineage_id=lineage_id,
-            block_states=block_states,
+            block_states=tuple(normalized_states),
             block_ids=block_ids,
             decision=decision,
             checkpoint=checkpoint,

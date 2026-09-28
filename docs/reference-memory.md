@@ -13,7 +13,11 @@ ordering, provenance, validity/invalidation, supersede links, an audit event
 history, canonical Semantic Block storage, and a rebuildable vector projection.
 Semantic Block continuation creates a new immutable block state; cutoff-bound
 snapshots and accepted Baselines can therefore retain the state they actually
-observed. Raw Evidence and derived vectors use separate SQLite tables.
+observed. Each state has a separate `derived_known_at` timestamp. Knowledge
+cutoff reads require the state itself to have been derived by the cutoff in
+addition to requiring its Raw dependencies to be visible/valid then. This
+prevents a later reinterpretation of old evidence from appearing in an earlier
+epistemic replay. Raw Evidence and derived vectors use separate SQLite tables.
 Removing the vector projection does not remove Evidence, Semantic Blocks, or
 their historical states.
 

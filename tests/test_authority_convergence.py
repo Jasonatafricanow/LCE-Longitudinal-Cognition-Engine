@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sqlite3
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -284,3 +285,130 @@ def test_derived_signal_known_at_is_not_backdated_to_raw_evidence(
         ).status == "CONVERGED"
     finally:
         ledger.close()
+
+def test_authority_ledger_reuses_material_and_relation_across_decisions(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="E-shared",
+            content="shared authority",
+            occurred_at=BASE,
+            known_at=BASE,
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    ledger = AuthorityLedger(tmp_path / "authority-normalized")
+    try:
+        for index in range(50):
+            ledger.record(
+                _signal(
+                    f"decision-{index}",
+                    "candidate-a",
+                    "E-shared",
+                )
+            )
+
+        material_count = ledger.conn.execute(
+            "SELECT COUNT(*) FROM authority_materials"
+        ).fetchone()[0]
+        relation_count = ledger.conn.execute(
+            "SELECT COUNT(*) FROM authority_relations"
+        ).fetchone()[0]
+        ref_count = ledger.conn.execute(
+            "SELECT COUNT(*) FROM authority_decision_refs"
+        ).fetchone()[0]
+        legacy_count = ledger.conn.execute(
+            "SELECT COUNT(*) FROM authority_signals"
+        ).fetchone()[0]
+
+        assert material_count == 1
+        assert relation_count == 1
+        assert ref_count == 50
+        assert legacy_count == 0
+        assert ledger.decision_keys()[0] == "decision-0"
+        assert len(
+            ledger.signals(
+                "decision-49",
+                knowledge_cutoff=BASE,
+                memory=memory,
+            )
+        ) == 1
+    finally:
+        ledger.close()
+
+
+def test_authority_ledger_migrates_legacy_signals_once(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "authority-legacy"
+    root.mkdir(parents=True)
+    db_path = root / "authority_convergence.sqlite"
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        """
+        CREATE TABLE authority_signals (
+            signal_id TEXT PRIMARY KEY,
+            decision_key TEXT NOT NULL,
+            candidate_id TEXT NOT NULL,
+            raw_evidence_ids_json TEXT NOT NULL,
+            derivation_variant_id TEXT NOT NULL,
+            known_at TEXT NOT NULL,
+            polarity TEXT NOT NULL,
+            reciprocal INTEGER NOT NULL,
+            context_id TEXT
+        )
+        """
+    )
+    conn.execute(
+        "INSERT INTO authority_signals VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (
+            "legacy-signal",
+            "legacy-decision",
+            "candidate-a",
+            '["E-legacy"]',
+            "v1",
+            BASE.isoformat(),
+            "support",
+            1,
+            None,
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+    memory = InMemoryReferenceMemory()
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="E-legacy",
+            content="legacy",
+            occurred_at=BASE,
+            known_at=BASE,
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    first = AuthorityLedger(root)
+    assert len(
+        first.signals(
+            "legacy-decision",
+            knowledge_cutoff=BASE,
+            memory=memory,
+        )
+    ) == 1
+    assert first.conn.execute(
+        "SELECT COUNT(*) FROM authority_materials"
+    ).fetchone()[0] == 1
+    first.close()
+
+    restarted = AuthorityLedger(root)
+    assert restarted.conn.execute(
+        "SELECT COUNT(*) FROM authority_materials"
+    ).fetchone()[0] == 1
+    assert restarted.conn.execute(
+        "SELECT COUNT(*) FROM authority_relations"
+    ).fetchone()[0] == 1
+    assert restarted.conn.execute(
+        "SELECT COUNT(*) FROM authority_decision_refs"
+    ).fetchone()[0] == 1
+    restarted.close()

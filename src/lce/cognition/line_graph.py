@@ -1075,6 +1075,8 @@ class LineAssembler:
         self.config = config or LineAssemblerConfig()
 
     def _knowledge_at(self, block: SemanticBlock) -> datetime:
+        if block.derived_known_at is not None:
+            return block.derived_known_at
         return max(
             self.memory.get_evidence(evidence_id).effective_known_at
             for evidence_id in block.raw_evidence_ids
@@ -1652,7 +1654,13 @@ class LineGraphView:
         max_paths: int = 128,
         max_nodes: int = 64,
     ) -> tuple[tuple[str, ...], ...]:
-        """Enumerate visible root-to-frontier paths without creating view nodes."""
+        """Enumerate exact visible root-to-frontier paths.
+
+        Bounds are safety ceilings, not semantic windows. If either ceiling
+        would truncate a path set, fail closed instead of returning an
+        incomplete suffix or subset that a downstream consumer could mistake
+        for the complete Line structure.
+        """
         if max_paths < 1 or max_nodes < 1:
             raise ValueError("path bounds must be positive")
         visible = set(
@@ -1669,16 +1677,19 @@ class LineGraphView:
         )
         paths: list[tuple[str, ...]] = []
 
+        def append_exact(path: tuple[str, ...]) -> None:
+            if len(paths) >= max_paths:
+                raise LineTraversalLimitExceeded(
+                    "Line path enumeration exceeded max_paths="
+                    f"{max_paths}; exact path set was not returned"
+                )
+            paths.append(path)
+
         def ascend(
             node_id: str,
             suffix: tuple[str, ...],
         ) -> None:
-            if len(paths) >= max_paths:
-                return
             path = (node_id, *suffix)
-            if len(path) >= max_nodes:
-                paths.append(path)
-                return
             parents = tuple(
                 parent_id
                 for parent_id in self.store.parents_at(
@@ -1687,18 +1698,19 @@ class LineGraphView:
                 )
                 if parent_id in visible
             )
+            if len(path) >= max_nodes and parents:
+                raise LineTraversalLimitExceeded(
+                    "Line path enumeration exceeded max_nodes="
+                    f"{max_nodes}; exact root-to-frontier path was not returned"
+                )
             if not parents:
-                paths.append(path)
+                append_exact(path)
                 return
             for parent_id in parents:
                 ascend(parent_id, path)
-                if len(paths) >= max_paths:
-                    return
 
         for frontier_id in frontiers:
             ascend(frontier_id, ())
-            if len(paths) >= max_paths:
-                break
 
         return tuple(sorted(set(paths)))
 

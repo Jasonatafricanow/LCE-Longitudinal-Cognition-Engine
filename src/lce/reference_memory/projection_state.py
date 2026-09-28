@@ -69,6 +69,7 @@ class SqliteProjectionStateStore:
                 lineage_id TEXT NOT NULL,
                 metadata_json TEXT NOT NULL,
                 raw_evidence_ids_json TEXT NOT NULL,
+                derived_known_at TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 UNIQUE(block_id, state_version)
             );
@@ -108,6 +109,22 @@ class SqliteProjectionStateStore:
             );
             """
         )
+        state_columns = {
+            str(row[1])
+            for row in self._conn.execute(
+                "PRAGMA table_info(semantic_block_states)"
+            )
+        }
+        if "derived_known_at" not in state_columns:
+            self._conn.execute(
+                "ALTER TABLE semantic_block_states "
+                "ADD COLUMN derived_known_at TEXT"
+            )
+            self._conn.execute(
+                "UPDATE semantic_block_states "
+                "SET derived_known_at = created_at "
+                "WHERE derived_known_at IS NULL"
+            )
         self._conn.commit()
 
     @property
@@ -143,6 +160,11 @@ class SqliteProjectionStateStore:
             "compiler_version": block.compiler_version,
             "lineage_id": block.lineage_id,
             "metadata": dict(block.metadata),
+            "derived_known_at": (
+                block.derived_known_at.isoformat()
+                if block.derived_known_at is not None
+                else None
+            ),
         }
         digest = hashlib.sha256(
             json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()
@@ -152,13 +174,27 @@ class SqliteProjectionStateStore:
     def _write_current_state(
         self, db: sqlite3.Connection, block: SemanticBlock
     ) -> SemanticBlock:
+        if block.derived_known_at is None:
+            block = replace(
+                block,
+                derived_known_at=datetime.now(UTC),
+            )
         state_id = block.state_id or self._state_id(block)
         stored = replace(block, state_id=state_id)
+        derived_known_at = stored.derived_known_at
+        assert derived_known_at is not None
         metadata_json = json.dumps(
             dict(stored.metadata), ensure_ascii=False, sort_keys=True
         )
         db.execute(
-            "INSERT OR IGNORE INTO semantic_block_states VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            """
+            INSERT OR IGNORE INTO semantic_block_states (
+                state_id, block_id, state_version, content,
+                occurred_start, occurred_end, compiler_version, lineage_id,
+                metadata_json, raw_evidence_ids_json, derived_known_at,
+                created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
             (
                 stored.state_id,
                 stored.block_id,
@@ -170,6 +206,7 @@ class SqliteProjectionStateStore:
                 stored.lineage_id,
                 metadata_json,
                 json.dumps(stored.raw_evidence_ids),
+                derived_known_at.isoformat(),
                 datetime.now(UTC).isoformat(),
             ),
         )
@@ -243,6 +280,7 @@ class SqliteProjectionStateStore:
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
+        derived_known_at: datetime | None = None,
     ) -> SemanticBlock:
         current = self.get_semantic_block(block_id)
         evidence_ids = (
@@ -263,6 +301,9 @@ class SqliteProjectionStateStore:
             lineage_id=current.lineage_id,
             metadata=current.metadata,
             state_version=current.state_version + 1,
+            derived_known_at=(
+                derived_known_at or datetime.now(UTC)
+            ),
         )
         with self._db():
             return self._write_current_state(self._db(), updated)
@@ -284,7 +325,8 @@ class SqliteProjectionStateStore:
             ).fetchall()
         )
         state = self._db().execute(
-            "SELECT state_id, state_version FROM semantic_block_states "
+            "SELECT state_id, state_version, derived_known_at "
+            "FROM semantic_block_states "
             "WHERE block_id = ? ORDER BY state_version DESC LIMIT 1",
             (block_id,),
         ).fetchone()
@@ -299,13 +341,19 @@ class SqliteProjectionStateStore:
             metadata=json.loads(row[6]),
             state_id=str(state[0]) if state else None,
             state_version=int(state[1]) if state else 1,
+            derived_known_at=(
+                self._parse_datetime(str(state[2]))
+                if state and state[2] is not None
+                else None
+            ),
         )
 
     def get_semantic_block_state(self, state_id: str) -> SemanticBlock:
         row = self._db().execute(
             "SELECT state_id, block_id, state_version, content, occurred_start, "
             "occurred_end, compiler_version, lineage_id, metadata_json, "
-            "raw_evidence_ids_json FROM semantic_block_states WHERE state_id = ?",
+            "raw_evidence_ids_json, derived_known_at "
+            "FROM semantic_block_states WHERE state_id = ?",
             (state_id,),
         ).fetchone()
         if row is None:
@@ -321,6 +369,11 @@ class SqliteProjectionStateStore:
             metadata=json.loads(row[8]),
             state_id=row[0],
             state_version=int(row[2]),
+            derived_known_at=(
+                self._parse_datetime(str(row[10]))
+                if row[10] is not None
+                else None
+            ),
         )
 
     def list_semantic_blocks(self) -> tuple[SemanticBlock, ...]:
