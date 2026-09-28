@@ -81,14 +81,22 @@ pairwise cohesion, or exclusive connected components. One Semantic Block may
 support multiple Lines.
 
 A stable Line keeps one identity while allowing internal branch and explicitly
-authorized conjunctive rejoin structure. Line membership and edges are
-knowledge-time revisioned, so corrections rebuild the current derived relation
-without rewriting what was visible at an earlier epistemic cutoff.
+authorized conjunctive rejoin structure. Once Line membership/edges have passed
+admission and are persisted, they are reusable **derived structural authority**
+for ordinary runtime consumption. They do not become new factual evidence:
+Raw Evidence remains the provenance, audit, invalidation, and rebuild authority.
 
-Nearline processing does not rescan the full history. Similarity only proposes
-candidate Lines; every threshold-qualified Line competes using its source-grounded
-local support. Independent support is counted from Raw-Evidence components, not
-from repeated derived views, and Pareto-incomparable candidates remain `UNKNOWN`.
+Line membership and edges are knowledge-time revisioned. A later source/state
+change invalidates only the affected derived relations when local repair is
+possible; unrelated compiled structure remains reusable and earlier epistemic
+cutoffs are preserved.
+
+Nearline processing does not rescan the full history or reopen historical Raw
+closures to re-prove an already-admitted Line. Similarity proposes matching
+Lines, then relation admission is evaluated independently for each Line against
+bounded ordered local witnesses. A SemanticBlock may therefore join multiple
+Lines when each local relation is supported. Pareto convergence remains for
+initial Line seed/identity questions where candidates are genuinely exclusive.
 Full point-cloud bootstrap is explicit or batch/periodic.
 
 Consumer-facing Line projections are bounded content views with exact Raw
