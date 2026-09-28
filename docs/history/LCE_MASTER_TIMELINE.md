@@ -970,3 +970,24 @@ The remaining implementation gap is a durable relation-level correction /
 negative-constraint ledger so unchanged evidence does not regenerate the same
 explicitly rejected relation on a later bootstrap.
 
+## 2026-09-28 — proactive Inspiration Material becomes a core output
+
+LCE gained a narrow proactive-consumption seam in addition to accepted
+understanding reads.
+
+Two internal inspiration paths are implemented:
+
+- unresolved local trajectory structure can become a cautious
+  possible-association prompt;
+- a stable Line prefix can be passed to a bounded semantic interpreter for a
+  one-step speculative extension.
+
+The supported prefix and speculative extension remain separate in the rendered
+material. The public object intentionally exposes only an opaque material ID
+and self-contained content; internal Line/branch/provenance/candidate state
+does not leak into downstream consumers.
+
+The deterministic reference interpreter refuses to invent a concrete extension,
+so specific `D?` generation remains model-after-structure and deployment
+injectable rather than hidden inside geometry.
+
