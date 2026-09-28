@@ -142,6 +142,7 @@ class SemanticCompiler:
                 "subject": subject,
                 **({"vector": material.provenance["vector"]} if "vector" in material.provenance else {}),
             },
+            derived_known_at=material.effective_known_at,
         )
         return block
 
@@ -174,6 +175,7 @@ class SemanticCompiler:
                 occurred_end=max(block.occurred_end, material.occurred_at),
                 state_id=None,
                 state_version=block.state_version + 1,
+                derived_known_at=material.effective_known_at,
             )
             updates[updated.block_id] = updated
             return updated
