@@ -29,6 +29,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e . -r requirements-verification.txt
 
+      - name: Show Ruff autofix diff
+        continue-on-error: true
+        run: |
+          python -m ruff check \
+            src/lce/__init__.py \
+            tests/test_authority_convergence.py \
+            tests/test_trajectory_authority_runtime.py \
+            --fix --diff
+
       - name: Run canonical verification
         run: python scripts/verify.py
 
