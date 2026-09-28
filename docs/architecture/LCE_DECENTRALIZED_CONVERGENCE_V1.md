@@ -307,6 +307,55 @@ A future contradiction supplier must have its own authorized semantic contract.
 Once such signals exist, the convergence layer can consume them without
 changing its comparison logic.
 
+## Derived cognition is defeasible
+
+Convergence authorizes a **derived structural interpretation**. It does not make
+that interpretation irreversible.
+
+There are two different histories:
+
+```text
+factual history:
+    what Raw Evidence existed / was valid
+
+cognition history:
+    what LCE inferred from that evidence at each knowledge time
+```
+
+If the Raw Evidence remains true but a user or another authorized correction
+explicitly rejects LCE's relation, the correct operation is not to delete the
+Raw Evidence and not to pretend the old inference never existed.
+
+The required semantics are:
+
+```text
+Raw Evidence remains
+        |
+        v
+derived relation is explicitly rejected
+        |
+        +--> current relation becomes unusable
+        +--> dependent current structure is revalidated/rebuilt
+        +--> current cognition may roll back to an earlier supported branch
+        +--> rejected historical revision remains auditable
+```
+
+"Historical visibility" therefore means only that the system can explain what
+it previously inferred. It does **not** grant that inference continuing current
+authority.
+
+An explicit correction should also survive rebuild. Otherwise the unchanged
+same evidence could regenerate the same rejected relation on the next
+sleep/bootstrap pass. The correction path therefore needs a durable
+relation-level negative constraint or contradiction signal tied to the rejected
+derived claim/relation. That constraint may later be superseded if genuinely new
+authorized evidence reopens the question.
+
+The convergence primitive already has a contradiction dimension and can consume
+authorized negative signals. V1 does not itself infer semantic contradiction
+from cosine distance or geometry, and the dedicated persistent correction
+ledger is a separate control-plane implementation.
+
 ## Failure / UNKNOWN semantics
 
 `UNRESOLVED` is not an exception path. It is a first-class result.
@@ -429,11 +478,13 @@ cannot.
 ## What this V1 does not claim
 
 - It does not prove that a converged interpretation is semantically true.
-- It does not invent contradiction labels; an authorized semantic-relation layer
-  may add contradiction signals later.
+- It does not invent contradiction labels; an authorized semantic-relation or
+  explicit correction layer may add contradiction signals later.
 - It does not define a universal context ontology.
 - It does not replace held-out real-data calibration.
 - It does not turn Surface or Line reuse into independent evidence.
+- It does not make a converged Line/relation irrevocable; current derived
+  cognition remains retractable while its historical revision stays auditable.
 
 The key invariant is:
 
