@@ -342,3 +342,35 @@ def test_surface_view_provenance_includes_all_conjunctive_rejoin_parents(
     assert len(ending_at_rejoin) == 2
     for view in ending_at_rejoin:
         assert {"RT", "RA", "RB", "RR"} <= set(view.raw_evidence_ids)
+
+def test_surface_fails_closed_when_line_path_is_longer_than_bound(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    store = LineGraphStore(tmp_path / "lines")
+    line_id = _add_line(
+        memory,
+        store,
+        prefix="long-surface",
+        anchor=(0.0, 0.0, 0.0, 0.0),
+        states=tuple(
+            (float(index), float(index) / 10.0)
+            for index in range(70)
+        ),
+    )
+    _rebuild(memory)
+    runtime = SurfaceRuntime(
+        memory=memory,
+        line_store=store,
+        config=SurfaceConfig(max_path_nodes=64),
+    )
+
+    with pytest.raises(
+        SurfaceSearchLimitExceeded,
+        match="complete Line paths",
+    ):
+        runtime._line_path_views(
+            knowledge_cutoff=BASE + timedelta(days=500),
+        )
+
+    assert store.get_line(line_id).line_id == line_id
