@@ -15,6 +15,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from lce.cognition.convergence import AuthorityConfig
+from lce.cognition.inspiration import (
+    InspirationConfig,
+    InspirationInterpreter,
+    InspirationRuntime,
+)
 from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
 from lce.cognition.line_graph import (
     CallableLineProjection,
@@ -35,6 +40,7 @@ from lce.cognition.promotion import (
 )
 from lce.cognition.worktree import CognitionWorktreeStore, DraftRevision
 from lce.contracts.consolidation import ConsolidationResult
+from lce.contracts.inspiration import InspirationMaterial
 from lce.read_api import AcceptedUnderstandingReadAPI, UnderstandingView
 from lce.reference_memory.contracts import (
     AuthorizedSelectedSupport,
@@ -125,6 +131,8 @@ class LceProjectionCore:
         authority_config: AuthorityConfig | None = None,
         line_assembler_config: LineAssemblerConfig | None = None,
         callable_projection_config: CallableProjectionConfig | None = None,
+        inspiration_config: InspirationConfig | None = None,
+        inspiration_interpreter: InspirationInterpreter | None = None,
         surface_config: SurfaceConfig | None = None,
         interpreter: BoundedInterpreter | None = None,
         block_embedder: Callable[
@@ -163,6 +171,13 @@ class LceProjectionCore:
             memory=self.memory,
             store=self.lines,
             config=callable_projection_config,
+        )
+        self.inspiration = InspirationRuntime(
+            memory=self.memory,
+            line_store=self.lines,
+            root=self.root / "inspiration",
+            interpreter=inspiration_interpreter,
+            config=inspiration_config,
         )
         self.surface_runtime = (
             SurfaceRuntime(
@@ -1114,6 +1129,40 @@ class LceProjectionCore:
             knowledge_cutoff=knowledge_cutoff,
         )
 
+    def discover_inspiration(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+        trajectory_result: TrajectoryRuntimeResult | None = None,
+    ) -> tuple[InspirationMaterial, ...]:
+        """Compile rich internal structure into opaque proactive material.
+
+        This is intentionally explicit: normal nearline processing does not
+        create proactive inspiration automatically. A sleep/daydream/dream
+        scheduler may call this after bounded trajectory discovery.
+        """
+        self._require_line_graph_current()
+        return self.inspiration.discover(
+            knowledge_cutoff=knowledge_cutoff,
+            trajectory_result=trajectory_result,
+        )
+
+    def inspiration_materials(
+        self,
+        *,
+        limit: int = 20,
+    ) -> tuple[InspirationMaterial, ...]:
+        """Return only the narrow downstream contract: ID plus content."""
+        return self.inspiration.pending_materials(limit=limit)
+
+    def consume_inspiration(self, material_id: str) -> None:
+        """Mark one material consumed without exposing LCE internals."""
+        self.inspiration.consume(material_id)
+
+    def dismiss_inspiration(self, material_id: str) -> None:
+        """Dismiss one material without exposing LCE internals."""
+        self.inspiration.dismiss(material_id)
+
     def discover_surfaces(
         self,
         *,
@@ -1240,6 +1289,7 @@ class LceProjectionCore:
 
     def close(self) -> None:
         self.discovery.close()
+        self.inspiration.close()
         self.trajectory.close()
         self.lines.close()
         self.worktrees.close()

@@ -9,6 +9,16 @@ from lce.cognition.convergence import (
     evaluate_convergence,
 )
 from lce.cognition.external import PrecomputedDraftInput, PrecomputedDraftIntake
+from lce.cognition.inspiration import (
+    InspirationConfig,
+    InspirationInterpretation,
+    InspirationInterpreter,
+    InspirationKind,
+    InspirationPackage,
+    InspirationRuntime,
+    InspirationStore,
+    RuleBasedInspirationInterpreter,
+)
 from lce.cognition.line_graph import (
     CallableLineProjection,
     CallableLineProjector,
@@ -55,6 +65,13 @@ __all__ = [
     "ConservativePromotionPolicy",
     "DraftRevision",
     "DraftRevisionStore",
+    "InspirationConfig",
+    "InspirationInterpretation",
+    "InspirationInterpreter",
+    "InspirationKind",
+    "InspirationPackage",
+    "InspirationRuntime",
+    "InspirationStore",
     "LineApplyResult",
     "LineAssembler",
     "LineAssemblerConfig",
@@ -67,6 +84,7 @@ __all__ = [
     "PrecomputedDraftInput",
     "PrecomputedDraftIntake",
     "RuleBasedBoundedInterpreter",
+    "RuleBasedInspirationInterpreter",
     "UnderstandingPromoter",
     "evaluate_convergence",
 ]
