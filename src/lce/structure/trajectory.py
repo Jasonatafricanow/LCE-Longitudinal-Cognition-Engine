@@ -752,9 +752,13 @@ class TrajectoryRuntime:
             candidate_blocks = (
                 (block, anchor) if anchor is not None else (block,)
             )
-            support[line_id] = tuple(
-                dict.fromkeys(candidate_blocks)
-            )
+            unique_blocks: dict[str, SemanticBlock] = {}
+            for candidate_block in candidate_blocks:
+                unique_blocks.setdefault(
+                    candidate_block.block_id,
+                    candidate_block,
+                )
+            support[line_id] = tuple(unique_blocks.values())
         return self._record_authority_candidates(
             decision_key=decision_key,
             candidate_support=support,
