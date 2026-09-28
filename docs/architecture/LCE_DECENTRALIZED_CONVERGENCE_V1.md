@@ -17,7 +17,8 @@ The problem is narrower:
 
 The runtime keeps a vector of explicit support dimensions:
 
-- independent Raw-Evidence support groups;
+- provenance-disjoint Raw-Evidence support groups (named
+  `independent_support` in the current API);
 - reciprocal local-structure support;
 - source-grounded context diversity when an upstream layer supplies it;
 - derivation stability across algorithm/provider variants;
@@ -92,7 +93,7 @@ The dimensions have intentionally different meanings:
 
 | Dimension | Meaning | What does **not** increase it |
 |---|---|---|
-| `independent_support` | Number of independent Raw-evidence components supporting the candidate. | Replaying the same Raw closure, partially overlapping closures, more projections over the same Raw basis. |
+| `independent_support` | Number of provenance-disjoint Raw-evidence components supporting the candidate. This is structural/provenance independence, not a claim of independent human/source origin. | Replaying the same Raw closure, partially overlapping closures, more projections over the same Raw basis. |
 | `reciprocal_support` | Independent support components that contain at least one reciprocal local-structure observation. | A higher cosine score by itself. |
 | `context_support` | Number of distinct stable upstream context IDs represented by supporting components. | Inventing local time buckets or assigning conflicting contexts to the same Raw component. |
 | `derivation_stability` | Number of derivation variants that independently reproduce support above the configured per-variant evidence floor. | Repeating one variant or running many variants over only one Raw component. |
