@@ -1075,6 +1075,8 @@ class LineAssembler:
         self.config = config or LineAssemblerConfig()
 
     def _knowledge_at(self, block: SemanticBlock) -> datetime:
+        if block.derived_known_at is not None:
+            return block.derived_known_at
         return max(
             self.memory.get_evidence(evidence_id).effective_known_at
             for evidence_id in block.raw_evidence_ids
