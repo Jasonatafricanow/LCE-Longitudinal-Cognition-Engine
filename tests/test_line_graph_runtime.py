@@ -1990,3 +1990,36 @@ def test_core_treats_persisted_rebuild_marker_as_stale(
             knowledge_cutoff=BASE + timedelta(days=100),
         )
     restarted.close()
+
+
+def test_paths_to_frontier_fails_closed_instead_of_returning_truncated_suffix(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"PATH-LIMIT-{index}",
+            block_id=f"path-limit-{index}",
+            day=index * 10,
+            vector=(1.0, 0.0),
+        )
+        for index in range(5)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    seeded = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+
+    with pytest.raises(
+        LineTraversalLimitExceeded,
+        match="complete root-to-frontier path was not returned",
+    ):
+        LineGraphView(memory=memory, store=store).paths_to_frontier(
+            seeded.line_id,
+            knowledge_cutoff=BASE + timedelta(days=100),
+            max_nodes=3,
+        )
