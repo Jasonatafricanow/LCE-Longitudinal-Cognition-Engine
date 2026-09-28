@@ -57,6 +57,25 @@ It may also carry:
 
 The signal does **not** carry a scalar confidence.
 
+### Durable authority storage
+
+Persistence is normalized into three layers:
+
+```text
+Raw closure material
+    -> reusable candidate/support relation
+        -> decision reference + decision-time known_at
+```
+
+A Raw closure is stored once by material identity. The same candidate/support
+relation over that closure and derivation variant is also stored once,
+independently of a particular decision. Individual decisions reference that
+relation and record when it became available to that decision.
+
+This keeps provenance auditable without copying the same Raw closure into every
+decision row. Legacy `authority_signals` databases are migrated once into the
+normalized representation; new writes use only the normalized layers.
+
 ### Evidence component
 
 Signals are grouped by Raw-Evidence overlap, not merely by identical closure.
