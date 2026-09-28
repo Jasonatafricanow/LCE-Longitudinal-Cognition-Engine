@@ -142,7 +142,7 @@ class AuthorityConfig:
                 self.min_variant_independent_support,
             ),
         ):
-            if not isinstance(value, int) or value < 0:
+            if type(value) is not int or value < 0:
                 raise ValueError(f"{name} must be a nonnegative integer")
         if self.min_independent_support < 1:
             raise ValueError("min_independent_support must be positive")
