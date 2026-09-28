@@ -37,4 +37,5 @@ jobs:
             tests/test_bitemporal_runtime.py \
             tests/test_line_graph_runtime.py \
             tests/test_trajectory_runtime.py \
-            tests/test_surface_runtime.py -q
+            tests/test_surface_runtime.py \
+            tests/research/test_trajectory_convergence.py -q
