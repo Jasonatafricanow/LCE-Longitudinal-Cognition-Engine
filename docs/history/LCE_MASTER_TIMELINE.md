@@ -735,3 +735,216 @@ This archive does not continue into speculative V2 architecture. It ends at
 the frozen release identity.
 
 ## LCE V1 ENGINEERING CLOSED
+
+---
+
+# Post-release continuation log
+
+The standalone V1 release above remains historically frozen. The entries below
+record later research/runtime work and **do not retroactively change the V1
+closure claim**.
+
+## 2026-09-28 — Path B trajectory runtime enters master
+
+**PR:** #32, `feat(cognition): merge trajectory runtime V1`  
+**Head:** `91f3d762c1aa998e0a8f50b9f1d6292980b0d4f1`  
+**Merge commit:** `248fa642699f8dde3ae7ede3360dd2bcb8daa328`
+
+The new runtime moved the post-V1 research path from experiment-only structure
+discovery into a production-shaped derived cognition path while keeping the
+legacy Frontier/06R path intact in parallel.
+
+The accepted chain became:
+
+```text
+Raw Evidence
+  -> SemanticBlock
+  -> vector projection
+  -> local mutual-kNN proposal
+  -> logically ordered overlapping trajectories
+  -> revisioned Line DAG
+  -> bounded Line projections
+  -> optional Surface discovery
+```
+
+The important structural changes were not "a better clustering algorithm".
+They were authority and lifecycle corrections:
+
+- `known_at` controls epistemic visibility while `occurred_at` controls
+  logical placement;
+- one SemanticBlock may participate in multiple Lines;
+- Line identity is durable while membership, state, and relation revisions are
+  knowledge-time versioned;
+- late-known historical evidence can revise current relations without rewriting
+  earlier epistemic history;
+- branch structure is represented as a DAG rather than forced into one linear
+  trajectory;
+- conjunctive rejoin is explicit and off by default;
+- derivation fingerprints make embedding/config/provider changes fail closed
+  until a rebuild;
+- bounded Line views preserve exact Raw provenance and do not become new factual
+  evidence;
+- Surface discovery remains optional, derived, and cross-Line only.
+
+The runtime deliberately retained several open operator questions: calibrated
+`k`/similarity thresholds, ANN replacement for the reference O(N²) neighbour
+backend, semantic rejoin criteria, branch-to-independent-Line policy, and
+Surface calibration.
+
+## 2026-09-28 — decentralized evidence convergence becomes Line authority
+
+**PR:** #33, `feat(cognition): add decentralized evidence convergence`  
+**Head:** `65b911bc508ba6383dfaaafd5d5355375b447945`  
+**Merge commit:** `cb10fb7c321543d8187a3b1002cb42f520c71d91`
+
+Path B still had one unresolved architectural weakness after PR #32: local
+geometry could propose useful structure, but persistent identity still needed a
+stronger answer to the question:
+
+> If several derived interpretations are plausible, what authorizes one of them
+> to become the persistent Line identity?
+
+The rejected answer was another central confidence scorer. A scalar such as
+`0.83` would hide exchange rates between independent support, repeated
+derivation, contextual breadth, and contradiction pressure. It would also make
+it too easy for derived artifacts to amplify their own authority.
+
+The implemented answer separates **proposal** from **authority**:
+
+```text
+local geometry / retrieval
+        |
+        v
+candidate interpretations
+        |
+        v
+Raw-Evidence-grounded support profiles
+        |
+        v
+explicit admission floors
+        |
+        v
+Pareto competition
+        |
+        +--> unique undominated candidate -> CONVERGED
+        |
+        +--> tie / tradeoff / insufficient support -> UNRESOLVED
+```
+
+### Independent evidence means independent Raw support
+
+Each authority signal carries the exact Raw-Evidence closure supporting the
+derived observation. Exact closure hashes alone were not sufficient: partially
+overlapping closures can still share the same underlying evidence.
+
+The production rule therefore collapses **transitively overlapping Raw
+closures** into one evidence component:
+
+```text
+{E1, E2} + {E2, E3}
+        -> one connected Raw-evidence component
+        -> one independent support unit
+```
+
+This closes a self-amplification path where repeated projections, overlapping
+SemanticBlocks, or multiple derived views could otherwise manufacture extra
+"votes" from the same factual basis.
+
+### Confidence remains a vector, not a weighted score
+
+The current profile records:
+
+```text
+independent_support
+reciprocal_support
+context_support
+derivation_stability
+contradiction_pressure
+```
+
+No weighted sum is computed. A candidate dominates another only if it is no
+worse on every positive dimension, no worse on contradiction pressure, and
+strictly better on at least one dimension.
+
+Cross-dimension tradeoffs remain `UNRESOLVED`; the runtime does not invent a
+hidden exchange rate such as "three support components cancel one
+contradiction".
+
+### Derivation stability cannot manufacture factual support
+
+Running the same Raw Evidence through more derived projections does not increase
+`independent_support`. Different derivation variants can contribute only to
+the separate `derivation_stability` dimension, and a variant itself must be
+supported by the configured minimum number of independent evidence components.
+
+The derivation-variant identity is bound to the embedding version, trajectory
+configuration, and neighbour-provider identity/version.
+
+### Knowledge-time authority is not backdated
+
+Authority signals record when the **derived structural observation** was
+materialized. Old Raw Evidence therefore cannot make a newly computed
+interpretation appear to have existed at an earlier knowledge cutoff.
+
+At replay time, a signal is visible only if:
+
+1. the signal itself was known by that cutoff; and
+2. every Raw Evidence item in its closure was valid at that cutoff.
+
+Later invalidation can remove present authority while preserving what an
+earlier epistemic replay was legitimately allowed to see.
+
+### Bootstrap and nearline now use the same authority principle
+
+Slow bootstrap:
+
+```text
+mutual-kNN path proposal
+  -> source-grounded convergence
+  -> Line seed / identity inheritance / UNKNOWN
+```
+
+Nearline:
+
+```text
+current SemanticBlock
+  -> every Line above proposal threshold
+  -> cutoff-visible local support neighbourhood for each Line
+  -> source-grounded convergence
+  -> attach / UNKNOWN
+```
+
+The largest cosine score and the legacy score-margin heuristic no longer certify
+identity. Similarity only decides which candidates deserve consideration.
+
+### Failure semantics remain explicit
+
+The convergence layer intentionally does **not** invent:
+
+- contradiction labels;
+- a universal context ontology;
+- a branch-to-independent-Line semantic rule;
+- a weighted confidence formula.
+
+Those require upstream semantic authority or separate research. Their absence is
+represented as missing evidence or `UNRESOLVED`, not silently filled by a
+default scorer.
+
+### Verification record
+
+The authority branch passed:
+
+```text
+full suite: 241 passed
+focused trajectory/authority suite: 74 passed
+mypy src/lce: clean
+Ruff src tests: clean
+```
+
+PR #33 Public Verification passed, and the post-merge `master` Public
+Verification also passed at merge commit
+`cb10fb7c321543d8187a3b1002cb42f520c71d91`.
+
+The detailed runtime logic is documented in
+[`LCE_DECENTRALIZED_CONVERGENCE_V1.md`](../architecture/LCE_DECENTRALIZED_CONVERGENCE_V1.md).
+

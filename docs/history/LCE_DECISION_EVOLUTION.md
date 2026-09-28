@@ -564,3 +564,242 @@ with Memory/Source authority, explicit selected immutable support,
 effect-aware recovery, non-mutating reads, and optional one-way MR binding.
 Embedding quality, threshold tuning, higher-order precision, future MR/Body
 integration, and performance optimization remain non-blocking future work.
+
+---
+
+# Post-V1 decision addendum — 2026-09-28
+
+The decisions below describe later Path B work. They do not rewrite the frozen
+standalone V1 closure above.
+
+## 21. Why did Path B need a separate identity-authority layer?
+
+**Problem.** Local mutual-kNN and Line overlap can propose plausible
+longitudinal structure, but proposal quality and persistent identity authority
+are different questions. A locally strong path can still be supported by
+duplicated/overlapping Raw Evidence, and several existing Lines can be
+simultaneously plausible.
+
+**Failed assumption.** The structure with the highest similarity, largest
+overlap count, or best local score should automatically inherit persistent
+identity.
+
+That would collapse two responsibilities:
+
+```text
+proposal: which candidates are worth considering?
+authority: which candidate is sufficiently supported to persist?
+```
+
+A similarity score is useful for the first question. It has no independent
+basis for answering the second.
+
+**Decision.** Keep proposal and authority separate:
+
+```text
+local geometry
+  -> candidate structure
+  -> source-grounded authority profile
+  -> explicit admission floors
+  -> Pareto competition
+  -> CONVERGED / UNRESOLVED
+```
+
+Raw Evidence remains the only independent factual authority. The new
+convergence layer can authorize a derived structural identity; it cannot turn
+that identity into factual evidence.
+
+**Consequence.** Path B can now remain aggressive in candidate discovery while
+staying conservative at the persistence boundary. Improving the neighbour
+algorithm no longer implicitly changes the meaning of "authorized Line".
+
+## 22. Why is confidence a vector instead of one score?
+
+**Problem.** Several support dimensions matter, but they are not obviously
+commensurable:
+
+```text
+independent Raw support
+reciprocal local structure
+context diversity
+derivation stability
+contradiction pressure
+```
+
+A weighted confidence score would require arbitrary exchange rates between
+them.
+
+**Failed assumption.** A single scalar is harmless if its components are
+well-designed.
+
+The scalar itself becomes policy. For example, a formula that lets three
+positive observations cancel one contradiction has already made a semantic
+decision about the relative authority of those dimensions.
+
+**Decision.** Keep the profile multidimensional. Use explicit minimum floors
+for eligibility and Pareto dominance for competition:
+
+```text
+A dominates B iff:
+  A >= B on every positive dimension
+  A <= B on contradiction pressure
+  and A is strictly better on at least one dimension
+```
+
+If two eligible candidates trade strengths, neither dominates.
+
+**Consequence.** Cross-dimension disagreement remains visible as
+`UNRESOLVED` instead of being hidden inside a weighted total.
+
+## 23. Why are overlapping Raw closures collapsed transitively?
+
+**Problem.** Exact duplicate removal is not enough to establish independent
+support.
+
+These two closures are different strings but not independent evidence:
+
+```text
+C1 = {E1, E2}
+C2 = {E2, E3}
+```
+
+They share `E2`. A chain such as
+`{E1,E2}`, `{E2,E3}`, `{E3,E4}` also remains one connected factual basis.
+
+**Failed assumption.** Different closure hashes imply independent support.
+
+**Decision.** Build connected components over shared Raw Evidence IDs. Every
+transitively overlapping closure belongs to one independent evidence component.
+
+**Consequence.** Derived projections, overlapping SemanticBlocks, and repeated
+structural views cannot manufacture authority by repackaging the same factual
+basis.
+
+## 24. Why does derivation stability remain separate from independent support?
+
+**Problem.** Surviving several embedding/config/provider variants is useful
+evidence that a structure is not an artifact of one derivation, but running the
+same Raw Evidence through several algorithms does not create new facts.
+
+**Failed assumption.** Agreement across derived methods can be counted as more
+independent factual support.
+
+**Decision.**
+
+```text
+Raw independence -> independent_support
+cross-derivation survival -> derivation_stability
+```
+
+A derivation variant counts as stable only when it is itself backed by the
+configured minimum number of independent evidence components. The variant
+identity is bound to embedding version, trajectory configuration, and
+neighbour-provider identity/version.
+
+**Consequence.** Algorithmic robustness can strengthen the structural profile
+without allowing derived cognition to vote itself into factual authority.
+
+## 25. Why is authority knowledge-time revisioned?
+
+**Problem.** Raw Evidence may have existed for months before a new structural
+interpretation is computed. If the derived signal inherits the Raw
+`known_at`, historical replay would falsely claim the interpretation was known
+before the system actually derived it.
+
+**Failed assumption.** The knowledge time of a derived interpretation can be
+backdated to the knowledge time of its supporting evidence.
+
+**Decision.** Authority signals receive their own `known_at`: the time the
+derived structural observation was materialized.
+
+At a cutoff, a signal is usable only when:
+
+```text
+signal.known_at <= cutoff
+and every supporting Raw Evidence item is valid at cutoff
+```
+
+**Consequence.** Later derivation does not leak backward into earlier epistemic
+history; later source invalidation can remove current support without rewriting
+what earlier replay was legitimately allowed to know.
+
+## 26. Why did nearline routing stop using the best similarity as the winner?
+
+**Problem.** After the first convergence implementation, nearline routing still
+contained an older shortcut: rank candidate Lines by cosine similarity and use
+a score margin to treat the top Line as effectively unambiguous.
+
+That reintroduced a central scorer at exactly the identity boundary the new
+authority layer was intended to protect.
+
+**Failed assumption.** If the top similarity is far enough above second place,
+the identity problem is no longer ambiguous.
+
+**Decision.** Every Line above the proposal threshold is a candidate. For each
+candidate, collect all cutoff-visible Line states that locally clear the same
+proposal threshold and close them back to Raw Evidence. Convergence is decided
+from those source-grounded profiles, not the top cosine value.
+
+```text
+similarity -> candidate admission
+Raw support -> identity authority
+```
+
+**Consequence.** A `0.99` candidate does not automatically defeat a `0.86`
+candidate if both have equally strong independent source support. The result can
+remain `UNRESOLVED`.
+
+## 27. Why can convergence select an identity but not merge Lines?
+
+**Problem.** A candidate path can overlap several stable Lines. Selecting which
+identity the current path should inherit is not equivalent to proving that the
+existing Lines are the same object.
+
+**Failed assumption.** If one Line wins a convergence decision, competing Lines
+can be collapsed into it.
+
+**Decision.** Convergence may authorize:
+
+- a new Line seed;
+- inheritance of one existing Line identity;
+- nearline attachment to one existing Line.
+
+It does **not** authorize Line merge. Existing Line identities and their
+historical revisions remain intact.
+
+**Consequence.** Identity resolution stays narrower than ontology rewriting.
+A future merge policy would require its own evidence contract and cannot be
+smuggled in through the convergence operator.
+
+## 28. What remains deliberately outside the convergence authority?
+
+The runtime can consume, but does not autonomously manufacture:
+
+- contradiction signals;
+- source-grounded context IDs;
+- semantic branch-to-independent-Line transitions.
+
+It also does not introduce a universal time/context bucket or a weighted
+confidence formula.
+
+The boundary is:
+
+> missing semantic authority stays missing.
+
+The correct output is `UNRESOLVED` until an upstream authorized source or a
+separately tested algorithm supplies the missing evidence.
+
+The resulting post-V1 logic is therefore:
+
+```text
+Raw Evidence authority
+  -> SemanticBlock
+  -> replaceable local proposal algorithms
+  -> decentralized source-grounded convergence
+  -> persistent derived identity
+  -> bounded consumer views
+```
+
+This preserves the earlier LCE rule that derived cognition can become durable
+without becoming canonical fact.
+
