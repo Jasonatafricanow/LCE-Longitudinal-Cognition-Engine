@@ -803,3 +803,100 @@ Raw Evidence authority
 This preserves the earlier LCE rule that derived cognition can become durable
 without becoming canonical fact.
 
+## 29. Why are long-lived branches not promoted automatically into new Lines?
+
+**Problem.** Earlier Path-B notes left a `branch -> independent Line` transition
+as an open lifecycle question. That assumed a large or persistent branch might
+eventually need a separate identity simply because it had grown.
+
+**Failed assumption.** Branch longevity, node count, or graph size is evidence
+that the branch has become a new cognitive object.
+
+That assumption was partly motivated by an older consumption model in which
+recalling a Line risked recalling the whole high-dimensional structure. The
+current consumer boundary is different: LCE projects only a bounded local view
+around the relevant node.
+
+**Decision.**
+
+```text
+branch age / length / size
+    !=
+new Line authority
+```
+
+A branch may remain a branch indefinitely. A new Line is created only when the
+discovery/authority pipeline identifies an independently supported logical
+structure. An old branch does not "graduate" merely by surviving.
+
+**Consequence.** Retrieval/index scale is solved by local projection and
+replaceable indexing, not by cutting cognitive identity for operational
+convenience.
+
+## 30. Why does preserving history not forbid current rollback?
+
+**Problem.** "Do not rewrite history" can be misread as "once LCE inferred a
+relation, it can never retract it."
+
+That is wrong. LCE is derived cognition and can reason incorrectly even when all
+supporting Raw Evidence is factually valid.
+
+**Failed assumption.** Historical persistence and current authority are the
+same thing.
+
+**Decision.** Keep them separate:
+
+```text
+historical revision exists
+    !=
+revision is valid for current cognition
+```
+
+If an authorized correction rejects a derived relation, current cognition may
+retire that relation and rebuild/roll back to the last still-supported
+structure. The earlier revision remains visible only for audit and causal
+explanation.
+
+Raw Evidence is not deleted merely because LCE connected it incorrectly.
+
+**Consequence.** The system can answer both:
+
+- "What does the system currently believe?"
+- "Why did the system believe something else earlier?"
+
+without forcing the obsolete interpretation to remain active.
+
+## 31. Why must explicit derived corrections persist across rebuild?
+
+**Problem.** Retiring a wrong derived relation once is insufficient if the next
+bootstrap sees the same unchanged support and deterministically regenerates the
+same relation.
+
+**Failed assumption.** Rebuild alone is enough to correct a reasoning error.
+
+**Decision.** An explicit relation-level correction must be able to persist as a
+negative constraint / authorized contradiction against the rejected derived
+claim or relation.
+
+Conceptually:
+
+```text
+support E1/E2
+  -> derived relation R
+  -> authorized correction: R is wrong
+  -> R retired from current graph
+  -> correction retained
+  -> later rebuild with unchanged E1/E2 cannot silently recreate R
+```
+
+New authorized evidence may later supersede or reopen that correction; the
+negative constraint is not an eternal hard delete.
+
+**Consequence.** LCE remains corrigible without deleting factual history, and
+sleep/bootstrap cannot repeatedly recreate a reasoning error the user has
+already explicitly rejected.
+
+Implementation note: source-driven invalidation and historical relation
+revision already exist. The dedicated persistent relation-correction ledger is
+a post-V1 control-plane item; the semantic boundary is frozen here.
+
