@@ -577,20 +577,42 @@ def test_logical_time_revision_rebuilds_current_line_without_rewriting_history(
         current_block_ids=(revised.block_id,),
     )
 
-    # The revised B1 no longer supports its old incident relations. Only that
-    # membership/edge neighbourhood is retired; unrelated compiled structure
-    # remains directly reusable.
+    # The revised B1 no longer supports its old B1->B2 relation, but it still
+    # has a valid ordered relation to B0. Only that edge is replaced; B2->B3
+    # and the rest of the compiled Line remain directly reusable.
     assert result.candidate_paths == ()
-    current_visible = set(
+    revised_node = store.node_for_block(line_id, revised.block_id)
+    b0_node = store.node_for_block(line_id, blocks[0].block_id)
+    b2_node = store.node_for_block(line_id, blocks[2].block_id)
+    b3_node = store.node_for_block(line_id, blocks[3].block_id)
+    assert revised_node is not None
+    assert b0_node is not None
+    assert b2_node is not None
+    assert b3_node is not None
+    assert store.edge_active_at(
+        line_id,
+        b0_node.node_id,
+        revised_node.node_id,
+        current_cutoff,
+    )
+    assert not store.edge_active_at(
+        line_id,
+        revised_node.node_id,
+        b2_node.node_id,
+        current_cutoff,
+    )
+    assert store.edge_active_at(
+        line_id,
+        b2_node.node_id,
+        b3_node.node_id,
+        current_cutoff,
+    )
+    assert len(
         LineGraphView(memory=memory, store=store).visible_node_ids(
             line_id,
             knowledge_cutoff=current_cutoff,
         )
-    )
-    revised_node = store.node_for_block(line_id, revised.block_id)
-    assert revised_node is not None
-    assert revised_node.node_id not in current_visible
-    assert len(current_visible) == 3
+    ) == 4
 
     # Earlier epistemic replay still sees the graph that existed before the
     # later state revision was known.
@@ -798,7 +820,27 @@ def test_state_revision_revalidates_incident_edges_not_only_self_similarity(
     )
 
     assert result.candidate_paths == ()
-    current_visible = set(
+    middle_node = store.node_for_block(line_id, revised.block_id)
+    parent_node = store.node_for_block(line_id, blocks[0].block_id)
+    child_node = store.node_for_block(line_id, blocks[2].block_id)
+    assert middle_node is not None
+    assert parent_node is not None
+    assert child_node is not None
+    # The revised state still supports its parent relation, but not the old
+    # child relation. Recompile only those incident edges.
+    assert store.edge_active_at(
+        line_id,
+        parent_node.node_id,
+        middle_node.node_id,
+        current_cutoff,
+    )
+    assert not store.edge_active_at(
+        line_id,
+        middle_node.node_id,
+        child_node.node_id,
+        current_cutoff,
+    )
+    assert len(
         LineGraphView(
             memory=memory,
             store=store,
@@ -806,11 +848,7 @@ def test_state_revision_revalidates_incident_edges_not_only_self_similarity(
             line_id,
             knowledge_cutoff=current_cutoff,
         )
-    )
-    middle_node = store.node_for_block(line_id, revised.block_id)
-    assert middle_node is not None
-    assert middle_node.node_id not in current_visible
-    assert len(current_visible) == 2
+    ) == 3
 
 def test_state_revision_preserves_unrelated_nearline_growth_and_continues_batch(
     tmp_path: Path,
