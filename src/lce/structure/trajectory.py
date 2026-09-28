@@ -762,7 +762,6 @@ class TrajectoryRuntime:
             )
 
     def _existing_relations_still_valid(
-    def _existing_relations_still_valid(
         self,
         line_id: str,
         node_id: str,
@@ -1009,7 +1008,6 @@ class TrajectoryRuntime:
             authority_decisions=(),
         )
 
-    def rebuild_current(
     def rebuild_current(
         self,
         *,
