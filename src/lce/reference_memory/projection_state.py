@@ -175,7 +175,10 @@ class SqliteProjectionStateStore:
         self, db: sqlite3.Connection, block: SemanticBlock
     ) -> SemanticBlock:
         if block.derived_known_at is None:
-            block = replace(block, derived_known_at=block.occurred_end)
+            block = replace(
+                block,
+                derived_known_at=datetime.now(UTC),
+            )
         state_id = block.state_id or self._state_id(block)
         stored = replace(block, state_id=state_id)
         metadata_json = json.dumps(
@@ -297,11 +300,7 @@ class SqliteProjectionStateStore:
             metadata=current.metadata,
             state_version=current.state_version + 1,
             derived_known_at=(
-                derived_known_at
-                or max(
-                    current.derived_known_at or current.occurred_end,
-                    occurred_at,
-                )
+                derived_known_at or datetime.now(UTC)
             ),
         )
         with self._db():
