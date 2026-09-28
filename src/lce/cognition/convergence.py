@@ -162,8 +162,8 @@ class AuthorityProfile:
     context_support: int
     derivation_stability: int
     contradiction_pressure: int
-    support_group_ids: tuple[str, ...]
-    contradiction_group_ids: tuple[str, ...]
+    support_component_ids: tuple[str, ...]
+    contradiction_component_ids: tuple[str, ...]
     context_ids: tuple[str, ...]
     stable_variant_ids: tuple[str, ...]
 
@@ -306,8 +306,8 @@ def _profile(
         context_support=len(stable_contexts),
         derivation_stability=len(stable_variants),
         contradiction_pressure=len(contradiction_components),
-        support_group_ids=tuple(sorted(support_components)),
-        contradiction_group_ids=tuple(sorted(contradiction_components)),
+        support_component_ids=tuple(sorted(support_components)),
+        contradiction_component_ids=tuple(sorted(contradiction_components)),
         context_ids=tuple(sorted(stable_contexts)),
         stable_variant_ids=tuple(sorted(stable_variants)),
     )
