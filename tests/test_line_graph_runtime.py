@@ -1537,10 +1537,14 @@ def test_raw_closure_respects_relation_membership_cutoff(
     current_cutoff = BASE + timedelta(days=100)
     store.retire_current_structure(current_cutoff)
 
-    assert view.raw_closure(
-        tail.node_id,
-        knowledge_cutoff=current_cutoff,
-    ) == ()
+    with pytest.raises(
+        ValueError,
+        match="raw closure target is not visible",
+    ):
+        view.raw_closure(
+            tail.node_id,
+            knowledge_cutoff=current_cutoff,
+        )
     assert set(
         view.raw_closure(
             tail.node_id,
@@ -1767,3 +1771,222 @@ def test_late_historical_block_revises_direct_edge_without_rewriting_history(
         (parent_node.node_id, middle_node.node_id),
         (middle_node.node_id, child_node.node_id),
     }
+
+def test_store_rejects_cycle_that_appears_only_at_future_cutoff(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    a = _admit(
+        memory,
+        evidence_id="CYCLE-A",
+        block_id="cycle-a",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    b = _admit(
+        memory,
+        evidence_id="CYCLE-B",
+        block_id="cycle-b",
+        day=10,
+        vector=(1.0, 0.0),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    line = store.create_line((a.block_id, b.block_id), created_at=BASE)
+    a_node = store.ensure_node(
+        line.line_id,
+        a,
+        knowledge_at=a.occurred_start,
+    )[0]
+    b_node = store.ensure_node(
+        line.line_id,
+        b,
+        knowledge_at=b.occurred_start,
+    )[0]
+
+    store.add_edge(
+        line.line_id,
+        b_node.node_id,
+        a_node.node_id,
+        knowledge_at=BASE + timedelta(days=20),
+    )
+
+    with pytest.raises(ValueError, match="cycle"):
+        store.add_edge(
+            line.line_id,
+            a_node.node_id,
+            b_node.node_id,
+            knowledge_at=BASE + timedelta(days=15),
+        )
+
+
+def test_reader_fails_closed_on_corrupt_persisted_cycle(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    a = _admit(
+        memory,
+        evidence_id="CORRUPT-A",
+        block_id="corrupt-a",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    b = _admit(
+        memory,
+        evidence_id="CORRUPT-B",
+        block_id="corrupt-b",
+        day=10,
+        vector=(1.0, 0.0),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    line = store.create_line((a.block_id, b.block_id), created_at=BASE)
+    a_node = store.ensure_node(
+        line.line_id,
+        a,
+        knowledge_at=a.occurred_start,
+    )[0]
+    b_node = store.ensure_node(
+        line.line_id,
+        b,
+        knowledge_at=b.occurred_start,
+    )[0]
+    known = (BASE + timedelta(days=20)).isoformat()
+    created = datetime.now(UTC).isoformat()
+    with store.conn:
+        for parent, child, revision_id in (
+            (a_node.node_id, b_node.node_id, "corrupt-edge-a"),
+            (b_node.node_id, a_node.node_id, "corrupt-edge-b"),
+        ):
+            store.conn.execute(
+                "INSERT OR IGNORE INTO line_edges VALUES (?, ?, ?)",
+                (line.line_id, parent, child),
+            )
+            store.conn.execute(
+                "INSERT INTO line_edge_revisions ("
+                "edge_revision_id, line_id, parent_node_id, child_node_id, "
+                "known_at, retired_at, created_at, derivation_fingerprint"
+                ") VALUES (?, ?, ?, ?, ?, NULL, ?, ?)",
+                (
+                    revision_id,
+                    line.line_id,
+                    parent,
+                    child,
+                    known,
+                    created,
+                    "corrupt-test",
+                ),
+            )
+
+    with pytest.raises(RuntimeError, match="cycle"):
+        LineGraphView(memory=memory, store=store).visible_node_ids(
+            line.line_id,
+            knowledge_cutoff=BASE + timedelta(days=30),
+        )
+
+
+def test_attach_block_rejects_temporal_reverse_parent(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    seed = tuple(
+        _admit(
+            memory,
+            evidence_id=f"ORDER-{index}",
+            block_id=f"order-{index}",
+            day=index * 10,
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    newcomer = _admit(
+        memory,
+        evidence_id="ORDER-new",
+        block_id="order-new",
+        day=5,
+        vector=(1.0, 0.0),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    seeded = assembler.apply_path(
+        seed,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    later_parent = store.node_for_block(
+        seeded.line_id,
+        seed[1].block_id,
+    )
+    assert later_parent is not None
+
+    with pytest.raises(ValueError, match="parent must strictly precede"):
+        assembler.attach_block(
+            seeded.line_id,
+            newcomer,
+            parent_node_ids=(later_parent.node_id,),
+            knowledge_cutoff=BASE + timedelta(days=100),
+        )
+
+    assert store.node_for_block(
+        seeded.line_id,
+        newcomer.block_id,
+    ) is None
+
+
+def test_core_treats_persisted_rebuild_marker_as_stale(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"DIRTY-{index}",
+            block_id=f"dirty-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.05, index * 0.05),
+        )
+        for index in range(3)
+    )
+    _rebuild(memory)
+    root = tmp_path / "dirty-core"
+    core = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.1,
+            min_support=3,
+        ),
+        block_embedder=lambda block: tuple(
+            float(value) for value in block.metadata["vector"]
+        ),
+        block_embedding_version="dirty-v1",
+    )
+    seeded = core.trajectory.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    core.lines.set_metadata(
+        "rebuild_in_progress",
+        (BASE + timedelta(days=100)).isoformat(),
+    )
+    core.close()
+
+    restarted = LceProjectionCore(
+        root,
+        memory=memory,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.1,
+            min_support=3,
+        ),
+        block_embedder=lambda block: tuple(
+            float(value) for value in block.metadata["vector"]
+        ),
+        block_embedding_version="dirty-v1",
+    )
+    with pytest.raises(StaleLineGraphError):
+        restarted.line_frontier(
+            seeded.line_id,
+            knowledge_cutoff=BASE + timedelta(days=100),
+        )
+    restarted.close()
