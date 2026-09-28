@@ -1676,9 +1676,6 @@ class LineGraphView:
             if len(paths) >= max_paths:
                 return
             path = (node_id, *suffix)
-            if len(path) >= max_nodes:
-                paths.append(path)
-                return
             parents = tuple(
                 parent_id
                 for parent_id in self.store.parents_at(
@@ -1687,6 +1684,15 @@ class LineGraphView:
                 )
                 if parent_id in visible
             )
+            if len(path) >= max_nodes:
+                if parents:
+                    raise LineTraversalLimitExceeded(
+                        "Line path exceeded max_nodes="
+                        f"{max_nodes}; complete root-to-frontier path "
+                        "was not returned"
+                    )
+                paths.append(path)
+                return
             if not parents:
                 paths.append(path)
                 return
