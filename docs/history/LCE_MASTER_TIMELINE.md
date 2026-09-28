@@ -948,3 +948,25 @@ Verification also passed at merge commit
 The detailed runtime logic is documented in
 [`LCE_DECENTRALIZED_CONVERGENCE_V1.md`](../architecture/LCE_DECENTRALIZED_CONVERGENCE_V1.md).
 
+## 2026-09-28 — branch persistence and correction semantics clarified
+
+A follow-up architecture review removed two residual ambiguities left after the
+Path-B and decentralized-convergence merges.
+
+First, a long-lived branch is no longer treated as waiting for an eventual
+"promotion" into an independent Line. Local bounded projection already prevents
+large Lines from becoming prompt-wide high-dimensional recall. Branch age,
+length and node count are therefore not identity signals. A new Line requires a
+separately discovered and independently supported structure.
+
+Second, "history is not rewritten" was clarified to mean that old cognition
+revisions remain auditable, **not** that current cognition is irreversible.
+LCE may infer a wrong relation while every Raw Evidence item remains true. An
+authorized correction must be able to retire that derived relation, revalidate
+dependent structure, and roll the current view back to the last supported
+configuration while retaining the rejected revision as history.
+
+The remaining implementation gap is a durable relation-level correction /
+negative-constraint ledger so unchanged evidence does not regenerate the same
+explicitly rejected relation on a later bootstrap.
+
