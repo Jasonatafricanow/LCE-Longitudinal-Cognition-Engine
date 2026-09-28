@@ -91,7 +91,7 @@ def test_duplicate_raw_support_cannot_seed_persistent_line(
     tmp_path: Path,
 ) -> None:
     memory = InMemoryReferenceMemory()
-    blocks = tuple(
+    tuple(
         _block(
             memory,
             block_id=f"B{index}",
