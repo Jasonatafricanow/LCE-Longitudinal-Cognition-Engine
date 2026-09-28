@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import fields
 from datetime import UTC, datetime, timedelta
+from itertools import pairwise
 from pathlib import Path
 
 from lce.cognition.inspiration import (
@@ -87,7 +88,7 @@ def _seed_line(
             knowledge_at=cutoff,
         )
         nodes.append(node)
-    for parent, child in zip(nodes, nodes[1:]):
+    for parent, child in pairwise(nodes):
         core.lines.add_edge(
             line.line_id,
             parent.node_id,
