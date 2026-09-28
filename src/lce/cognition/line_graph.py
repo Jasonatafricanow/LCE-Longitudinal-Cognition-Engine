@@ -40,6 +40,10 @@ class LineTraversalLimitExceeded(RuntimeError):
     """Exact graph/provenance traversal could not finish within its safety ceiling."""
 
 
+class LineGraphCycleError(RuntimeError):
+    """Persisted Line structure violates the DAG invariant at a cutoff."""
+
+
 def _evidence_valid_at(
     memory: ReferenceMemorySubstratePort,
     evidence_id: str,
@@ -712,21 +716,23 @@ class LineGraphStore:
         line_id: str,
         knowledge_cutoff: datetime,
     ) -> tuple[tuple[str, str], ...]:
+        """Active edges at cutoff in one indexed query."""
         _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
         rows = self.conn.execute(
-            "SELECT parent_node_id, child_node_id FROM line_edges "
-            "WHERE line_id = ? ORDER BY parent_node_id, child_node_id",
-            (line_id,),
+            """
+            SELECT DISTINCT parent_node_id, child_node_id
+            FROM line_edge_revisions
+            WHERE line_id = ?
+              AND known_at <= ?
+              AND (retired_at IS NULL OR retired_at > ?)
+            ORDER BY parent_node_id, child_node_id
+            """,
+            (line_id, cutoff, cutoff),
         ).fetchall()
         return tuple(
             (str(parent_id), str(child_id))
             for parent_id, child_id in rows
-            if self.edge_active_at(
-                line_id,
-                str(parent_id),
-                str(child_id),
-                knowledge_cutoff,
-            )
         )
 
     def parents_at(
@@ -734,30 +740,44 @@ class LineGraphStore:
         node_id: str,
         knowledge_cutoff: datetime,
     ) -> tuple[str, ...]:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
         node = self.get_node(node_id)
-        return tuple(
-            parent_id
-            for parent_id, child_id in self.edges_for_line_at(
-                node.line_id,
-                knowledge_cutoff,
-            )
-            if child_id == node_id
-        )
+        cutoff = knowledge_cutoff.isoformat()
+        rows = self.conn.execute(
+            """
+            SELECT DISTINCT parent_node_id
+            FROM line_edge_revisions
+            WHERE line_id = ?
+              AND child_node_id = ?
+              AND known_at <= ?
+              AND (retired_at IS NULL OR retired_at > ?)
+            ORDER BY parent_node_id
+            """,
+            (node.line_id, node_id, cutoff, cutoff),
+        ).fetchall()
+        return tuple(str(row[0]) for row in rows)
 
     def children_at(
         self,
         node_id: str,
         knowledge_cutoff: datetime,
     ) -> tuple[str, ...]:
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
         node = self.get_node(node_id)
-        return tuple(
-            child_id
-            for parent_id, child_id in self.edges_for_line_at(
-                node.line_id,
-                knowledge_cutoff,
-            )
-            if parent_id == node_id
-        )
+        cutoff = knowledge_cutoff.isoformat()
+        rows = self.conn.execute(
+            """
+            SELECT DISTINCT child_node_id
+            FROM line_edge_revisions
+            WHERE line_id = ?
+              AND parent_node_id = ?
+              AND known_at <= ?
+              AND (retired_at IS NULL OR retired_at > ?)
+            ORDER BY child_node_id
+            """,
+            (node.line_id, node_id, cutoff, cutoff),
+        ).fetchall()
+        return tuple(str(row[0]) for row in rows)
 
     def retire_edge_from(
         self,
@@ -787,6 +807,32 @@ class LineGraphStore:
             self.conn.execute(
                 "UPDATE line_edge_revisions SET retired_at = ? "
                 "WHERE edge_revision_id = ?",
+                (cutoff, revision_id),
+            )
+        if commit:
+            self.conn.commit()
+        return bool(rows)
+
+    def retire_membership_from(
+        self,
+        node_id: str,
+        knowledge_cutoff: datetime,
+        *,
+        commit: bool = True,
+    ) -> bool:
+        """Retire one derived membership from cutoff forward."""
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        cutoff = knowledge_cutoff.isoformat()
+        rows = self.conn.execute(
+            "SELECT membership_revision_id FROM line_node_memberships "
+            "WHERE node_id = ? "
+            "AND (retired_at IS NULL OR retired_at > ?)",
+            (node_id, cutoff),
+        ).fetchall()
+        for (revision_id,) in rows:
+            self.conn.execute(
+                "UPDATE line_node_memberships SET retired_at = ? "
+                "WHERE membership_revision_id = ?",
                 (cutoff, revision_id),
             )
         if commit:
@@ -852,6 +898,29 @@ class LineGraphStore:
             )
         return False
 
+    def _cycle_check_cutoffs(
+        self,
+        line_id: str,
+        *,
+        from_cutoff: datetime,
+    ) -> tuple[datetime, ...]:
+        """All future edge-revision boundaries where DAG state can change."""
+        _require_utc(from_cutoff, "from_cutoff")
+        cutoffs = {from_cutoff}
+        rows = self.conn.execute(
+            "SELECT known_at, retired_at FROM line_edge_revisions "
+            "WHERE line_id = ?",
+            (line_id,),
+        ).fetchall()
+        for known_at, retired_at in rows:
+            for value in (known_at, retired_at):
+                if value is None:
+                    continue
+                parsed = self._parse_datetime(str(value))
+                if parsed >= from_cutoff:
+                    cutoffs.add(parsed)
+        return tuple(sorted(cutoffs))
+
     def add_edge(
         self,
         line_id: str,
@@ -882,12 +951,19 @@ class LineGraphStore:
             knowledge_cutoff=edge_known_at,
         ):
             return False
-        if self._reachable(
-            child_node_id,
-            parent_node_id,
-            knowledge_cutoff=edge_known_at,
+        for cycle_cutoff in self._cycle_check_cutoffs(
+            line_id,
+            from_cutoff=edge_known_at,
         ):
-            raise ValueError("Line edge would create a cycle")
+            if self._reachable(
+                child_node_id,
+                parent_node_id,
+                knowledge_cutoff=cycle_cutoff,
+            ):
+                raise ValueError(
+                    "Line edge would create a cycle at knowledge cutoff "
+                    f"{cycle_cutoff.isoformat()}"
+                )
         self.conn.execute(
             "INSERT OR IGNORE INTO line_edges VALUES (?, ?, ?)",
             (line_id, parent_node_id, child_node_id),
@@ -1185,6 +1261,39 @@ class LineAssembler:
             children = tuple(dict.fromkeys(child_node_ids))
             view = LineGraphView(memory=self.memory, store=self.store)
 
+            # API-boundary invariant: callers may not manufacture temporal
+            # reversal edges even when bypassing apply_path().
+            for parent_id in parents:
+                parent = self.store.get_node(parent_id)
+                if parent.line_id != line_id:
+                    raise ValueError("parent belongs to another Line")
+                parent_block = view.state_for_node_at_cutoff(
+                    parent_id,
+                    knowledge_cutoff=effective_cutoff,
+                )
+                if (
+                    parent_block is None
+                    or not self._precedes(parent_block, block)
+                ):
+                    raise ValueError(
+                        "parent must strictly precede attached block"
+                    )
+            for child_id in children:
+                child = self.store.get_node(child_id)
+                if child.line_id != line_id:
+                    raise ValueError("child belongs to another Line")
+                child_block = view.state_for_node_at_cutoff(
+                    child_id,
+                    knowledge_cutoff=effective_cutoff,
+                )
+                if (
+                    child_block is None
+                    or not self._precedes(block, child_block)
+                ):
+                    raise ValueError(
+                        "attached block must strictly precede child"
+                    )
+
             # A late-known historical block may sit strictly between an
             # already-materialized direct edge P->C. That is edge revision,
             # not a conjunctive rejoin: retire P->C at this knowledge cutoff
@@ -1431,15 +1540,42 @@ class LineGraphView:
         cutoff: datetime,
         memo: dict[str, bool],
     ) -> bool:
-        """Evaluate conjunctive ancestry without Python recursion."""
+        """Evaluate conjunctive ancestry iteratively and fail closed on cycles."""
         if node_id in memo:
             return memo[node_id]
 
         pending: list[tuple[str, bool]] = [(node_id, False)]
+        visiting: set[str] = set()
         while pending:
             current_id, expanded = pending.pop()
             if current_id in memo:
+                visiting.discard(current_id)
                 continue
+
+            if expanded:
+                parents = self.store.parents_at(current_id, cutoff)
+                unresolved = tuple(
+                    parent_id
+                    for parent_id in parents
+                    if parent_id not in memo
+                )
+                if unresolved:
+                    raise LineGraphCycleError(
+                        "Line DAG invariant violated: unresolved cyclic ancestry "
+                        f"at {current_id}"
+                    )
+                memo[current_id] = all(
+                    memo.get(parent_id, False)
+                    for parent_id in parents
+                )
+                visiting.discard(current_id)
+                continue
+
+            if current_id in visiting:
+                raise LineGraphCycleError(
+                    "Line DAG invariant violated: cycle detected at "
+                    f"{current_id}"
+                )
 
             if not self.store.membership_active_at(
                 current_id,
@@ -1457,27 +1593,16 @@ class LineGraphView:
                 continue
 
             parents = self.store.parents_at(current_id, cutoff)
-            if not expanded:
-                unresolved = tuple(
-                    parent_id
-                    for parent_id in parents
-                    if parent_id not in memo
-                )
-                if unresolved:
-                    pending.append((current_id, True))
-                    pending.extend(
-                        (parent_id, False)
-                        for parent_id in reversed(unresolved)
+            visiting.add(current_id)
+            pending.append((current_id, True))
+            for parent_id in reversed(parents):
+                if parent_id in visiting:
+                    raise LineGraphCycleError(
+                        "Line DAG invariant violated: cycle detected between "
+                        f"{current_id} and {parent_id}"
                     )
-                    continue
-
-            # V1 parent edges are conjunctive ancestry, not alternative routes.
-            # Every parent must remain visible. Cycles are rejected by storage,
-            # so all parents are resolved after the expanded pass.
-            memo[current_id] = all(
-                memo.get(parent_id, False)
-                for parent_id in parents
-            )
+                if parent_id not in memo:
+                    pending.append((parent_id, False))
 
         return memo[node_id]
 
@@ -1593,6 +1718,10 @@ class LineGraphView:
         """
         if max_nodes < 1:
             raise ValueError("max_nodes must be positive")
+        if not self._node_visible(node_id, knowledge_cutoff, {}):
+            raise ValueError(
+                "raw closure target is not visible at knowledge cutoff"
+            )
 
         pending = [node_id]
         seen_nodes: set[str] = set()

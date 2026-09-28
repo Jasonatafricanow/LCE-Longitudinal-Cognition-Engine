@@ -198,39 +198,37 @@ support floor already required by the path/Line assembler.
 
 ### Nearline attachment
 
-Nearline routing is intentionally different from bootstrap.
+Ordinary nearline attachment no longer uses decentralized convergence as an
+exclusive Line-election mechanism.
 
-The runtime first uses vector similarity only as a retrieval/proposal filter:
-
-```text
-current block
-  -> scan visible stable Lines
-  -> keep every Line whose best visible node clears min_similarity
-```
-
-It does **not** use the best score or score margin as final authority.
-
-For every surviving candidate Line, it then collects the full cutoff-visible
-local neighbourhood whose states also clear `min_similarity` against the
-current block. Those states close back to Raw Evidence and form that candidate's
-authority support.
+That distinction is deliberate:
 
 ```text
-candidate Line
-  -> all locally qualifying visible states
-  -> Raw closures
-  -> evidence components
-  -> AuthorityProfile
+bootstrap / identity question
+    "which persistent Line identity is being created or inherited?"
+    -> Raw-grounded decentralized convergence may decide
+
+ordinary nearline relation question
+    "does this new block form a valid local relation with Line A?"
+    "does this new block form a valid local relation with Line B?"
+    -> evaluate A and B independently against compiled local Line structure
 ```
 
-All threshold-qualified Lines compete through the same convergence operator.
+Similarity remains only a proposal/retrieval mechanism. For each matching Line,
+nearline derives bounded ordered parents/children from the already-admitted Line
+topology. A relation is admitted only when at least one such local witness
+exists. If two Lines independently admit the relation, the block may belong to
+both; they do not compete for exclusive ownership.
 
-This preserves the boundary:
+This keeps persisted Line membership/edges reusable as compiled derived
+authority while preserving Raw Evidence as provenance and invalidation
+authority. Raw closures are reopened when forming/rebuilding structural
+authority or auditing provenance, not merely because an already-admitted Line
+is being consumed again.
 
-```text
-similarity = proposal / retrieval evidence
-Raw-grounded convergence = persistence authority
-```
+This also prevents Line cardinality from becoming authority: a large Line no
+longer wins nearline routing merely because more historical nodes can be counted
+as Raw-support votes.
 
 ## Knowledge-time semantics
 

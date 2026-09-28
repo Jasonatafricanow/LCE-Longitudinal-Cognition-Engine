@@ -241,7 +241,7 @@ def test_competing_line_identity_resolves_by_independent_support_dominance(
     store.close()
 
 
-def test_nearline_similarity_gap_does_not_become_central_authority(
+def test_nearline_relation_admission_is_non_exclusive_across_lines(
     tmp_path: Path,
 ) -> None:
     memory = InMemoryReferenceMemory()
@@ -296,16 +296,78 @@ def test_nearline_similarity_gap_does_not_become_central_authority(
         current_block_ids=(current.block_id,),
     )
 
-    # A is substantially closer than B (> the legacy score margin), but both
-    # Lines have three independent local support groups. Similarity therefore
-    # proposes both candidates and cannot act as the final identity authority.
-    assert len(result.authority_decisions) == 1
-    decision = result.authority_decisions[0]
-    assert decision.status == "UNRESOLVED"
-    assert set(decision.undominated_candidate_ids) == {
+    # Existing Line structure is already compiled derived authority. Nearline
+    # asks independently whether the current block forms a relation with each
+    # matching Line; it does not reopen historical Raw closures to elect one
+    # exclusive winner.
+    assert result.authority_decisions == ()
+    assert {update.line_id for update in result.line_updates} == {
         first.line_id,
         second.line_id,
     }
-    assert store.lines_for_block(current.block_id) == ()
+    assert set(store.lines_for_block(current.block_id)) == {
+        first.line_id,
+        second.line_id,
+    }
+    runtime.close()
+    store.close()
+
+def test_nearline_line_size_does_not_become_authority(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    short_blocks = tuple(
+        _block(
+            memory,
+            block_id=f"S{index}",
+            day=index * 10,
+            evidence_id=f"ES{index}",
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    long_blocks = tuple(
+        _block(
+            memory,
+            block_id=f"L{index}",
+            day=index * 5 + 1,
+            evidence_id=f"EL{index}",
+            vector=(0.829038, 0.559193),
+        )
+        for index in range(8)
+    )
+    current = _block(
+        memory,
+        block_id="SIZE-current",
+        day=60,
+        evidence_id="SIZE-E",
+        vector=(1.0, 0.0),
+    )
+    _rebuild(memory)
+    cutoff = BASE + timedelta(days=70)
+
+    store = LineGraphStore(tmp_path / "lines")
+    seeder = LineAssembler(memory=memory, store=store)
+    short = seeder.apply_path(short_blocks, knowledge_cutoff=cutoff)
+    long = seeder.apply_path(long_blocks, knowledge_cutoff=cutoff)
+    assert short.line_id is not None
+    assert long.line_id is not None
+    assert short.line_id != long.line_id
+
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=store,
+        trajectory_config=TrajectoryConfig(min_similarity=0.80),
+    )
+    result = runtime.observe(
+        knowledge_cutoff=cutoff,
+        current_block_ids=(current.block_id,),
+    )
+
+    assert result.authority_decisions == ()
+    assert set(store.lines_for_block(current.block_id)) == {
+        short.line_id,
+        long.line_id,
+    }
     runtime.close()
     store.close()
