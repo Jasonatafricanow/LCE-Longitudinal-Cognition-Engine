@@ -19,6 +19,7 @@ from lce.contracts.external_memory import (
     MemoryItemView,
     MemorySubstratePort,
 )
+from lce.contracts.inspiration import InspirationMaterial
 
 __all__ = [
     "Baseline",
@@ -27,6 +28,7 @@ __all__ = [
     "ConsolidationResult",
     "EmptyNeighborhoodError",
     "LceError",
+    "InspirationMaterial",
     "MemoryItemView",
     "MemorySubstratePort",
     "SemanticConsolidatorPort",
