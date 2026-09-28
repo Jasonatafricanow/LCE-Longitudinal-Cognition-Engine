@@ -249,6 +249,41 @@ for stable Lines already touched by the current SemanticBlocks.
 This consumption boundary is intentionally narrower than global semantic
 recall. Structural proposal and consumer injection are separate concerns.
 
+## 8. Proactive Inspiration Material
+
+Stable Lines and unresolved local trajectory proposals can now feed an explicit
+proactive-consumption product without exposing LCE internals downstream.
+
+The public object is intentionally only:
+
+```text
+material_id
+content
+```
+
+Internally V1 supports two inspiration paths:
+
+```text
+unresolved local trajectory
+    -> possible-association material
+
+stable Line prefix A -> B -> C
+    -> bounded semantic interpreter
+    -> speculative D?
+    -> extension material
+```
+
+The extension path preserves the authority split explicitly: the Line prefix is
+supported derived structure while `D` remains speculative. The deterministic
+reference interpreter does not invent a concrete extension; a deployment may
+inject a bounded semantic interpreter after structural discovery.
+
+Inspiration discovery is explicit and is not run automatically on every
+nearline input. It is intended for sleep/daydream/dream or another bounded
+background scheduler.
+
+See `LCE_INSPIRATION_MATERIAL_V1.md`.
+
 ## 8. Optional Surface discovery
 
 `SurfaceRuntime` is implemented as an opt-in derived operator.
