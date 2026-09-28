@@ -1,5 +1,13 @@
 """Derived cognition worktrees and conservative promotion."""
 
+from lce.cognition.convergence import (
+    AuthorityConfig,
+    AuthorityDecision,
+    AuthorityLedger,
+    AuthorityProfile,
+    AuthoritySignal,
+    evaluate_convergence,
+)
 from lce.cognition.external import PrecomputedDraftInput, PrecomputedDraftIntake
 from lce.cognition.line_graph import (
     CallableLineProjection,
@@ -31,6 +39,11 @@ from lce.cognition.worktree import (
 )
 
 __all__ = [
+    "AuthorityConfig",
+    "AuthorityDecision",
+    "AuthorityLedger",
+    "AuthorityProfile",
+    "AuthoritySignal",
     "BoundedInterpretation",
     "BoundedInterpretationPackage",
     "BoundedInterpreter",
@@ -55,4 +68,5 @@ __all__ = [
     "PrecomputedDraftIntake",
     "RuleBasedBoundedInterpreter",
     "UnderstandingPromoter",
+    "evaluate_convergence",
 ]

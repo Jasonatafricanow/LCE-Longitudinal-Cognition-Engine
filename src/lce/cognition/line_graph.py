@@ -389,6 +389,14 @@ class LineGraphStore:
         digest = hashlib.sha256(payload.encode()).hexdigest()[:24]
         return f"line_{digest}"
 
+    def line_id_for_seed(
+        self,
+        block_ids: tuple[str, ...],
+    ) -> str:
+        if not block_ids:
+            raise ValueError("a Line seed requires at least one block")
+        return self._line_id(tuple(dict.fromkeys(block_ids)))
+
     @staticmethod
     def _node_id(line_id: str, block_id: str) -> str:
         digest = hashlib.sha256(
@@ -1077,6 +1085,54 @@ class LineAssembler:
                 counts[line_id] = counts.get(line_id, 0) + 1
         return counts
 
+    def identity_candidates(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
+        """Stable Lines with enough cutoff-valid shared support to inherit."""
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        counts = self._visible_overlap_counts(
+            tuple(block.block_id for block in blocks),
+            knowledge_cutoff=knowledge_cutoff,
+        )
+        return tuple(
+            sorted(
+                line_id
+                for line_id, count in counts.items()
+                if count >= self.config.min_shared_support
+            )
+        )
+
+    def identity_support_blocks(
+        self,
+        line_id: str,
+        blocks: tuple[SemanticBlock, ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[SemanticBlock, ...]:
+        """Cutoff-visible shared states that actually support Line identity."""
+        _require_utc(knowledge_cutoff, "knowledge_cutoff")
+        view = LineGraphView(memory=self.memory, store=self.store)
+        output: list[SemanticBlock] = []
+        for block in blocks:
+            node = self.store.node_for_block(line_id, block.block_id)
+            if node is None:
+                continue
+            if not self.store.membership_supports_identity_at(
+                node.node_id,
+                knowledge_cutoff,
+            ):
+                continue
+            state = view.state_for_node_at_cutoff(
+                node.node_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if state is not None:
+                output.append(state)
+        return tuple(output)
+
     @staticmethod
     def _precedes(left: SemanticBlock, right: SemanticBlock) -> bool:
         # Same-time/overlapping points stay unordered. This is intentionally a
@@ -1201,6 +1257,7 @@ class LineAssembler:
         blocks: tuple[SemanticBlock, ...],
         *,
         knowledge_cutoff: datetime | None = None,
+        resolved_line_id: str | None = None,
     ) -> LineApplyResult:
         if len(blocks) < self.config.min_seed_support:
             return LineApplyResult(
@@ -1229,15 +1286,17 @@ class LineAssembler:
                 "trajectory path contains an unauthorized or "
                 "cutoff-invalid SemanticBlock state"
             )
-        overlaps = self._visible_overlap_counts(
-            block_ids,
+        strong_ids = self.identity_candidates(
+            blocks,
             knowledge_cutoff=effective_cutoff,
         )
-        strong = {
-            line_id: count
-            for line_id, count in overlaps.items()
-            if count >= self.config.min_shared_support
-        }
+        strong = set(strong_ids)
+
+        if resolved_line_id is not None and resolved_line_id not in strong:
+            raise ValueError(
+                "resolved_line_id must be one of the cutoff-valid "
+                "identity candidates"
+            )
 
         created_line = False
         # Local structures are allowed to overlap. A candidate path that does
@@ -1247,8 +1306,14 @@ class LineAssembler:
         # reappearing through the admission rule.
         new_line_seed = not strong
         if new_line_seed:
-            line_id = self.store._line_id(block_ids)
+            if resolved_line_id is not None:
+                raise ValueError(
+                    "a new Line seed cannot resolve to an existing Line"
+                )
+            line_id = self.store.line_id_for_seed(block_ids)
             created_line = not self.store.has_line(line_id)
+        elif resolved_line_id is not None:
+            line_id = resolved_line_id
         elif len(strong) == 1:
             line_id = next(iter(strong))
         else:

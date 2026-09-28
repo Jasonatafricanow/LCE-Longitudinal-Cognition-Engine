@@ -17,11 +17,17 @@ from __future__ import annotations
 
 import hashlib
 import math
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime
 from itertools import pairwise
 from typing import Protocol
 
+from lce.cognition.convergence import (
+    AuthorityConfig,
+    AuthorityDecision,
+    AuthorityLedger,
+    AuthoritySignal,
+)
 from lce.cognition.line_graph import (
     LineApplyResult,
     LineAssembler,
@@ -159,6 +165,7 @@ class TrajectoryRuntimeResult:
     knowledge_cutoff_iso: str
     candidate_paths: tuple[TrajectoryPath, ...]
     line_updates: tuple[LineApplyResult, ...]
+    authority_decisions: tuple[AuthorityDecision, ...] = ()
 
 
 class MutualKnnTrajectorySupplier:
@@ -462,6 +469,8 @@ class TrajectoryRuntime:
         trajectory_config: TrajectoryConfig | None = None,
         assembler_config: LineAssemblerConfig | None = None,
         neighbour_provider: NeighbourCandidateProvider | None = None,
+        authority_config: AuthorityConfig | None = None,
+        authority_ledger: AuthorityLedger | None = None,
     ) -> None:
         self.memory = memory
         self.store = line_store
@@ -477,6 +486,24 @@ class TrajectoryRuntime:
             config=assembler_config,
         )
         self.view = LineGraphView(memory=memory, store=line_store)
+        self.authority_config = authority_config or AuthorityConfig()
+        self.authority = authority_ledger or AuthorityLedger(
+            line_store.root / "authority"
+        )
+        self._owns_authority_ledger = authority_ledger is None
+        provider = self.supplier.neighbour_provider
+        provider_fingerprint = getattr(
+            provider,
+            "derivation_fingerprint",
+            f"{type(provider).__module__}.{type(provider).__qualname__}",
+        )
+        variant_payload = {
+            "algorithm": asdict(self.config),
+            "provider": str(provider_fingerprint),
+        }
+        self.authority_variant_id = "trajvar_" + hashlib.sha256(
+            repr(sorted(variant_payload.items())).encode()
+        ).hexdigest()[:24]
 
     @staticmethod
     def _precedes(left: SemanticBlock, right: SemanticBlock) -> bool:
@@ -536,6 +563,234 @@ class TrajectoryRuntime:
                 matches,
                 key=lambda item: (-item[0], item[1], item[2]),
             )
+        )
+
+    @staticmethod
+    def _authority_context_id(block: SemanticBlock) -> str | None:
+        value = block.metadata.get("authority_context_id")
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+        return None
+
+    @staticmethod
+    def _authority_decision_key(
+        kind: str,
+        state_ids: tuple[str, ...],
+        candidate_ids: tuple[str, ...],
+    ) -> str:
+        payload = "|".join(
+            (
+                kind,
+                *state_ids,
+                "--candidates--",
+                *sorted(candidate_ids),
+            )
+        )
+        return f"auth_{kind}_" + hashlib.sha256(
+            payload.encode()
+        ).hexdigest()[:24]
+
+    def set_authority_variant_id(self, value: str) -> None:
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("authority variant id must be nonempty")
+        self.authority_variant_id = value.strip()
+
+    def _authority_signal(
+        self,
+        *,
+        decision_key: str,
+        candidate_id: str,
+        block: SemanticBlock,
+        reciprocal: bool,
+        knowledge_cutoff: datetime,
+    ) -> AuthoritySignal:
+        return AuthoritySignal(
+            decision_key=decision_key,
+            candidate_id=candidate_id,
+            raw_evidence_ids=tuple(sorted(block.raw_evidence_ids)),
+            derivation_variant_id=self.authority_variant_id,
+            known_at=knowledge_cutoff,
+            reciprocal=reciprocal,
+            context_id=self._authority_context_id(block),
+        )
+
+    def _authority_policy(
+        self,
+        *,
+        min_independent_support: int,
+    ) -> AuthorityConfig:
+        return replace(
+            self.authority_config,
+            min_independent_support=max(
+                self.authority_config.min_independent_support,
+                min_independent_support,
+            ),
+        )
+
+    def _record_authority_candidates(
+        self,
+        *,
+        decision_key: str,
+        candidate_support: dict[str, tuple[SemanticBlock, ...]],
+        reciprocal: bool,
+        knowledge_cutoff: datetime,
+        min_independent_support: int,
+    ) -> AuthorityDecision:
+        signals = tuple(
+            self._authority_signal(
+                decision_key=decision_key,
+                candidate_id=candidate_id,
+                block=block,
+                reciprocal=reciprocal,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            for candidate_id, blocks in sorted(candidate_support.items())
+            for block in blocks
+        )
+        self.authority.record_many(signals)
+        return self.authority.evaluate(
+            decision_key,
+            knowledge_cutoff=knowledge_cutoff,
+            memory=self.memory,
+            config=self._authority_policy(
+                min_independent_support=min_independent_support,
+            ),
+        )
+
+    def converge_path_identity(
+        self,
+        blocks: tuple[SemanticBlock, ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> AuthorityDecision:
+        """Source-grounded convergence for Line seed/inheritance identity.
+
+        Local geometry proposes the path. This method decides whether its
+        persistent identity has enough independent Raw support, and resolves
+        competing existing Lines only by non-scalar Pareto dominance.
+        """
+        if not blocks:
+            raise ValueError("path identity requires at least one block")
+        if any(block.state_id is None for block in blocks):
+            raise ValueError("path identity requires immutable states")
+        state_ids = tuple(
+            block.state_id for block in blocks if block.state_id is not None
+        )
+        candidates = self.assembler.identity_candidates(
+            blocks,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+        if candidates:
+            decision_key = self._authority_decision_key(
+                "line",
+                state_ids,
+                candidates,
+            )
+            support = {
+                line_id: self.assembler.identity_support_blocks(
+                    line_id,
+                    blocks,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                for line_id in candidates
+            }
+            return self._record_authority_candidates(
+                decision_key=decision_key,
+                candidate_support=support,
+                reciprocal=True,
+                knowledge_cutoff=knowledge_cutoff,
+                min_independent_support=(
+                    self.assembler.config.min_shared_support
+                ),
+            )
+
+        seed_id = self.store.line_id_for_seed(
+            tuple(block.block_id for block in blocks)
+        )
+        decision_key = self._authority_decision_key(
+            "seed",
+            state_ids,
+            (seed_id,),
+        )
+        return self._record_authority_candidates(
+            decision_key=decision_key,
+            candidate_support={seed_id: blocks},
+            reciprocal=True,
+            knowledge_cutoff=knowledge_cutoff,
+            min_independent_support=max(
+                self.config.min_support,
+                self.assembler.config.min_seed_support,
+            ),
+        )
+
+    def _local_line_support_blocks(
+        self,
+        line_id: str,
+        block: SemanticBlock,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[SemanticBlock, ...]:
+        """All cutoff-visible Line states locally supporting this attachment.
+
+        The best matching node is useful for retrieval, but it must not become
+        a de-facto central authority for Line identity. Every visible Line
+        state above the proposal threshold contributes its exact Raw closure.
+        """
+        query = self._vector(block)
+        if query is None:
+            return ()
+        support: list[SemanticBlock] = []
+        for node_id in self.view.visible_node_ids(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+        ):
+            state = self.view.state_for_node_at_cutoff(
+                node_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if state is None:
+                continue
+            vector = self._vector(state)
+            if vector is None:
+                continue
+            if _cosine(query, vector) >= self.config.min_similarity:
+                support.append(state)
+        return tuple(support)
+
+    def _converge_nearline_identity(
+        self,
+        block: SemanticBlock,
+        matches: tuple[tuple[float, str, str], ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> AuthorityDecision:
+        # Every threshold-qualified Line is a candidate. Similarity proposes
+        # candidates; score margins do not certify one candidate over another.
+        candidate_ids = tuple(match[1] for match in matches)
+        if block.state_id is None:
+            raise ValueError("nearline authority requires immutable state")
+        decision_key = self._authority_decision_key(
+            "nearline",
+            (block.state_id,),
+            candidate_ids,
+        )
+        support = {
+            line_id: self._local_line_support_blocks(
+                line_id,
+                block,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            for _score, line_id, _anchor_id in matches
+        }
+        return self._record_authority_candidates(
+            decision_key=decision_key,
+            candidate_support=support,
+            reciprocal=False,
+            knowledge_cutoff=knowledge_cutoff,
+            min_independent_support=max(
+                2,
+                self.assembler.config.min_shared_support,
+            ),
         )
 
     def _existing_relations_still_valid(
@@ -680,6 +935,7 @@ class TrajectoryRuntime:
             )
         }
         updates: list[LineApplyResult] = []
+        authority_decisions: list[AuthorityDecision] = []
         for block_id in current_block_ids:
             block = visible.get(block_id)
             if block is None:
@@ -739,11 +995,13 @@ class TrajectoryRuntime:
             )
             if not matches:
                 continue
-            if (
-                len(matches) > 1
-                and matches[0][0] - matches[1][0]
-                <= self.config.line_ambiguity_margin
-            ):
+            decision = self._converge_nearline_identity(
+                block,
+                matches,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            authority_decisions.append(decision)
+            if decision.status != "CONVERGED" or decision.winner_id is None:
                 updates.append(
                     LineApplyResult(
                         line_id=None,
@@ -752,13 +1010,13 @@ class TrajectoryRuntime:
                         added_state_ids=(),
                         added_edges=(),
                         unresolved_reason=(
-                            "current block matches multiple stable Lines; "
-                            "no auto-merge or clone"
+                            "nearline Line identity lacks unique "
+                            "source-grounded convergence"
                         ),
                     )
                 )
                 continue
-            _score, line_id, _anchor_id = matches[0]
+            line_id = decision.winner_id
             parents, children = self._attachment_neighbours(
                 line_id,
                 block,
@@ -778,6 +1036,7 @@ class TrajectoryRuntime:
             knowledge_cutoff_iso=knowledge_cutoff.isoformat(),
             candidate_paths=(),
             line_updates=tuple(updates),
+            authority_decisions=tuple(authority_decisions),
         )
 
     def rebuild_current(
@@ -821,18 +1080,52 @@ class TrajectoryRuntime:
             )
         )
         updates: list[LineApplyResult] = []
+        authority_decisions: list[AuthorityDecision] = []
         for path in ordered:
             path_blocks = tuple(
                 by_id[block_id] for block_id in path.block_ids
+            )
+            identity_candidates = self.assembler.identity_candidates(
+                path_blocks,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            decision = self.converge_path_identity(
+                path_blocks,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            authority_decisions.append(decision)
+            if decision.status != "CONVERGED" or decision.winner_id is None:
+                updates.append(
+                    LineApplyResult(
+                        line_id=None,
+                        created_line=False,
+                        added_node_ids=(),
+                        added_state_ids=(),
+                        added_edges=(),
+                        unresolved_reason=(
+                            "trajectory identity lacks unique "
+                            "source-grounded convergence"
+                        ),
+                    )
+                )
+                continue
+            resolved_line_id = (
+                decision.winner_id if identity_candidates else None
             )
             updates.append(
                 self.assembler.apply_path(
                     path_blocks,
                     knowledge_cutoff=knowledge_cutoff,
+                    resolved_line_id=resolved_line_id,
                 )
             )
         return TrajectoryRuntimeResult(
             knowledge_cutoff_iso=knowledge_cutoff.isoformat(),
             candidate_paths=ordered,
             line_updates=tuple(updates),
+            authority_decisions=tuple(authority_decisions),
         )
+
+    def close(self) -> None:
+        if self._owns_authority_ledger:
+            self.authority.close()

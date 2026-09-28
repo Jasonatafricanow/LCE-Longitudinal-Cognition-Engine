@@ -14,6 +14,7 @@ from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
+from lce.cognition.convergence import AuthorityConfig
 from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
 from lce.cognition.line_graph import (
     CallableLineProjection,
@@ -121,6 +122,7 @@ class LceProjectionCore:
         frontier_config: FrontierDiscoveryConfig | None = None,
         trajectory_config: TrajectoryConfig | None = None,
         trajectory_neighbour_provider: NeighbourCandidateProvider | None = None,
+        authority_config: AuthorityConfig | None = None,
         line_assembler_config: LineAssemblerConfig | None = None,
         callable_projection_config: CallableProjectionConfig | None = None,
         surface_config: SurfaceConfig | None = None,
@@ -155,6 +157,7 @@ class LceProjectionCore:
             trajectory_config=trajectory_config,
             assembler_config=line_assembler_config,
             neighbour_provider=trajectory_neighbour_provider,
+            authority_config=authority_config,
         )
         self.line_projector = CallableLineProjector(
             memory=self.memory,
@@ -192,6 +195,9 @@ class LceProjectionCore:
             block_embedder or deterministic_block_embedding
         )
         self._block_embedding_version = block_embedding_version.strip()
+        self.trajectory.set_authority_variant_id(
+            self._compute_authority_variant_fingerprint()
+        )
         self._line_graph_expected_fingerprint = (
             self._compute_line_graph_fingerprint()
         )
@@ -222,6 +228,25 @@ class LceProjectionCore:
             baseline_store=self.baselines,
         )
 
+    def _compute_authority_variant_fingerprint(self) -> str:
+        provider = self.trajectory.supplier.neighbour_provider
+        provider_fingerprint = getattr(
+            provider,
+            "derivation_fingerprint",
+            (
+                f"{type(provider).__module__}."
+                f"{type(provider).__qualname__}"
+            ),
+        )
+        payload = {
+            "embedding_version": self._block_embedding_version,
+            "trajectory": asdict(self.trajectory.config),
+            "neighbour_provider": str(provider_fingerprint),
+        }
+        return "authvar_" + hashlib.sha256(
+            json.dumps(payload, sort_keys=True).encode()
+        ).hexdigest()[:24]
+
     def _compute_line_graph_fingerprint(self) -> str:
         provider = self.trajectory.supplier.neighbour_provider
         provider_fingerprint = getattr(
@@ -237,6 +262,7 @@ class LceProjectionCore:
             "embedding_version": self._block_embedding_version,
             "trajectory": asdict(self.trajectory.config),
             "assembler": asdict(self.trajectory.assembler.config),
+            "authority": asdict(self.trajectory.authority_config),
             "neighbour_provider": str(provider_fingerprint),
         }
         return "linegraph_" + hashlib.sha256(
@@ -1214,6 +1240,7 @@ class LceProjectionCore:
 
     def close(self) -> None:
         self.discovery.close()
+        self.trajectory.close()
         self.lines.close()
         self.worktrees.close()
         self.baselines.close()
