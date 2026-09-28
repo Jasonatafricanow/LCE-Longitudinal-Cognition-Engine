@@ -2023,3 +2023,65 @@ def test_paths_to_frontier_fails_closed_instead_of_returning_truncated_suffix(
             knowledge_cutoff=BASE + timedelta(days=100),
             max_nodes=3,
         )
+
+
+def test_line_state_revision_uses_derived_knowledge_time_not_raw_evidence_time(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"DERIVED-KNOWN-{index}",
+            block_id=f"derived-known-{index}",
+            day=index * 10,
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    seed_cutoff = BASE + timedelta(days=30)
+    seeded = assembler.apply_path(
+        blocks,
+        knowledge_cutoff=seed_cutoff,
+    )
+    assert seeded.line_id is not None
+    line_id = seeded.line_id
+
+    original = blocks[1]
+    revised = memory.extend_semantic_block(
+        original.block_id,
+        content="later reinterpretation without newer source evidence",
+        evidence_id=original.raw_evidence_ids[0],
+        occurred_at=original.occurred_start,
+    )
+    revision_cutoff = BASE + timedelta(days=200)
+    assembler.attach_block(
+        line_id,
+        revised,
+        knowledge_cutoff=revision_cutoff,
+    )
+
+    node = store.node_for_block(line_id, original.block_id)
+    assert node is not None
+    view = LineGraphView(memory=memory, store=store)
+
+    historical = view.state_for_node_at_cutoff(
+        node.node_id,
+        knowledge_cutoff=BASE + timedelta(days=40),
+    )
+    current = view.state_for_node_at_cutoff(
+        node.node_id,
+        knowledge_cutoff=revision_cutoff,
+    )
+    assert historical is not None
+    assert current is not None
+    assert historical.state_id == original.state_id
+    assert current.state_id == revised.state_id
+
+    stored_revision = store.get_node_state(
+        node.node_id,
+        revised.state_id or "",
+    )
+    assert stored_revision.knowledge_at == revision_cutoff
