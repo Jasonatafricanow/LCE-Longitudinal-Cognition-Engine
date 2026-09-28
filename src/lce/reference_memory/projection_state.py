@@ -181,6 +181,8 @@ class SqliteProjectionStateStore:
             )
         state_id = block.state_id or self._state_id(block)
         stored = replace(block, state_id=state_id)
+        derived_known_at = stored.derived_known_at
+        assert derived_known_at is not None
         metadata_json = json.dumps(
             dict(stored.metadata), ensure_ascii=False, sort_keys=True
         )
@@ -204,7 +206,7 @@ class SqliteProjectionStateStore:
                 stored.lineage_id,
                 metadata_json,
                 json.dumps(stored.raw_evidence_ids),
-                stored.derived_known_at.isoformat(),
+                derived_known_at.isoformat(),
                 datetime.now(UTC).isoformat(),
             ),
         )
