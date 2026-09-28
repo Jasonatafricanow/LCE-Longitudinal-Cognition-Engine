@@ -111,6 +111,7 @@ class AuthoritySignal:
                 "polarity": self.polarity,
                 "reciprocal": self.reciprocal,
                 "context": self.context_id,
+                "known_at": self.known_at.isoformat(),
             },
             sort_keys=True,
             separators=(",", ":"),
@@ -196,6 +197,64 @@ class AuthorityDecision:
         )
 
 
+def _evidence_components(
+    signals: tuple[AuthoritySignal, ...],
+) -> dict[str, tuple[AuthoritySignal, ...]]:
+    """Collapse transitively overlapping Raw closures into one authority unit.
+
+    Exact-closure de-duplication is insufficient: {E1, E2} and {E2, E3} are
+    not independent observations. A union-find over shared Raw IDs prevents
+    partially overlapping derived views from manufacturing extra authority.
+    """
+    if not signals:
+        return {}
+
+    parent = list(range(len(signals)))
+
+    def find(index: int) -> int:
+        while parent[index] != index:
+            parent[index] = parent[parent[index]]
+            index = parent[index]
+        return index
+
+    def union(left: int, right: int) -> None:
+        left_root = find(left)
+        right_root = find(right)
+        if left_root != right_root:
+            parent[right_root] = left_root
+
+    first_by_evidence: dict[str, int] = {}
+    for index, signal in enumerate(signals):
+        for evidence_id in signal.raw_evidence_ids:
+            prior = first_by_evidence.get(evidence_id)
+            if prior is None:
+                first_by_evidence[evidence_id] = index
+            else:
+                union(index, prior)
+
+    by_root: dict[int, list[AuthoritySignal]] = {}
+    for index, signal in enumerate(signals):
+        by_root.setdefault(find(index), []).append(signal)
+
+    output: dict[str, tuple[AuthoritySignal, ...]] = {}
+    for component_signals in by_root.values():
+        raw_ids = tuple(
+            sorted(
+                {
+                    evidence_id
+                    for signal in component_signals
+                    for evidence_id in signal.raw_evidence_ids
+                }
+            )
+        )
+        payload = json.dumps(raw_ids, separators=(",", ":"))
+        component_id = "rawcomp_" + hashlib.sha256(
+            payload.encode()
+        ).hexdigest()[:24]
+        output[component_id] = tuple(component_signals)
+    return output
+
+
 def _profile(
     candidate_id: str,
     signals: tuple[AuthoritySignal, ...],
@@ -208,51 +267,47 @@ def _profile(
     contradict = tuple(
         signal for signal in signals if signal.polarity == "contradict"
     )
-    support_groups = {signal.support_group_id for signal in support}
-    contradiction_groups = {
-        signal.support_group_id for signal in contradict
-    }
-    reciprocal_groups = {
-        signal.support_group_id
-        for signal in support
-        if signal.reciprocal
+    support_components = _evidence_components(support)
+    contradiction_components = _evidence_components(contradict)
+
+    reciprocal_components = {
+        component_id
+        for component_id, component_signals in support_components.items()
+        if any(signal.reciprocal for signal in component_signals)
     }
 
-    contexts_by_group: dict[str, set[str]] = {}
-    for signal in support:
-        if signal.context_id is None:
-            continue
-        contexts_by_group.setdefault(
-            signal.support_group_id,
-            set(),
-        ).add(signal.context_id)
-    stable_contexts = {
-        next(iter(contexts))
-        for contexts in contexts_by_group.values()
-        if len(contexts) == 1
-    }
+    stable_contexts: set[str] = set()
+    for component_signals in support_components.values():
+        contexts = {
+            signal.context_id
+            for signal in component_signals
+            if signal.context_id is not None
+        }
+        if len(contexts) == 1:
+            stable_contexts.add(next(iter(contexts)))
 
-    variant_groups: dict[str, set[str]] = {}
-    for signal in support:
-        variant_groups.setdefault(
-            signal.derivation_variant_id,
-            set(),
-        ).add(signal.support_group_id)
+    variant_components: dict[str, set[str]] = {}
+    for component_id, component_signals in support_components.items():
+        for signal in component_signals:
+            variant_components.setdefault(
+                signal.derivation_variant_id,
+                set(),
+            ).add(component_id)
     stable_variants = {
         variant_id
-        for variant_id, groups in variant_groups.items()
-        if len(groups) >= config.min_variant_independent_support
+        for variant_id, components in variant_components.items()
+        if len(components) >= config.min_variant_independent_support
     }
 
     return AuthorityProfile(
         candidate_id=candidate_id,
-        independent_support=len(support_groups),
-        reciprocal_support=len(reciprocal_groups),
+        independent_support=len(support_components),
+        reciprocal_support=len(reciprocal_components),
         context_support=len(stable_contexts),
         derivation_stability=len(stable_variants),
-        contradiction_pressure=len(contradiction_groups),
-        support_group_ids=tuple(sorted(support_groups)),
-        contradiction_group_ids=tuple(sorted(contradiction_groups)),
+        contradiction_pressure=len(contradiction_components),
+        support_group_ids=tuple(sorted(support_components)),
+        contradiction_group_ids=tuple(sorted(contradiction_components)),
         context_ids=tuple(sorted(stable_contexts)),
         stable_variant_ids=tuple(sorted(stable_variants)),
     )
