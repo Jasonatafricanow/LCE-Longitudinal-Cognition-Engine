@@ -49,6 +49,7 @@ def _block(
     block_id: str,
     day: int,
     evidence_id: str,
+    vector: tuple[float, ...] | None = None,
 ) -> SemanticBlock:
     when = BASE + timedelta(days=day)
     try:
@@ -72,7 +73,13 @@ def _block(
             occurred_end=when,
             compiler_version="test",
             lineage_id="main",
-            metadata={"vector": (1.0, float(day) / 1000.0)},
+            metadata={
+                "vector": (
+                    vector
+                    if vector is not None
+                    else (1.0, float(day) / 1000.0)
+                )
+            },
         )
     )
 
@@ -230,5 +237,75 @@ def test_competing_line_identity_resolves_by_independent_support_dominance(
     )
     assert applied.line_id == first.line_id
     assert set(store.lines_for_block("X")) == {first.line_id}
+    runtime.close()
+    store.close()
+
+
+def test_nearline_similarity_gap_does_not_become_central_authority(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    line_a_blocks = tuple(
+        _block(
+            memory,
+            block_id=f"A{index}",
+            day=index * 10,
+            evidence_id=f"EA{index}",
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    line_b_blocks = tuple(
+        _block(
+            memory,
+            block_id=f"B{index}",
+            day=index * 10 + 1,
+            evidence_id=f"EB{index}",
+            vector=(0.819152, 0.573576),
+        )
+        for index in range(3)
+    )
+    current = _block(
+        memory,
+        block_id="X-current",
+        day=40,
+        evidence_id="EX-current",
+        vector=(0.996195, 0.087156),
+    )
+    _rebuild(memory)
+    cutoff = BASE + timedelta(days=50)
+
+    store = LineGraphStore(tmp_path / "lines")
+    seeder = LineAssembler(memory=memory, store=store)
+    first = seeder.apply_path(line_a_blocks, knowledge_cutoff=cutoff)
+    second = seeder.apply_path(line_b_blocks, knowledge_cutoff=cutoff)
+    assert first.line_id is not None
+    assert second.line_id is not None
+    assert first.line_id != second.line_id
+
+    runtime = TrajectoryRuntime(
+        memory=memory,
+        line_store=store,
+        trajectory_config=TrajectoryConfig(
+            min_similarity=0.80,
+            line_ambiguity_margin=0.03,
+        ),
+    )
+    result = runtime.observe(
+        knowledge_cutoff=cutoff,
+        current_block_ids=(current.block_id,),
+    )
+
+    # A is substantially closer than B (> the legacy score margin), but both
+    # Lines have three independent local support groups. Similarity therefore
+    # proposes both candidates and cannot act as the final identity authority.
+    assert len(result.authority_decisions) == 1
+    decision = result.authority_decisions[0]
+    assert decision.status == "UNRESOLVED"
+    assert set(decision.undominated_candidate_ids) == {
+        first.line_id,
+        second.line_id,
+    }
+    assert store.lines_for_block(current.block_id) == ()
     runtime.close()
     store.close()
