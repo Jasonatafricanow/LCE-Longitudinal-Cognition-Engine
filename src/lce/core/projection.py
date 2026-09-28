@@ -75,6 +75,9 @@ from lce.structure.trajectory import (
 )
 
 
+LINE_GRAPH_DERIVATION_SCHEMA_VERSION = 2
+
+
 def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
     configured = block.metadata.get("vector")
     if isinstance(configured, (list, tuple)) and configured:
@@ -219,7 +222,8 @@ class LceProjectionCore:
         prior_line_fingerprint = self.lines.get_metadata(
             "derivation_fingerprint"
         )
-        self._line_graph_requires_rebuild = (
+        rebuild_marker = self.lines.get_metadata("rebuild_in_progress")
+        self._line_graph_requires_rebuild = bool(rebuild_marker) or (
             bool(self.lines.list_lines())
             and prior_line_fingerprint
             != self._line_graph_expected_fingerprint
@@ -273,7 +277,7 @@ class LceProjectionCore:
             ),
         )
         payload = {
-            "runtime": "trajectory-runtime-v1",
+            "derivation_schema_version": LINE_GRAPH_DERIVATION_SCHEMA_VERSION,
             "embedding_version": self._block_embedding_version,
             "trajectory": asdict(self.trajectory.config),
             "assembler": asdict(self.trajectory.assembler.config),
@@ -289,6 +293,7 @@ class LceProjectionCore:
             "derivation_fingerprint",
             self._line_graph_expected_fingerprint,
         )
+        self.lines.set_metadata("rebuild_in_progress", "")
         self._line_graph_requires_rebuild = False
 
     def _require_line_graph_current(self) -> None:
