@@ -67,6 +67,6 @@ __all__ = [
     "UnauthorizedSourceError",
     "UnderstandingView",
     "compute_content_hash",
-    "normalize_content",
     "evaluate_convergence",
+    "normalize_content",
 ]
