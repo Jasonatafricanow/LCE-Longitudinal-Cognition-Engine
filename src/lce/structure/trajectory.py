@@ -723,76 +723,45 @@ class TrajectoryRuntime:
             ),
         )
 
-    def _local_line_support_blocks(
+    def _retire_local_membership_relation(
         self,
         line_id: str,
-        block: SemanticBlock,
+        node_id: str,
         *,
         knowledge_cutoff: datetime,
-    ) -> tuple[SemanticBlock, ...]:
-        """All cutoff-visible Line states locally supporting this attachment.
+    ) -> None:
+        """Retire only the derived relation touched by a changed block state.
 
-        The best matching node is useful for retrieval, but it must not become
-        a de-facto central authority for Line identity. Every visible Line
-        state above the proposal threshold contributes its exact Raw closure.
+        Stable Line structure is reusable derived authority. A local state
+        revision invalidates only this membership revision and its incident
+        edges; unrelated nearline growth in the same Line is preserved.
         """
-        query = self._vector(block)
-        if query is None:
-            return ()
-        support: list[SemanticBlock] = []
-        for node_id in self.view.visible_node_ids(
-            line_id,
-            knowledge_cutoff=knowledge_cutoff,
-        ):
-            state = self.view.state_for_node_at_cutoff(
+        parents = self.store.parents_at(node_id, knowledge_cutoff)
+        children = self.store.children_at(node_id, knowledge_cutoff)
+        with self.store.conn:
+            for parent_id in parents:
+                self.store.retire_edge_from(
+                    line_id,
+                    parent_id,
+                    node_id,
+                    knowledge_cutoff,
+                    commit=False,
+                )
+            for child_id in children:
+                self.store.retire_edge_from(
+                    line_id,
+                    node_id,
+                    child_id,
+                    knowledge_cutoff,
+                    commit=False,
+                )
+            self.store.retire_membership_from(
                 node_id,
-                knowledge_cutoff=knowledge_cutoff,
+                knowledge_cutoff,
+                commit=False,
             )
-            if state is None:
-                continue
-            vector = self._vector(state)
-            if vector is None:
-                continue
-            if _cosine(query, vector) >= self.config.min_similarity:
-                support.append(state)
-        return tuple(support)
 
-    def _converge_nearline_identity(
-        self,
-        block: SemanticBlock,
-        matches: tuple[tuple[float, str, str], ...],
-        *,
-        knowledge_cutoff: datetime,
-    ) -> AuthorityDecision:
-        # Every threshold-qualified Line is a candidate. Similarity proposes
-        # candidates; score margins do not certify one candidate over another.
-        candidate_ids = tuple(match[1] for match in matches)
-        if block.state_id is None:
-            raise ValueError("nearline authority requires immutable state")
-        decision_key = self._authority_decision_key(
-            "nearline",
-            (block.state_id,),
-            candidate_ids,
-        )
-        support = {
-            line_id: self._local_line_support_blocks(
-                line_id,
-                block,
-                knowledge_cutoff=knowledge_cutoff,
-            )
-            for _score, line_id, _anchor_id in matches
-        }
-        return self._record_authority_candidates(
-            decision_key=decision_key,
-            candidate_support=support,
-            reciprocal=False,
-            knowledge_cutoff=knowledge_cutoff,
-            min_independent_support=max(
-                2,
-                self.assembler.config.min_shared_support,
-            ),
-        )
-
+    def _existing_relations_still_valid(
     def _existing_relations_still_valid(
         self,
         line_id: str,
@@ -926,7 +895,13 @@ class TrajectoryRuntime:
         knowledge_cutoff: datetime,
         current_block_ids: tuple[str, ...],
     ) -> TrajectoryRuntimeResult:
-        """Nearline growth: route only current blocks into existing Lines."""
+        """Nearline growth against already-authorized derived Line structure.
+
+        Persisted Line membership/edges are compiled cognition. Ordinary
+        nearline processing reuses them directly and performs independent
+        relation admission per matching Line; it does not reopen historical
+        Raw Evidence to elect one exclusive Line winner.
+        """
         visible = {
             block.block_id: block
             for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
@@ -935,11 +910,11 @@ class TrajectoryRuntime:
             )
         }
         updates: list[LineApplyResult] = []
-        authority_decisions: list[AuthorityDecision] = []
         for block_id in current_block_ids:
             block = visible.get(block_id)
             if block is None:
                 continue
+
             existing_memberships = tuple(
                 line_id
                 for line_id in self.store.lines_for_block(block_id)
@@ -952,35 +927,35 @@ class TrajectoryRuntime:
                     )
                 )
             )
-            if existing_memberships:
-                relation_revision_required = False
-                for line_id in existing_memberships:
-                    node = self.store.node_for_block(line_id, block_id)
-                    if node is None:
-                        continue
-                    previous = self.view.state_for_node_at_cutoff(
+
+            retained_memberships: set[str] = set()
+            detached_revision = False
+            for line_id in existing_memberships:
+                node = self.store.node_for_block(line_id, block_id)
+                if node is None:
+                    continue
+                previous = self.view.state_for_node_at_cutoff(
+                    node.node_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                if previous is None:
+                    self._retire_local_membership_relation(
+                        line_id,
                         node.node_id,
                         knowledge_cutoff=knowledge_cutoff,
                     )
-                    if previous is None:
-                        continue
-                    if (
-                        previous.state_id != block.state_id
-                        and not self._existing_relations_still_valid(
-                            line_id,
-                            node.node_id,
-                            previous,
-                            block,
-                            knowledge_cutoff=knowledge_cutoff,
-                        )
-                    ):
-                        relation_revision_required = True
-                        break
-                if relation_revision_required:
-                    return self.rebuild_current(
-                        knowledge_cutoff=knowledge_cutoff,
-                    )
-                for line_id in existing_memberships:
+                    detached_revision = True
+                    continue
+                if previous.state_id == block.state_id:
+                    retained_memberships.add(line_id)
+                    continue
+                if self._existing_relations_still_valid(
+                    line_id,
+                    node.node_id,
+                    previous,
+                    block,
+                    knowledge_cutoff=knowledge_cutoff,
+                ):
                     updates.append(
                         self.assembler.attach_block(
                             line_id,
@@ -988,72 +963,80 @@ class TrajectoryRuntime:
                             knowledge_cutoff=knowledge_cutoff,
                         )
                     )
+                    retained_memberships.add(line_id)
+                    continue
+
+                self._retire_local_membership_relation(
+                    line_id,
+                    node.node_id,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                detached_revision = True
+
+            if existing_memberships and not detached_revision:
                 continue
+
             matches = self._line_matches(
                 block,
                 knowledge_cutoff=knowledge_cutoff,
             )
-            if not matches:
-                continue
-            decision = self._converge_nearline_identity(
-                block,
-                matches,
-                knowledge_cutoff=knowledge_cutoff,
-            )
-            authority_decisions.append(decision)
-            if decision.status != "CONVERGED" or decision.winner_id is None:
-                updates.append(
-                    LineApplyResult(
-                        line_id=None,
-                        created_line=False,
-                        added_node_ids=(),
-                        added_state_ids=(),
-                        added_edges=(),
-                        unresolved_reason=(
-                            "nearline Line identity lacks unique "
-                            "source-grounded convergence"
-                        ),
-                    )
-                )
-                continue
-            line_id = decision.winner_id
-            parents, children = self._attachment_neighbours(
-                line_id,
-                block,
-                knowledge_cutoff=knowledge_cutoff,
-            )
-            updates.append(
-                self.assembler.attach_block(
+            for _score, line_id, _anchor_id in matches:
+                if line_id in retained_memberships:
+                    continue
+                parents, children = self._attachment_neighbours(
                     line_id,
                     block,
-                    parent_node_ids=parents,
-                    child_node_ids=children,
                     knowledge_cutoff=knowledge_cutoff,
                 )
-            )
+                # Similarity alone does not create an isolated membership.
+                # A nearline relation needs at least one ordered local witness.
+                if not parents and not children:
+                    continue
+                updates.append(
+                    self.assembler.attach_block(
+                        line_id,
+                        block,
+                        parent_node_ids=parents,
+                        child_node_ids=children,
+                        knowledge_cutoff=knowledge_cutoff,
+                    )
+                )
 
         return TrajectoryRuntimeResult(
             knowledge_cutoff_iso=knowledge_cutoff.isoformat(),
             candidate_paths=(),
             line_updates=tuple(updates),
-            authority_decisions=tuple(authority_decisions),
+            authority_decisions=(),
         )
 
+    def rebuild_current(
     def rebuild_current(
         self,
         *,
         knowledge_cutoff: datetime,
     ) -> TrajectoryRuntimeResult:
-        """Recompile current Line membership/relations without erasing history."""
+        """Recompile current Line structure with a durable crash marker.
+
+        The marker is committed before destructive retirement. A hard process
+        death therefore survives restart and forces the owning core to rebuild
+        instead of serving a half-reactivated graph as current.
+        """
+        self.store.set_metadata(
+            "rebuild_in_progress",
+            knowledge_cutoff.isoformat(),
+        )
         self.store.retire_current_structure(knowledge_cutoff)
         try:
-            return self.bootstrap(
+            result = self.bootstrap(
                 knowledge_cutoff=knowledge_cutoff,
             )
         except Exception:
-            # A failed rebuild must not expose a partially reactivated graph.
+            # Leave rebuild_in_progress set. A restart must fail closed and
+            # retry instead of accepting this partial generation.
             self.store.retire_current_structure(knowledge_cutoff)
             raise
+        self.store.set_metadata("rebuild_in_progress", "")
+        return result
 
     def bootstrap(
         self,
