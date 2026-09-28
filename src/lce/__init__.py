@@ -1,5 +1,13 @@
 """LCE — Minimal Longitudinal Logical Understanding Core."""
 
+from lce.cognition.convergence import (
+    AuthorityConfig,
+    AuthorityDecision,
+    AuthorityLedger,
+    AuthorityProfile,
+    AuthoritySignal,
+    evaluate_convergence,
+)
 from lce.cognition.external import PrecomputedDraftInput, PrecomputedDraftIntake
 from lce.contracts.baseline import (
     Baseline,
@@ -32,6 +40,11 @@ from lce.store.sqlite_store import SqliteBaselineStore, StorageIntegrityError
 
 __all__ = [
     "AcceptedUnderstandingReadAPI",
+    "AuthorityConfig",
+    "AuthorityDecision",
+    "AuthorityLedger",
+    "AuthorityProfile",
+    "AuthoritySignal",
     "Baseline",
     "BaselineHistory",
     "BaselineStorePort",
@@ -55,4 +68,5 @@ __all__ = [
     "UnderstandingView",
     "compute_content_hash",
     "normalize_content",
+    "evaluate_convergence",
 ]
