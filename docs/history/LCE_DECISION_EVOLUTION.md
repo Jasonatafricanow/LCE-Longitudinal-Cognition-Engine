@@ -900,3 +900,48 @@ Implementation note: source-driven invalidation and historical relation
 revision already exist. The dedicated persistent relation-correction ledger is
 a post-V1 control-plane item; the semantic boundary is frozen here.
 
+## 32. Why is Inspiration Material a first-class LCE output?
+
+**Problem.** A memory/cognition engine that only answers incoming queries leaves
+one important use of longitudinal structure unused: historical structure can
+itself become the reason to start a new conversation.
+
+**Failed assumption.** Proactive conversation material should be recreated
+downstream from LCE internals such as Lines, branches, support sets or confidence
+profiles.
+
+That makes every consumer understand LCE's ontology and forces the Body/Agent
+layer to reconstruct epistemic boundaries that LCE already knows.
+
+**Decision.** LCE exposes a second narrow product next to accepted
+understanding:
+
+```text
+Accepted Understanding
+    -> passive historical-context consumption
+
+Inspiration Material
+    -> proactive conversation material
+```
+
+The public contract is only:
+
+```text
+material_id + content
+```
+
+Internal discovery kinds, Line IDs, support/provenance and interpreter traces
+remain private.
+
+V1 has two internal suppliers:
+
+1. unresolved local structure -> possible-association material;
+2. stable Line prefix `A -> B -> C` -> bounded semantic hypothesis `D?`.
+
+The runtime itself renders the epistemic boundary so downstream code does not
+need to decide which part is supported and which part is speculative.
+
+**Consequence.** New inspiration algorithms can be added without changing the
+downstream API, and LCE becomes useful both for passive continuity and for
+proactive cognition.
+
