@@ -1252,7 +1252,7 @@ class LineAssembler:
             node, node_added, state_added = self.store.ensure_node(
                 line_id,
                 block,
-                knowledge_at=self._knowledge_at(block),
+                knowledge_at=effective_cutoff,
                 membership_known_at=effective_cutoff,
                 commit=False,
             )
@@ -1451,7 +1451,7 @@ class LineAssembler:
                 node, node_added, state_added = self.store.ensure_node(
                     line_id,
                     block,
-                    knowledge_at=self._knowledge_at(block),
+                    knowledge_at=effective_cutoff,
                     membership_known_at=effective_cutoff,
                     commit=False,
                 )
