@@ -14,6 +14,7 @@ from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
+from lce.cognition.convergence import AuthorityConfig
 from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
 from lce.cognition.line_graph import (
     CallableLineProjection,
@@ -121,6 +122,7 @@ class LceProjectionCore:
         frontier_config: FrontierDiscoveryConfig | None = None,
         trajectory_config: TrajectoryConfig | None = None,
         trajectory_neighbour_provider: NeighbourCandidateProvider | None = None,
+        authority_config: AuthorityConfig | None = None,
         line_assembler_config: LineAssemblerConfig | None = None,
         callable_projection_config: CallableProjectionConfig | None = None,
         surface_config: SurfaceConfig | None = None,
@@ -155,6 +157,7 @@ class LceProjectionCore:
             trajectory_config=trajectory_config,
             assembler_config=line_assembler_config,
             neighbour_provider=trajectory_neighbour_provider,
+            authority_config=authority_config,
         )
         self.line_projector = CallableLineProjector(
             memory=self.memory,
@@ -237,6 +240,7 @@ class LceProjectionCore:
             "embedding_version": self._block_embedding_version,
             "trajectory": asdict(self.trajectory.config),
             "assembler": asdict(self.trajectory.assembler.config),
+            "authority": asdict(self.trajectory.authority_config),
             "neighbour_provider": str(provider_fingerprint),
         }
         return "linegraph_" + hashlib.sha256(
@@ -1214,6 +1218,7 @@ class LceProjectionCore:
 
     def close(self) -> None:
         self.discovery.close()
+        self.trajectory.close()
         self.lines.close()
         self.worktrees.close()
         self.baselines.close()
