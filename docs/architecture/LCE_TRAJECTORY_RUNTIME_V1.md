@@ -1,11 +1,12 @@
 # LCE Trajectory Runtime V1
 
-Status: implementation branch, not merged to master.
+Status: V1 production runtime.
 
-Branch: `feature/trajectory-runtime-v1-20260927`
+Development branch: `feature/trajectory-runtime-v1-20260927`
 
 This document records the production structure implemented after the 2026-09-27
-Path-B / Line / Surface experiments. It distinguishes structural contracts that
+Path-B / Line / Surface experiments and the subsequent production-hardening
+audit. It distinguishes structural contracts that
 are now implemented from scoring/operator choices that remain replaceable.
 
 ## 1. Evidence authority
@@ -370,7 +371,7 @@ occurred_at controls logical placement
 UNKNOWN remains a legal outcome whenever identity or structure is
 underdetermined.
 
-## 11. Still unresolved / replaceable
+## 11. Post-V1 replaceable operators / research
 
 The following are intentionally not frozen:
 
@@ -387,7 +388,11 @@ The following are intentionally not frozen:
   language consumer projections;
 - retirement of the legacy 06R/Frontier compatibility path.
 
-These should be challenged with held-out real data before authority is expanded.
+These are deliberately outside the V1 structural authority boundary. They can be
+replaced or calibrated without changing Raw-Evidence authority, stable Line identity,
+knowledge-cutoff replay, or the branch/provenance invariants above. They should be
+challenged with held-out real data before any of them is promoted into stronger
+automatic authority.
 
 ## 12. Verification
 
@@ -412,5 +417,7 @@ The branch has focused production tests for:
 - different-length cross-Line Surface discovery;
 - Surface Raw closure and invalidation rollback.
 
-The canonical repository verification gate is run on every commit to the feature
-branch through `.github/workflows/trajectory-runtime-v1.yml`.
+The canonical repository verification gate plus focused bitemporal, Line-graph,
+trajectory, and Surface tests are required for this runtime. The focused
+`.github/workflows/trajectory-runtime-v1.yml` workflow remains available for
+trajectory-runtime branches.
