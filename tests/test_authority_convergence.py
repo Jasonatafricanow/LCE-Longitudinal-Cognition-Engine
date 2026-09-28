@@ -207,3 +207,81 @@ def test_context_conflict_from_same_raw_group_cannot_multiply_context_support() 
     decision = evaluate_convergence("d", signals, config=config)
     assert _profile(decision, "a").context_support == 0
     assert decision.status == "UNRESOLVED"
+
+
+def test_partially_overlapping_raw_closures_are_one_independent_component() -> None:
+    first = AuthoritySignal(
+        decision_key="d-overlap",
+        candidate_id="a",
+        raw_evidence_ids=("E1", "E2"),
+        derivation_variant_id="v1",
+        known_at=BASE,
+        reciprocal=True,
+    )
+    second = AuthoritySignal(
+        decision_key="d-overlap",
+        candidate_id="a",
+        raw_evidence_ids=("E2", "E3"),
+        derivation_variant_id="v1",
+        known_at=BASE,
+        reciprocal=True,
+    )
+    decision = evaluate_convergence(
+        "d-overlap",
+        (first, second),
+        config=AuthorityConfig(
+            min_independent_support=2,
+            min_variant_independent_support=1,
+        ),
+    )
+    profile = _profile(decision, "a")
+    assert profile.independent_support == 1
+    assert decision.status == "UNRESOLVED"
+
+
+def test_derived_signal_known_at_is_not_backdated_to_raw_evidence(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    for evidence_id in ("E-old-1", "E-old-2"):
+        memory.add_evidence(
+            RawEvidence(
+                evidence_id=evidence_id,
+                content=evidence_id,
+                occurred_at=BASE,
+                known_at=BASE,
+                provenance={"source": "test", "canonical": True},
+            )
+        )
+
+    ledger = AuthorityLedger(tmp_path / "authority-known-at")
+    try:
+        signal_time = BASE + timedelta(days=100)
+        ledger.record_many(
+            (
+                _signal(
+                    "d-late",
+                    "a",
+                    "E-old-1",
+                    known_at=signal_time,
+                ),
+                _signal(
+                    "d-late",
+                    "a",
+                    "E-old-2",
+                    known_at=signal_time,
+                ),
+            )
+        )
+        assert ledger.evaluate(
+            "d-late",
+            knowledge_cutoff=BASE + timedelta(days=50),
+            memory=memory,
+        ).status == "UNRESOLVED"
+        assert ledger.evaluate(
+            "d-late",
+            knowledge_cutoff=signal_time,
+            memory=memory,
+        ).status == "CONVERGED"
+    finally:
+        ledger.close()
