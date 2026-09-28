@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping
-from datetime import datetime
+from datetime import UTC, datetime
 
 from lce.reference_memory.contracts import (
     CanonicalEvidenceSourcePort,
@@ -50,6 +50,7 @@ class ProjectionSubstrate:
             left.evidence_id == right.evidence_id
             and left.content == right.content
             and left.occurred_at == right.occurred_at
+            and left.effective_known_at == right.effective_known_at
             and left.effective_ordering_key == right.effective_ordering_key
             and json.dumps(
                 dict(left.provenance),
@@ -79,6 +80,24 @@ class ProjectionSubstrate:
 
     def list_current_valid_evidence(self) -> tuple[RawEvidence, ...]:
         return self.source.list_current_valid_evidence()
+
+    def evidence_valid_at(
+        self,
+        evidence_id: str,
+        cutoff: datetime,
+    ) -> bool:
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
+        item = self.source.get_evidence(evidence_id)
+        if item.effective_known_at > cutoff:
+            return False
+        reader = getattr(self.source, "evidence_valid_at", None)
+        if callable(reader):
+            return bool(reader(evidence_id, cutoff))
+        # External sources that expose only current lifecycle state cannot
+        # reconstruct past validity exactly. Fall back conservatively to the
+        # current authoritative state rather than fabricating history.
+        return item.current_valid
 
     def invalidate(self, evidence_id: str, *, reason: str) -> None:
         del evidence_id, reason
@@ -156,6 +175,38 @@ class ProjectionSubstrate:
             if self._block_is_current(self.source, block)
         )
 
+    def list_semantic_blocks_at_knowledge_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        if cutoff.tzinfo != UTC:
+            raise ValueError("cutoff must be UTC")
+        latest: dict[str, SemanticBlock] = {}
+        for block in self.state.list_semantic_block_states():
+            try:
+                visible = all(
+                    (
+                        self.evidence_valid_at(evidence_id, cutoff)
+                        if current_valid_only
+                        else self.source.get_evidence(
+                            evidence_id
+                        ).effective_known_at <= cutoff
+                    )
+                    for evidence_id in block.raw_evidence_ids
+                )
+            except KeyError:
+                visible = False
+            if not visible:
+                continue
+            prior = latest.get(block.block_id)
+            if prior is None or block.state_version > prior.state_version:
+                latest[block.block_id] = block
+        return tuple(
+            sorted(
+                latest.values(),
+                key=lambda block: (block.occurred_start, block.block_id),
+            )
+        )
+
     def extend_semantic_block(
         self,
         block_id: str,
@@ -179,7 +230,7 @@ class ProjectionSubstrate:
         index_version: str,
     ) -> None:
         self.state.replace_vector_index(
-            self.list_semantic_block_states(current_valid_only=True),
+            self.list_semantic_block_states(current_valid_only=False),
             embedder,
             index_version=index_version,
         )
@@ -190,10 +241,21 @@ class ProjectionSubstrate:
     def get_vector(
         self, block_id: str, *, state_id: str | None = None
     ) -> VectorProjection:
+        if state_id is None:
+            block = self.state.get_semantic_block(block_id)
+            if not self._block_is_current(self.source, block):
+                raise KeyError(block_id)
         return self.state.get_vector(block_id, state_id=state_id)
 
     def vector_projection_ids(self) -> tuple[str, ...]:
-        return self.state.vector_projection_ids()
+        return tuple(
+            block_id
+            for block_id in self.state.vector_projection_ids()
+            if self._block_is_current(
+                self.source,
+                self.state.get_semantic_block(block_id),
+            )
+        )
 
     def get_checkpoint(
         self, lineage_id: str

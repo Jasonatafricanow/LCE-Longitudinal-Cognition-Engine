@@ -13,15 +13,43 @@ from lce.structure.frontier import (
     FrontierCandidateDiscovery,
     FrontierDiscoveryConfig,
 )
+from lce.structure.surface import (
+    LinePathView,
+    SurfaceCandidate,
+    SurfaceConfig,
+    SurfaceRuntime,
+    SurfaceSearchLimitExceeded,
+)
+from lce.structure.trajectory import (
+    ExactCosineNeighbourProvider,
+    MutualKnnTrajectorySupplier,
+    NeighbourCandidateProvider,
+    TrajectoryConfig,
+    TrajectoryPath,
+    TrajectoryRuntime,
+    TrajectoryRuntimeResult,
+)
 
 __all__ = [
+    "ExactCosineNeighbourProvider",
     "FrontierCandidateDiscovery",
     "FrontierDiscoveryConfig",
     "HigherOrderCandidate",
+    "LinePathView",
+    "MutualKnnTrajectorySupplier",
+    "NeighbourCandidateProvider",
     "SnapshotStructureDiscovery",
     "StructureConfig",
     "StructureDiff",
     "StructureObservation",
     "StructureRelationCandidate",
     "StructureSnapshot",
+    "SurfaceCandidate",
+    "SurfaceConfig",
+    "SurfaceRuntime",
+    "SurfaceSearchLimitExceeded",
+    "TrajectoryConfig",
+    "TrajectoryPath",
+    "TrajectoryRuntime",
+    "TrajectoryRuntimeResult",
 ]

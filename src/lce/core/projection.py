@@ -10,11 +10,19 @@ import hashlib
 import json
 import re
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
 from lce.cognition.invalidation import DependencyInvalidator, InvalidationResult
+from lce.cognition.line_graph import (
+    CallableLineProjection,
+    CallableLineProjector,
+    CallableProjectionConfig,
+    LineAssemblerConfig,
+    LineGraphStore,
+    LineGraphView,
+)
 from lce.cognition.promotion import (
     BoundedInterpretation,
     BoundedInterpretationPackage,
@@ -47,6 +55,17 @@ from lce.structure.frontier import (
     FrontierCandidateDiscovery,
     FrontierDiscoveryConfig,
 )
+from lce.structure.surface import (
+    SurfaceCandidate,
+    SurfaceConfig,
+    SurfaceRuntime,
+)
+from lce.structure.trajectory import (
+    NeighbourCandidateProvider,
+    TrajectoryConfig,
+    TrajectoryRuntime,
+    TrajectoryRuntimeResult,
+)
 
 
 def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
@@ -67,12 +86,18 @@ class ProcessResult:
     diff: StructureDiff | None
     higher_order_candidates: tuple[HigherOrderCandidate, ...]
     promotions: tuple[ConsolidationResult, ...]
+    trajectory_result: TrajectoryRuntimeResult | None = None
+    surface_candidates: tuple[SurfaceCandidate, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
 class _CandidateEvaluation:
     handled: bool
     promotion: ConsolidationResult | None = None
+
+
+class StaleLineGraphError(RuntimeError):
+    """Current Line graph was compiled by a different derivation fingerprint."""
 
 
 class LceProjectionCore:
@@ -94,6 +119,11 @@ class LceProjectionCore:
         lineage_id: str = "default",
         structure_config: StructureConfig | None = None,
         frontier_config: FrontierDiscoveryConfig | None = None,
+        trajectory_config: TrajectoryConfig | None = None,
+        trajectory_neighbour_provider: NeighbourCandidateProvider | None = None,
+        line_assembler_config: LineAssemblerConfig | None = None,
+        callable_projection_config: CallableProjectionConfig | None = None,
+        surface_config: SurfaceConfig | None = None,
         interpreter: BoundedInterpreter | None = None,
         block_embedder: Callable[
             [SemanticBlock], tuple[float, ...]
@@ -114,6 +144,32 @@ class LceProjectionCore:
         self._close_memory = close_memory
         self.baselines = SqliteBaselineStore(self.root / "baselines")
         self.worktrees = CognitionWorktreeStore(self.root / "worktrees")
+        self.lines = LineGraphStore(self.root / "lines")
+        self.line_view = LineGraphView(
+            memory=self.memory,
+            store=self.lines,
+        )
+        self.trajectory = TrajectoryRuntime(
+            memory=self.memory,
+            line_store=self.lines,
+            trajectory_config=trajectory_config,
+            assembler_config=line_assembler_config,
+            neighbour_provider=trajectory_neighbour_provider,
+        )
+        self.line_projector = CallableLineProjector(
+            memory=self.memory,
+            store=self.lines,
+            config=callable_projection_config,
+        )
+        self.surface_runtime = (
+            SurfaceRuntime(
+                memory=self.memory,
+                line_store=self.lines,
+                config=surface_config,
+            )
+            if surface_config is not None
+            else None
+        )
         self.discovery = SnapshotStructureDiscovery(
             self.memory,
             self.root / "structures",
@@ -136,6 +192,25 @@ class LceProjectionCore:
             block_embedder or deterministic_block_embedding
         )
         self._block_embedding_version = block_embedding_version.strip()
+        self._line_graph_expected_fingerprint = (
+            self._compute_line_graph_fingerprint()
+        )
+        prior_line_fingerprint = self.lines.get_metadata(
+            "derivation_fingerprint"
+        )
+        self._line_graph_requires_rebuild = (
+            bool(self.lines.list_lines())
+            and prior_line_fingerprint
+            != self._line_graph_expected_fingerprint
+        )
+        self.lines.set_derivation_fingerprint(
+            self._line_graph_expected_fingerprint
+        )
+        if not self._line_graph_requires_rebuild:
+            self.lines.set_metadata(
+                "derivation_fingerprint",
+                self._line_graph_expected_fingerprint,
+            )
         self.promoter = UnderstandingPromoter(
             memory=self.memory,
             baseline_store=self.baselines,
@@ -147,6 +222,82 @@ class LceProjectionCore:
             baseline_store=self.baselines,
         )
 
+    def _compute_line_graph_fingerprint(self) -> str:
+        provider = self.trajectory.supplier.neighbour_provider
+        provider_fingerprint = getattr(
+            provider,
+            "derivation_fingerprint",
+            (
+                f"{type(provider).__module__}."
+                f"{type(provider).__qualname__}"
+            ),
+        )
+        payload = {
+            "runtime": "trajectory-runtime-v1",
+            "embedding_version": self._block_embedding_version,
+            "trajectory": asdict(self.trajectory.config),
+            "assembler": asdict(self.trajectory.assembler.config),
+            "neighbour_provider": str(provider_fingerprint),
+        }
+        return "linegraph_" + hashlib.sha256(
+            json.dumps(payload, sort_keys=True).encode()
+        ).hexdigest()[:24]
+
+    def _mark_line_graph_current(self) -> None:
+        self.lines.set_metadata(
+            "derivation_fingerprint",
+            self._line_graph_expected_fingerprint,
+        )
+        self._line_graph_requires_rebuild = False
+
+    def _require_line_graph_current(self) -> None:
+        if self._line_graph_requires_rebuild:
+            raise StaleLineGraphError(
+                "Line graph derivation is stale; run process() or "
+                "bootstrap_trajectory() before consuming Line projections"
+            )
+
+    def _ensure_line_graph_current(
+        self,
+    ) -> TrajectoryRuntimeResult | None:
+        if not self._line_graph_requires_rebuild:
+            return None
+        # A changed embedding/config/provider invalidates derived graph
+        # structure, not Raw Evidence. Rebuild the vector projection and
+        # compile a new current relation revision at system knowledge time.
+        self.memory.rebuild_vector_index(
+            self._block_embedder,
+            index_version=self._block_embedding_version,
+        )
+        result = self.trajectory.rebuild_current(
+            knowledge_cutoff=datetime.now(UTC),
+        )
+        self._mark_line_graph_current()
+        return result
+
+    def _legacy_lineage_compatible(self) -> bool:
+        """Whether legacy occurred-at snapshots remain semantically safe.
+
+        Once any source in this lineage is learned at a different time from
+        when it logically occurred, old Frontier/06R snapshots would require a
+        full forward replay from that logical insertion point. Until that
+        replay exists, fail closed for the lineage instead of resuming legacy
+        evaluation on a later ordinary input.
+        """
+        for block in self.memory.list_semantic_blocks(
+            current_valid_only=False
+        ):
+            if block.lineage_id != self.compiler.lineage_id:
+                continue
+            for evidence_id in block.raw_evidence_ids:
+                try:
+                    evidence = self.memory.get_evidence(evidence_id)
+                except KeyError:
+                    return False
+                if evidence.effective_known_at != evidence.occurred_at:
+                    return False
+        return True
+
     def process(
         self, material: RawEvidence, *, mode: str = "nearline"
     ) -> ProcessResult:
@@ -155,6 +306,8 @@ class LceProjectionCore:
         compiler_result = self.compiler.process(material)
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
+            if mode == "nearline":
+                self._ensure_line_graph_current()
             return self._completed_replay_result(
                 material,
                 compiler_result,
@@ -191,13 +344,33 @@ class LceProjectionCore:
             else None
         )
 
-        frontier_candidates = self.frontier.candidates(
-            snapshot,
-            current_block_ids=compiler_result.block_ids,
-            processing_input_id=material.evidence_id,
+        trajectory_result: TrajectoryRuntimeResult | None = None
+        if mode == "nearline":
+            trajectory_result = self._ensure_line_graph_current()
+            if trajectory_result is None:
+                trajectory_result = self.trajectory.observe(
+                    knowledge_cutoff=material.effective_known_at,
+                    current_block_ids=compiler_result.block_ids,
+                )
+        # Surface discovery is a higher-order slow-path operation. Merely
+        # configuring the operator must not make every nearline turn rescan all
+        # persisted Line paths.
+        surface_candidates: tuple[SurfaceCandidate, ...] = ()
+
+        legacy_compatible = self._legacy_lineage_compatible()
+        frontier_candidates = (
+            self.frontier.candidates(
+                snapshot,
+                current_block_ids=compiler_result.block_ids,
+                processing_input_id=material.evidence_id,
+            )
+            if legacy_compatible
+            else ()
         )
-        structure_candidates = self.discovery.higher_order_candidates(
-            snapshot
+        structure_candidates = (
+            self.discovery.higher_order_candidates(snapshot)
+            if legacy_compatible
+            else ()
         )
         candidates = (*frontier_candidates, *structure_candidates)
         promotions: list[ConsolidationResult] = []
@@ -256,6 +429,8 @@ class LceProjectionCore:
             diff,
             candidates,
             tuple(promotions),
+            trajectory_result,
+            surface_candidates,
         )
 
     def _completed_replay_result(
@@ -278,12 +453,75 @@ class LceProjectionCore:
         if snapshot is None:
             # Rebuilding a derived snapshot is safe, but no cognition stage is rerun.
             snapshot = self.discovery.create_snapshot(material.occurred_at)
-        candidates = self.discovery.higher_order_candidates(snapshot)
-        return ProcessResult(compiler_result, snapshot, None, candidates, ())
+        candidates = (
+            self.discovery.higher_order_candidates(snapshot)
+            if self._legacy_lineage_compatible()
+            else ()
+        )
+        return ProcessResult(
+            compiler_result,
+            snapshot,
+            None,
+            candidates,
+            (),
+            None,
+            (),
+        )
 
-    def run_batch(self, materials: Sequence[RawEvidence]) -> tuple[ProcessResult, ...]:
-        ordered = sorted(materials, key=lambda item: (item.effective_ordering_key, item.evidence_id))
-        return tuple(self.process(material, mode="batch") for material in ordered)
+    def run_batch(
+        self,
+        materials: Sequence[RawEvidence],
+    ) -> tuple[ProcessResult, ...]:
+        ordered = sorted(
+            materials,
+            key=lambda item: (
+                item.effective_ordering_key,
+                item.evidence_id,
+            ),
+        )
+        if not ordered:
+            return ()
+        results = [
+            self.process(material, mode="batch")
+            for material in ordered
+        ]
+        cutoff = max(
+            material.effective_known_at for material in ordered
+        )
+        trajectory_result = self._ensure_line_graph_current()
+        if trajectory_result is None:
+            trajectory_result = self.trajectory.bootstrap(
+                knowledge_cutoff=cutoff,
+            )
+        surface_cutoff = datetime.fromisoformat(
+            trajectory_result.knowledge_cutoff_iso
+        )
+        surface_candidates = (
+            self.surface_runtime.discover(
+                knowledge_cutoff=surface_cutoff,
+            )
+            if self.surface_runtime is not None
+            else ()
+        )
+        results[-1] = replace(
+            results[-1],
+            trajectory_result=trajectory_result,
+            surface_candidates=surface_candidates,
+        )
+        return tuple(results)
+
+    def bootstrap_trajectory(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> TrajectoryRuntimeResult:
+        """Run the slow Point-Cloud bootstrap explicitly."""
+        rebuilt = self._ensure_line_graph_current()
+        if rebuilt is not None:
+            return rebuilt
+        return self.trajectory.bootstrap(
+            knowledge_cutoff=knowledge_cutoff,
+        )
 
     @staticmethod
     def _frontier_refs(
@@ -814,6 +1052,100 @@ class LceProjectionCore:
     def query(self, current_context: str | dict[str, object] | None) -> tuple[UnderstandingView, ...]:
         return self.read_api.query(current_context)
 
+    def line_frontier(
+        self,
+        line_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[str, ...]:
+        self._require_line_graph_current()
+        return self.line_view.frontier(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+
+    def project_line_for_block(
+        self,
+        line_id: str,
+        block_id: str,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> CallableLineProjection | None:
+        self._require_line_graph_current()
+        visible = {
+            block.block_id: block
+            for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
+                knowledge_cutoff,
+                current_valid_only=True,
+            )
+        }
+        block = visible.get(block_id)
+        if block is None:
+            return None
+        return self.line_projector.project_for_block(
+            line_id,
+            block,
+            knowledge_cutoff=knowledge_cutoff,
+        )
+
+    def discover_surfaces(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[SurfaceCandidate, ...]:
+        self._require_line_graph_current()
+        if self.surface_runtime is None:
+            return ()
+        return self.surface_runtime.discover(
+            knowledge_cutoff=knowledge_cutoff,
+        )
+
+    def callable_line_projections(
+        self,
+        current_block_ids: tuple[str, ...],
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[CallableLineProjection, ...]:
+        """Return bounded consumer views for Lines touched by current blocks.
+
+        This is intentionally narrower than a global semantic search. A Line
+        becomes callable here only after the current SemanticBlock has already
+        been structurally absorbed into that Line. Higher-recall proposal
+        operators may be added later without weakening this consumption
+        boundary.
+        """
+        self._require_line_graph_current()
+        visible = {
+            block.block_id: block
+            for block in self.memory.list_semantic_blocks_at_knowledge_cutoff(
+                knowledge_cutoff,
+                current_valid_only=True,
+            )
+        }
+        projections: list[CallableLineProjection] = []
+        seen: set[tuple[str, str]] = set()
+        for block_id in current_block_ids:
+            block = visible.get(block_id)
+            if block is None:
+                continue
+            for line_id in self.lines.lines_for_block(block_id):
+                projection = self.line_projector.project_for_block(
+                    line_id,
+                    block,
+                    knowledge_cutoff=knowledge_cutoff,
+                )
+                if projection is None:
+                    continue
+                identity = (
+                    projection.line_id,
+                    projection.anchor_node_id,
+                )
+                if identity in seen:
+                    continue
+                seen.add(identity)
+                projections.append(projection)
+        return tuple(projections)
+
     def invalidate_and_rebuild(
         self, evidence_id: str, *, cutoff: datetime | None = None
     ) -> InvalidationResult:
@@ -843,6 +1175,11 @@ class LceProjectionCore:
             self._block_embedder,
             index_version=self._block_embedding_version,
         )
+        line_cutoff = datetime.now(UTC)
+        self.trajectory.rebuild_current(
+            knowledge_cutoff=line_cutoff,
+        )
+        self._mark_line_graph_current()
         latest = cutoff or max(
             (
                 snapshot.cutoff
@@ -865,15 +1202,19 @@ class LceProjectionCore:
             if previous
             else None
         )
-        for candidate in self.discovery.higher_order_candidates(
-            corrected_snapshot
-        ):
-            self._evaluate_candidate(
-                candidate, corrected_snapshot, corrected_diff
-            )
+        if self._legacy_lineage_compatible():
+            for candidate in self.discovery.higher_order_candidates(
+                corrected_snapshot
+            ):
+                self._evaluate_candidate(
+                    candidate,
+                    corrected_snapshot,
+                    corrected_diff,
+                )
 
     def close(self) -> None:
         self.discovery.close()
+        self.lines.close()
         self.worktrees.close()
         self.baselines.close()
         if self._close_memory:

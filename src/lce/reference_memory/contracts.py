@@ -38,11 +38,16 @@ class RawEvidence:
     ordering_key: str | None = None
     state: str = "VALID"
     superseded_by: str | None = None
+    known_at: datetime | None = None
 
     def __post_init__(self) -> None:
         _require_text(self.evidence_id, "evidence_id")
         _require_text(self.content, "content")
         _require_utc(self.occurred_at, "occurred_at")
+        if self.known_at is None:
+            object.__setattr__(self, "known_at", self.occurred_at)
+        else:
+            _require_utc(self.known_at, "known_at")
         if not isinstance(self.provenance, Mapping):
             raise TypeError("provenance must be a Mapping")
         if self.ordering_key is not None:
@@ -58,7 +63,18 @@ class RawEvidence:
 
     @property
     def effective_ordering_key(self) -> str:
-        return self.ordering_key or self.occurred_at.isoformat()
+        # Knowledge time orders ingestion; logical occurrence time only places
+        # the evidence inside the reconstructed longitudinal history.
+        return self.ordering_key or self.effective_known_at.isoformat()
+
+    @property
+    def effective_known_at(self) -> datetime:
+        """When this evidence became available to LCE.
+
+        Existing callers that do not provide an explicit knowledge time retain
+        historical behavior by falling back to occurred_at.
+        """
+        return self.known_at or self.occurred_at
 
 
 @dataclass(frozen=True, slots=True)
@@ -270,6 +286,16 @@ class EvidencePort(ReferenceMemoryPort, Protocol):
 
 
 @runtime_checkable
+class HistoricalEvidenceValidityPort(Protocol):
+    """Optional capability for exact source lifecycle replay at a knowledge cutoff."""
+
+    def evidence_valid_at(
+        self, evidence_id: str, cutoff: datetime
+    ) -> bool:
+        ...
+
+
+@runtime_checkable
 class SemanticBlockPort(EvidencePort, Protocol):
     """Semantic Block and immutable historical-state operations."""
 
@@ -289,6 +315,11 @@ class SemanticBlockPort(EvidencePort, Protocol):
         ...
 
     def list_semantic_blocks_at_cutoff(
+        self, cutoff: datetime, *, current_valid_only: bool = True
+    ) -> tuple[SemanticBlock, ...]:
+        ...
+
+    def list_semantic_blocks_at_knowledge_cutoff(
         self, cutoff: datetime, *, current_valid_only: bool = True
     ) -> tuple[SemanticBlock, ...]:
         ...
