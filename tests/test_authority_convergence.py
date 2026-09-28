@@ -155,7 +155,7 @@ def test_ledger_replays_historical_authority_after_later_invalidation(
                 content=evidence_id,
                 occurred_at=BASE + timedelta(days=day),
                 known_at=BASE + timedelta(days=day),
-                provenance={"source": "test"},
+                provenance={"source": "test", "canonical": True},
             )
         )
 
