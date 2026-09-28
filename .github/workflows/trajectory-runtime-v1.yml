@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "feature/trajectory-runtime-v1-*"
+      - "feature/decentralized-authority-*"
   workflow_dispatch:
 
 permissions:
@@ -37,4 +38,6 @@ jobs:
             tests/test_bitemporal_runtime.py \
             tests/test_line_graph_runtime.py \
             tests/test_trajectory_runtime.py \
-            tests/test_surface_runtime.py -q
+            tests/test_surface_runtime.py \
+            tests/test_authority_convergence.py \
+            tests/test_trajectory_authority_runtime.py -q
