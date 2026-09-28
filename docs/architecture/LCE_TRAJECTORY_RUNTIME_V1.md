@@ -217,10 +217,15 @@ Consequences:
 - prior branch frontiers become current again automatically;
 - a late-known historical state does not leak into an earlier knowledge cutoff.
 
-Line membership and Line edges are themselves knowledge-time revisioned. A
-relation has a `known_at -> retired_at` lifetime. Rebuild therefore means
-"retire the current derived relation and compile another revision", not "rewrite
-the old graph in place".
+Line membership, node-state revisions, and Line edges have their own derived
+knowledge time. A Line node state becomes visible when that derived state is
+admitted into the Line, not merely when its underlying Raw Evidence first became
+known. Thus a reinterpretation produced at day 200 cannot appear in a day-40
+Line view just because all of its source evidence was already known at day 10.
+
+Membership and edge relations likewise have a `known_at -> retired_at`
+lifetime. Rebuild therefore means "retire the current derived relation and
+compile another revision", not "rewrite the old graph in place".
 
 This distinction also governs **derived-cognition correction**. Historical
 visibility does not imply current validity. If an accepted Line relation or
@@ -315,7 +320,9 @@ It:
 7. returns the union Raw closure of member paths.
 
 Surface discovery is disabled unless a `SurfaceConfig` is explicitly
-supplied, and it is not part of the per-turn nearline path.
+supplied, and it is not part of the per-turn nearline path. Root-to-frontier
+enumeration is fail-closed on the per-path node safety ceiling: an incomplete
+suffix is never returned as if it were a complete structural path.
 
 A branch path is used only as the geometric view. Its evidence authority closes
 over the endpoint's complete conjunctive Raw ancestry, so a single displayed
