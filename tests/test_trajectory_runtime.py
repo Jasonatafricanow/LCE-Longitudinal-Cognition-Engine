@@ -577,14 +577,20 @@ def test_logical_time_revision_rebuilds_current_line_without_rewriting_history(
         current_block_ids=(revised.block_id,),
     )
 
-    # The old B0->B1->B2->B3 ordering is no longer valid because B1 now
-    # overlaps B2/B3. Rebuild retires that current structure instead of
-    # preserving stale edges merely because block identity stayed stable.
+    # The revised B1 no longer supports its old incident relations. Only that
+    # membership/edge neighbourhood is retired; unrelated compiled structure
+    # remains directly reusable.
     assert result.candidate_paths == ()
-    assert LineGraphView(memory=memory, store=store).visible_node_ids(
-        line_id,
-        knowledge_cutoff=current_cutoff,
-    ) == ()
+    current_visible = set(
+        LineGraphView(memory=memory, store=store).visible_node_ids(
+            line_id,
+            knowledge_cutoff=current_cutoff,
+        )
+    )
+    revised_node = store.node_for_block(line_id, revised.block_id)
+    assert revised_node is not None
+    assert revised_node.node_id not in current_visible
+    assert len(current_visible) == 3
 
     # Earlier epistemic replay still sees the graph that existed before the
     # later state revision was known.
@@ -667,18 +673,22 @@ def test_material_semantic_state_drift_rebuilds_line_even_when_time_is_unchanged
         current_block_ids=(revised.block_id,),
     )
 
-    # The revised state kept the same logical interval but moved outside the
-    # local-continuity threshold. The current Line is therefore retired and
-    # recompiled instead of treating stable block identity as immutable
-    # relation authority.
+    # The revised state moved outside local continuity. The changed
+    # membership is retired locally; the unaffected endpoints remain usable.
     assert result.candidate_paths == ()
-    assert LineGraphView(
-        memory=memory,
-        store=store,
-    ).visible_node_ids(
-        line_id,
-        knowledge_cutoff=current_cutoff,
-    ) == ()
+    current_visible = set(
+        LineGraphView(
+            memory=memory,
+            store=store,
+        ).visible_node_ids(
+            line_id,
+            knowledge_cutoff=current_cutoff,
+        )
+    )
+    middle_node = store.node_for_block(line_id, revised.block_id)
+    assert middle_node is not None
+    assert middle_node.node_id not in current_visible
+    assert len(current_visible) == 2
 
     assert len(
         LineGraphView(
@@ -788,10 +798,117 @@ def test_state_revision_revalidates_incident_edges_not_only_self_similarity(
     )
 
     assert result.candidate_paths == ()
-    assert LineGraphView(
+    current_visible = set(
+        LineGraphView(
+            memory=memory,
+            store=store,
+        ).visible_node_ids(
+            line_id,
+            knowledge_cutoff=current_cutoff,
+        )
+    )
+    middle_node = store.node_for_block(line_id, revised.block_id)
+    assert middle_node is not None
+    assert middle_node.node_id not in current_visible
+    assert len(current_visible) == 2
+
+def test_state_revision_preserves_unrelated_nearline_growth_and_continues_batch(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            index=300 + index,
+            day=index * 10,
+            vector=(1.0, 0.0),
+        )
+        for index in range(3)
+    )
+    nearline = _admit(
+        memory,
+        index=310,
+        day=30,
+        vector=(1.0, 0.0),
+    )
+    later = _admit(
+        memory,
+        index=311,
+        day=40,
+        vector=(1.0, 0.0),
+    )
+
+    def embed(block: SemanticBlock) -> tuple[float, float]:
+        if "local-drift" in block.content:
+            return (0.0, 1.0)
+        return (1.0, 0.0)
+
+    memory.rebuild_vector_index(embed, index_version="local-revision-v1")
+    store = LineGraphStore(tmp_path / "lines")
+    runtime = TrajectoryRuntime(
         memory=memory,
-        store=store,
-    ).visible_node_ids(
+        line_store=store,
+        trajectory_config=TrajectoryConfig(
+            min_similarity=0.8,
+            min_support=3,
+        ),
+    )
+    cutoff = BASE + timedelta(days=100)
+    seeded = runtime.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=cutoff,
+    )
+    assert seeded.line_id is not None
+    line_id = seeded.line_id
+    tail = store.node_for_block(line_id, blocks[-1].block_id)
+    assert tail is not None
+    runtime.assembler.attach_block(
         line_id,
-        knowledge_cutoff=current_cutoff,
-    ) == ()
+        nearline,
+        parent_node_ids=(tail.node_id,),
+        knowledge_cutoff=cutoff,
+    )
+
+    middle = blocks[1]
+    memory.add_evidence(
+        RawEvidence(
+            evidence_id="local-drift-evidence",
+            content="local-drift",
+            occurred_at=middle.occurred_start,
+            known_at=BASE + timedelta(days=50),
+            provenance={"source": "test", "canonical": True},
+        )
+    )
+    revised = memory.extend_semantic_block(
+        middle.block_id,
+        content="local-drift",
+        evidence_id="local-drift-evidence",
+        occurred_at=middle.occurred_start,
+    )
+    memory.rebuild_vector_index(embed, index_version="local-revision-v1")
+
+    result = runtime.observe(
+        knowledge_cutoff=cutoff,
+        current_block_ids=(revised.block_id, later.block_id),
+    )
+
+    nearline_node = store.node_for_block(line_id, nearline.block_id)
+    later_node = store.node_for_block(line_id, later.block_id)
+    revised_node = store.node_for_block(line_id, revised.block_id)
+    assert nearline_node is not None
+    assert later_node is not None
+    assert revised_node is not None
+    visible = set(
+        LineGraphView(memory=memory, store=store).visible_node_ids(
+            line_id,
+            knowledge_cutoff=cutoff,
+        )
+    )
+    assert nearline_node.node_id in visible
+    assert later_node.node_id in visible
+    assert revised_node.node_id not in visible
+    assert later_node.node_id in {
+        node.node_id
+        for node in store.nodes_for_line(line_id)
+    }
+    assert any(update.line_id == line_id for update in result.line_updates)
