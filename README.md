@@ -19,6 +19,7 @@ vector projection
    |      -> nearline growth
    |      -> bounded callable Line views
    |      -> optional cross-Line Surface discovery
+   |      -> proactive Inspiration Material
    |
    +--> compatibility cognition path
           Frontier / 06R
@@ -139,6 +140,41 @@ Accepted revisions keep explicit source support, revision numbers, hashes, and p
 
 Reads do not invoke a model or silently promote a draft.
 
+### 4. Inspiration material: proactive downstream product
+
+LCE now exposes a second deliberately narrow consumer product for proactive
+conversation:
+
+```text
+Accepted Understanding
+    -> passive context: what has already been understood?
+
+Inspiration Material
+    -> proactive material: what may be worth bringing back to the user?
+```
+
+Internally, inspiration currently comes from two sources:
+
+- **possible association**: local longitudinal structure looks related but has
+  not become one established relation;
+- **speculative extension**: an existing supported Line `A -> B -> C` is used
+  as the bounded prefix for a possible `D?`.
+
+The public downstream object contains only:
+
+```python
+InspirationMaterial(material_id: str, content: str)
+```
+
+Line IDs, branch topology, SemanticBlock IDs, Raw-Evidence closures, candidate
+kind, convergence state and interpreter traces remain internal to LCE.
+
+A specific speculative extension requires an injected bounded inspiration
+interpreter. The deterministic reference interpreter refuses to invent a
+specific `D`; this preserves the structure-first / model-afterward boundary.
+
+See [Inspiration Material V1](docs/architecture/LCE_INSPIRATION_MATERIAL_V1.md).
+
 ## Why the pipeline changed
 
 The research directory keeps experiments that failed or forced changes in representation.
@@ -210,6 +246,7 @@ Useful entry points:
 - [Architecture boundaries](docs/architecture/LCE_V1_BOUNDARIES.md)
 - [Trajectory Runtime V1](docs/architecture/LCE_TRAJECTORY_RUNTIME_V1.md)
 - [Decentralized Evidence Convergence V1](docs/architecture/LCE_DECENTRALIZED_CONVERGENCE_V1.md)
+- [Inspiration Material V1](docs/architecture/LCE_INSPIRATION_MATERIAL_V1.md)
 
 ## Repository layout
 
