@@ -141,19 +141,27 @@ The store rejects:
 
 ## 5. Line identity admission
 
-`LineAssembler` is deliberately conservative.
+`LineAssembler` remains deliberately conservative, but persistent identity is
+now gated by decentralized evidence convergence rather than by overlap count or
+cosine score alone.
 
 A trajectory can:
 
-- seed a new Line when no existing Line reaches the identity-inheritance
-  threshold, even if one or more SemanticBlocks already participate in other
-  Lines;
-- extend one existing Line when it has sufficient cutoff-valid shared support;
-- remain unresolved when multiple stable Lines independently reach the
-  identity-inheritance threshold.
+- seed a new Line only when the proposed path has enough **independent Raw
+  Evidence components** to certify the seed;
+- inherit one existing Line when its cutoff-valid shared support is the unique
+  eligible Pareto-undominated candidate;
+- remain unresolved when multiple stable Lines have incomparable/equal support.
 
-It does not auto-merge Lines. Weak overlap is not exclusive ownership: one
-SemanticBlock may legitimately participate in multiple local Lines.
+There is no weighted confidence score and no "best similarity wins" fallback.
+Cross-dimension tradeoffs stay `UNKNOWN`. Repeated derived projections and
+transitively overlapping Raw closures cannot manufacture additional independent
+support.
+
+`LineAssembler` still refuses to auto-merge Lines. A convergence result may
+authorize which existing identity a path inherits, but it cannot merge two Line
+identities. Weak overlap is not exclusive ownership: one SemanticBlock may
+legitimately participate in multiple local Lines.
 
 Historical nodes whose underlying Raw Evidence is not valid at the requested
 knowledge cutoff remain auditable but do not contribute to Line identity
@@ -247,18 +255,25 @@ threshold are not treated as proven production semantics and remain replaceable.
 The Point-Cloud bootstrap and nearline growth paths are intentionally separate.
 
 Nearline `process()` does **not** rescan the whole SemanticBlock history.
-It only compares the current compiled block(s) with already-stable Line nodes
-and either:
+It compares the current compiled block(s) with already-stable Line nodes to
+propose candidate Lines, then evaluates source-grounded local support.
 
-- attaches to one unambiguous Line;
+Every Line above the semantic proposal threshold competes. The highest cosine
+score does not become the identity authority. Each candidate is represented by
+the cutoff-visible local Line states that also clear the proposal threshold.
+The runtime then either:
+
+- attaches to one uniquely converged Line;
 - creates a branch/rejoin inside that Line;
-- or stops unresolved when Line identity is ambiguous.
+- or stops unresolved when source-grounded identity remains ambiguous.
 
 ```text
 new Raw Evidence
     -> Semantic compiler
     -> vector projection
     -> current block vs existing Line retrieval surface
+    -> all threshold-qualified Line candidates
+    -> decentralized Raw-Evidence convergence
     -> conservative Line growth / UNKNOWN
 ```
 
@@ -269,6 +284,7 @@ accumulated SemanticBlocks
     -> explicit bootstrap_trajectory()
        or one bootstrap at the end of run_batch()
     -> overlapping trajectory proposals
+    -> decentralized Raw-Evidence convergence
     -> stable Line seeds / branch structure
 ```
 
@@ -366,6 +382,10 @@ stale Line graph != readable Line graph
 legacy lineage after retroactive evidence != safe legacy replay
 known_at controls visibility
 occurred_at controls logical placement
+similarity proposes != similarity authorizes
+derived replay != independent evidence
+overlapping Raw closure != independent vote
+cross-dimension tradeoff != scalar tie-break
 ```
 
 UNKNOWN remains a legal outcome whenever identity or structure is
@@ -377,7 +397,8 @@ The following are intentionally not frozen:
 
 - embedding-specific k and similarity thresholds;
 - an ANN/multi-anchor index for sub-linear existing-Line routing at very large scale;
-- the final production local-continuity score;
+- the final production local-continuity proposal operator;
+- a semantic relation supplier for explicit support/contradiction signals;
 - a semantic criterion for declaring branch convergence; until then,
   conjunctive rejoin requires explicit authorization and is off by default;
 - the branch-to-independent-Line transition policy;
