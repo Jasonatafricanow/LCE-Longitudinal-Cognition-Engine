@@ -723,6 +723,40 @@ class TrajectoryRuntime:
             ),
         )
 
+    def _local_line_support_blocks(
+        self,
+        line_id: str,
+        block: SemanticBlock,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[SemanticBlock, ...]:
+        """All cutoff-visible Line states locally supporting this attachment.
+
+        The best matching node is useful for retrieval, but it must not become
+        a de-facto central authority for Line identity. Every visible Line
+        state above the proposal threshold contributes its exact Raw closure.
+        """
+        query = self._vector(block)
+        if query is None:
+            return ()
+        support: list[SemanticBlock] = []
+        for node_id in self.view.visible_node_ids(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+        ):
+            state = self.view.state_for_node_at_cutoff(
+                node_id,
+                knowledge_cutoff=knowledge_cutoff,
+            )
+            if state is None:
+                continue
+            vector = self._vector(state)
+            if vector is None:
+                continue
+            if _cosine(query, vector) >= self.config.min_similarity:
+                support.append(state)
+        return tuple(support)
+
     def _converge_nearline_identity(
         self,
         block: SemanticBlock,
@@ -730,15 +764,9 @@ class TrajectoryRuntime:
         *,
         knowledge_cutoff: datetime,
     ) -> AuthorityDecision:
-        top_score = matches[0][0]
-        plausible = tuple(
-            match
-            for match in matches
-            if top_score - match[0] <= self.config.line_ambiguity_margin
-        )
-        if len(plausible) == 1:
-            plausible = (matches[0],)
-        candidate_ids = tuple(match[1] for match in plausible)
+        # Every threshold-qualified Line is a candidate. Similarity proposes
+        # candidates; score margins do not certify one candidate over another.
+        candidate_ids = tuple(match[1] for match in matches)
         if block.state_id is None:
             raise ValueError("nearline authority requires immutable state")
         decision_key = self._authority_decision_key(
@@ -746,28 +774,23 @@ class TrajectoryRuntime:
             (block.state_id,),
             candidate_ids,
         )
-        support: dict[str, tuple[SemanticBlock, ...]] = {}
-        for _score, line_id, anchor_id in plausible:
-            anchor = self.view.state_for_node_at_cutoff(
-                anchor_id,
+        support = {
+            line_id: self._local_line_support_blocks(
+                line_id,
+                block,
                 knowledge_cutoff=knowledge_cutoff,
             )
-            candidate_blocks = (
-                (block, anchor) if anchor is not None else (block,)
-            )
-            unique_blocks: dict[str, SemanticBlock] = {}
-            for candidate_block in candidate_blocks:
-                unique_blocks.setdefault(
-                    candidate_block.block_id,
-                    candidate_block,
-                )
-            support[line_id] = tuple(unique_blocks.values())
+            for _score, line_id, _anchor_id in matches
+        }
         return self._record_authority_candidates(
             decision_key=decision_key,
             candidate_support=support,
             reciprocal=False,
             knowledge_cutoff=knowledge_cutoff,
-            min_independent_support=2,
+            min_independent_support=max(
+                2,
+                self.assembler.config.min_shared_support,
+            ),
         )
 
     def _existing_relations_still_valid(
