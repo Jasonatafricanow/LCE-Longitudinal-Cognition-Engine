@@ -1990,3 +1990,104 @@ def test_core_treats_persisted_rebuild_marker_as_stale(
             knowledge_cutoff=BASE + timedelta(days=100),
         )
     restarted.close()
+
+def test_paths_to_frontier_fails_closed_when_node_bound_would_truncate(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"PATH-LONG-{index}",
+            block_id=f"path-long-{index}",
+            day=index,
+            vector=(1.0, 0.0),
+        )
+        for index in range(70)
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    seeded = LineAssembler(memory=memory, store=store).apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+
+    with pytest.raises(
+        LineTraversalLimitExceeded,
+        match="max_nodes=64",
+    ):
+        LineGraphView(
+            memory=memory,
+            store=store,
+        ).paths_to_frontier(
+            seeded.line_id,
+            knowledge_cutoff=BASE + timedelta(days=100),
+            max_nodes=64,
+        )
+
+
+def test_paths_to_frontier_fails_closed_when_path_count_would_truncate(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    trunk = _admit(
+        memory,
+        evidence_id="PATH-T",
+        block_id="path-t",
+        day=0,
+        vector=(1.0, 0.0),
+    )
+    left = _admit(
+        memory,
+        evidence_id="PATH-L",
+        block_id="path-l",
+        day=10,
+        vector=(1.0, 0.0),
+    )
+    right = _admit(
+        memory,
+        evidence_id="PATH-R",
+        block_id="path-r",
+        day=11,
+        vector=(1.0, 0.0),
+    )
+    store = LineGraphStore(tmp_path / "lines")
+    assembler = LineAssembler(memory=memory, store=store)
+    seeded = assembler.apply_path(
+        (trunk, left, right),
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+    trunk_node = store.node_for_block(seeded.line_id, trunk.block_id)
+    right_node = store.node_for_block(seeded.line_id, right.block_id)
+    assert trunk_node is not None
+    assert right_node is not None
+    # Retire the serial left->right edge and compile trunk->right so the Line
+    # has two exact root-to-frontier paths.
+    left_node = store.node_for_block(seeded.line_id, left.block_id)
+    assert left_node is not None
+    store.retire_edge_from(
+        seeded.line_id,
+        left_node.node_id,
+        right_node.node_id,
+        BASE + timedelta(days=100),
+    )
+    store.add_edge(
+        seeded.line_id,
+        trunk_node.node_id,
+        right_node.node_id,
+        knowledge_at=BASE + timedelta(days=100),
+    )
+
+    with pytest.raises(
+        LineTraversalLimitExceeded,
+        match="max_paths=1",
+    ):
+        LineGraphView(
+            memory=memory,
+            store=store,
+        ).paths_to_frontier(
+            seeded.line_id,
+            knowledge_cutoff=BASE + timedelta(days=100),
+            max_paths=1,
+        )
