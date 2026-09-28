@@ -780,7 +780,6 @@ class LineGraphStore:
         return tuple(str(row[0]) for row in rows)
 
     def retire_edge_from(
-    def retire_edge_from(
         self,
         line_id: str,
         parent_node_id: str,
@@ -1607,7 +1606,6 @@ class LineGraphView:
 
         return memo[node_id]
 
-    def visible_node_ids(
     def visible_node_ids(
         self,
         line_id: str,
