@@ -74,7 +74,6 @@ from lce.structure.trajectory import (
     TrajectoryRuntimeResult,
 )
 
-
 LINE_GRAPH_DERIVATION_SCHEMA_VERSION = 2
 
 
