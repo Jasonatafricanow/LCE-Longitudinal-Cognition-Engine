@@ -133,6 +133,16 @@ is intentional: changing the visibility rule from `all(parents)` to
 The public concept remains Worktree/Line even though the internal graph is
 DAG-like.
 
+A branch is allowed to remain a branch indefinitely. Branch age, node count,
+wall-clock duration, or geometric length do **not** create an obligation to
+split it into a new Line. The consumer boundary is already local and bounded:
+querying one part of a large Line does not mean serializing the whole Line into
+context. Storage/index scale is therefore an indexing concern, not a cognitive
+identity rule.
+
+A new Line is justified only when discovery identifies an independently
+supported logical structure. It is not a lifecycle promotion for an old branch.
+
 The store rejects:
 
 - cross-Line edges;
@@ -168,7 +178,9 @@ knowledge cutoff remain auditable but do not contribute to Line identity
 matching at that cutoff.
 
 Branch growth therefore does not imply Line cloning, while overlapping Line
-membership remains legal.
+membership remains legal. A long-lived branch remains internal topology unless
+a separate independently supported structure is actually discovered and
+admitted as another Line.
 
 ## 6. Knowledge-cutoff Line view
 
@@ -197,6 +209,19 @@ Line membership and Line edges are themselves knowledge-time revisioned. A
 relation has a `known_at -> retired_at` lifetime. Rebuild therefore means
 "retire the current derived relation and compile another revision", not "rewrite
 the old graph in place".
+
+This distinction also governs **derived-cognition correction**. Historical
+visibility does not imply current validity. If an accepted Line relation or
+interpretation is later explicitly rejected as a reasoning error, the current
+derived graph must be able to retire that relation and rebuild/roll back to the
+last still-supported structure while retaining the old revision for audit.
+Raw Evidence is not deleted merely because the derived relation was wrong.
+
+Source-driven invalidation/rebuild is implemented in V1. A dedicated
+relation-level correction ledger that can persist an explicit negative
+constraint ("do not regenerate this rejected relation from the same support")
+is an architectural requirement for the correction path and remains a
+post-V1 control-plane implementation item.
 
 If a SemanticBlock keeps the same stable `block_id` but a later immutable state
 changes its logical interval enough to invalidate existing ordering, the current
@@ -370,12 +395,15 @@ The implementation currently preserves these invariants:
 usage != evidence
 projection != fact
 branch != new Line
+branch age/length != automatic Line split
 state revision != new trajectory point
 weak overlap != exclusive ownership
 one SemanticBlock may support multiple Lines
 Surface membership != independent support
 rejoin != history rewrite
 relation rebuild != history rewrite
+history retention != current validity
+derived correction != Raw Evidence deletion
 invalid historical node != cutoff-valid identity support
 derivation fingerprint mismatch != reusable current graph
 stale Line graph != readable Line graph
@@ -401,7 +429,9 @@ The following are intentionally not frozen:
 - a semantic relation supplier for explicit support/contradiction signals;
 - a semantic criterion for declaring branch convergence; until then,
   conjunctive rejoin requires explicit authorization and is off by default;
-- the branch-to-independent-Line transition policy;
+- a durable relation-level correction/negative-constraint ledger so an
+  explicitly rejected derived relation does not immediately regenerate from the
+  same unchanged support;
 - real-data calibration of Surface shape comparison and search bounds;
 - richer logical-time representation for intervals, relative order, partial
   order, and UNKNOWN;
