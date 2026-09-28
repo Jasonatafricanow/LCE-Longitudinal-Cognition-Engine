@@ -71,6 +71,7 @@ Slow-path bootstrap operates on accumulated Semantic Blocks:
 point cloud
   -> local mutual-kNN relations
   -> logically ordered overlapping trajectory proposals
+  -> decentralized Raw-Evidence convergence
   -> conservative stable Line admission
 ```
 
@@ -83,10 +84,11 @@ authorized conjunctive rejoin structure. Line membership and edges are
 knowledge-time revisioned, so corrections rebuild the current derived relation
 without rewriting what was visible at an earlier epistemic cutoff.
 
-Nearline processing does not rescan the full history. Current Semantic Blocks are
-routed only against already-stable Lines; ambiguous identity remains `UNKNOWN`
-rather than being auto-merged or cloned. Full point-cloud bootstrap is explicit
-or batch/periodic.
+Nearline processing does not rescan the full history. Similarity only proposes
+candidate Lines; every threshold-qualified Line competes using its source-grounded
+local support. Independent support is counted from Raw-Evidence components, not
+from repeated derived views, and Pareto-incomparable candidates remain `UNKNOWN`.
+Full point-cloud bootstrap is explicit or batch/periodic.
 
 Consumer-facing Line projections are bounded content views with exact Raw
 provenance closure. Surface discovery is optional and operates only across real
@@ -207,6 +209,7 @@ Useful entry points:
 - [Verification](docs/VERIFICATION.md)
 - [Architecture boundaries](docs/architecture/LCE_V1_BOUNDARIES.md)
 - [Trajectory Runtime V1](docs/architecture/LCE_TRAJECTORY_RUNTIME_V1.md)
+- [Decentralized Evidence Convergence V1](docs/architecture/LCE_DECENTRALIZED_CONVERGENCE_V1.md)
 
 ## Repository layout
 
