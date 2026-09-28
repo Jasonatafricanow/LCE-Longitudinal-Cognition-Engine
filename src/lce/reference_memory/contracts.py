@@ -91,6 +91,7 @@ class SemanticBlock:
     metadata: Mapping[str, object] = field(default_factory=dict)
     state_id: str | None = None
     state_version: int = 1
+    derived_known_at: datetime | None = None
 
     def __post_init__(self) -> None:
         _require_text(self.block_id, "block_id")
@@ -113,6 +114,8 @@ class SemanticBlock:
             _require_text(self.state_id, "state_id")
         if not isinstance(self.state_version, int) or self.state_version < 1:
             raise ValueError("state_version must be an integer >= 1")
+        if self.derived_known_at is not None:
+            _require_utc(self.derived_known_at, "derived_known_at")
 
 
 @dataclass(frozen=True, slots=True)
@@ -201,6 +204,7 @@ class DerivedProjectionStatePort(Protocol):
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
+        derived_known_at: datetime | None = None,
     ) -> SemanticBlock:
         ...
 
