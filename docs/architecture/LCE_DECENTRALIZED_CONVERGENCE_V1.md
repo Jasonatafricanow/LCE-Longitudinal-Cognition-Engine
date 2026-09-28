@@ -35,23 +35,28 @@ Cross-dimension tradeoffs remain `UNRESOLVED`.
 
 Derived cognition cannot create votes.
 
-A signal carries the exact Raw-Evidence closure that supports it. That closure
-is hashed into one support-group identity. Replaying the same evidence through
-many projections or derivation variants can increase *derivation stability* but
-cannot increase *independent support*.
+A signal carries the exact Raw-Evidence closure that supports it. Independence
+is stricter than exact-closure de-duplication: closures that overlap transitively
+are collapsed into one evidence component. For example, `{E1,E2}` and
+`{E2,E3}` are one authority component, not two votes.
 
-A derivation variant counts as stable only when that variant is itself supported
-by a configured minimum number of independent Raw-Evidence groups. One Raw item
+Replaying the same evidence through many projections or derivation variants can
+increase *derivation stability* but cannot increase *independent support*. A
+derivation variant counts as stable only when that variant is itself supported
+by a configured minimum number of independent evidence components. One Raw item
 replayed through many variants therefore cannot manufacture stability either.
 
 ## Bitemporal rule
 
-Signals have `known_at`. Evaluation at a knowledge cutoff includes only signals
-known by that cutoff and whose Raw Evidence was valid at that same cutoff.
+Signals have `known_at`, which records when that *derived structural
+observation* was materialized. It is not backdated to the Raw Evidence event
+time. Evaluation at a knowledge cutoff includes only signals already materialized
+by that cutoff and whose Raw Evidence was valid at that same cutoff.
 
 A later correction can therefore remove a signal from the current convergence
-decision without rewriting what the earlier epistemic replay was allowed to
-believe.
+decision without rewriting what an earlier epistemic replay was allowed to
+believe. Conversely, old Raw Evidence cannot make a newly derived interpretation
+appear to have existed before it was actually derived.
 
 ## Context rule
 
@@ -78,7 +83,16 @@ Raw Evidence
   -> persistent Line identity / UNKNOWN
 ```
 
-Similarity remains a proposal mechanism, not factual authority.
+Similarity remains a proposal mechanism, not factual authority. For nearline
+Line routing, every Line above the proposal threshold competes. A larger cosine
+score or the legacy score margin cannot certify the winner. Each candidate is
+supported by its whole cutoff-visible local neighbourhood above threshold, not
+by one "best" anchor node.
+
+The derivation-variant identity includes embedding version, trajectory config,
+and neighbour-provider identity/version. Surviving multiple genuinely different
+derivations can therefore count as stability; rerunning the same derivation
+cannot.
 
 ## What this V1 does not claim
 
