@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import sqlite3
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-import sqlite3
 
 from lce.cognition.convergence import (
     AuthorityConfig,
