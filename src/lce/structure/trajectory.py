@@ -590,6 +590,11 @@ class TrajectoryRuntime:
             payload.encode()
         ).hexdigest()[:24]
 
+    def set_authority_variant_id(self, value: str) -> None:
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("authority variant id must be nonempty")
+        self.authority_variant_id = value.strip()
+
     def _authority_signal(
         self,
         *,
@@ -597,17 +602,14 @@ class TrajectoryRuntime:
         candidate_id: str,
         block: SemanticBlock,
         reciprocal: bool,
+        knowledge_cutoff: datetime,
     ) -> AuthoritySignal:
-        known_at = max(
-            self.memory.get_evidence(evidence_id).effective_known_at
-            for evidence_id in block.raw_evidence_ids
-        )
         return AuthoritySignal(
             decision_key=decision_key,
             candidate_id=candidate_id,
             raw_evidence_ids=tuple(sorted(block.raw_evidence_ids)),
             derivation_variant_id=self.authority_variant_id,
-            known_at=known_at,
+            known_at=knowledge_cutoff,
             reciprocal=reciprocal,
             context_id=self._authority_context_id(block),
         )
@@ -640,6 +642,7 @@ class TrajectoryRuntime:
                 candidate_id=candidate_id,
                 block=block,
                 reciprocal=reciprocal,
+                knowledge_cutoff=knowledge_cutoff,
             )
             for candidate_id, blocks in sorted(candidate_support.items())
             for block in blocks
