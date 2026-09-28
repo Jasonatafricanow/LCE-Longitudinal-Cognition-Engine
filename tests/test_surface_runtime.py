@@ -370,7 +370,7 @@ def test_surface_fails_closed_when_line_path_is_longer_than_bound(
         match="complete Line paths",
     ):
         runtime._line_path_views(
-            knowledge_cutoff=BASE + timedelta(days=500),
+            knowledge_cutoff=BASE + timedelta(days=3000),
         )
 
     assert store.get_line(line_id).line_id == line_id
