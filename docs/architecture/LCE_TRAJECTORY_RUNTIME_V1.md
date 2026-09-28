@@ -11,11 +11,17 @@ are now implemented from scoring/operator choices that remain replaceable.
 
 ## 1. Evidence authority
 
-Only Raw Evidence is an independent evidence authority.
+Only Raw Evidence is an independent **factual** evidence authority.
 
-Derived structures may be reused as computation and retrieval objects, but they
-never become new factual support merely because they are recalled, nested, or
-consumed.
+Persisted Line membership and edges are nevertheless reusable **derived
+structural authority** once admitted. Ordinary runtime consumers use that
+compiled structure directly; they do not reopen historical Raw Evidence to
+re-prove the same accepted relation on every read or nearline turn.
+
+Raw Evidence remains authoritative for provenance, audit, explicit
+invalidation/revision, contradiction handling, and derivation rebuild. Reusing
+a persisted Line relation therefore does not turn the Line itself into new
+factual evidence.
 
 The authority chain remains:
 
@@ -155,23 +161,29 @@ The store rejects:
 now gated by decentralized evidence convergence rather than by overlap count or
 cosine score alone.
 
-A trajectory can:
+Bootstrap identity admission and ordinary nearline relation admission are
+different questions.
+
+For bootstrap identity, a trajectory can:
 
 - seed a new Line only when the proposed path has enough **independent Raw
   Evidence components** to certify the seed;
 - inherit one existing Line when its cutoff-valid shared support is the unique
   eligible Pareto-undominated candidate;
-- remain unresolved when multiple stable Lines have incomparable/equal support.
+- remain unresolved when multiple *identity* candidates have incomparable/equal
+  support.
 
-There is no weighted confidence score and no "best similarity wins" fallback.
-Cross-dimension tradeoffs stay `UNKNOWN`. Repeated derived projections and
-transitively overlapping Raw closures cannot manufacture additional independent
-support.
+There is no weighted confidence score and no "best similarity wins" fallback
+for those exclusive identity decisions.
 
-`LineAssembler` still refuses to auto-merge Lines. A convergence result may
-authorize which existing identity a path inherits, but it cannot merge two Line
-identities. Weak overlap is not exclusive ownership: one SemanticBlock may
-legitimately participate in multiple local Lines.
+Once a Line relation has been admitted and persisted, ordinary nearline growth
+does not run another identity election between matching Lines. Each candidate
+Line is evaluated independently for a new local relation using bounded ordered
+witnesses from the already-compiled Line structure. If the relation is valid
+for two Lines, the SemanticBlock may participate in both.
+
+`LineAssembler` still refuses to auto-merge Lines. Multi-membership is not a
+Line merge and does not clone identity.
 
 Historical nodes whose underlying Raw Evidence is not valid at the requested
 knowledge cutoff remain auditable but do not contribute to Line identity
@@ -223,10 +235,12 @@ constraint ("do not regenerate this rejected relation from the same support")
 is an architectural requirement for the correction path and remains a
 post-V1 control-plane implementation item.
 
-If a SemanticBlock keeps the same stable `block_id` but a later immutable state
-changes its logical interval enough to invalidate existing ordering, the current
-Line graph is rebuilt. Stable node identity does not freeze stale temporal
-edges.
+If a SemanticBlock keeps the same stable `block_id` but a later immutable
+state invalidates one or more existing relations, LCE first retires/revalidates
+that membership's incident relations locally. Unrelated Line topology and
+nearline-only growth remain current. A broader Line/global rebuild is reserved
+for cases that cannot be repaired locally or for derivation-generation changes.
+Stable node identity does not freeze stale temporal edges.
 
 ## 7. Callable Line projection
 
@@ -315,8 +329,10 @@ threshold are not treated as proven production semantics and remain replaceable.
 The Point-Cloud bootstrap and nearline growth paths are intentionally separate.
 
 Nearline `process()` does **not** rescan the whole SemanticBlock history.
-It compares the current compiled block(s) with already-stable Line nodes to
-propose candidate Lines, then evaluates source-grounded local support.
+It compares the current compiled block(s) with already-stable Line nodes,
+proposes matching Lines, and performs independent bounded relation admission
+against each matching Line. Existing Line authority is reused rather than
+re-derived from Raw closures on every turn.
 
 Every Line above the semantic proposal threshold competes. The highest cosine
 score does not become the identity authority. Each candidate is represented by
