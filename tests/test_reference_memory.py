@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+import sqlite3
 
 import pytest
 
@@ -164,3 +165,152 @@ def test_sqlite_semantic_block_metadata_roundtrips_canonically(
     assert written.metadata["vector"] == (1.0, 2.0)
     assert written.metadata["nested"] == {"path": ("a", "b")}
     store.close()
+
+
+def test_legacy_state_migration_uses_raw_knowledge_time_not_row_creation_time(
+    tmp_path,
+) -> None:
+    root = tmp_path / "legacy-derived-time"
+    root.mkdir()
+    db_path = root / ReferenceMemoryStore.DB_FILENAME
+    occurred = datetime(2020, 1, 1, tzinfo=UTC)
+    known = datetime(2020, 3, 1, tzinfo=UTC)
+    created = datetime(2026, 9, 29, tzinfo=UTC)
+
+    with sqlite3.connect(db_path) as conn:
+        conn.executescript(
+            """
+            CREATE TABLE raw_evidence (
+                evidence_id TEXT PRIMARY KEY,
+                content TEXT NOT NULL,
+                occurred_at TEXT NOT NULL,
+                known_at TEXT,
+                ordering_key TEXT NOT NULL,
+                provenance_json TEXT NOT NULL,
+                state TEXT NOT NULL,
+                superseded_by TEXT,
+                created_at TEXT NOT NULL
+            );
+            CREATE TABLE semantic_blocks (
+                block_id TEXT PRIMARY KEY,
+                content TEXT NOT NULL,
+                occurred_start TEXT NOT NULL,
+                occurred_end TEXT NOT NULL,
+                compiler_version TEXT NOT NULL,
+                lineage_id TEXT NOT NULL,
+                metadata_json TEXT NOT NULL
+            );
+            CREATE TABLE semantic_block_evidence (
+                block_id TEXT NOT NULL,
+                evidence_id TEXT NOT NULL,
+                PRIMARY KEY (block_id, evidence_id)
+            );
+            CREATE TABLE semantic_block_states (
+                state_id TEXT PRIMARY KEY,
+                block_id TEXT NOT NULL,
+                state_version INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                occurred_start TEXT NOT NULL,
+                occurred_end TEXT NOT NULL,
+                compiler_version TEXT NOT NULL,
+                lineage_id TEXT NOT NULL,
+                metadata_json TEXT NOT NULL,
+                raw_evidence_ids_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                UNIQUE(block_id, state_version)
+            );
+            """
+        )
+        conn.execute(
+            "INSERT INTO raw_evidence VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "LEGACY-E",
+                "legacy source",
+                occurred.isoformat(),
+                known.isoformat(),
+                known.isoformat(),
+                '{"canonical": true, "source": "legacy"}',
+                "VALID",
+                None,
+                created.isoformat(),
+            ),
+        )
+        conn.execute(
+            "INSERT INTO semantic_blocks VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (
+                "LEGACY-B",
+                "legacy state",
+                occurred.isoformat(),
+                occurred.isoformat(),
+                "legacy-v1",
+                "legacy",
+                "{}",
+            ),
+        )
+        conn.execute(
+            "INSERT INTO semantic_block_evidence VALUES (?, ?)",
+            ("LEGACY-B", "LEGACY-E"),
+        )
+        conn.execute(
+            "INSERT INTO semantic_block_states VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "legacy-state",
+                "LEGACY-B",
+                1,
+                "legacy state",
+                occurred.isoformat(),
+                occurred.isoformat(),
+                "legacy-v1",
+                "legacy",
+                "{}",
+                '["LEGACY-E"]',
+                created.isoformat(),
+            ),
+        )
+
+    store = ReferenceMemoryStore(root)
+    migrated = store.get_semantic_block_state("legacy-state")
+
+    assert migrated.derived_known_at == known
+    assert tuple(
+        block.block_id
+        for block in store.list_semantic_blocks_at_knowledge_cutoff(
+            datetime(2020, 6, 1, tzinfo=UTC)
+        )
+    ) == ("LEGACY-B",)
+    store.close()
+
+
+@pytest.mark.parametrize(
+    ("metadata", "error_type", "message"),
+    (
+        ({1: "a"}, TypeError, "keys must be strings"),
+        ({"value": float("nan")}, ValueError, "floats must be finite"),
+        ({"value": float("inf")}, ValueError, "floats must be finite"),
+        ({"value": {1, 2}}, TypeError, "JSON-compatible"),
+        ({"value": b"bytes"}, TypeError, "JSON-compatible"),
+        (
+            {"value": datetime(2026, 1, 1, tzinfo=UTC)},
+            TypeError,
+            "JSON-compatible",
+        ),
+    ),
+)
+def test_semantic_block_metadata_rejects_backend_divergent_values(
+    metadata,
+    error_type,
+    message,
+) -> None:
+    when = datetime(2026, 1, 1, tzinfo=UTC)
+    with pytest.raises(error_type, match=message):
+        SemanticBlock(
+            block_id="metadata-invalid",
+            content="invalid metadata",
+            raw_evidence_ids=("E-invalid",),
+            occurred_start=when,
+            occurred_end=when,
+            compiler_version="test",
+            lineage_id="test",
+            metadata=metadata,
+            derived_known_at=when,
+        )
