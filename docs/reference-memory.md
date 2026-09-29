@@ -17,7 +17,11 @@ observed. Each state has a separate `derived_known_at` timestamp. Knowledge
 cutoff reads require the state itself to have been derived by the cutoff in
 addition to requiring its Raw dependencies to be visible/valid then. This
 prevents a later reinterpretation of old evidence from appearing in an earlier
-epistemic replay. Raw Evidence and derived vectors use separate SQLite tables.
+epistemic replay. `derived_known_at` is producer-owned authority: storage
+backends persist and validate it but do not infer it from Raw Evidence time or
+wall-clock time for new writes. The Semantic compiler supplies it explicitly;
+direct state producers must do the same. Raw Evidence and derived vectors use
+separate SQLite tables.
 Removing the vector projection does not remove Evidence, Semantic Blocks, or
 their historical states.
 
