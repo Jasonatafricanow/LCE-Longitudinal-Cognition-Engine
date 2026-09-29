@@ -16,11 +16,11 @@ from lce.structure.frontier import (
 from lce.structure.surface import (
     LinePathView,
     SurfaceCandidate,
-    SurfaceDiscoveryResult,
-    SurfaceSkippedLine,
     SurfaceConfig,
+    SurfaceDiscoveryResult,
     SurfaceRuntime,
     SurfaceSearchLimitExceeded,
+    SurfaceSkippedLine,
 )
 from lce.structure.trajectory import (
     ExactCosineNeighbourProvider,
@@ -47,11 +47,11 @@ __all__ = [
     "StructureRelationCandidate",
     "StructureSnapshot",
     "SurfaceCandidate",
-    "SurfaceDiscoveryResult",
-    "SurfaceSkippedLine",
     "SurfaceConfig",
+    "SurfaceDiscoveryResult",
     "SurfaceRuntime",
     "SurfaceSearchLimitExceeded",
+    "SurfaceSkippedLine",
     "TrajectoryConfig",
     "TrajectoryPath",
     "TrajectoryRuntime",
