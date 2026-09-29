@@ -265,6 +265,7 @@ class LceProjectionCore:
         self.read_api = AcceptedUnderstandingReadAPI(
             memory=self.memory,
             baseline_store=self.baselines,
+            rejection_store=self.rejections,
         )
 
     def _compute_authority_variant_fingerprint(self) -> str:
@@ -1197,17 +1198,7 @@ class LceProjectionCore:
         self,
         current_context: str | dict[str, object] | None,
     ) -> tuple[UnderstandingView, ...]:
-        views = self.read_api.query(current_context)
-        return tuple(
-            view
-            for view in views
-            if self.rejections.active_match(
-                region_id=view.region_id,
-                content=view.content,
-                source_refs=view.supporting_source_refs,
-            )
-            is None
-        )
+        return self.read_api.query(current_context)
 
     def reject_current_understanding(
         self,
