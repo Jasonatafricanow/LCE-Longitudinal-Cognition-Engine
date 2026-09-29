@@ -130,21 +130,15 @@ class ProjectionSubstrate:
         for evidence_id in block.raw_evidence_ids:
             self.source.get_evidence(evidence_id)
 
+    @staticmethod
     def _with_derived_known_at(
-        self,
         block: SemanticBlock,
     ) -> SemanticBlock:
-        if block.derived_known_at is not None:
-            return block
-        return replace(
-            block,
-            derived_known_at=max(
-                self.source.get_evidence(
-                    evidence_id
-                ).effective_known_at
-                for evidence_id in block.raw_evidence_ids
-            ),
-        )
+        if block.derived_known_at is None:
+            raise ValueError(
+                "derived_known_at must be supplied by the state producer"
+            )
+        return block
 
     def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
         self._validate_source_refs(block)
@@ -237,24 +231,15 @@ class ProjectionSubstrate:
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
-        derived_known_at: datetime | None = None,
+        derived_known_at: datetime,
     ) -> SemanticBlock:
-        evidence = self.source.get_evidence(evidence_id)
-        current = self.state.get_semantic_block(block_id)
-        effective_derived_known_at = (
-            derived_known_at
-            or max(
-                current.derived_known_at
-                or evidence.effective_known_at,
-                evidence.effective_known_at,
-            )
-        )
+        self.source.get_evidence(evidence_id)
         return self.state.extend_semantic_block(
             block_id,
             content=content,
             evidence_id=evidence_id,
             occurred_at=occurred_at,
-            derived_known_at=effective_derived_known_at,
+            derived_known_at=derived_known_at,
         )
 
     def rebuild_vector_index(
