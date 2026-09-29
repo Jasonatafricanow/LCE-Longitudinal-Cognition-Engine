@@ -76,6 +76,7 @@ def _admit(
             compiler_version="test",
             lineage_id="main",
             metadata={"vector": vector},
+            derived_known_at=when,
         )
     )
 
