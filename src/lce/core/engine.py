@@ -18,7 +18,10 @@ from lce.contracts.consolidation import (
     UnauthorizedSourceError,
 )
 from lce.contracts.external_memory import MemorySubstratePort
-from lce.core.equivalence import is_content_equivalent
+from lce.core.equivalence import (
+    is_content_equivalent,
+    is_support_equivalent,
+)
 from lce.store.interface import BaselineStorePort
 
 
@@ -103,12 +106,14 @@ class LceCore:
         )
         support_equivalent = (
             current_head is not None
-            and current_head.supporting_memory_ids
-            == candidate.supporting_memory_ids
-            and current_head.supporting_state_ids
-            == candidate.supporting_state_ids
-            and current_head.selected_support
-            == candidate.selected_support
+            and is_support_equivalent(
+                left_memory_ids=current_head.supporting_memory_ids,
+                right_memory_ids=candidate.supporting_memory_ids,
+                left_state_ids=current_head.supporting_state_ids,
+                right_state_ids=candidate.supporting_state_ids,
+                left_selected_support=current_head.selected_support,
+                right_selected_support=candidate.selected_support,
+            )
         )
         if content_equivalent and support_equivalent:
             assert current_head is not None
