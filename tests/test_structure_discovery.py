@@ -33,6 +33,7 @@ def populate(store: ReferenceMemoryStore, specs: list[tuple[str, int, tuple[floa
                 compiler_version="test",
                 lineage_id="lineage",
                 metadata={"subject": block_id},
+                derived_known_at=when,
             )
         )
         vectors[block_id] = vector
