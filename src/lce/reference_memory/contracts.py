@@ -77,6 +77,17 @@ class RawEvidence:
         return self.known_at or self.occurred_at
 
 
+def _canonicalize_metadata_value(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {
+            key: _canonicalize_metadata_value(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return tuple(_canonicalize_metadata_value(item) for item in value)
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class SemanticBlock:
     """Canonical semantic unit used as the cognition point before embedding."""
@@ -110,6 +121,11 @@ class SemanticBlock:
         _require_text(self.lineage_id, "lineage_id")
         if not isinstance(self.metadata, Mapping):
             raise TypeError("metadata must be a Mapping")
+        object.__setattr__(
+            self,
+            "metadata",
+            _canonicalize_metadata_value(self.metadata),
+        )
         if self.state_id is not None:
             _require_text(self.state_id, "state_id")
         if not isinstance(self.state_version, int) or self.state_version < 1:
@@ -204,7 +220,7 @@ class DerivedProjectionStatePort(Protocol):
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
-        derived_known_at: datetime | None = None,
+        derived_known_at: datetime,
     ) -> SemanticBlock:
         ...
 
