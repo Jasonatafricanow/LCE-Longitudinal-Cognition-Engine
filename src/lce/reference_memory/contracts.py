@@ -351,7 +351,7 @@ class SemanticBlockPort(EvidencePort, Protocol):
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
-        derived_known_at: datetime | None = None,
+        derived_known_at: datetime,
     ) -> SemanticBlock:
         ...
 
