@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping
-from dataclasses import replace
 from datetime import UTC, datetime
 
 from lce.reference_memory.contracts import (
