@@ -29,10 +29,6 @@ from lce.cognition.line_graph import (
     LineGraphStore,
     LineGraphView,
 )
-from lce.cognition.rejection import (
-    DerivedProposalRejection,
-    DerivedProposalRejectionStore,
-)
 from lce.cognition.promotion import (
     BoundedInterpretation,
     BoundedInterpretationPackage,
@@ -41,6 +37,10 @@ from lce.cognition.promotion import (
     PromotionPolicy,
     RuleBasedBoundedInterpreter,
     UnderstandingPromoter,
+)
+from lce.cognition.rejection import (
+    DerivedProposalRejection,
+    DerivedProposalRejectionStore,
 )
 from lce.cognition.worktree import CognitionWorktreeStore, DraftRevision
 from lce.contracts.consolidation import ConsolidationResult
