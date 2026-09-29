@@ -15,6 +15,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 
+from lce.cognition.rejection import DerivedProposalRejectionStore
 from lce.cognition.worktree import DraftRevisionStore
 from lce.reference_memory.contracts import (
     AuthorizedSelectedSupport,
@@ -165,11 +166,13 @@ class FrontierCandidateDiscovery:
         baselines: BaselineStorePort,
         worktrees: DraftRevisionStore,
         config: FrontierDiscoveryConfig | None = None,
+        rejection_store: DerivedProposalRejectionStore | None = None,
     ) -> None:
         self.memory = memory
         self.baselines = baselines
         self.worktrees = worktrees
         self.config = config or FrontierDiscoveryConfig()
+        self.rejection_store = rejection_store
 
     def candidates(
         self,
@@ -256,6 +259,25 @@ class FrontierCandidateDiscovery:
                 fallback_block_ids=baseline.supporting_memory_ids,
                 block_by_id=block_by_id,
             )
+            if (
+                support_blocks
+                and self.rejection_store is not None
+                and self.rejection_store.active_match(
+                    region_id=baseline.region_id,
+                    content=baseline.content,
+                    source_refs=tuple(
+                        sorted(
+                            {
+                                evidence_id
+                                for block in support_blocks
+                                for evidence_id in block.raw_evidence_ids
+                            }
+                        )
+                    ),
+                )
+                is not None
+            ):
+                continue
             frontier_item = self._make_item(
                 region_id=region_id,
                 frontier_ref=f"region:{region_id}",
