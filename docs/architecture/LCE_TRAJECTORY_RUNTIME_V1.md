@@ -236,6 +236,12 @@ to current source state. Both phases complete before new ingestion is compiled.
 The marker remains set across the whole recovery sequence, so another hard
 failure cannot expose an intermediate generation as current.
 
+Recovery has one authority funnel: `_ensure_line_graph_current()`. Normal
+ingestion, explicit trajectory bootstrap, standalone invalidation rebuild, and
+embedded `source_changed_and_rebuild` all pass through that same function
+before they may perform a fresh current-time rebuild. No public rebuild
+entrypoint may replace a persisted recovery cutoff with `datetime.now()`.
+
 This distinction also governs **derived-cognition correction**. Historical
 visibility does not imply current validity. If an accepted Line relation or
 interpretation is later explicitly rejected as a reasoning error, the current
