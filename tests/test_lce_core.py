@@ -15,6 +15,7 @@ from lce.contracts.consolidation import (
     UnauthorizedSourceError,
 )
 from lce.core.engine import LceCore
+from lce.reference_memory.contracts import AuthorizedSelectedSupport
 from lce.store.sqlite_store import SqliteBaselineStore
 from lce.testing.fake_consolidator import ScriptableFakeConsolidator
 from lce.testing.fake_substrate import FakeMemorySubstrate
@@ -187,17 +188,15 @@ def test_t5_duplicate_stability(
     assert res1.revised is True
     b1_id = res1.baseline.baseline_id
 
-    # User repeats information: new redundant memory added
-    fake_substrate.add_memory("m2", "User says again they have a cat.", ("ev-2",))
-
-    # Consolidator extracts identical understanding (with minor whitespace differences)
+    # The same support snapshot produces identical understanding
+    # (with minor whitespace differences).
     fake_consolidator.queue_response(
         CandidateBaseline(
             content="  User  has   one cat. \n",
-            supporting_memory_ids=("m1", "m2"),
+            supporting_memory_ids=("m1",),
         )
     )
-    res2 = lce_core.consolidate("reg-cat", ("m1", "m2"))
+    res2 = lce_core.consolidate("reg-cat", ("m1",))
 
     assert res2.revised is False
     assert res2.reason == "NO_SEMANTIC_CHANGE"
@@ -529,3 +528,105 @@ def test_candidate_with_duplicate_memory_ids_rejected(
             supporting_memory_ids=("m1", "m1"),
         )
     assert lce_core.get_current_baseline("reg-dup") is None
+
+
+def test_content_equivalent_new_memory_support_creates_support_revision(
+    lce_core: LceCore,
+    fake_substrate: FakeMemorySubstrate,
+    fake_consolidator: ScriptableFakeConsolidator,
+) -> None:
+    fake_substrate.add_memory(
+        "support-A",
+        "User likes coffee.",
+        ("ev-A",),
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="User likes coffee.",
+            supporting_memory_ids=("support-A",),
+        )
+    )
+    first = lce_core.consolidate(
+        "region-support",
+        ("support-A",),
+    )
+
+    fake_substrate.add_memory(
+        "support-B",
+        "A newer valid source says the same thing.",
+        ("ev-B",),
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="User likes coffee.",
+            supporting_memory_ids=("support-B",),
+        )
+    )
+    second = lce_core.consolidate(
+        "region-support",
+        ("support-B",),
+    )
+
+    assert second.revised is True
+    assert second.reason == "SUPPORT_UPDATE"
+    assert second.baseline.revision_number == 2
+    assert (
+        second.baseline.previous_baseline_id
+        == first.baseline.baseline_id
+    )
+    assert second.baseline.supporting_memory_ids == ("support-B",)
+
+
+def test_content_equivalent_state_replacement_creates_support_revision(
+    lce_core: LceCore,
+    fake_substrate: FakeMemorySubstrate,
+    fake_consolidator: ScriptableFakeConsolidator,
+) -> None:
+    fake_substrate.add_memory(
+        "same-block",
+        "Stable memory identity.",
+        ("ev-1",),
+    )
+    state_v1 = AuthorizedSelectedSupport(
+        block_id="same-block",
+        state_id="state-v1",
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="Stable understanding.",
+            supporting_memory_ids=("same-block",),
+            supporting_state_ids=("state-v1",),
+            selected_support=(state_v1,),
+        )
+    )
+    first = lce_core.consolidate(
+        "region-state-support",
+        ("same-block",),
+    )
+
+    state_v2 = AuthorizedSelectedSupport(
+        block_id="same-block",
+        state_id="state-v2",
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="Stable understanding.",
+            supporting_memory_ids=("same-block",),
+            supporting_state_ids=("state-v2",),
+            selected_support=(state_v2,),
+        )
+    )
+    second = lce_core.consolidate(
+        "region-state-support",
+        ("same-block",),
+    )
+
+    assert second.revised is True
+    assert second.reason == "SUPPORT_UPDATE"
+    assert second.baseline.revision_number == 2
+    assert second.baseline.selected_support == (state_v2,)
+    assert second.baseline.supporting_state_ids == ("state-v2",)
+    assert (
+        second.baseline.previous_baseline_id
+        == first.baseline.baseline_id
+    )

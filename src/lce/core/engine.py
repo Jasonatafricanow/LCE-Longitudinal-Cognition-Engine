@@ -90,10 +90,28 @@ class LceCore:
                 f"(authorized input set: {sorted(authorized_memory_ids)})"
             )
 
-        # 5. Evaluate content equivalence if previous baseline exists
-        if current_head is not None and is_content_equivalent(
-            candidate.content, current_head.content
-        ):
+        # 5. Content identity and support identity are separate durable facts.
+        # Reuse HEAD only when both the normalized meaning and the exact support
+        # snapshot are unchanged. Evidence/state replacement with equivalent
+        # wording must create a new immutable revision.
+        content_equivalent = (
+            current_head is not None
+            and is_content_equivalent(
+                candidate.content,
+                current_head.content,
+            )
+        )
+        support_equivalent = (
+            current_head is not None
+            and current_head.supporting_memory_ids
+            == candidate.supporting_memory_ids
+            and current_head.supporting_state_ids
+            == candidate.supporting_state_ids
+            and current_head.selected_support
+            == candidate.selected_support
+        )
+        if content_equivalent and support_equivalent:
+            assert current_head is not None
             return ConsolidationResult(
                 baseline=current_head,
                 revised=False,
@@ -124,7 +142,15 @@ class LceCore:
         # Atomically commit revision and advance HEAD
         self._baseline_store.save_revision(new_baseline)
 
-        reason = "INITIAL_CREATION" if current_head is None else "MEANINGFUL_UPDATE"
+        reason = (
+            "INITIAL_CREATION"
+            if current_head is None
+            else (
+                "SUPPORT_UPDATE"
+                if content_equivalent
+                else "MEANINGFUL_UPDATE"
+            )
+        )
         return ConsolidationResult(
             baseline=new_baseline,
             revised=True,
