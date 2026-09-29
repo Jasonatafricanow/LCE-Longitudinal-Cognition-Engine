@@ -140,6 +140,7 @@ def test_semantic_block_state_revision_stays_one_line_node(
         content="new detail",
         evidence_id="E3",
         occurred_at=BASE + timedelta(days=20),
+        derived_known_at=BASE + timedelta(days=40),
     )
     _rebuild(memory)
 
@@ -1581,6 +1582,7 @@ def test_line_assembler_rejects_forged_payload_for_real_state_id(
         metadata=blocks[1].metadata,
         state_id=blocks[1].state_id,
         state_version=blocks[1].state_version,
+        derived_known_at=blocks[1].derived_known_at,
     )
     store = LineGraphStore(tmp_path / "lines")
     assembler = LineAssembler(memory=memory, store=store)
@@ -1741,6 +1743,7 @@ def test_late_historical_block_revises_direct_edge_without_rewriting_history(
             compiler_version="test",
             lineage_id="main",
             metadata={"vector": (0.95, 0.05)},
+            derived_known_at=known,
         )
     )
     result = assembler.attach_block(
