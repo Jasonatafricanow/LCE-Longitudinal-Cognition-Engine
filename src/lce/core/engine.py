@@ -111,6 +111,7 @@ class LceCore:
             == candidate.selected_support
         )
         if content_equivalent and support_equivalent:
+            assert current_head is not None
             return ConsolidationResult(
                 baseline=current_head,
                 revised=False,
