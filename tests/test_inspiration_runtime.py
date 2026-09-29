@@ -65,6 +65,7 @@ def _admit(
             compiler_version="test",
             lineage_id="main",
             metadata={},
+            derived_known_at=occurred,
         )
     )
 
