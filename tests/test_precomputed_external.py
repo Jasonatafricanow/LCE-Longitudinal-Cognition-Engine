@@ -189,3 +189,78 @@ def test_support_kind_schema_migrates_existing_worktree_database(tmp_path):
     }
     assert "support_kind" in columns
     store.close()
+
+
+def test_precomputed_support_permutation_does_not_create_false_revision(
+    tmp_path,
+) -> None:
+    _, baselines, drafts, intake = setup_intake(tmp_path)
+
+    first = intake.stage_and_promote(
+        PrecomputedDraftInput(
+            region_id="mr-thread:order",
+            content="same",
+            supporting_memory_ids=("m1", "m2"),
+            processing_input_id="order-1",
+        )
+    )
+    second = intake.stage_and_promote(
+        PrecomputedDraftInput(
+            region_id="mr-thread:order",
+            content="same",
+            supporting_memory_ids=("m2", "m1"),
+            processing_input_id="order-2",
+        )
+    )
+    third = intake.stage_and_promote(
+        PrecomputedDraftInput(
+            region_id="mr-thread:order",
+            content="same",
+            supporting_memory_ids=("m1", "m2"),
+            processing_input_id="order-3",
+        )
+    )
+
+    assert first.reason == "INITIAL_CREATION"
+    assert second.reason == "NO_SEMANTIC_CHANGE"
+    assert third.reason == "NO_SEMANTIC_CHANGE"
+    assert second.baseline.baseline_id == first.baseline.baseline_id
+    assert third.baseline.baseline_id == first.baseline.baseline_id
+    assert len(
+        baselines.get_history("mr-thread:order").revisions
+    ) == 1
+
+    drafts.close()
+    baselines.close()
+
+
+def test_precomputed_replay_accepts_support_permutation_for_same_input(
+    tmp_path,
+) -> None:
+    _, baselines, drafts, intake = setup_intake(tmp_path)
+    first = intake.stage_and_promote(
+        PrecomputedDraftInput(
+            region_id="mr-thread:replay-order",
+            content="same",
+            supporting_memory_ids=("m1", "m2"),
+            processing_input_id="same-input",
+        )
+    )
+    replay = intake.stage_and_promote(
+        PrecomputedDraftInput(
+            region_id="mr-thread:replay-order",
+            content="same",
+            supporting_memory_ids=("m2", "m1"),
+            processing_input_id="same-input",
+        )
+    )
+
+    assert replay.revised is False
+    assert replay.reason == "PRECOMPUTED_DRAFT_RECONCILED"
+    assert replay.baseline.baseline_id == first.baseline.baseline_id
+    assert len(
+        baselines.get_history("mr-thread:replay-order").revisions
+    ) == 1
+
+    drafts.close()
+    baselines.close()
