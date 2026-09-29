@@ -222,6 +222,18 @@ class LceProjectionCore:
             "derivation_fingerprint"
         )
         rebuild_marker = self.lines.get_metadata("rebuild_in_progress")
+        self._line_graph_recovery_cutoff = (
+            datetime.fromisoformat(rebuild_marker)
+            if rebuild_marker
+            else None
+        )
+        if (
+            self._line_graph_recovery_cutoff is not None
+            and self._line_graph_recovery_cutoff.tzinfo != UTC
+        ):
+            raise ValueError(
+                "stored rebuild_in_progress cutoff must be UTC"
+            )
         self._line_graph_requires_rebuild = bool(rebuild_marker) or (
             bool(self.lines.list_lines())
             and prior_line_fingerprint
@@ -293,7 +305,35 @@ class LceProjectionCore:
             self._line_graph_expected_fingerprint,
         )
         self.lines.set_metadata("rebuild_in_progress", "")
+        self._line_graph_recovery_cutoff = None
         self._line_graph_requires_rebuild = False
+
+    def _recover_line_graph_before_ingestion(self) -> None:
+        """Finish an interrupted rebuild before compiling any new input.
+
+        Recovery first replays the exact cutoff persisted by the failed rebuild
+        so stable Line identity can be inherited. It then reconciles forward to
+        current source state while keeping the durable marker set throughout
+        both phases. New ingestion starts only after both phases succeed.
+        """
+        recovery_cutoff = self._line_graph_recovery_cutoff
+        if recovery_cutoff is None:
+            return
+        self.memory.rebuild_vector_index(
+            self._block_embedder,
+            index_version=self._block_embedding_version,
+        )
+        self.trajectory.rebuild_current(
+            knowledge_cutoff=recovery_cutoff,
+            clear_marker=False,
+        )
+        reconcile_cutoff = datetime.now(UTC)
+        if reconcile_cutoff > recovery_cutoff:
+            self.trajectory.rebuild_current(
+                knowledge_cutoff=reconcile_cutoff,
+                clear_marker=False,
+            )
+        self._mark_line_graph_current()
 
     def _require_line_graph_current(self) -> None:
         if self._line_graph_requires_rebuild:
@@ -348,6 +388,7 @@ class LceProjectionCore:
     ) -> ProcessResult:
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
+        self._recover_line_graph_before_ingestion()
         compiler_result = self.compiler.process(material)
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
