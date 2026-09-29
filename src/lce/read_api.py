@@ -2,12 +2,62 @@
 
 from __future__ import annotations
 
-import re
+import unicodedata
 from collections.abc import Mapping
 from dataclasses import dataclass
 
 from lce.reference_memory.contracts import AuthorizedSelectedSupport, SemanticBlockPort
 from lce.store.interface import BaselineStorePort
+
+
+def _is_cjk(char: str) -> bool:
+    code = ord(char)
+    return (
+        0x3400 <= code <= 0x4DBF
+        or 0x4E00 <= code <= 0x9FFF
+        or 0xF900 <= code <= 0xFAFF
+    )
+
+
+def lexical_tokens(text: str) -> tuple[str, ...]:
+    """Normalize Latin/digits and expose CJK runs plus overlapping bigrams."""
+    normalized = unicodedata.normalize("NFKC", text).casefold()
+    tokens: list[str] = []
+    word: list[str] = []
+    cjk: list[str] = []
+
+    def flush_word() -> None:
+        if word:
+            tokens.append("".join(word))
+            word.clear()
+
+    def flush_cjk() -> None:
+        if not cjk:
+            return
+        run = "".join(cjk)
+        if len(run) == 1:
+            tokens.append(run)
+        else:
+            tokens.append(run)
+            tokens.extend(
+                run[index : index + 2]
+                for index in range(len(run) - 1)
+            )
+        cjk.clear()
+
+    for char in normalized:
+        if _is_cjk(char):
+            flush_word()
+            cjk.append(char)
+        elif char.isalnum():
+            flush_cjk()
+            word.append(char)
+        else:
+            flush_word()
+            flush_cjk()
+    flush_word()
+    flush_cjk()
+    return tuple(tokens)
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,8 +83,12 @@ class AcceptedUnderstandingReadAPI:
         self.baseline_store = baseline_store
 
     def query(self, current_context: str | Mapping[str, object] | None) -> tuple[UnderstandingView, ...]:
-        query_text = current_context if isinstance(current_context, str) else json_context(current_context)
-        tokens = set(re.findall(r"\w+", query_text.casefold()))
+        query_text = (
+            current_context
+            if isinstance(current_context, str)
+            else json_context(current_context)
+        )
+        tokens = set(lexical_tokens(query_text))
         views: list[UnderstandingView] = []
         for region_id in self.baseline_store.list_regions():
             baseline = self.baseline_store.get_head(region_id)
@@ -69,7 +123,15 @@ class AcceptedUnderstandingReadAPI:
                 if block.block_id != block_id:
                     valid = False
                     break
-                if not all(self.memory.get_evidence(evidence_id).current_valid for evidence_id in block.raw_evidence_ids):
+                try:
+                    evidence_valid = all(
+                        self.memory.get_evidence(evidence_id).current_valid
+                        for evidence_id in block.raw_evidence_ids
+                    )
+                except KeyError:
+                    valid = False
+                    break
+                if not evidence_valid:
                     valid = False
                     break
                 blocks.append(block)
@@ -78,8 +140,12 @@ class AcceptedUnderstandingReadAPI:
                     served_state_ids.append(block.state_id)
             if not valid or not blocks:
                 continue
-            searchable = " ".join([baseline.content, *(block.content for block in blocks)]).casefold()
-            if tokens and not (tokens & set(re.findall(r"\w+", searchable))):
+            searchable = " ".join(
+                [baseline.content, *(block.content for block in blocks)]
+            )
+            if tokens and not (
+                tokens & set(lexical_tokens(searchable))
+            ):
                 continue
             views.append(
                 UnderstandingView(
