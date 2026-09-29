@@ -2283,3 +2283,130 @@ def test_crash_recovery_reconciles_source_changes_that_happened_while_down(
     )
     reopened.close()
     reopened_memory.close()
+
+
+@pytest.mark.parametrize(
+    "entrypoint",
+    ("process", "bootstrap", "source_changed", "invalidate"),
+)
+def test_crash_recovery_funnel_preserves_line_identity_for_every_entrypoint(
+    tmp_path: Path,
+    entrypoint: str,
+) -> None:
+    root = tmp_path / f"recovery-funnel-{entrypoint}"
+    memory_root = tmp_path / f"recovery-funnel-memory-{entrypoint}"
+    memory = ReferenceMemoryStore(memory_root)
+    core = LceProjectionCore(
+        root,
+        memory=memory,
+        lineage_id="recovery-funnel",
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.5,
+            min_support=3,
+        ),
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "recovery-funnel-chain-v1"
+        ),
+    )
+    materials = tuple(
+        RawEvidence(
+            evidence_id=f"FUNNEL-{index}",
+            content=f"recovery funnel point {index}",
+            occurred_at=BASE + timedelta(days=index * 10),
+            known_at=BASE + timedelta(days=index * 10),
+            provenance={
+                "source": "test",
+                "canonical": True,
+                "topic": f"funnel-topic-{index}",
+                "vector": (1.0, float(index) / 100.0),
+            },
+        )
+        for index in range(4)
+    )
+    core.run_batch(materials)
+    original_id = core.lines.list_lines()[0].line_id
+    crash_cutoff = datetime.now(UTC) - timedelta(seconds=2)
+    core.lines.set_metadata(
+        "rebuild_in_progress",
+        crash_cutoff.isoformat(),
+    )
+    core.lines.retire_current_structure(crash_cutoff)
+    core.close()
+    memory.close()
+
+    if entrypoint == "source_changed":
+        changed = ReferenceMemoryStore(memory_root)
+        changed.invalidate(
+            "FUNNEL-1",
+            reason="changed while LCE was down",
+        )
+        changed.close()
+
+    reopened_memory = ReferenceMemoryStore(memory_root)
+    reopened = LceProjectionCore(
+        root,
+        memory=reopened_memory,
+        lineage_id="recovery-funnel",
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.5,
+            min_support=3,
+        ),
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "recovery-funnel-chain-v1"
+        ),
+    )
+
+    if entrypoint == "process":
+        reopened.process(
+            RawEvidence(
+                evidence_id="FUNNEL-4",
+                content="post-recovery input",
+                occurred_at=BASE + timedelta(days=40),
+                known_at=datetime.now(UTC),
+                provenance={
+                    "source": "test",
+                    "canonical": True,
+                    "topic": "funnel-topic-4",
+                    "vector": (1.0, 0.04),
+                },
+            )
+        )
+    elif entrypoint == "bootstrap":
+        reopened.bootstrap_trajectory(
+            knowledge_cutoff=datetime.now(UTC)
+        )
+    elif entrypoint == "source_changed":
+        reopened.source_changed_and_rebuild("FUNNEL-1")
+    else:
+        reopened.invalidate_and_rebuild("FUNNEL-1")
+
+    current_cutoff = datetime.now(UTC)
+    active_line_ids = {
+        line.line_id
+        for line in reopened.lines.list_lines()
+        if reopened.lines.active_node_ids_at(
+            line.line_id,
+            current_cutoff,
+        )
+    }
+    assert active_line_ids == {original_id}
+    assert reopened.lines.get_metadata("rebuild_in_progress") == ""
+
+    if entrypoint in {"source_changed", "invalidate"}:
+        invalidated_block_id = reopened.memory.compiled_block_ids(
+            "FUNNEL-1"
+        )[0]
+        invalidated_node = reopened.lines.node_for_block(
+            original_id,
+            invalidated_block_id,
+        )
+        assert invalidated_node is not None
+        assert not reopened.lines.membership_active_at(
+            invalidated_node.node_id,
+            current_cutoff,
+        )
+
+    reopened.close()
+    reopened_memory.close()
