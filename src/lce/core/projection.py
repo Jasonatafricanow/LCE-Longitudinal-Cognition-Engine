@@ -65,6 +65,7 @@ from lce.structure.frontier import (
 from lce.structure.surface import (
     SurfaceCandidate,
     SurfaceConfig,
+    SurfaceDiscoveryResult,
     SurfaceRuntime,
 )
 from lce.structure.trajectory import (
@@ -97,6 +98,7 @@ class ProcessResult:
     promotions: tuple[ConsolidationResult, ...]
     trajectory_result: TrajectoryRuntimeResult | None = None
     surface_candidates: tuple[SurfaceCandidate, ...] = ()
+    surface_discovery: SurfaceDiscoveryResult | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -582,17 +584,23 @@ class LceProjectionCore:
         surface_cutoff = datetime.fromisoformat(
             trajectory_result.knowledge_cutoff_iso
         )
-        surface_candidates = (
+        surface_discovery = (
             self.surface_runtime.discover(
                 knowledge_cutoff=surface_cutoff,
             )
             if self.surface_runtime is not None
+            else None
+        )
+        surface_candidates = (
+            surface_discovery.candidates
+            if surface_discovery is not None
             else ()
         )
         results[-1] = replace(
             results[-1],
             trajectory_result=trajectory_result,
             surface_candidates=surface_candidates,
+            surface_discovery=surface_discovery,
         )
         return tuple(results)
 
@@ -1212,10 +1220,10 @@ class LceProjectionCore:
         self,
         *,
         knowledge_cutoff: datetime,
-    ) -> tuple[SurfaceCandidate, ...]:
+    ) -> SurfaceDiscoveryResult:
         self._require_line_graph_current()
         if self.surface_runtime is None:
-            return ()
+            return SurfaceDiscoveryResult(candidates=())
         return self.surface_runtime.discover(
             knowledge_cutoff=knowledge_cutoff,
         )
