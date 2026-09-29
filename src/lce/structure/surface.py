@@ -458,9 +458,9 @@ class SurfaceRuntime:
 __all__ = [
     "LinePathView",
     "SurfaceCandidate",
-    "SurfaceDiscoveryResult",
-    "SurfaceSkippedLine",
     "SurfaceConfig",
+    "SurfaceDiscoveryResult",
     "SurfaceRuntime",
     "SurfaceSearchLimitExceeded",
+    "SurfaceSkippedLine",
 ]
