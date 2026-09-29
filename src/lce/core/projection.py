@@ -29,6 +29,10 @@ from lce.cognition.line_graph import (
     LineGraphStore,
     LineGraphView,
 )
+from lce.cognition.rejection import (
+    DerivedProposalRejection,
+    DerivedProposalRejectionStore,
+)
 from lce.cognition.promotion import (
     BoundedInterpretation,
     BoundedInterpretationPackage,
@@ -157,6 +161,9 @@ class LceProjectionCore:
         self.memory = memory
         self._close_memory = close_memory
         self.baselines = SqliteBaselineStore(self.root / "baselines")
+        self.rejections = DerivedProposalRejectionStore(
+            self.root / "corrections"
+        )
         self.worktrees = CognitionWorktreeStore(self.root / "worktrees")
         self.lines = LineGraphStore(self.root / "lines")
         self.line_view = LineGraphView(
@@ -913,6 +920,20 @@ class LceProjectionCore:
             selected_support=selected_support,
         )
 
+        selected_source_refs = self._selected_source_refs(
+            selected_support,
+            blocks,
+        )
+        if self.rejections.active_match(
+            region_id=region_id,
+            content=content,
+            source_refs=selected_source_refs,
+        ) is not None:
+            # An explicit rejection suppresses only this exact proposal over
+            # this exact authorized source closure. Treat it as handled so the
+            # fallback supplier cannot immediately restate the same proposal.
+            return _CandidateEvaluation(handled=True)
+
         # A frontier proposal is only a new longitudinal edge if it selects
         # at least one immutable state produced by the arriving input. Without
         # this guard, an interpreter could restate historical support and give
@@ -1063,6 +1084,30 @@ class LceProjectionCore:
             raise ValueError("a proposed interpretation must select at least one authorized state")
         return selected
 
+    @staticmethod
+    def _selected_source_refs(
+        selected_support: tuple[AuthorizedSelectedSupport, ...],
+        blocks: tuple[SemanticBlock, ...],
+    ) -> tuple[str, ...]:
+        by_state = {
+            block.state_id: block
+            for block in blocks
+            if block.state_id is not None
+        }
+        refs: set[str] = set()
+        for selected in selected_support:
+            block = by_state.get(selected.state_id)
+            if block is None or block.block_id != selected.block_id:
+                raise ValueError(
+                    "selected support state is unavailable for source closure"
+                )
+            refs.update(block.raw_evidence_ids)
+        if not refs:
+            raise ValueError(
+                "selected support must close over at least one source"
+            )
+        return tuple(sorted(refs))
+
     def _support_identity(
         self,
         candidate: HigherOrderCandidate,
@@ -1148,8 +1193,98 @@ class LceProjectionCore:
             ).encode()
         ).hexdigest()[:24]
 
-    def query(self, current_context: str | dict[str, object] | None) -> tuple[UnderstandingView, ...]:
-        return self.read_api.query(current_context)
+    def query(
+        self,
+        current_context: str | dict[str, object] | None,
+    ) -> tuple[UnderstandingView, ...]:
+        views = self.read_api.query(current_context)
+        return tuple(
+            view
+            for view in views
+            if self.rejections.active_match(
+                region_id=view.region_id,
+                content=view.content,
+                source_refs=view.supporting_source_refs,
+            )
+            is None
+        )
+
+    def reject_current_understanding(
+        self,
+        region_id: str,
+        *,
+        authority_ref: str,
+        reason: str | None = None,
+        rejected_at: datetime | None = None,
+    ) -> DerivedProposalRejection:
+        """Suppress replay of the current proposal over unchanged support.
+
+        This does not delete factual source, Baseline history, Line structure,
+        or the rejected revision. New source closure is automatically eligible
+        again; an authorized explicit reopen may also lift this rejection.
+        """
+        head = self.baselines.get_head(region_id)
+        if head is None:
+            raise KeyError(region_id)
+        blocks: list[SemanticBlock] = []
+        if head.selected_support:
+            for selected in head.selected_support:
+                block = self.memory.get_semantic_block_state(
+                    selected.state_id
+                )
+                if block.block_id != selected.block_id:
+                    raise ValueError(
+                        "Baseline selected support is misaligned"
+                    )
+                blocks.append(block)
+            source_refs = self._selected_source_refs(
+                head.selected_support,
+                tuple(blocks),
+            )
+        else:
+            refs: set[str] = set()
+            for block_id in head.supporting_memory_ids:
+                block = self.memory.get_semantic_block(block_id)
+                refs.update(block.raw_evidence_ids)
+            if not refs:
+                raise ValueError(
+                    "Baseline does not close over any source evidence"
+                )
+            source_refs = tuple(sorted(refs))
+
+        rejection = self.rejections.reject(
+            region_id=head.region_id,
+            content=head.content,
+            source_refs=source_refs,
+            authority_ref=authority_ref,
+            reason=reason,
+            rejected_at=rejected_at,
+        )
+        open_draft = self.worktrees.find_open_by_region(head.region_id)
+        if (
+            open_draft is not None
+            and open_draft.candidate_content.strip()
+            == head.content.strip()
+        ):
+            self.worktrees.set_status(
+                open_draft.worktree_id,
+                "DROPPED",
+            )
+        return rejection
+
+    def reopen_rejected_understanding(
+        self,
+        rejection_id: str,
+        *,
+        authority_ref: str,
+        reopened_at: datetime | None = None,
+    ) -> DerivedProposalRejection:
+        """Explicitly permit a previously rejected exact proposal again."""
+        return self.rejections.reopen(
+            rejection_id,
+            authority_ref=authority_ref,
+            reopened_at=reopened_at,
+        )
 
     def line_frontier(
         self,
@@ -1342,6 +1477,7 @@ class LceProjectionCore:
 
     def close(self) -> None:
         self.discovery.close()
+        self.rejections.close()
         self.inspiration.close()
         self.trajectory.close()
         self.lines.close()
