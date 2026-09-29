@@ -5,7 +5,11 @@ from datetime import UTC, datetime
 from lce.cognition.promotion import ConservativePromotionPolicy, UnderstandingPromoter
 from lce.cognition.worktree import CognitionWorktreeStore
 from lce.contracts.baseline import Baseline, compute_content_hash
-from lce.reference_memory.contracts import RawEvidence, SemanticBlock
+from lce.reference_memory.contracts import (
+    AuthorizedSelectedSupport,
+    RawEvidence,
+    SemanticBlock,
+)
 from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.store.sqlite_store import SqliteBaselineStore
 
@@ -155,3 +159,66 @@ def test_frontier_promotion_distinguishes_revision_from_new_boundary(
 
     worktrees.close()
     baselines.close()
+
+
+def test_reconcile_committed_ignores_selected_support_tuple_order(
+    tmp_path,
+) -> None:
+    memory = setup_memory(tmp_path)
+    baselines = SqliteBaselineStore(tmp_path / "baselines")
+    worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    promoter = UnderstandingPromoter(
+        memory=memory,
+        baseline_store=baselines,
+        worktree_store=worktrees,
+        policy=ConservativePromotionPolicy(
+            min_blocks=1,
+            min_structures=1,
+            min_support_cycles=1,
+        ),
+    )
+    sb1 = memory.get_semantic_block("SB1")
+    sb2 = memory.get_semantic_block("SB2")
+    assert sb1.state_id is not None
+    assert sb2.state_id is not None
+    support_1 = AuthorizedSelectedSupport(
+        block_id="SB1",
+        state_id=sb1.state_id,
+    )
+    support_2 = AuthorizedSelectedSupport(
+        block_id="SB2",
+        state_id=sb2.state_id,
+    )
+    baselines.save_revision(
+        Baseline(
+            baseline_id="base-order",
+            region_id="region-order",
+            revision_number=1,
+            content="same",
+            content_hash=compute_content_hash("same"),
+            supporting_memory_ids=("SB1", "SB2"),
+            supporting_state_ids=(sb1.state_id, sb2.state_id),
+            selected_support=(support_1, support_2),
+            created_at=datetime(2026, 6, 3, tzinfo=UTC),
+        )
+    )
+    draft = worktrees.create(
+        region_id="region-order",
+        candidate_content="same",
+        supporting_block_ids=("SB2", "SB1"),
+        supporting_structure_ids=("S1",),
+        base_baseline=baselines.get_head("region-order"),
+        selected_support=(support_2, support_1),
+    )
+
+    reconciled = promoter.reconcile_committed(draft.worktree_id)
+
+    assert reconciled is not None
+    assert reconciled.revised is False
+    assert reconciled.reason == "POST_COMMIT_RECONCILED"
+    assert reconciled.baseline.baseline_id == "base-order"
+    assert worktrees.get(draft.worktree_id).status == "MERGED"
+
+    memory.close()
+    baselines.close()
+    worktrees.close()
