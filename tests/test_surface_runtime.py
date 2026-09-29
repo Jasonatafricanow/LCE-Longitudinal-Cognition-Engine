@@ -247,10 +247,12 @@ def test_surface_returns_only_maximal_cross_line_clique(
         line_store=store,
         config=SurfaceConfig(min_shape_similarity=0.95),
     )
-    candidates = runtime.discover(
+    discovery = runtime.discover(
         knowledge_cutoff=BASE + timedelta(days=500),
     )
+    candidates = discovery.candidates
 
+    assert discovery.complete is True
     assert len(candidates) == 1
     assert {view.line_id for view in candidates[0].views} == {
         *line_ids[:3],
