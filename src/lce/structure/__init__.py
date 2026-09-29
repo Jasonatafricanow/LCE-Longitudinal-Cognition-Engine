@@ -16,6 +16,8 @@ from lce.structure.frontier import (
 from lce.structure.surface import (
     LinePathView,
     SurfaceCandidate,
+    SurfaceDiscoveryResult,
+    SurfaceSkippedLine,
     SurfaceConfig,
     SurfaceRuntime,
     SurfaceSearchLimitExceeded,
@@ -45,6 +47,8 @@ __all__ = [
     "StructureRelationCandidate",
     "StructureSnapshot",
     "SurfaceCandidate",
+    "SurfaceDiscoveryResult",
+    "SurfaceSkippedLine",
     "SurfaceConfig",
     "SurfaceRuntime",
     "SurfaceSearchLimitExceeded",
