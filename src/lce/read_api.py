@@ -6,6 +6,7 @@ import unicodedata
 from collections.abc import Mapping
 from dataclasses import dataclass
 
+from lce.cognition.rejection import DerivedProposalRejectionStore
 from lce.reference_memory.contracts import AuthorizedSelectedSupport, SemanticBlockPort
 from lce.store.interface import BaselineStorePort
 
@@ -78,9 +79,16 @@ class UnderstandingView:
 class AcceptedUnderstandingReadAPI:
     """Read-only, no-reasoning view over current-valid Baseline HEADs."""
 
-    def __init__(self, *, memory: SemanticBlockPort, baseline_store: BaselineStorePort) -> None:
+    def __init__(
+        self,
+        *,
+        memory: SemanticBlockPort,
+        baseline_store: BaselineStorePort,
+        rejection_store: DerivedProposalRejectionStore | None = None,
+    ) -> None:
         self.memory = memory
         self.baseline_store = baseline_store
+        self.rejection_store = rejection_store
 
     def query(self, current_context: str | Mapping[str, object] | None) -> tuple[UnderstandingView, ...]:
         query_text = (
@@ -145,6 +153,16 @@ class AcceptedUnderstandingReadAPI:
             )
             if tokens and not (
                 tokens & set(lexical_tokens(searchable))
+            ):
+                continue
+            if (
+                self.rejection_store is not None
+                and self.rejection_store.active_match(
+                    region_id=baseline.region_id,
+                    content=baseline.content,
+                    source_refs=tuple(sorted(source_refs)),
+                )
+                is not None
             ):
                 continue
             views.append(
