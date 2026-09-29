@@ -94,9 +94,10 @@ class LceCore:
             )
 
         # 5. Content identity and support identity are separate durable facts.
-        # Reuse HEAD only when both the normalized meaning and the exact support
-        # snapshot are unchanged. Evidence/state replacement with equivalent
-        # wording must create a new immutable revision.
+        # Reuse HEAD only when both normalized meaning and support authority
+        # are unchanged. Tuple order is representation/alignment only;
+        # evidence/state replacement with equivalent wording still creates a
+        # new immutable revision.
         content_equivalent = (
             current_head is not None
             and is_content_equivalent(
