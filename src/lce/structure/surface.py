@@ -156,6 +156,21 @@ class SurfaceCandidate:
     raw_evidence_ids: tuple[str, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class SurfaceSkippedLine:
+    line_id: str
+    reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class SurfaceDiscoveryResult:
+    candidates: tuple[SurfaceCandidate, ...]
+    skipped_lines: tuple[SurfaceSkippedLine, ...] = ()
+    complete: bool = True
+    candidate_set_complete: bool = True
+    ranking_complete: bool = True
+
+
 class SurfaceRuntime:
     """Discover overlapping higher-order relations without Line cloning."""
 
@@ -171,26 +186,20 @@ class SurfaceRuntime:
         self.view = LineGraphView(memory=memory, store=line_store)
         self.config = config
 
-    def _line_path_views(
+    def _views_for_line(
         self,
+        line_id: str,
         *,
         knowledge_cutoff: datetime,
     ) -> tuple[LinePathView, ...]:
         output: list[LinePathView] = []
-        for line in self.store.list_lines():
-            try:
-                paths = self.view.paths_to_frontier(
-                    line.line_id,
-                    knowledge_cutoff=knowledge_cutoff,
-                    max_paths=self.config.max_paths_per_line,
-                    max_nodes=self.config.max_path_nodes,
-                )
-            except LineTraversalLimitExceeded as exc:
-                raise SurfaceSearchLimitExceeded(
-                    "Surface requires complete Line paths; "
-                    f"{exc}"
-                ) from exc
-            for node_ids in paths:
+        paths = self.view.paths_to_frontier(
+            line_id,
+            knowledge_cutoff=knowledge_cutoff,
+            max_paths=self.config.max_paths_per_line,
+            max_nodes=self.config.max_path_nodes,
+        )
+        for node_ids in paths:
                 if len(node_ids) < self.config.min_path_nodes:
                     continue
                 states = []
@@ -225,7 +234,7 @@ class SurfaceRuntime:
                     continue
                 digest = hashlib.sha256(
                     (
-                        line.line_id
+                        line_id
                         + "|"
                         + "|".join(node_ids)
                         + "|"
@@ -235,7 +244,7 @@ class SurfaceRuntime:
                 output.append(
                     LinePathView(
                         view_id=f"lineview_{digest}",
-                        line_id=line.line_id,
+                        line_id=line_id,
                         node_ids=node_ids,
                         state_ids=tuple(states),
                         raw_evidence_ids=self.view.raw_closure(
@@ -245,21 +254,87 @@ class SurfaceRuntime:
                         shape_signature=signature,
                     )
                 )
-                if len(output) > self.config.max_views:
-                    raise SurfaceSearchLimitExceeded(
-                        "Surface path views exceeded max_views="
-                        f"{self.config.max_views}"
-                    )
         return tuple(sorted(output, key=lambda item: item.view_id))
+
+    def _line_path_views(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[LinePathView, ...]:
+        output: list[LinePathView] = []
+        for line in self.store.list_lines():
+            try:
+                output.extend(
+                    self._views_for_line(
+                        line.line_id,
+                        knowledge_cutoff=knowledge_cutoff,
+                    )
+                )
+            except LineTraversalLimitExceeded as exc:
+                raise SurfaceSearchLimitExceeded(
+                    "Surface requires complete Line paths; "
+                    f"{exc}"
+                ) from exc
+            if len(output) > self.config.max_views:
+                raise SurfaceSearchLimitExceeded(
+                    "Surface path views exceeded max_views="
+                    f"{self.config.max_views}"
+                )
+        return tuple(sorted(output, key=lambda item: item.view_id))
+
+    def _collect_line_path_views(
+        self,
+        *,
+        knowledge_cutoff: datetime,
+    ) -> tuple[
+        tuple[LinePathView, ...],
+        tuple[SurfaceSkippedLine, ...],
+    ]:
+        output: list[LinePathView] = []
+        skipped: list[SurfaceSkippedLine] = []
+        for line in self.store.list_lines():
+            try:
+                output.extend(
+                    self._views_for_line(
+                        line.line_id,
+                        knowledge_cutoff=knowledge_cutoff,
+                    )
+                )
+            except LineTraversalLimitExceeded as exc:
+                skipped.append(
+                    SurfaceSkippedLine(
+                        line_id=line.line_id,
+                        reason=str(exc),
+                    )
+                )
+                continue
+            if len(output) > self.config.max_views:
+                raise SurfaceSearchLimitExceeded(
+                    "Surface path views exceeded max_views="
+                    f"{self.config.max_views}"
+                )
+        return (
+            tuple(sorted(output, key=lambda item: item.view_id)),
+            tuple(skipped),
+        )
 
     def discover(
         self,
         *,
         knowledge_cutoff: datetime,
-    ) -> tuple[SurfaceCandidate, ...]:
-        views = self._line_path_views(knowledge_cutoff=knowledge_cutoff)
+    ) -> SurfaceDiscoveryResult:
+        views, skipped = self._collect_line_path_views(
+            knowledge_cutoff=knowledge_cutoff
+        )
+        complete = not skipped
         if len({view.line_id for view in views}) < self.config.min_lines:
-            return ()
+            return SurfaceDiscoveryResult(
+                candidates=(),
+                skipped_lines=skipped,
+                complete=complete,
+                candidate_set_complete=complete,
+                ranking_complete=complete,
+            )
 
         by_id = {view.view_id: view for view in views}
         adjacency: dict[str, set[str]] = {
@@ -369,12 +444,22 @@ class SurfaceRuntime:
                     raw_evidence_ids=tuple(sorted(raw_ids)),
                 )
             )
-        return tuple(sorted(output, key=lambda item: item.surface_id))
+        return SurfaceDiscoveryResult(
+            candidates=tuple(
+                sorted(output, key=lambda item: item.surface_id)
+            ),
+            skipped_lines=skipped,
+            complete=complete,
+            candidate_set_complete=complete,
+            ranking_complete=complete,
+        )
 
 
 __all__ = [
     "LinePathView",
     "SurfaceCandidate",
+    "SurfaceDiscoveryResult",
+    "SurfaceSkippedLine",
     "SurfaceConfig",
     "SurfaceRuntime",
     "SurfaceSearchLimitExceeded",
