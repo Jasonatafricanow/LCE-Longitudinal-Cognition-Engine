@@ -89,9 +89,14 @@ def test_same_understanding_does_not_create_a_revision_but_changed_text_does(tmp
         supporting_structure_ids=("S1", "S2"), base_baseline=baselines.get_head("region"),
     )
     worktrees.record_support(second.worktree_id, snapshot_id="snap-2")
-    unchanged = promoter.evaluate(second.worktree_id)
-    assert unchanged.revised is False
-    assert baselines.get_head("region").revision_number == 1
+    support_updated = promoter.evaluate(second.worktree_id)
+    assert support_updated.revised is True
+    assert support_updated.reason == "SUPPORT_UPDATE"
+    assert baselines.get_head("region").revision_number == 3
+    assert baselines.get_head("region").supporting_memory_ids == (
+        "SB1",
+        "SB2",
+    )
 
     third = worktrees.create(
         region_id="region", candidate_content="meaningfully changed", supporting_block_ids=("SB1", "SB2"),
