@@ -25,6 +25,7 @@ def test_vector_index_is_derived_and_rebuildable(tmp_path) -> None:
             occurred_end=item.occurred_at,
             compiler_version="v1",
             lineage_id="lineage",
+            derived_known_at=item.effective_known_at,
         )
     )
     store.rebuild_vector_index(lambda block: (1.0, 2.0, 3.0), index_version="test-vector-v1")
