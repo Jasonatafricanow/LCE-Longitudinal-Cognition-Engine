@@ -48,6 +48,7 @@ def test_knowledge_cutoff_blocks_future_leak_for_late_historical_evidence() -> N
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
 
@@ -111,6 +112,7 @@ def test_knowledge_cutoff_preserves_past_wrong_belief_after_later_invalidation()
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
 
@@ -144,6 +146,7 @@ def test_sqlite_historical_validity_replays_lifecycle_at_cutoff(
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
 
@@ -179,6 +182,7 @@ def test_historical_state_vector_survives_later_invalidation_and_rebuild() -> No
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
     memory.rebuild_vector_index(
@@ -216,6 +220,7 @@ def test_sqlite_historical_state_vector_survives_rebuild(
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
     store.rebuild_vector_index(
@@ -385,6 +390,7 @@ def test_derived_state_known_at_prevents_reinterpretation_time_travel_in_memory(
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
     revised_time = datetime(2026, 6, 1, tzinfo=UTC)
@@ -426,6 +432,7 @@ def test_derived_state_known_at_survives_sqlite_restart(
             occurred_end=item.occurred_at,
             compiler_version="test",
             lineage_id="main",
+            derived_known_at=item.effective_known_at,
         )
     )
     revised_time = datetime(2026, 6, 1, tzinfo=UTC)
