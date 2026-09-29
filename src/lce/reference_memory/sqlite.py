@@ -443,9 +443,7 @@ class ReferenceMemoryStore:
             stored.lineage_id,
             metadata_json,
             json.dumps(stored.raw_evidence_ids),
-            stored.derived_known_at.isoformat()
-            if stored.derived_known_at is not None
-            else stored.occurred_end.isoformat(),
+            stored.derived_known_at.isoformat(),
             datetime.now(UTC).isoformat(),
         )
         db.execute(
