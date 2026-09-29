@@ -93,6 +93,34 @@ Therefore:
 
 This is the unit used by `independent_support`.
 
+### Support-identity boundary
+
+`independent_support` is currently a **Raw-closure independence** dimension.
+It must not be read as proof of semantic independence, source independence, or
+independent cognition.
+
+These are distinct concepts:
+
+```text
+Raw observation identity
+semantic/support identity
+longitudinal re-observation
+source/epistemic independence
+```
+
+Two different Raw IDs may repeat essentially the same cognition; conversely, a
+semantically similar observation months later may be valuable longitudinal
+evidence that a cognition persisted. Therefore neither "different Raw ID" nor
+"text is similar" is sufficient to collapse these concepts into one scalar
+support count.
+
+The current convergence implementation deliberately does **not** add heuristic
+text/embedding deduplication at this layer. A future support-identity contract
+must specify which upstream authority supplies semantic-support identity and
+how longitudinal re-observation is represented without being mislabeled as an
+independent factual source. Until that contract is frozen, callers must treat
+`independent_support` according to its narrower Raw-component meaning.
+
 ### AuthorityProfile
 
 For each candidate:
