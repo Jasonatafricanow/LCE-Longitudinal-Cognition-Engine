@@ -20,8 +20,12 @@ prevents a later reinterpretation of old evidence from appearing in an earlier
 epistemic replay. `derived_known_at` is producer-owned authority: storage
 backends persist and validate it but do not infer it from Raw Evidence time or
 wall-clock time for new writes. The Semantic compiler supplies it explicitly;
-direct state producers must do the same. Raw Evidence and derived vectors use
-separate SQLite tables.
+direct state producers must do the same. Legacy standalone states that predate
+this field are migrated from the maximum authoritative Raw `known_at` among
+that immutable state's dependencies, not from row `created_at`. External
+projection storage has no Raw authority of its own, so its legacy migration is
+resolved through the attached canonical source in `ProjectionSubstrate`.
+Raw Evidence and derived vectors use separate SQLite tables.
 Removing the vector projection does not remove Evidence, Semantic Blocks, or
 their historical states.
 
@@ -72,3 +76,13 @@ LCE itself does not require Reference Memory. A backend may either use this
 implementation directly, implement the focused Memory Port, or reuse only its
 provenance, validity, supersede, and anti-pollution minimum in its own canonical
 Memory system.
+
+## SemanticBlock metadata persistence contract
+
+SemanticBlock metadata is normalized at the contract boundary so changing
+storage backends cannot change state equality. Mapping keys must be strings;
+recursive values may contain mappings, lists/tuples, strings, booleans,
+integers, finite floats, and null. Lists and tuples canonicalize to tuples.
+NaN/Infinity and backend-specific Python values such as sets, bytes, or
+datetimes are rejected instead of being silently accepted by one backend and
+serialized differently by another.
