@@ -80,6 +80,7 @@ def _block(
                     else (1.0, float(day) / 1000.0)
                 )
             },
+            derived_known_at=when,
         )
     )
 

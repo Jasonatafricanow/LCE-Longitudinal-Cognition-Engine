@@ -41,19 +41,15 @@ class InMemoryReferenceMemory:
             str, list[tuple[str, datetime]]
         ] = {}
 
+    @staticmethod
     def _with_derived_known_at(
-        self,
         block: SemanticBlock,
     ) -> SemanticBlock:
-        if block.derived_known_at is not None:
-            return block
-        return replace(
-            block,
-            derived_known_at=max(
-                self.get_evidence(evidence_id).effective_known_at
-                for evidence_id in block.raw_evidence_ids
-            ),
-        )
+        if block.derived_known_at is None:
+            raise ValueError(
+                "derived_known_at must be supplied by the state producer"
+            )
+        return block
 
     @staticmethod
     def _state_id(block: SemanticBlock) -> str:
@@ -188,7 +184,7 @@ class InMemoryReferenceMemory:
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
-        derived_known_at: datetime | None = None,
+        derived_known_at: datetime,
     ) -> SemanticBlock:
         current = self.get_semantic_block(block_id)
         self.get_evidence(evidence_id)
@@ -205,18 +201,7 @@ class InMemoryReferenceMemory:
                 occurred_end=max(current.occurred_end, occurred_at),
                 state_id=None,
                 state_version=current.state_version + 1,
-                derived_known_at=(
-                    derived_known_at
-                    or max(
-                        current.derived_known_at
-                        or self.get_evidence(
-                            evidence_id
-                        ).effective_known_at,
-                        self.get_evidence(
-                            evidence_id
-                        ).effective_known_at,
-                    )
-                ),
+                derived_known_at=derived_known_at,
             )
         )
 

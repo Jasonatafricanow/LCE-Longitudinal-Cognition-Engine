@@ -228,6 +228,14 @@ relation has a `known_at -> retired_at` lifetime. Rebuild therefore means
 "retire the current derived relation and compile another revision", not "rewrite
 the old graph in place".
 
+Interrupted rebuild recovery is identity-preserving. The durable
+`rebuild_in_progress` marker stores the exact failed rebuild cutoff. On
+restart, LCE must restore that cutoff first so prior Line identity can be
+inherited under the same membership-revision semantics, then reconcile forward
+to current source state. Both phases complete before new ingestion is compiled.
+The marker remains set across the whole recovery sequence, so another hard
+failure cannot expose an intermediate generation as current.
+
 This distinction also governs **derived-cognition correction**. Historical
 visibility does not imply current validity. If an accepted Line relation or
 interpretation is later explicitly rejected as a reasoning error, the current
@@ -266,8 +274,12 @@ Root-to-frontier path enumeration follows the same rule. `max_nodes` and
 exact path or exact path set cannot fit inside those ceilings,
 `paths_to_frontier` raises `LineTraversalLimitExceeded`; it never returns a
 truncated suffix/subset as though it were the complete Line shape. Surface
-discovery converts that condition into `SurfaceSearchLimitExceeded` and does
-not calculate a shape signature from incomplete structure.
+discovery treats that failure as local to the affected Line: that Line is
+skipped, its incomplete path is never scored, and other complete Lines may
+still produce candidates. The public Surface result marks itself partial and
+reports skipped Line IDs/reasons. When any Line is skipped, candidate-set and
+ranking completeness are explicitly false because omitted Lines could have
+changed maximal cliques or bounded candidate ordering.
 
 It is not inserted as a persistent cognition node.
 

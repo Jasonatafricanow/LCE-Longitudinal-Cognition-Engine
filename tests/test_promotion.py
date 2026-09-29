@@ -35,6 +35,7 @@ def setup_memory(tmp_path) -> ReferenceMemoryStore:
                 compiler_version="test",
                 lineage_id="lineage",
                 metadata={"subject": "theme"},
+                derived_known_at=when,
             )
         )
     return store

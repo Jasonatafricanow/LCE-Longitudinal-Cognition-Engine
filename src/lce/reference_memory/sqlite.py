@@ -336,19 +336,15 @@ class ReferenceMemoryStore:
             AuditEvent(row[0], row[1], row[2], self._parse_datetime(row[3])) for row in rows
         )
 
+    @staticmethod
     def _with_derived_known_at(
-        self,
         block: SemanticBlock,
     ) -> SemanticBlock:
-        if block.derived_known_at is not None:
-            return block
-        return replace(
-            block,
-            derived_known_at=max(
-                self.get_evidence(evidence_id).effective_known_at
-                for evidence_id in block.raw_evidence_ids
-            ),
-        )
+        if block.derived_known_at is None:
+            raise ValueError(
+                "derived_known_at must be supplied by the state producer"
+            )
+        return block
 
     def put_semantic_block(self, block: SemanticBlock) -> SemanticBlock:
         db = self._db()
@@ -383,7 +379,7 @@ class ReferenceMemoryStore:
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
-        derived_known_at: datetime | None = None,
+        derived_known_at: datetime,
     ) -> SemanticBlock:
         """Extend an open semantic stream while retaining its stable block ID."""
         current = self.get_semantic_block(block_id)
@@ -405,14 +401,7 @@ class ReferenceMemoryStore:
             lineage_id=current.lineage_id,
             metadata=current.metadata,
             state_version=current.state_version + 1,
-            derived_known_at=(
-                derived_known_at
-                or max(
-                    current.derived_known_at
-                    or self.get_evidence(evidence_id).effective_known_at,
-                    self.get_evidence(evidence_id).effective_known_at,
-                )
-            ),
+            derived_known_at=derived_known_at,
         )
         with self._db():
             return self._write_current_state(self._db(), updated)
@@ -442,6 +431,8 @@ class ReferenceMemoryStore:
         block = self._with_derived_known_at(block)
         state_id = block.state_id or self._state_id(block)
         stored = replace(block, state_id=state_id)
+        derived_known_at = stored.derived_known_at
+        assert derived_known_at is not None
         metadata_json = json.dumps(dict(stored.metadata), ensure_ascii=False, sort_keys=True)
         state_row = (
             stored.state_id,
@@ -454,9 +445,7 @@ class ReferenceMemoryStore:
             stored.lineage_id,
             metadata_json,
             json.dumps(stored.raw_evidence_ids),
-            stored.derived_known_at.isoformat()
-            if stored.derived_known_at is not None
-            else stored.occurred_end.isoformat(),
+            derived_known_at.isoformat(),
             datetime.now(UTC).isoformat(),
         )
         db.execute(
@@ -529,10 +518,15 @@ class ReferenceMemoryStore:
                         "SELECT evidence_id FROM semantic_block_evidence WHERE block_id = ? ORDER BY rowid", (row[0],)
                     ).fetchall()
                 )
+                legacy_known_at = max(
+                    self.get_evidence(evidence_id).effective_known_at
+                    for evidence_id in evidence_ids
+                )
                 block = SemanticBlock(
                     block_id=row[0], content=row[1], raw_evidence_ids=evidence_ids,
                     occurred_start=self._parse_datetime(row[2]), occurred_end=self._parse_datetime(row[3]),
                     compiler_version=row[4], lineage_id=row[5], metadata=json.loads(row[6]),
+                    derived_known_at=legacy_known_at,
                 )
                 self._write_current_state(db, block)
 

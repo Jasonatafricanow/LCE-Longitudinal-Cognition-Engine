@@ -17,6 +17,7 @@ from lce.cognition.line_graph import (
 )
 from lce.core.projection import LceProjectionCore, StaleLineGraphError
 from lce.reference_memory.contracts import RawEvidence, SemanticBlock
+from lce.reference_memory.sqlite import ReferenceMemoryStore
 from lce.structure.trajectory import TrajectoryConfig
 from lce.testing.reference_memory import InMemoryReferenceMemory
 
@@ -77,6 +78,7 @@ def _admit(
             compiler_version="test",
             lineage_id="main",
             metadata={"vector": vector},
+            derived_known_at=when,
         )
     )
 
@@ -138,6 +140,7 @@ def test_semantic_block_state_revision_stays_one_line_node(
         content="new detail",
         evidence_id="E3",
         occurred_at=BASE + timedelta(days=20),
+        derived_known_at=BASE + timedelta(days=40),
     )
     _rebuild(memory)
 
@@ -1579,6 +1582,7 @@ def test_line_assembler_rejects_forged_payload_for_real_state_id(
         metadata=blocks[1].metadata,
         state_id=blocks[1].state_id,
         state_version=blocks[1].state_version,
+        derived_known_at=blocks[1].derived_known_at,
     )
     store = LineGraphStore(tmp_path / "lines")
     assembler = LineAssembler(memory=memory, store=store)
@@ -1739,6 +1743,7 @@ def test_late_historical_block_revises_direct_edge_without_rewriting_history(
             compiler_version="test",
             lineage_id="main",
             metadata={"vector": (0.95, 0.05)},
+            derived_known_at=known,
         )
     )
     result = assembler.attach_block(
@@ -2091,3 +2096,190 @@ def test_paths_to_frontier_fails_closed_when_path_count_would_truncate(
             knowledge_cutoff=BASE + timedelta(days=100),
             max_paths=1,
         )
+
+def test_crash_recovery_preserves_line_identity_before_new_ingestion(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "recovery-identity"
+    memory_root = tmp_path / "recovery-memory"
+    memory = ReferenceMemoryStore(memory_root)
+    core = LceProjectionCore(
+        root,
+        memory=memory,
+        lineage_id="recovery",
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.5,
+            min_support=3,
+        ),
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "recovery-chain-v1"
+        ),
+    )
+    materials = tuple(
+        RawEvidence(
+            evidence_id=f"REC-{index}",
+            content=f"recovery point {index}",
+            occurred_at=BASE + timedelta(days=index * 10),
+            known_at=BASE + timedelta(days=index * 10),
+            provenance={
+                "source": "test",
+                "canonical": True,
+                "topic": f"topic-{index}",
+                "vector": (1.0, float(index) / 100.0),
+            },
+        )
+        for index in range(4)
+    )
+    core.run_batch(materials)
+    original_lines = core.lines.list_lines()
+    assert original_lines
+    original_id = original_lines[0].line_id
+
+    crash_cutoff = datetime.now(UTC) - timedelta(seconds=2)
+    core.lines.set_metadata(
+        "rebuild_in_progress",
+        crash_cutoff.isoformat(),
+    )
+    core.lines.retire_current_structure(crash_cutoff)
+    core.close()
+    memory.close()
+
+    reopened_memory = ReferenceMemoryStore(memory_root)
+    reopened = LceProjectionCore(
+        root,
+        memory=reopened_memory,
+        lineage_id="recovery",
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.5,
+            min_support=3,
+        ),
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "recovery-chain-v1"
+        ),
+    )
+    assert reopened.lines.get_metadata("rebuild_in_progress")
+    with pytest.raises(StaleLineGraphError):
+        reopened.line_frontier(
+            original_id,
+            knowledge_cutoff=datetime.now(UTC),
+        )
+
+    new_material = RawEvidence(
+        evidence_id="REC-4",
+        content="recovery point 4",
+        occurred_at=BASE + timedelta(days=40),
+        known_at=datetime.now(UTC),
+        provenance={
+            "source": "test",
+            "canonical": True,
+            "topic": "topic-4",
+            "vector": (1.0, 0.04),
+        },
+    )
+    reopened.process(new_material)
+
+    assert reopened.lines.get_metadata("rebuild_in_progress") == ""
+    assert reopened.lines.get_line(original_id).line_id == original_id
+    assert original_id in reopened.lines.lines_for_block(
+        reopened.memory.compiled_block_ids("REC-4")[0]
+    )
+    reopened.close()
+    reopened_memory.close()
+
+
+def test_crash_recovery_reconciles_source_changes_that_happened_while_down(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "recovery-source-change"
+    memory_root = tmp_path / "recovery-source-memory"
+    memory = ReferenceMemoryStore(memory_root)
+    core = LceProjectionCore(
+        root,
+        memory=memory,
+        lineage_id="recovery-change",
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.5,
+            min_support=3,
+        ),
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "recovery-change-chain-v1"
+        ),
+    )
+    materials = tuple(
+        RawEvidence(
+            evidence_id=f"RCH-{index}",
+            content=f"recovery source point {index}",
+            occurred_at=BASE + timedelta(days=index * 10),
+            known_at=BASE + timedelta(days=index * 10),
+            provenance={
+                "source": "test",
+                "canonical": True,
+                "topic": f"change-topic-{index}",
+                "vector": (1.0, float(index) / 100.0),
+            },
+        )
+        for index in range(4)
+    )
+    core.run_batch(materials)
+    original_id = core.lines.list_lines()[0].line_id
+    crash_cutoff = datetime.now(UTC) - timedelta(seconds=2)
+    core.lines.set_metadata(
+        "rebuild_in_progress",
+        crash_cutoff.isoformat(),
+    )
+    core.lines.retire_current_structure(crash_cutoff)
+    core.close()
+    memory.close()
+
+    changed_memory = ReferenceMemoryStore(memory_root)
+    changed_memory.invalidate("RCH-1", reason="changed while LCE was down")
+    changed_memory.close()
+
+    reopened_memory = ReferenceMemoryStore(memory_root)
+    reopened = LceProjectionCore(
+        root,
+        memory=reopened_memory,
+        lineage_id="recovery-change",
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.5,
+            min_support=3,
+        ),
+        trajectory_neighbour_provider=_VersionedFixedNeighbourProvider(
+            "recovery-change-chain-v1"
+        ),
+    )
+    trigger = RawEvidence(
+        evidence_id="RCH-4",
+        content="post-recovery input",
+        occurred_at=BASE + timedelta(days=40),
+        known_at=datetime.now(UTC),
+        provenance={
+            "source": "test",
+            "canonical": True,
+            "topic": "change-topic-4",
+            "vector": (1.0, 0.04),
+        },
+    )
+    reopened.process(trigger)
+
+    assert reopened.lines.get_line(original_id).line_id == original_id
+    assert reopened.lines.active_node_ids_at(
+        original_id,
+        datetime.now(UTC),
+    )
+    invalidated_block_id = reopened.memory.compiled_block_ids("RCH-1")[0]
+    invalidated_node = reopened.lines.node_for_block(
+        original_id,
+        invalidated_block_id,
+    )
+    assert invalidated_node is not None
+    assert not reopened.lines.membership_active_at(
+        invalidated_node.node_id,
+        datetime.now(UTC),
+    )
+    reopened.close()
+    reopened_memory.close()

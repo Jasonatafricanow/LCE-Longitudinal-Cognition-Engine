@@ -76,6 +76,7 @@ def _admit(
             compiler_version="test",
             lineage_id="main",
             metadata={"vector": vector},
+            derived_known_at=when,
         )
     )
 
@@ -369,6 +370,7 @@ def test_nearline_state_revision_updates_existing_line_membership(
         content="later revision",
         evidence_id="REV",
         occurred_at=BASE + timedelta(days=70),
+        derived_known_at=BASE + timedelta(days=200),
     )
     _rebuild(memory)
 
@@ -568,6 +570,7 @@ def test_logical_time_revision_rebuilds_current_line_without_rewriting_history(
         content="retroactive interval extension",
         evidence_id="E-revision",
         occurred_at=BASE + timedelta(days=35),
+        derived_known_at=BASE + timedelta(days=40),
     )
     _rebuild(memory)
 
@@ -683,6 +686,7 @@ def test_material_semantic_state_drift_rebuilds_line_even_when_time_is_unchanged
         content="semantic-drift",
         evidence_id="semantic-drift-evidence",
         occurred_at=middle.occurred_start,
+        derived_known_at=BASE + timedelta(days=40),
     )
     memory.rebuild_vector_index(
         embed,
@@ -783,6 +787,7 @@ def test_state_revision_revalidates_incident_edges_not_only_self_similarity(
         content="edge-drift",
         evidence_id="edge-drift-evidence",
         occurred_at=middle.occurred_start,
+        derived_known_at=BASE + timedelta(days=40),
     )
     memory.rebuild_vector_index(
         embed,
@@ -922,6 +927,7 @@ def test_state_revision_preserves_unrelated_nearline_growth_and_continues_batch(
         content="local-drift",
         evidence_id="local-drift-evidence",
         occurred_at=middle.occurred_start,
+        derived_known_at=BASE + timedelta(days=50),
     )
     memory.rebuild_vector_index(embed, index_version="local-revision-v1")
 

@@ -87,6 +87,7 @@ def _add_line(
                     compiler_version="test",
                     lineage_id=prefix,
                     metadata={"vector": vector},
+                    derived_known_at=when,
                 )
             )
         )
@@ -153,10 +154,12 @@ def test_surface_matches_same_trajectory_across_different_line_lengths(
         config=SurfaceConfig(min_shape_similarity=0.95),
     )
 
-    candidates = runtime.discover(
+    discovery = runtime.discover(
         knowledge_cutoff=BASE + timedelta(days=500),
     )
+    candidates = discovery.candidates
 
+    assert discovery.complete is True
     assert len(candidates) == 1
     owners = {view.line_id for view in candidates[0].views}
     assert owners == set(line_ids[:3])
@@ -176,7 +179,7 @@ def test_surface_raw_closure_is_only_underlying_member_raw_evidence(
 
     candidate = runtime.discover(
         knowledge_cutoff=BASE + timedelta(days=500),
-    )[0]
+    ).candidates[0]
 
     assert len(candidate.raw_evidence_ids) == 24
     assert all(
@@ -205,12 +208,19 @@ def test_surface_discovery_is_non_mutating_and_drops_invalid_member(
         line_id: len(store.nodes_for_line(line_id))
         for line_id in line_ids
     }
-    assert len(runtime.discover(knowledge_cutoff=cutoff)) == 1
+    assert len(
+        runtime.discover(knowledge_cutoff=cutoff).candidates
+    ) == 1
 
     memory.invalidate("trade-E1", reason="source correction")
     current_cutoff = datetime.now(UTC)
 
-    assert runtime.discover(knowledge_cutoff=current_cutoff) == ()
+    assert (
+        runtime.discover(
+            knowledge_cutoff=current_cutoff
+        ).candidates
+        == ()
+    )
     assert len(store.list_lines()) == before_lines
     assert {
         line_id: len(store.nodes_for_line(line_id))
@@ -237,10 +247,12 @@ def test_surface_returns_only_maximal_cross_line_clique(
         line_store=store,
         config=SurfaceConfig(min_shape_similarity=0.95),
     )
-    candidates = runtime.discover(
+    discovery = runtime.discover(
         knowledge_cutoff=BASE + timedelta(days=500),
     )
+    candidates = discovery.candidates
 
+    assert discovery.complete is True
     assert len(candidates) == 1
     assert {view.line_id for view in candidates[0].views} == {
         *line_ids[:3],
@@ -307,6 +319,7 @@ def test_surface_view_provenance_includes_all_conjunctive_rejoin_parents(
                 compiler_version="test",
                 lineage_id="rejoin",
                 metadata={"vector": (1.0, float(day))},
+                derived_known_at=when,
             )
         )
 
@@ -374,3 +387,59 @@ def test_surface_fails_closed_when_line_path_is_longer_than_bound(
         )
 
     assert store.get_line(line_id).line_id == line_id
+
+def test_surface_public_discovery_skips_only_overlong_line_and_marks_partial(
+    tmp_path: Path,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    store = LineGraphStore(tmp_path / "partial-lines")
+    short_ids = tuple(
+        _add_line(
+            memory,
+            store,
+            prefix=prefix,
+            anchor=anchor,
+            states=_densify(SHAPE, subdivisions),
+        )
+        for prefix, anchor, subdivisions in (
+            ("partial-a", (10.0, 0.0, 0.0, 0.0), 1),
+            ("partial-b", (0.0, 10.0, 0.0, 0.0), 2),
+            ("partial-c", (0.0, 0.0, 10.0, 0.0), 4),
+        )
+    )
+    long_id = _add_line(
+        memory,
+        store,
+        prefix="partial-long",
+        anchor=(0.0, 0.0, 0.0, 10.0),
+        states=tuple(
+            (float(index), float(index) / 10.0)
+            for index in range(70)
+        ),
+    )
+    _rebuild(memory)
+    runtime = SurfaceRuntime(
+        memory=memory,
+        line_store=store,
+        config=SurfaceConfig(
+            min_shape_similarity=0.95,
+            max_path_nodes=64,
+        ),
+    )
+
+    result = runtime.discover(
+        knowledge_cutoff=BASE + timedelta(days=3000),
+    )
+
+    assert result.complete is False
+    assert result.candidate_set_complete is False
+    assert result.ranking_complete is False
+    assert tuple(item.line_id for item in result.skipped_lines) == (
+        long_id,
+    )
+    assert result.candidates
+    assert {
+        view.line_id
+        for candidate in result.candidates
+        for view in candidate.views
+    } <= set(short_ids)

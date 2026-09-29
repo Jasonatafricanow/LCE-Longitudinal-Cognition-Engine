@@ -24,6 +24,7 @@ def test_invalidating_one_source_finds_only_affected_dependencies(tmp_path) -> N
             SemanticBlock(
                 block_id=block_id, content=block_id, raw_evidence_ids=(evidence_id,),
                 occurred_start=when, occurred_end=when, compiler_version="test", lineage_id="lineage",
+                derived_known_at=when,
             )
         )
     memory.rebuild_vector_index(lambda block: (1.0, 0.0) if block.block_id == "SB1" else (0.0, 1.0), index_version="test")

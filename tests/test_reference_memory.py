@@ -51,6 +51,7 @@ def test_evidence_and_semantic_block_ids_survive_restart(tmp_path) -> None:
         occurred_end=item.occurred_at,
         compiler_version="test-v1",
         lineage_id="lineage",
+        derived_known_at=item.effective_known_at,
     )
 
     first = ReferenceMemoryStore(db_root)
@@ -107,4 +108,59 @@ def test_unknown_source_is_not_silently_canonical(tmp_path) -> None:
                 provenance={"source": "unknown", "canonical": False},
             )
         )
+    store.close()
+
+def test_reference_memory_rejects_missing_derived_known_at(
+    tmp_path,
+) -> None:
+    store = ReferenceMemoryStore(tmp_path / "derived-time-required")
+    item = evidence("E-required", "source")
+    store.add_evidence(item)
+    with pytest.raises(
+        ValueError,
+        match="derived_known_at must be supplied",
+    ):
+        store.put_semantic_block(
+            SemanticBlock(
+                block_id="SB-required",
+                content="derived state",
+                raw_evidence_ids=(item.evidence_id,),
+                occurred_start=item.occurred_at,
+                occurred_end=item.occurred_at,
+                compiler_version="test-v1",
+                lineage_id="lineage",
+            )
+        )
+    store.close()
+
+
+def test_sqlite_semantic_block_metadata_roundtrips_canonically(
+    tmp_path,
+) -> None:
+    store = ReferenceMemoryStore(tmp_path / "metadata-canonical")
+    item = evidence("E-meta", "source")
+    store.add_evidence(item)
+    written = store.put_semantic_block(
+        SemanticBlock(
+            block_id="SB-meta",
+            content="derived state",
+            raw_evidence_ids=(item.evidence_id,),
+            occurred_start=item.occurred_at,
+            occurred_end=item.occurred_at,
+            compiler_version="test-v1",
+            lineage_id="lineage",
+            metadata={
+                "vector": (1.0, 2.0),
+                "nested": {"path": ["a", "b"]},
+            },
+            derived_known_at=item.effective_known_at,
+        )
+    )
+    persisted = store.get_semantic_block_state(
+        written.state_id or ""
+    )
+
+    assert written == persisted
+    assert written.metadata["vector"] == (1.0, 2.0)
+    assert written.metadata["nested"] == {"path": ("a", "b")}
     store.close()

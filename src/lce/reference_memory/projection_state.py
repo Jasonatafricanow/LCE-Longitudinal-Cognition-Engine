@@ -175,9 +175,8 @@ class SqliteProjectionStateStore:
         self, db: sqlite3.Connection, block: SemanticBlock
     ) -> SemanticBlock:
         if block.derived_known_at is None:
-            block = replace(
-                block,
-                derived_known_at=datetime.now(UTC),
+            raise ValueError(
+                "derived_known_at must be supplied by the state producer"
             )
         state_id = block.state_id or self._state_id(block)
         stored = replace(block, state_id=state_id)
@@ -280,7 +279,7 @@ class SqliteProjectionStateStore:
         content: str | None,
         evidence_id: str,
         occurred_at: datetime,
-        derived_known_at: datetime | None = None,
+        derived_known_at: datetime,
     ) -> SemanticBlock:
         current = self.get_semantic_block(block_id)
         evidence_ids = (
@@ -301,9 +300,7 @@ class SqliteProjectionStateStore:
             lineage_id=current.lineage_id,
             metadata=current.metadata,
             state_version=current.state_version + 1,
-            derived_known_at=(
-                derived_known_at or datetime.now(UTC)
-            ),
+            derived_known_at=derived_known_at,
         )
         with self._db():
             return self._write_current_state(self._db(), updated)
