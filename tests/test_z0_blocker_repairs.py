@@ -48,6 +48,7 @@ def _populate_pair_space(store: ReferenceMemoryStore, root_time: datetime) -> No
                 occurred_end=when,
                 compiler_version="z0-test",
                 lineage_id="z0",
+                derived_known_at=evidence.effective_known_at,
             )
         )
     store.rebuild_vector_index(lambda block: vectors[block.block_id], index_version="z0")
@@ -72,7 +73,13 @@ def test_historical_snapshot_rebuild_uses_immutable_block_state_and_vectors(tmp_
 
     later = base + timedelta(days=10)
     store.add_evidence(_evidence("E-later", later))
-    store.extend_semantic_block("A", content="new continuation", evidence_id="E-later", occurred_at=later)
+    store.extend_semantic_block(
+        "A",
+        content="new continuation",
+        evidence_id="E-later",
+        occurred_at=later,
+        derived_known_at=later,
+    )
     store.rebuild_vector_index(lambda block: {"A": (1.0, 0.0), "B": (0.99, 0.05), "C": (0.98, 0.12), "D": (0.97, 0.2)}[block.block_id], index_version="z0")
     discovery.delete_derived_snapshots()
     rebuilt = discovery.create_snapshot(cutoff)
@@ -136,7 +143,18 @@ def test_equivalent_local_observations_do_not_form_higher_order_candidate(tmp_pa
         when = base
         evidence = _evidence("E-" + block_id, when)
         store.add_evidence(evidence)
-        store.put_semantic_block(SemanticBlock(block_id, block_id, (evidence.evidence_id,), when, when, "z0", "z0"))
+        store.put_semantic_block(
+            SemanticBlock(
+                block_id,
+                block_id,
+                (evidence.evidence_id,),
+                when,
+                when,
+                "z0",
+                "z0",
+                derived_known_at=evidence.effective_known_at,
+            )
+        )
     store.rebuild_vector_index(lambda _block: (1.0, 0.0), index_version="z0")
     discovery = SnapshotStructureDiscovery(
         store, tmp_path / "structures", config=StructureConfig(k_values=(1, 2), min_similarity=0.9)
