@@ -310,32 +310,34 @@ class LceProjectionCore:
         self._line_graph_recovery_cutoff = None
         self._line_graph_requires_rebuild = False
 
-    def _recover_line_graph_before_ingestion(self) -> None:
-        """Finish an interrupted rebuild before compiling any new input.
+    def _recover_line_graph_current(
+        self,
+    ) -> TrajectoryRuntimeResult:
+        """Finish one interrupted rebuild under the persisted recovery cutoff.
 
-        Recovery first replays the exact cutoff persisted by the failed rebuild
-        so stable Line identity can be inherited. It then reconciles forward to
-        current source state while keeping the durable marker set throughout
-        both phases. New ingestion starts only after both phases succeed.
+        The recovery marker owns the first cutoff. Every public entrypoint
+        reaches this path through _ensure_line_graph_current(), so callers
+        cannot accidentally replace the failed cutoff with wall-clock time.
         """
         recovery_cutoff = self._line_graph_recovery_cutoff
         if recovery_cutoff is None:
-            return
+            raise RuntimeError("Line graph recovery requested without marker")
         self.memory.rebuild_vector_index(
             self._block_embedder,
             index_version=self._block_embedding_version,
         )
-        self.trajectory.rebuild_current(
+        result = self.trajectory.rebuild_current(
             knowledge_cutoff=recovery_cutoff,
             clear_marker=False,
         )
         reconcile_cutoff = datetime.now(UTC)
         if reconcile_cutoff > recovery_cutoff:
-            self.trajectory.rebuild_current(
+            result = self.trajectory.rebuild_current(
                 knowledge_cutoff=reconcile_cutoff,
                 clear_marker=False,
             )
         self._mark_line_graph_current()
+        return result
 
     def _require_line_graph_current(self) -> None:
         if self._line_graph_requires_rebuild:
@@ -347,6 +349,8 @@ class LceProjectionCore:
     def _ensure_line_graph_current(
         self,
     ) -> TrajectoryRuntimeResult | None:
+        if self._line_graph_recovery_cutoff is not None:
+            return self._recover_line_graph_current()
         if not self._line_graph_requires_rebuild:
             return None
         # A changed embedding/config/provider invalidates derived graph
@@ -390,7 +394,8 @@ class LceProjectionCore:
     ) -> ProcessResult:
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
-        self._recover_line_graph_before_ingestion()
+        if self._line_graph_recovery_cutoff is not None:
+            self._ensure_line_graph_current()
         compiler_result = self.compiler.process(material)
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
@@ -1278,6 +1283,7 @@ class LceProjectionCore:
         self, evidence_id: str, *, cutoff: datetime | None = None
     ) -> InvalidationResult:
         """Standalone path: mutate the owned source, then rebuild projections."""
+        self._ensure_line_graph_current()
         invalidator = DependencyInvalidator(
             self.memory, self.discovery, self.worktrees, self.baselines
         )
@@ -1289,6 +1295,7 @@ class LceProjectionCore:
         self, evidence_id: str, *, cutoff: datetime | None = None
     ) -> InvalidationResult:
         """Embedded path: source owner already changed canonical lifecycle."""
+        self._ensure_line_graph_current()
         invalidator = DependencyInvalidator(
             self.memory, self.discovery, self.worktrees, self.baselines
         )
@@ -1299,15 +1306,8 @@ class LceProjectionCore:
     def _rebuild_after_source_change(
         self, *, cutoff: datetime | None
     ) -> None:
-        self.memory.rebuild_vector_index(
-            self._block_embedder,
-            index_version=self._block_embedding_version,
-        )
-        line_cutoff = datetime.now(UTC)
-        self.trajectory.rebuild_current(
-            knowledge_cutoff=line_cutoff,
-        )
-        self._mark_line_graph_current()
+        self._line_graph_requires_rebuild = True
+        self._ensure_line_graph_current()
         latest = cutoff or max(
             (
                 snapshot.cutoff

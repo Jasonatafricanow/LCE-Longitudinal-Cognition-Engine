@@ -120,11 +120,6 @@ class SqliteProjectionStateStore:
                 "ALTER TABLE semantic_block_states "
                 "ADD COLUMN derived_known_at TEXT"
             )
-            self._conn.execute(
-                "UPDATE semantic_block_states "
-                "SET derived_known_at = created_at "
-                "WHERE derived_known_at IS NULL"
-            )
         self._conn.commit()
 
     @property
@@ -147,6 +142,35 @@ class SqliteProjectionStateStore:
         if parsed.tzinfo != UTC:
             raise ValueError("stored datetime is not UTC")
         return parsed
+
+    def backfill_legacy_derived_known_at(
+        self,
+        resolver: Callable[[tuple[str, ...]], datetime],
+    ) -> None:
+        """Backfill legacy state time using an authoritative source resolver."""
+        db = self._db()
+        rows = db.execute(
+            "SELECT state_id, raw_evidence_ids_json "
+            "FROM semantic_block_states "
+            "WHERE derived_known_at IS NULL"
+        ).fetchall()
+        with db:
+            for state_id, raw_ids_json in rows:
+                raw_ids = tuple(json.loads(str(raw_ids_json)))
+                if not raw_ids:
+                    raise RuntimeError(
+                        f"legacy semantic state {state_id!r} has no Raw dependencies"
+                    )
+                resolved = resolver(raw_ids)
+                if resolved.tzinfo != UTC:
+                    raise ValueError(
+                        "legacy derived_known_at resolver must return UTC"
+                    )
+                db.execute(
+                    "UPDATE semantic_block_states "
+                    "SET derived_known_at = ? WHERE state_id = ?",
+                    (resolved.isoformat(), state_id),
+                )
 
     @staticmethod
     def _state_id(block: SemanticBlock) -> str:

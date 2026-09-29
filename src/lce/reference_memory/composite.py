@@ -43,6 +43,26 @@ class ProjectionSubstrate:
         self._close_source = close_source
         self._close_state = close_state
         self._closed = False
+        backfill = getattr(
+            self.state,
+            "backfill_legacy_derived_known_at",
+            None,
+        )
+        if callable(backfill):
+            backfill(self._resolve_legacy_derived_known_at)
+
+    def _resolve_legacy_derived_known_at(
+        self,
+        raw_evidence_ids: tuple[str, ...],
+    ) -> datetime:
+        if not raw_evidence_ids:
+            raise RuntimeError(
+                "legacy semantic state has no Raw dependencies"
+            )
+        return max(
+            self.source.get_evidence(evidence_id).effective_known_at
+            for evidence_id in raw_evidence_ids
+        )
 
     @staticmethod
     def _same_source(left: RawEvidence, right: RawEvidence) -> bool:

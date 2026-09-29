@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from math import isfinite
 from typing import Protocol, runtime_checkable
 
 
@@ -79,13 +80,23 @@ class RawEvidence:
 
 def _canonicalize_metadata_value(value: object) -> object:
     if isinstance(value, Mapping):
-        return {
-            key: _canonicalize_metadata_value(item)
-            for key, item in value.items()
-        }
+        output: dict[str, object] = {}
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise TypeError("metadata mapping keys must be strings")
+            output[key] = _canonicalize_metadata_value(item)
+        return output
     if isinstance(value, (list, tuple)):
         return tuple(_canonicalize_metadata_value(item) for item in value)
-    return value
+    if value is None or isinstance(value, (str, bool, int)):
+        return value
+    if isinstance(value, float):
+        if not isfinite(value):
+            raise ValueError("metadata floats must be finite")
+        return value
+    raise TypeError(
+        "metadata values must be JSON-compatible scalars, mappings, lists, or tuples"
+    )
 
 
 @dataclass(frozen=True, slots=True)
