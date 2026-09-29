@@ -630,3 +630,106 @@ def test_content_equivalent_state_replacement_creates_support_revision(
         second.baseline.previous_baseline_id
         == first.baseline.baseline_id
     )
+
+
+def test_support_permutation_does_not_create_revision(
+    lce_core: LceCore,
+    fake_substrate: FakeMemorySubstrate,
+    fake_consolidator: ScriptableFakeConsolidator,
+) -> None:
+    fake_substrate.add_memory("m1", "one", ("e1",))
+    fake_substrate.add_memory("m2", "two", ("e2",))
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="same understanding",
+            supporting_memory_ids=("m1", "m2"),
+        )
+    )
+    first = lce_core.consolidate(
+        "region-support-order",
+        ("m1", "m2"),
+    )
+
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="same understanding",
+            supporting_memory_ids=("m2", "m1"),
+        )
+    )
+    second = lce_core.consolidate(
+        "region-support-order",
+        ("m2", "m1"),
+    )
+
+    assert second.revised is False
+    assert second.reason == "NO_SEMANTIC_CHANGE"
+    assert second.baseline.baseline_id == first.baseline.baseline_id
+    assert second.baseline.revision_number == 1
+    assert second.baseline.supporting_memory_ids == ("m1", "m2")
+
+
+def test_selected_support_permutation_is_stable_but_state_change_revises(
+    lce_core: LceCore,
+    fake_substrate: FakeMemorySubstrate,
+    fake_consolidator: ScriptableFakeConsolidator,
+) -> None:
+    fake_substrate.add_memory("m1", "one", ("e1",))
+    fake_substrate.add_memory("m2", "two", ("e2",))
+    support_1 = AuthorizedSelectedSupport(
+        block_id="m1",
+        state_id="s1",
+    )
+    support_2 = AuthorizedSelectedSupport(
+        block_id="m2",
+        state_id="s2",
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="stable understanding",
+            supporting_memory_ids=("m1", "m2"),
+            supporting_state_ids=("s1", "s2"),
+            selected_support=(support_1, support_2),
+        )
+    )
+    first = lce_core.consolidate(
+        "region-selected-order",
+        ("m1", "m2"),
+    )
+
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="stable understanding",
+            supporting_memory_ids=("m2", "m1"),
+            supporting_state_ids=("s2", "s1"),
+            selected_support=(support_2, support_1),
+        )
+    )
+    permuted = lce_core.consolidate(
+        "region-selected-order",
+        ("m2", "m1"),
+    )
+
+    assert permuted.revised is False
+    assert permuted.baseline.baseline_id == first.baseline.baseline_id
+    assert permuted.baseline.revision_number == 1
+
+    changed_1 = AuthorizedSelectedSupport(
+        block_id="m1",
+        state_id="s1-new",
+    )
+    fake_consolidator.queue_response(
+        CandidateBaseline(
+            content="stable understanding",
+            supporting_memory_ids=("m2", "m1"),
+            supporting_state_ids=("s2", "s1-new"),
+            selected_support=(support_2, changed_1),
+        )
+    )
+    changed = lce_core.consolidate(
+        "region-selected-order",
+        ("m2", "m1"),
+    )
+
+    assert changed.revised is True
+    assert changed.reason == "SUPPORT_UPDATE"
+    assert changed.baseline.revision_number == 2
