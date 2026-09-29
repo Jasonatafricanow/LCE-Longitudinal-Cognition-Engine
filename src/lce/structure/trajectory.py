@@ -1012,6 +1012,7 @@ class TrajectoryRuntime:
         self,
         *,
         knowledge_cutoff: datetime,
+        clear_marker: bool = True,
     ) -> TrajectoryRuntimeResult:
         """Recompile current Line structure with a durable crash marker.
 
@@ -1033,7 +1034,8 @@ class TrajectoryRuntime:
             # retry instead of accepting this partial generation.
             self.store.retire_current_structure(knowledge_cutoff)
             raise
-        self.store.set_metadata("rebuild_in_progress", "")
+        if clear_marker:
+            self.store.set_metadata("rebuild_in_progress", "")
         return result
 
     def bootstrap(
