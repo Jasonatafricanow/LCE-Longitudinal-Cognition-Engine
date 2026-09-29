@@ -151,11 +151,7 @@ class ReferenceMemoryStore:
                 "ALTER TABLE semantic_block_states "
                 "ADD COLUMN derived_known_at TEXT"
             )
-            self._conn.execute(
-                "UPDATE semantic_block_states "
-                "SET derived_known_at = created_at "
-                "WHERE derived_known_at IS NULL"
-            )
+        self._backfill_legacy_derived_known_at()
         self._conn.commit()
         self._backfill_block_states()
 
@@ -179,6 +175,41 @@ class ReferenceMemoryStore:
         if parsed.tzinfo != UTC:
             raise ValueError("stored datetime is not UTC")
         return parsed
+
+    def _backfill_legacy_derived_known_at(self) -> None:
+        """Derive legacy state knowledge time from authoritative Raw inputs."""
+        db = self._db()
+        rows = db.execute(
+            "SELECT state_id, raw_evidence_ids_json "
+            "FROM semantic_block_states "
+            "WHERE derived_known_at IS NULL"
+        ).fetchall()
+        for state_id, raw_ids_json in rows:
+            raw_ids = tuple(json.loads(str(raw_ids_json)))
+            if not raw_ids:
+                raise RuntimeError(
+                    f"legacy semantic state {state_id!r} has no Raw dependencies"
+                )
+            known_times: list[datetime] = []
+            for evidence_id in raw_ids:
+                row = db.execute(
+                    "SELECT known_at, occurred_at FROM raw_evidence "
+                    "WHERE evidence_id = ?",
+                    (evidence_id,),
+                ).fetchone()
+                if row is None:
+                    raise RuntimeError(
+                        "cannot migrate derived_known_at: missing Raw Evidence "
+                        f"{evidence_id!r} for state {state_id!r}"
+                    )
+                known_times.append(
+                    self._parse_datetime(str(row[0] or row[1]))
+                )
+            db.execute(
+                "UPDATE semantic_block_states "
+                "SET derived_known_at = ? WHERE state_id = ?",
+                (max(known_times).isoformat(), state_id),
+            )
 
     @staticmethod
     def _canonical_provenance(provenance: Mapping[str, object]) -> str:
