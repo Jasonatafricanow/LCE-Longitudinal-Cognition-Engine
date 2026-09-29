@@ -38,6 +38,7 @@ def test_structure_level_candidate_keeps_refs_and_expands_to_raw_evidence(tmp_pa
                 compiler_version="test",
                 lineage_id="lineage",
                 metadata={"subject": block_id[0]},
+                derived_known_at=when,
             )
         )
     store.rebuild_vector_index(lambda block: vectors[block.block_id], index_version="test")
