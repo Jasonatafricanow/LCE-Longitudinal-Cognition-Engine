@@ -118,6 +118,9 @@ def test_rejection_hides_exact_current_understanding_but_keeps_history(
 
     assert rejection.active is True
     assert core.query(None) == ()
+    assert core.frontier._frontier(
+        {block_a.block_id: block_a}
+    ) == ()
     history = core.baselines.get_history("region-1")
     assert history.revisions[0].baseline_id == baseline.baseline_id
 

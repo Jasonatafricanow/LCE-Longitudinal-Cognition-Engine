@@ -209,6 +209,7 @@ class LceProjectionCore:
             baselines=self.baselines,
             worktrees=self.worktrees,
             config=frontier_config,
+            rejection_store=self.rejections,
         )
         self.compiler = SemanticCompiler(
             self.memory,
