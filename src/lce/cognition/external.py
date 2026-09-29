@@ -15,7 +15,10 @@ from lce.contracts.baseline import Baseline
 from lce.contracts.consolidation import CandidateBaseline, ConsolidationResult
 from lce.contracts.external_memory import MemoryItemView, MemorySubstratePort
 from lce.core.engine import LceCore
-from lce.core.equivalence import is_content_equivalent
+from lce.core.equivalence import (
+    is_content_equivalent,
+    is_support_equivalent,
+)
 from lce.store.interface import BaselineStorePort
 
 
@@ -147,7 +150,10 @@ class PrecomputedDraftIntake:
             raise ValueError("processing_input_id collides with another draft support kind")
         if (
             existing.candidate_content != draft.content
-            or existing.supporting_block_ids != draft.supporting_memory_ids
+            or not is_support_equivalent(
+                left_memory_ids=existing.supporting_block_ids,
+                right_memory_ids=draft.supporting_memory_ids,
+            )
         ):
             raise ValueError("processing_input_id was reused with conflicting draft content")
 

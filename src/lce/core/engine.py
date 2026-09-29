@@ -18,7 +18,10 @@ from lce.contracts.consolidation import (
     UnauthorizedSourceError,
 )
 from lce.contracts.external_memory import MemorySubstratePort
-from lce.core.equivalence import is_content_equivalent
+from lce.core.equivalence import (
+    is_content_equivalent,
+    is_support_equivalent,
+)
 from lce.store.interface import BaselineStorePort
 
 
@@ -91,9 +94,10 @@ class LceCore:
             )
 
         # 5. Content identity and support identity are separate durable facts.
-        # Reuse HEAD only when both the normalized meaning and the exact support
-        # snapshot are unchanged. Evidence/state replacement with equivalent
-        # wording must create a new immutable revision.
+        # Reuse HEAD only when both normalized meaning and support authority
+        # are unchanged. Tuple order is representation/alignment only;
+        # evidence/state replacement with equivalent wording still creates a
+        # new immutable revision.
         content_equivalent = (
             current_head is not None
             and is_content_equivalent(
@@ -103,12 +107,14 @@ class LceCore:
         )
         support_equivalent = (
             current_head is not None
-            and current_head.supporting_memory_ids
-            == candidate.supporting_memory_ids
-            and current_head.supporting_state_ids
-            == candidate.supporting_state_ids
-            and current_head.selected_support
-            == candidate.selected_support
+            and is_support_equivalent(
+                left_memory_ids=current_head.supporting_memory_ids,
+                right_memory_ids=candidate.supporting_memory_ids,
+                left_state_ids=current_head.supporting_state_ids,
+                right_state_ids=candidate.supporting_state_ids,
+                left_selected_support=current_head.selected_support,
+                right_selected_support=candidate.selected_support,
+            )
         )
         if content_equivalent and support_equivalent:
             assert current_head is not None
