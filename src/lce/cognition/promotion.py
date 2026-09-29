@@ -12,7 +12,10 @@ from lce.contracts.baseline import Baseline
 from lce.contracts.consolidation import CandidateBaseline, ConsolidationResult
 from lce.contracts.external_memory import MemoryItemView
 from lce.core.engine import LceCore
-from lce.core.equivalence import is_content_equivalent
+from lce.core.equivalence import (
+    is_content_equivalent,
+    is_support_equivalent,
+)
 from lce.reference_memory.contracts import (
     AuthorizedSelectedSupport,
     SemanticBlock,
@@ -216,10 +219,21 @@ class UnderstandingPromoter:
         head = self.baseline_store.get_head(worktree.region_id)
         if head is None or not is_content_equivalent(head.content, worktree.candidate_content):
             return None
-        expected_blocks = tuple(item.block_id for item in worktree.selected_support) or worktree.supporting_block_ids
-        if head.supporting_memory_ids != expected_blocks:
-            return None
-        if worktree.selected_support and head.selected_support != worktree.selected_support:
+        expected_blocks = (
+            tuple(item.block_id for item in worktree.selected_support)
+            or worktree.supporting_block_ids
+        )
+        expected_states = tuple(
+            item.state_id for item in worktree.selected_support
+        )
+        if not is_support_equivalent(
+            left_memory_ids=head.supporting_memory_ids,
+            right_memory_ids=expected_blocks,
+            left_state_ids=head.supporting_state_ids,
+            right_state_ids=expected_states,
+            left_selected_support=head.selected_support,
+            right_selected_support=worktree.selected_support,
+        ):
             return None
         self.worktree_store.set_status(worktree_id, "MERGED", merged_baseline_id=head.baseline_id)
         return ConsolidationResult(head, revised=False, reason="POST_COMMIT_RECONCILED")
