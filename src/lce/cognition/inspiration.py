@@ -281,6 +281,10 @@ class InspirationStore:
             if exists is None:
                 raise KeyError(material_id)
 
+    def reset_derived(self) -> None:
+        with self.conn:
+            self.conn.execute("DELETE FROM inspiration_materials")
+
     def status(self, material_id: str) -> str:
         row = self.conn.execute(
             "SELECT status FROM inspiration_materials WHERE material_id = ?",
