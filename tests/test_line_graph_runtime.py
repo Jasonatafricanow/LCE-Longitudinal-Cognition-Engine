@@ -2410,3 +2410,59 @@ def test_crash_recovery_funnel_preserves_line_identity_for_every_entrypoint(
 
     reopened.close()
     reopened_memory.close()
+
+
+def test_batch_source_change_invalidates_many_then_rebuilds_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    memory = InMemoryReferenceMemory()
+    blocks = tuple(
+        _admit(
+            memory,
+            evidence_id=f"BATCH-{index}",
+            block_id=f"batch-{index}",
+            day=index * 10,
+            vector=(1.0 - index * 0.1, index * 0.1),
+        )
+        for index in range(4)
+    )
+    _rebuild(memory)
+    core = LceProjectionCore(
+        tmp_path / "batch-source-change",
+        memory=memory,
+        trajectory_config=TrajectoryConfig(
+            k=2,
+            min_similarity=0.1,
+            min_support=3,
+        ),
+        block_embedder=lambda block: tuple(
+            float(value) for value in block.metadata["vector"]
+        ),
+        block_embedding_version="test-v1",
+    )
+    seeded = core.trajectory.assembler.apply_path(
+        blocks,
+        knowledge_cutoff=BASE + timedelta(days=100),
+    )
+    assert seeded.line_id is not None
+
+    memory.invalidate("BATCH-1", reason="canonical lifecycle changed")
+    memory.invalidate("BATCH-2", reason="canonical lifecycle changed")
+    rebuild_calls = 0
+    original = core._rebuild_after_source_change
+
+    def counted_rebuild(*, cutoff=None):
+        nonlocal rebuild_calls
+        rebuild_calls += 1
+        return original(cutoff=cutoff)
+
+    monkeypatch.setattr(core, "_rebuild_after_source_change", counted_rebuild)
+    results = core.sources_changed_and_rebuild(("BATCH-1", "BATCH-2"))
+
+    assert tuple(item.evidence_id for item in results) == ("BATCH-1", "BATCH-2")
+    assert rebuild_calls == 1
+    assert core.sources_changed_and_rebuild(()) == ()
+    with pytest.raises(ValueError, match="unique nonempty"):
+        core.sources_changed_and_rebuild(("BATCH-1", "BATCH-1"))
+    core.close()

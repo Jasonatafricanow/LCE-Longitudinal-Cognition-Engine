@@ -1489,13 +1489,47 @@ class LceProjectionCore:
         self, evidence_id: str, *, cutoff: datetime | None = None
     ) -> InvalidationResult:
         """Embedded path: source owner already changed canonical lifecycle."""
+        return self.sources_changed_and_rebuild(
+            (evidence_id,),
+            cutoff=cutoff,
+        )[0]
+
+    def sources_changed_and_rebuild(
+        self,
+        evidence_ids: tuple[str, ...],
+        *,
+        cutoff: datetime | None = None,
+    ) -> tuple[InvalidationResult, ...]:
+        """Propagate a batch of authoritative source changes, then rebuild once.
+
+        Embedded owners may discover multiple stale source identities during a
+        startup reconciliation. Rebuilding the Line graph after every source
+        would be correct but needlessly quadratic; invalidation is accumulated
+        first and the shared recovery funnel runs exactly once for the batch.
+        """
+        if not isinstance(evidence_ids, tuple):
+            raise TypeError("evidence_ids must be a tuple")
+        ordered = tuple(
+            dict.fromkeys(
+                evidence_id
+                for evidence_id in evidence_ids
+                if isinstance(evidence_id, str) and evidence_id.strip()
+            )
+        )
+        if len(ordered) != len(evidence_ids):
+            raise ValueError("evidence_ids must contain unique nonempty strings")
+        if not ordered:
+            return ()
         self._ensure_line_graph_current()
         invalidator = DependencyInvalidator(
             self.memory, self.discovery, self.worktrees, self.baselines
         )
-        result = invalidator.source_changed(evidence_id)
+        results = tuple(
+            invalidator.source_changed(evidence_id)
+            for evidence_id in ordered
+        )
         self._rebuild_after_source_change(cutoff=cutoff)
-        return result
+        return results
 
     def _rebuild_after_source_change(
         self, *, cutoff: datetime | None
