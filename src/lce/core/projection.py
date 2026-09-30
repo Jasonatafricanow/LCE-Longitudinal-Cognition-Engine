@@ -355,6 +355,17 @@ class LceProjectionCore:
                 "bootstrap_trajectory() before consuming Line projections"
             )
 
+    def ensure_current_projection(
+        self,
+    ) -> TrajectoryRuntimeResult | None:
+        """Recover stale derived Line state without reprocessing sources.
+
+        Embedded runtimes use this at warm start after reconciling their own
+        canonical source boundary. ``None`` means the persisted derivation
+        was already current; a result means recovery/rebuild ran.
+        """
+        return self._ensure_line_graph_current()
+
     def _ensure_line_graph_current(
         self,
     ) -> TrajectoryRuntimeResult | None:
