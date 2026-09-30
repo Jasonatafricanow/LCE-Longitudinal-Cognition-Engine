@@ -1184,9 +1184,8 @@ def test_line_derivation_fingerprint_rebuilds_without_overwriting_old_revision(
             knowledge_cutoff=datetime.now(UTC),
         )
 
-    second.bootstrap_trajectory(
-        knowledge_cutoff=BASE + timedelta(days=100),
-    )
+    recovered = second.ensure_current_projection()
+    assert recovered is not None
     new_fingerprint = second.lines.get_metadata(
         "derivation_fingerprint"
     )
@@ -1325,6 +1324,7 @@ def test_same_derivation_fingerprint_restarts_without_spurious_rebuild(
         block_embedding_version="stable-v1",
     )
 
+    assert restarted.ensure_current_projection() is None
     assert restarted.line_frontier(
         seeded.line_id,
         knowledge_cutoff=BASE + timedelta(days=100),
