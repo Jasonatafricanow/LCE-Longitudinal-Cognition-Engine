@@ -607,7 +607,7 @@ class LceProjectionCore:
             None,
         )
         if not callable(reset_memory):
-            raise RuntimeError(
+            raise TypeError(
                 "Memory substrate cannot reset derived projection state"
             )
         reset_worktrees = getattr(
@@ -616,7 +616,7 @@ class LceProjectionCore:
             None,
         )
         if not callable(reset_worktrees):
-            raise RuntimeError(
+            raise TypeError(
                 "Worktree store cannot reset projection drafts"
             )
 
