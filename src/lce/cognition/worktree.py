@@ -441,6 +441,31 @@ class DraftRevisionStore:
         self.conn.commit()
         return self.get(worktree_id)
 
+    def reset_projection_worktrees(self) -> None:
+        """Drop only SemanticBlock/frontier drafts; keep external Memory handoff."""
+        ids = tuple(
+            str(row[0])
+            for row in self.conn.execute(
+                "SELECT worktree_id FROM worktrees "
+                "WHERE support_kind != 'external_memory'"
+            ).fetchall()
+        )
+        if not ids:
+            return
+        with self.conn:
+            self.conn.executemany(
+                "DELETE FROM support_cycles WHERE worktree_id=?",
+                [(item,) for item in ids],
+            )
+            self.conn.executemany(
+                "DELETE FROM support_observations WHERE worktree_id=?",
+                [(item,) for item in ids],
+            )
+            self.conn.executemany(
+                "DELETE FROM worktrees WHERE worktree_id=?",
+                [(item,) for item in ids],
+            )
+
     def close(self) -> None:
         self.conn.close()
 
