@@ -44,15 +44,13 @@ def test_forward_replay_repairs_historical_source_gap(tmp_path: Path) -> None:
     rebuilt = core.replay_projection_from_sources(corpus)
 
     assert len(rebuilt) == len(corpus)
-    assert tuple(
+    assert {
         item.evidence_id
         for item in memory.list_current_valid_evidence()
-    ) == tuple(
-        sorted(
-            (item.evidence_id for item in corpus),
-            key=lambda evidence_id: evidence_id,
-        )
-    ) or len(memory.list_current_valid_evidence()) == len(corpus)
+    } == {
+        item.evidence_id
+        for item in corpus
+    }
     assert all(
         memory.get_pipeline_stage(item.evidence_id) == "complete"
         for item in corpus
