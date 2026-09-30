@@ -1041,6 +1041,17 @@ class LineGraphStore:
         ).fetchall()
         return {str(row[0]): int(row[1]) for row in rows}
 
+    def reset_derived(self) -> None:
+        """Delete the rebuildable Line graph generation."""
+        with self.conn:
+            self.conn.execute("DELETE FROM line_edge_revisions")
+            self.conn.execute("DELETE FROM line_node_memberships")
+            self.conn.execute("DELETE FROM line_edges")
+            self.conn.execute("DELETE FROM line_node_states")
+            self.conn.execute("DELETE FROM line_nodes")
+            self.conn.execute("DELETE FROM lines")
+            self.conn.execute("DELETE FROM line_graph_metadata")
+
     def close(self) -> None:
         self.conn.close()
 

@@ -86,6 +86,14 @@ class ProjectionSubstrate:
             and left.superseded_by == right.superseded_by
         )
 
+    def reset_derived_projection(self) -> None:
+        reset = getattr(self.state, "reset_derived_projection", None)
+        if not callable(reset):
+            raise TypeError(
+                "projection state store does not support derived reset"
+            )
+        reset()
+
     def add_evidence(self, item: RawEvidence) -> RawEvidence:
         """Validate that input already exists in canonical source; never copy it."""
         authoritative = self.source.get_evidence(item.evidence_id)

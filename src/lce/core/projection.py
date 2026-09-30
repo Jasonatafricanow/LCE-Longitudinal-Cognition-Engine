@@ -581,6 +581,62 @@ class LceProjectionCore:
             (),
         )
 
+    def replay_projection_from_sources(
+        self,
+        materials: Sequence[RawEvidence],
+    ) -> tuple[ProcessResult, ...]:
+        """Rebuild derived projection state by authoritative source order.
+
+        Use this only when an embedded producer discovers a historical source
+        gap that cannot be appended to the semantic stream. Canonical Raw
+        Evidence authority and immutable Baseline/rejection history are not
+        deleted. Path-A external-memory worktrees are preserved.
+        """
+        ordered = tuple(
+            sorted(
+                materials,
+                key=lambda item: (
+                    item.effective_ordering_key,
+                    item.evidence_id,
+                ),
+            )
+        )
+        reset_memory = getattr(
+            self.memory,
+            "reset_derived_projection",
+            None,
+        )
+        if not callable(reset_memory):
+            raise TypeError(
+                "Memory substrate cannot reset derived projection state"
+            )
+        reset_worktrees = getattr(
+            self.worktrees,
+            "reset_projection_worktrees",
+            None,
+        )
+        if not callable(reset_worktrees):
+            raise TypeError(
+                "Worktree store cannot reset projection drafts"
+            )
+
+        reset_memory()
+        self.discovery.delete_derived_snapshots()
+        reset_worktrees()
+        self.inspiration.store.reset_derived()
+        self.lines.reset_derived()
+
+        self._line_graph_recovery_cutoff = None
+        self._line_graph_requires_rebuild = False
+        self.lines.set_derivation_fingerprint(
+            self._line_graph_expected_fingerprint
+        )
+        self._mark_line_graph_current()
+
+        if not ordered:
+            return ()
+        return self.run_batch(ordered)
+
     def run_batch(
         self,
         materials: Sequence[RawEvidence],

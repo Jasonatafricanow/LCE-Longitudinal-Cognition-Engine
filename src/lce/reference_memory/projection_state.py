@@ -126,6 +126,23 @@ class SqliteProjectionStateStore:
     def db_path(self) -> Path:
         return self._db_path
 
+    def reset_derived_projection(self) -> None:
+        """Delete rebuildable projection state while preserving no source rows.
+
+        This store never owns canonical Raw Evidence, so every table here is
+        derived and may be reconstructed from the attached source.
+        """
+        db = self._db()
+        with db:
+            db.execute("DELETE FROM vector_state_projections")
+            db.execute("DELETE FROM vector_projections")
+            db.execute("DELETE FROM semantic_block_evidence")
+            db.execute("DELETE FROM semantic_block_states")
+            db.execute("DELETE FROM semantic_blocks")
+            db.execute("DELETE FROM compiled_evidence")
+            db.execute("DELETE FROM compiler_checkpoints")
+            db.execute("DELETE FROM pipeline_progress")
+
     def close(self) -> None:
         if self._conn is not None:
             self._conn.close()
