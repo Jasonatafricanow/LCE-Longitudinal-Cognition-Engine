@@ -159,6 +159,19 @@ class ReferenceMemoryStore:
     def db_path(self) -> Path:
         return self._db_path
 
+    def reset_derived_projection(self) -> None:
+        """Delete rebuildable cognition state while retaining Raw Evidence."""
+        db = self._db()
+        with db:
+            db.execute("DELETE FROM vector_state_projections")
+            db.execute("DELETE FROM vector_projections")
+            db.execute("DELETE FROM semantic_block_evidence")
+            db.execute("DELETE FROM semantic_block_states")
+            db.execute("DELETE FROM semantic_blocks")
+            db.execute("DELETE FROM compiled_evidence")
+            db.execute("DELETE FROM compiler_checkpoints")
+            db.execute("DELETE FROM pipeline_progress")
+
     def close(self) -> None:
         if self._conn is not None:
             self._conn.close()
