@@ -89,7 +89,7 @@ class ProjectionSubstrate:
     def reset_derived_projection(self) -> None:
         reset = getattr(self.state, "reset_derived_projection", None)
         if not callable(reset):
-            raise RuntimeError(
+            raise TypeError(
                 "projection state store does not support derived reset"
             )
         reset()
