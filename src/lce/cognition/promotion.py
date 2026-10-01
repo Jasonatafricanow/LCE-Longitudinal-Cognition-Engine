@@ -303,6 +303,19 @@ class UnderstandingPromoter:
             model_trace=interpretation.model_trace,
             selected_support=selected_support,
         )
+        frontier_update = (
+            worktree.support_kind == "frontier"
+            and worktree.base_baseline_id is not None
+            and len(worktree.supporting_frontier_refs) == 1
+        )
+        if isinstance(self.policy, ConservativePromotionPolicy) and not frontier_update:
+            independent_sources = {
+                source_id
+                for selected in selected_support
+                for source_id in self.memory.get_semantic_block_state(selected.state_id).raw_evidence_ids
+            }
+            if len(independent_sources) < self.policy.min_blocks:
+                return None
         if not self.policy.should_promote(worktree, self.worktree_store.support_cycle_count(worktree_id)):
             return None
         core = LceCore(

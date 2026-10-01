@@ -75,6 +75,37 @@ def test_conservative_policy_requires_repeated_multi_structure_support(tmp_path)
     worktrees.close()
 
 
+def test_multiple_blocks_from_one_source_cannot_satisfy_baseline_maturity(tmp_path) -> None:
+    memory = setup_memory(tmp_path)
+    original = memory.get_semantic_block("SB1")
+    memory.put_semantic_block(SemanticBlock(
+        block_id="SB-duplicate", content="another fragment of the same event",
+        raw_evidence_ids=original.raw_evidence_ids,
+        occurred_start=original.occurred_start, occurred_end=original.occurred_end,
+        compiler_version="test", lineage_id="lineage", metadata={},
+        derived_known_at=original.derived_known_at,
+    ))
+    baselines = SqliteBaselineStore(tmp_path / "baselines")
+    worktrees = CognitionWorktreeStore(tmp_path / "worktrees")
+    promoter = UnderstandingPromoter(
+        memory=memory, baseline_store=baselines, worktree_store=worktrees,
+        policy=ConservativePromotionPolicy(),
+    )
+    draft = worktrees.create(
+        region_id="duplicate", candidate_content="must remain immature",
+        supporting_block_ids=("SB1", "SB-duplicate"),
+        supporting_structure_ids=("S1", "S2"), base_baseline=None,
+    )
+    for snapshot_id in ("snap-1", "snap-2", "snap-3"):
+        worktrees.record_support(draft.worktree_id, snapshot_id=snapshot_id)
+    assert promoter.evaluate(draft.worktree_id) is None
+    assert baselines.list_regions() == ()
+    assert worktrees.get(draft.worktree_id).status == "OPEN"
+    memory.close()
+    baselines.close()
+    worktrees.close()
+
+
 def test_same_understanding_revises_when_support_changes_and_text_change_revises_again(tmp_path) -> None:
     memory = setup_memory(tmp_path)
     baselines = SqliteBaselineStore(tmp_path / "baselines")
