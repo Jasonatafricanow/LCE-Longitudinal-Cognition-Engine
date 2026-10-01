@@ -106,6 +106,15 @@ class ProcessResult:
 
 
 @dataclass(frozen=True, slots=True)
+class _AcceptedSemanticInput:
+    """Projection receipt identity, never a canonical Raw Evidence record."""
+
+    evidence_id: str
+    occurred_at: datetime
+    effective_known_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
 class _CandidateEvaluation:
     handled: bool
     promotion: ConsolidationResult | None = None
@@ -217,6 +226,8 @@ class LceProjectionCore:
             lineage_id=lineage_id,
         )
         self.policy = policy or ConservativePromotionPolicy()
+        self._explicit_interpreter = interpreter is not None
+        self._explicit_embedder = block_embedder is not None
         self.interpreter = interpreter or RuleBasedBoundedInterpreter()
         self._block_embedder = (
             block_embedder or deterministic_block_embedding
@@ -417,6 +428,53 @@ class LceProjectionCore:
         if self._line_graph_recovery_cutoff is not None:
             self._ensure_line_graph_current()
         compiler_result = self.compiler.process(material)
+        return self._process_projection(material, compiler_result, mode=mode)
+
+    def process_semantic(self, block_id: str) -> ProcessResult:
+        """Consume an already accepted host block without semantic recompilation.
+
+        The injected substrate remains semantic/source authority. Real geometry
+        must be supplied explicitly. Without a bounded interpreter, proximity
+        remains a structural candidate and cannot become an understanding.
+        """
+        if not self._explicit_embedder:
+            raise ValueError("accepted semantics require an explicit block embedder")
+        block = self.memory.get_semantic_block(block_id)
+        if block.state_id is None or block.derived_known_at is None:
+            raise ValueError("accepted semantics require immutable state and known_at")
+        for source_id in block.raw_evidence_ids:
+            source = self.memory.get_evidence(source_id)
+            if not source.current_valid:
+                raise ValueError("accepted semantic source is no longer current-valid")
+            if source.effective_known_at > block.derived_known_at:
+                raise ValueError("semantic known_at precedes its source")
+        material = _AcceptedSemanticInput(
+            "accepted-semantic:" + block.state_id,
+            block.occurred_end,
+            block.derived_known_at,
+        )
+        result = CompilerResult(
+            material.evidence_id, (block_id,), "ACCEPTED",
+            replayed=self.memory.get_pipeline_stage(material.evidence_id) is not None,
+        )
+        return self._process_projection(
+            material, result, mode="nearline",
+            snapshot_cutoff=block.derived_known_at,
+            evaluate_candidates=self._explicit_interpreter,
+        )
+
+    def _process_projection(
+        self,
+        material: RawEvidence | _AcceptedSemanticInput,
+        compiler_result: CompilerResult,
+        *,
+        mode: str,
+        snapshot_cutoff: datetime | None = None,
+        evaluate_candidates: bool = True,
+    ) -> ProcessResult:
+        if self._line_graph_recovery_cutoff is not None:
+            self._ensure_line_graph_current()
+        cutoff = snapshot_cutoff or material.occurred_at
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
             if mode == "nearline":
@@ -424,6 +482,7 @@ class LceProjectionCore:
             return self._completed_replay_result(
                 material,
                 compiler_result,
+                snapshot_cutoff=cutoff,
             )
         if stage not in {
             "vector-ready",
@@ -445,12 +504,12 @@ class LceProjectionCore:
             (
                 snapshot
                 for snapshot in self.discovery.snapshots.all_snapshots()
-                if snapshot.cutoff < material.occurred_at
+                if snapshot.cutoff < cutoff
             ),
             key=lambda snapshot: snapshot.cutoff,
             default=None,
         )
-        snapshot = self.discovery.create_snapshot(material.occurred_at)
+        snapshot = self.discovery.create_snapshot(cutoff)
         diff = (
             self.discovery.diff(previous, snapshot)
             if previous
@@ -470,7 +529,10 @@ class LceProjectionCore:
         # persisted Line paths.
         surface_candidates: tuple[SurfaceCandidate, ...] = ()
 
-        legacy_compatible = self._legacy_lineage_compatible()
+        legacy_compatible = (
+            isinstance(material, _AcceptedSemanticInput)
+            or self._legacy_lineage_compatible()
+        )
         frontier_candidates = (
             self.frontier.candidates(
                 snapshot,
@@ -495,7 +557,7 @@ class LceProjectionCore:
         )
 
         frontier_handled = False
-        for candidate in frontier_candidates:
+        for candidate in frontier_candidates if evaluate_candidates else ():
             outcome = self._evaluate_candidate(
                 candidate,
                 snapshot,
@@ -509,7 +571,7 @@ class LceProjectionCore:
 
         # Frontier is the primary incremental path.  Legacy 06R remains the
         # discovery fallback when no existing cognition can absorb the input.
-        if not frontier_handled:
+        if evaluate_candidates and not frontier_handled:
             for candidate in structure_candidates:
                 outcome = self._evaluate_candidate(
                     candidate,
@@ -547,8 +609,10 @@ class LceProjectionCore:
         )
 
     def _completed_replay_result(
-        self, material: RawEvidence, compiler_result: CompilerResult
+        self, material: RawEvidence | _AcceptedSemanticInput,
+        compiler_result: CompilerResult, *, snapshot_cutoff: datetime | None = None,
     ) -> ProcessResult:
+        cutoff = snapshot_cutoff or material.occurred_at
         progress_reader = getattr(self.memory, "get_pipeline_progress", None)
         progress = progress_reader(material.evidence_id) if callable(progress_reader) else None
         snapshot: StructureSnapshot | None = None
@@ -560,15 +624,15 @@ class LceProjectionCore:
         if snapshot is None:
             matching = [
                 item for item in self.discovery.snapshots.all_snapshots()
-                if item.cutoff == material.occurred_at
+                if item.cutoff == cutoff
             ]
             snapshot = max(matching, key=lambda item: item.snapshot_id, default=None)
         if snapshot is None:
             # Rebuilding a derived snapshot is safe, but no cognition stage is rerun.
-            snapshot = self.discovery.create_snapshot(material.occurred_at)
+            snapshot = self.discovery.create_snapshot(cutoff)
         candidates = (
             self.discovery.higher_order_candidates(snapshot)
-            if self._legacy_lineage_compatible()
+            if isinstance(material, _AcceptedSemanticInput) or self._legacy_lineage_compatible()
             else ()
         )
         return ProcessResult(

@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
+from lce.cognition.rejection import DerivedProposalRejectionStore
 from lce.cognition.worktree import DraftRevision, DraftRevisionStore
 from lce.contracts.baseline import Baseline
 from lce.contracts.consolidation import CandidateBaseline, ConsolidationResult
@@ -19,6 +20,7 @@ from lce.core.equivalence import (
     is_content_equivalent,
     is_support_equivalent,
 )
+from lce.reference_memory.contracts import AuthorizedSelectedSupport, SemanticBlockPort
 from lce.store.interface import BaselineStorePort
 
 
@@ -31,6 +33,7 @@ class PrecomputedDraftInput:
     supporting_memory_ids: tuple[str, ...]
     processing_input_id: str
     context: Mapping[str, object] = field(default_factory=dict)
+    selected_support: tuple[AuthorizedSelectedSupport, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.region_id, str) or not self.region_id.strip():
@@ -56,6 +59,8 @@ class PrecomputedDraftInput:
             raise ValueError("processing_input_id must be non-empty")
         if not isinstance(self.context, Mapping):
             raise TypeError("context must be a Mapping")
+        if self.selected_support and tuple(item.block_id for item in self.selected_support) != self.supporting_memory_ids:
+            raise ValueError("selected semantic states must align with support IDs")
 
 
 class _PrecomputedConsolidator:
@@ -78,7 +83,13 @@ class _PrecomputedConsolidator:
             content=self._draft.content,
             supporting_memory_ids=self._draft.supporting_memory_ids,
             model_trace={},
+            supporting_state_ids=tuple(item.state_id for item in self._draft.selected_support),
+            selected_support=self._draft.selected_support,
         )
+
+
+class RejectedDerivedProposalError(ValueError):
+    """An unchanged source closure cannot reactivate a rejected interpretation."""
 
 
 class PrecomputedDraftIntake:
@@ -90,10 +101,14 @@ class PrecomputedDraftIntake:
         memory_substrate: MemorySubstratePort,
         baseline_store: BaselineStorePort,
         draft_store: DraftRevisionStore,
+        rejection_store: DerivedProposalRejectionStore | None = None,
+        semantic_substrate: SemanticBlockPort | None = None,
     ) -> None:
         self.memory_substrate = memory_substrate
         self.baseline_store = baseline_store
         self.draft_store = draft_store
+        self.rejection_store = rejection_store
+        self.semantic_substrate = semantic_substrate
 
     def stage_and_promote(self, draft: PrecomputedDraftInput) -> ConsolidationResult:
         if not isinstance(draft, PrecomputedDraftInput):
@@ -105,6 +120,30 @@ class PrecomputedDraftIntake:
         expected_ids = set(draft.supporting_memory_ids)
         if resolved_ids != expected_ids or len(memories) != len(expected_ids):
             raise ValueError("external Memory support is incomplete or unauthorized")
+        if self.semantic_substrate is not None:
+            if not draft.selected_support:
+                raise ValueError("semantic handoff requires exact immutable selected states")
+            views = {memory.memory_id: memory for memory in memories}
+            for selected in draft.selected_support:
+                block = self.semantic_substrate.get_semantic_block_state(selected.state_id)
+                current = self.semantic_substrate.get_semantic_block(selected.block_id)
+                if block.block_id != selected.block_id or current.state_id != selected.state_id:
+                    raise ValueError("semantic handoff selected state is stale or misaligned")
+                view = views[selected.block_id]
+                if view.content != block.content or set(view.source_refs) != set(block.raw_evidence_ids):
+                    raise ValueError("semantic handoff disagrees with canonical block")
+                if not all(self.semantic_substrate.get_evidence(ref).current_valid for ref in block.raw_evidence_ids):
+                    raise ValueError("semantic handoff source is no longer current-valid")
+        elif draft.selected_support:
+            raise ValueError("selected semantic states require a validating semantic substrate")
+        if self.rejection_store is not None:
+            refs = tuple(sorted({ref for memory in memories for ref in memory.source_refs}))
+            if not refs:
+                raise ValueError("external interpretation must close over native sources")
+            if self.rejection_store.active_match(
+                region_id=draft.region_id, content=draft.content, source_refs=refs,
+            ) is not None:
+                raise RejectedDerivedProposalError("unchanged external interpretation was rejected")
 
         existing = self.draft_store.find_by_region_and_input(
             draft.region_id, draft.processing_input_id
@@ -124,6 +163,7 @@ class PrecomputedDraftIntake:
                 interpretation_trace={},
                 processing_input_id=draft.processing_input_id,
                 support_kind="external_memory",
+                selected_support=draft.selected_support,
             )
 
         core = LceCore(
@@ -153,6 +193,10 @@ class PrecomputedDraftIntake:
             or not is_support_equivalent(
                 left_memory_ids=existing.supporting_block_ids,
                 right_memory_ids=draft.supporting_memory_ids,
+                left_state_ids=tuple(item.state_id for item in existing.selected_support),
+                right_state_ids=tuple(item.state_id for item in draft.selected_support),
+                left_selected_support=existing.selected_support,
+                right_selected_support=draft.selected_support,
             )
         ):
             raise ValueError("processing_input_id was reused with conflicting draft content")
@@ -168,6 +212,17 @@ class PrecomputedDraftIntake:
         if not is_content_equivalent(head.content, existing.candidate_content):
             if existing.status == "MERGED":
                 raise ValueError("merged external draft disagrees with Baseline HEAD")
+            return None
+        if not is_support_equivalent(
+            left_memory_ids=head.supporting_memory_ids,
+            right_memory_ids=existing.supporting_block_ids,
+            left_state_ids=head.supporting_state_ids,
+            right_state_ids=tuple(item.state_id for item in existing.selected_support),
+            left_selected_support=head.selected_support,
+            right_selected_support=existing.selected_support,
+        ):
+            if existing.status == "MERGED":
+                raise ValueError("merged external draft support disagrees with Baseline HEAD")
             return None
         if existing.status == "OPEN":
             self.draft_store.set_status(

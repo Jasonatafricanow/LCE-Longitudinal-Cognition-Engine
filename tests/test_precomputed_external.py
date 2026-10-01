@@ -4,7 +4,12 @@ import sqlite3
 
 import pytest
 
-from lce.cognition.external import PrecomputedDraftInput, PrecomputedDraftIntake
+from lce.cognition.external import (
+    PrecomputedDraftInput,
+    PrecomputedDraftIntake,
+    RejectedDerivedProposalError,
+)
+from lce.cognition.rejection import DerivedProposalRejectionStore
 from lce.cognition.worktree import DraftRevisionStore
 from lce.store.sqlite_store import SqliteBaselineStore
 from lce.testing.fake_substrate import FakeMemorySubstrate
@@ -166,6 +171,48 @@ def test_open_draft_with_new_support_does_not_reconcile_to_old_baseline(tmp_path
     assert len(baselines.get_history(pending.region_id).revisions) == 2
     drafts.close()
     baselines.close()
+
+
+def test_external_rejection_survives_restart_and_new_source_reopens_actual_intake(tmp_path):
+    memory, baselines, drafts, _ = setup_intake(tmp_path)
+    rejections = DerivedProposalRejectionStore(tmp_path / "corrections")
+    intake = PrecomputedDraftIntake(
+        memory_substrate=memory, baseline_store=baselines, draft_store=drafts,
+        rejection_store=rejections,
+    )
+    first = intake.stage_and_promote(draft())
+    rejected = rejections.reject(
+        region_id=first.baseline.region_id, content=first.baseline.content,
+        source_refs=("e1", "e2"), authority_ref="explicit-user-correction",
+    )
+    with pytest.raises(RejectedDerivedProposalError):
+        intake.stage_and_promote(draft(input_id="retry-with-new-id"))
+    drafts.close()
+    baselines.close()
+    rejections.close()
+    baselines = SqliteBaselineStore(tmp_path / "baselines")
+    drafts = DraftRevisionStore(tmp_path / "drafts")
+    rejections = DerivedProposalRejectionStore(tmp_path / "corrections")
+    intake = PrecomputedDraftIntake(
+        memory_substrate=memory, baseline_store=baselines, draft_store=drafts,
+        rejection_store=rejections,
+    )
+    with pytest.raises(RejectedDerivedProposalError):
+        intake.stage_and_promote(draft())
+    memory.add_memory("m3", "new corroborating source", ("e3",))
+    reopened = intake.stage_and_promote(PrecomputedDraftInput(
+        region_id=first.baseline.region_id, content=first.baseline.content,
+        supporting_memory_ids=("m1", "m2", "m3"), processing_input_id="new-source",
+    ))
+    assert reopened.revised
+    assert reopened.reason == "SUPPORT_UPDATE"
+    assert reopened.baseline.supporting_memory_ids == ("m1", "m2", "m3")
+    assert len(baselines.get_history(first.baseline.region_id).revisions) == 2
+    assert rejections.list() == (rejected,)
+    assert rejections.list()[0].active
+    drafts.close()
+    baselines.close()
+    rejections.close()
 
 
 def test_support_kind_schema_migrates_existing_worktree_database(tmp_path):
