@@ -143,6 +143,31 @@ def test_precomputed_external_recovers_commit_before_draft_status(tmp_path):
     baselines.close()
 
 
+def test_open_draft_with_new_support_does_not_reconcile_to_old_baseline(tmp_path):
+    _, baselines, drafts, intake = setup_intake(tmp_path)
+    first = intake.stage_and_promote(PrecomputedDraftInput(
+        region_id="same-meaning", content="same meaning", supporting_memory_ids=("m1",),
+        processing_input_id="first",
+    ))
+    pending = PrecomputedDraftInput(
+        region_id="same-meaning", content="same meaning", supporting_memory_ids=("m1", "m2"),
+        processing_input_id="new-support",
+    )
+    drafts.create(
+        region_id=pending.region_id, candidate_content=pending.content,
+        supporting_block_ids=pending.supporting_memory_ids, supporting_structure_ids=(),
+        base_baseline=first.baseline, processing_input_id=pending.processing_input_id,
+        support_kind="external_memory",
+    )
+    recovered = intake.stage_and_promote(pending)
+    assert recovered.revised
+    assert recovered.reason == "SUPPORT_UPDATE"
+    assert recovered.baseline.supporting_memory_ids == ("m1", "m2")
+    assert len(baselines.get_history(pending.region_id).revisions) == 2
+    drafts.close()
+    baselines.close()
+
+
 def test_support_kind_schema_migrates_existing_worktree_database(tmp_path):
     root = tmp_path / "drafts"
     root.mkdir()
