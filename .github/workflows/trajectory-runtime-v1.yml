@@ -6,6 +6,10 @@ on:
       - "feature/trajectory-runtime-v1-*"
       - "feature/decentralized-authority-*"
   workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+      - "feat/canonical-semantic-projection-*"
 
 permissions:
   contents: read

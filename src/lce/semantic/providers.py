@@ -1,4 +1,7 @@
-"""Dependency-free semantic decision provider for standalone operation."""
+"""LEGACY STANDALONE SEMANTIC COMPILATION decision provider.
+
+Integrated canonical production bypasses this provider entirely.
+"""
 
 from __future__ import annotations
 

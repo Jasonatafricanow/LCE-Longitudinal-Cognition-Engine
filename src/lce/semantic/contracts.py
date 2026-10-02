@@ -1,4 +1,7 @@
-"""Ports and decisions for the bounded Semantic Block compiler."""
+"""LEGACY STANDALONE SEMANTIC COMPILATION ports and decisions.
+
+Integrated canonical production MUST NOT CALL SemanticDecisionProvider.
+"""
 
 from __future__ import annotations
 

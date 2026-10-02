@@ -1,4 +1,4 @@
-"""Standalone LCE composition wrapper.
+"""LEGACY STANDALONE SEMANTIC COMPILATION composition wrapper.
 
 The cognition pipeline lives in :mod:`lce.core.projection`. This module keeps
 the convenience runtime that composes the bundled ReferenceMemoryStore for

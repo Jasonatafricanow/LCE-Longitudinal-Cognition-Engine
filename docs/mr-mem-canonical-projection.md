@@ -41,3 +41,28 @@ projected cognition. Unknown non-active transition time updates current vectors
 and validity, then skips timestamp-dependent downstream work. Historical Block
 and Line rows remain. Exact historical validity raises `LifecycleTimeUnknown`;
 algorithm validity predicates conservatively omit unknown support.
+
+## Verification
+
+The optional CI matrix checks out MR-Mem at
+`e7b4bb6e404d0eb2770e81a23b1b5352b956404c` and runs the full public verification
+gate in both standalone and canonical mode. The trajectory workflow retains its
+existing focused standalone gate. Integration tests skip when the optional
+public MR-Mem contract is unavailable; standalone tests must still pass.
+
+`tests/test_mr_mem_cross_repo.py` commits small frozen native producer fixtures
+through MR-Mem's existing admission/validator/closure and drains the actual
+ProjectionQueue. It covers A single Block, B independent IDs, C cohabit privacy,
+D canonical context without merge, E supersession/history, F replay identity,
+G crashes before projection, after state persistence and after downstream before
+acknowledgement, H distinct occurrence/knowledge clocks, and I invalid current
+lifecycle with retained history. Provider/compiler bombs enforce bypass; the
+derived database contains no Raw table or compilation/checkpoint rows. Default
+trajectory bootstrap creates actual Lines for the replay identity check.
+
+`tests/test_no_mr_dependency.py` also runs a standalone input in a separate
+process whose import hook actively forbids MR-Mem. Runtime tests check persistent
+scope isolation and UNKNOWN invalidated/archived transition behavior.
+
+This delivery provides an explicit integrated entrypoint and reviewable changes.
+It does not merge PRs, switch a production database or start Historical AGY.
