@@ -1,0 +1,176 @@
+{
+  "schema_version": "semantic-closure-experiment-v2",
+  "dependency_policies": {
+    "cohabit": "Endpoints must remain inside the same SemanticBlock or the block can change the original meaning.",
+    "context": "The source point may become a separate SemanticBlock only if the target point is carried as explicit supporting context/provenance.",
+    "separate": "The points are independently meaningful and should not be forced into one cognition point."
+  },
+  "cases": [
+    {
+      "id": "simple_assertion",
+      "raw": [{"evidence_id": "E01", "text": "服务器现在运行在办公室的 Linux 机器上。"}],
+      "points": [
+        {"id": "P01", "origin": "E01", "source_refs": ["E01"], "meaning": "办公室的 Linux 机器当前承载服务器运行。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "current"}
+      ],
+      "dependencies": [],
+      "separate_pairs": [],
+      "expected_groups": [["P01"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "mixed_transient_and_constraint",
+      "raw": [{"evidence_id": "E02", "text": "测试全过了。另外以后这种报告不用写那么长，我只看结论和异常。"}],
+      "points": [
+        {"id": "P02A", "origin": "E02", "source_refs": ["E02"], "meaning": "当前测试已经全部通过。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "current"},
+        {"id": "P02B", "origin": "E02", "source_refs": ["E02"], "meaning": "用户要求今后同类报告缩短，只保留结论和异常。", "status": "resolved", "speech_act": "directive", "epistemic": "asserted", "temporal": "future"}
+      ],
+      "dependencies": [],
+      "separate_pairs": [["P02A", "P02B"]],
+      "expected_groups": [["P02A"], ["P02B"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "plan_completed_ongoing",
+      "raw": [{"evidence_id": "E03", "text": "我本来准备这个月交首付，不过昨天已经交了，现在就等贷款审批。"}],
+      "points": [
+        {"id": "P03A", "origin": "E03", "source_refs": ["E03"], "meaning": "用户原计划在本月支付首付。", "status": "resolved", "speech_act": "assertion", "epistemic": "planned", "temporal": "future"},
+        {"id": "P03B", "origin": "E03", "source_refs": ["E03"], "meaning": "用户在说话时点的昨天已经支付首付。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "past"},
+        {"id": "P03C", "origin": "E03", "source_refs": ["E03"], "meaning": "用户当前正在等待贷款审批结果。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "current"}
+      ],
+      "dependencies": [
+        {"from": "P03B", "to": "P03A", "type": "updates_state", "policy": "cohabit"},
+        {"from": "P03C", "to": "P03B", "type": "state_continuation", "policy": "cohabit"}
+      ],
+      "separate_pairs": [],
+      "expected_groups": [["P03A", "P03B", "P03C"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "uncertain_diagnosis",
+      "raw": [{"evidence_id": "E04", "text": "我感觉热启动机制可能有问题，但还没确认。"}],
+      "points": [
+        {"id": "P04", "origin": "E04", "source_refs": ["E04"], "meaning": "用户怀疑热启动机制存在问题，但尚未确认这一判断。", "status": "resolved", "speech_act": "assertion", "epistemic": "uncertain", "temporal": "current"}
+      ],
+      "dependencies": [],
+      "separate_pairs": [],
+      "expected_groups": [["P04"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "conditional_invariant",
+      "raw": [{"evidence_id": "E05", "text": "如果 BGE 换版本，就必须重建向量，但 SemanticBlock identity 不应该变。"}],
+      "points": [
+        {"id": "P05A", "origin": "E05", "source_refs": ["E05"], "meaning": "条件是 BGE 版本发生变化。", "status": "resolved", "speech_act": "assertion", "epistemic": "hypothetical", "temporal": "atemporal"},
+        {"id": "P05B", "origin": "E05", "source_refs": ["E05"], "meaning": "在该条件下必须重建向量投影。", "status": "resolved", "speech_act": "directive", "epistemic": "hypothetical", "temporal": "atemporal"},
+        {"id": "P05C", "origin": "E05", "source_refs": ["E05"], "meaning": "BGE 版本变化不应改变 SemanticBlock 的语义身份。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "atemporal"}
+      ],
+      "dependencies": [
+        {"from": "P05B", "to": "P05A", "type": "condition_scope", "policy": "cohabit"},
+        {"from": "P05C", "to": "P05B", "type": "contrast_scope", "policy": "cohabit"}
+      ],
+      "separate_pairs": [],
+      "expected_groups": [["P05A", "P05B", "P05C"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "cross_turn_correction",
+      "raw": [
+        {"evidence_id": "E06A", "text": "AML 先试 top-k=100。"},
+        {"evidence_id": "E06B", "text": "不对，别用100，还是扫20/30/50/70。"}
+      ],
+      "points": [
+        {"id": "P06A", "origin": "E06A", "source_refs": ["E06A"], "meaning": "用户最初要求 AML 实验先使用 top-k=100。", "status": "resolved", "speech_act": "directive", "epistemic": "asserted", "temporal": "future"},
+        {"id": "P06B", "origin": "E06B", "source_refs": ["E06A", "E06B"], "meaning": "用户撤销 top-k=100 的先前要求，改为扫描 top-k=20/30/50/70。", "status": "resolved", "speech_act": "directive", "epistemic": "asserted", "temporal": "future"}
+      ],
+      "dependencies": [
+        {"from": "P06B", "to": "P06A", "type": "supersedes", "policy": "context"}
+      ],
+      "separate_pairs": [["P06A", "P06B"]],
+      "expected_groups": [["P06A"], ["P06B"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "unresolved_reference",
+      "raw": [{"evidence_id": "E07", "text": "还是用那个方案吧。"}],
+      "points": [
+        {"id": "P07", "origin": "E07", "source_refs": ["E07"], "meaning": "用户要求继续采用一个当前无法唯一解析的既有方案。", "status": "defer", "speech_act": "directive", "epistemic": "asserted", "temporal": "future"}
+      ],
+      "dependencies": [],
+      "separate_pairs": [],
+      "expected_groups": [],
+      "expected_deferred": ["P07"]
+    },
+    {
+      "id": "resolved_reference_with_context",
+      "raw": [
+        {"evidence_id": "E08A", "text": "方案A是双库同步，方案B是原生库做Raw authority、MR-Mem只做语义覆盖。"},
+        {"evidence_id": "E08B", "text": "还是用后者。"}
+      ],
+      "points": [
+        {"id": "P08A", "origin": "E08A", "source_refs": ["E08A"], "meaning": "方案A采用双库同步。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "atemporal"},
+        {"id": "P08B", "origin": "E08A", "source_refs": ["E08A"], "meaning": "方案B以原生库作为 Raw authority，并让 MR-Mem 仅承载语义覆盖层。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "atemporal"},
+        {"id": "P08C", "origin": "E08B", "source_refs": ["E08A", "E08B"], "meaning": "用户选择方案B继续执行。", "status": "resolved", "speech_act": "directive", "epistemic": "asserted", "temporal": "future"}
+      ],
+      "dependencies": [
+        {"from": "P08C", "to": "P08B", "type": "resolved_reference", "policy": "context"}
+      ],
+      "separate_pairs": [["P08A", "P08B"], ["P08A", "P08C"], ["P08B", "P08C"]],
+      "expected_groups": [["P08A"], ["P08B"], ["P08C"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "state_change_over_time",
+      "raw": [
+        {"evidence_id": "E09A", "text": "上周这个问题已经修好了。"},
+        {"evidence_id": "E09B", "text": "现在又坏了。"}
+      ],
+      "points": [
+        {"id": "P09A", "origin": "E09A", "source_refs": ["E09A"], "meaning": "该问题在先前时点已经修复。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "past"},
+        {"id": "P09B", "origin": "E09B", "source_refs": ["E09A", "E09B"], "meaning": "同一问题在当前时点再次处于故障状态。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "current"}
+      ],
+      "dependencies": [
+        {"from": "P09B", "to": "P09A", "type": "updates_state", "policy": "context"}
+      ],
+      "separate_pairs": [["P09A", "P09B"]],
+      "expected_groups": [["P09A"], ["P09B"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "nested_stance",
+      "raw": [{"evidence_id": "E10", "text": "我不认为这个结果证明算法正确，只能说明夹具能跑。"}],
+      "points": [
+        {"id": "P10A", "origin": "E10", "source_refs": ["E10"], "meaning": "用户否认当前结果足以证明算法正确。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "atemporal"},
+        {"id": "P10B", "origin": "E10", "source_refs": ["E10"], "meaning": "用户认为当前结果的证据能力仅限于说明测试夹具能够运行。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "atemporal"}
+      ],
+      "dependencies": [
+        {"from": "P10B", "to": "P10A", "type": "limitation_scope", "policy": "cohabit"}
+      ],
+      "separate_pairs": [],
+      "expected_groups": [["P10A", "P10B"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "question_not_fact",
+      "raw": [{"evidence_id": "E11", "text": "为什么 LCE 执行不是即时性的？"}],
+      "points": [
+        {"id": "P11", "origin": "E11", "source_refs": ["E11"], "meaning": "用户询问 LCE 当前为何不能即时执行。", "status": "resolved", "speech_act": "question", "epistemic": "unknown", "temporal": "current"}
+      ],
+      "dependencies": [],
+      "separate_pairs": [],
+      "expected_groups": [["P11"]],
+      "expected_deferred": []
+    },
+    {
+      "id": "coding_result_plus_durable_rule",
+      "raw": [{"evidence_id": "E12", "text": "pytest 3918 passed。以后别为了 coverage 写低价值重复测试。"}],
+      "points": [
+        {"id": "P12A", "origin": "E12", "source_refs": ["E12"], "meaning": "当前 pytest 运行有 3918 个测试通过。", "status": "resolved", "speech_act": "assertion", "epistemic": "asserted", "temporal": "current"},
+        {"id": "P12B", "origin": "E12", "source_refs": ["E12"], "meaning": "用户要求今后不要为了提高 coverage 而增加低价值的重复测试。", "status": "resolved", "speech_act": "directive", "epistemic": "asserted", "temporal": "future"}
+      ],
+      "dependencies": [],
+      "separate_pairs": [["P12A", "P12B"]],
+      "expected_groups": [["P12A"], ["P12B"]],
+      "expected_deferred": []
+    }
+  ]
+}
