@@ -1,0 +1,25 @@
+name: semantic-compilation-experiment
+
+on:
+  push:
+    branches:
+      - experiment/semantic-compilation-v1-20261002
+    paths:
+      - "research/experiments/semantic_compilation_v1/**"
+      - ".github/workflows/semantic-compilation-experiment.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e .
+      - run: python research/experiments/semantic_compilation_v1/run.py
