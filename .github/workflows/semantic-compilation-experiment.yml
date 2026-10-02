@@ -26,3 +26,5 @@ jobs:
         run: python research/experiments/semantic_compilation_v1/run.py
       - name: Run semantic-closure V2 comparison
         run: python research/experiments/semantic_compilation_v1/run_closure.py
+      - name: Stress semantic-closure invariants
+        run: python research/experiments/semantic_compilation_v1/run_closure_stress.py
