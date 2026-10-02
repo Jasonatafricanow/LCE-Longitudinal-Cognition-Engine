@@ -22,4 +22,7 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e .
-      - run: python research/experiments/semantic_compilation_v1/run.py
+      - name: Run rejected proposition-as-block V1 comparison
+        run: python research/experiments/semantic_compilation_v1/run.py
+      - name: Run semantic-closure V2 comparison
+        run: python research/experiments/semantic_compilation_v1/run_closure.py
