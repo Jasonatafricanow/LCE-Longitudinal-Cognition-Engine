@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from lce.contracts.external_memory import MemoryItemView, MemorySubstratePort
 from lce.reference_memory.contracts import AuthorizedSelectedSupport, SemanticBlockPort
+from lce.reference_memory.support import block_current_valid
 
 
 class SemanticBlockMemoryAdapter(MemorySubstratePort):
@@ -33,7 +34,7 @@ class SemanticBlockMemoryAdapter(MemorySubstratePort):
                 continue
             if block.block_id != block_id:
                 raise ValueError("selected state does not belong to the requested Semantic Block")
-            if not all(self.memory.get_evidence(evidence_id).current_valid for evidence_id in block.raw_evidence_ids):
+            if not block_current_valid(self.memory, block):
                 continue
             items.append(
                 MemoryItemView(

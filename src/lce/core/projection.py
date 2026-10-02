@@ -52,6 +52,7 @@ from lce.reference_memory.contracts import (
     ReferenceMemorySubstratePort,
     SemanticBlock,
 )
+from lce.reference_memory.support import support_status
 from lce.semantic.compiler import CompilerResult, SemanticCompiler
 from lce.semantic.contracts import SemanticDecisionProvider
 from lce.store.sqlite_store import SqliteBaselineStore
@@ -82,6 +83,15 @@ from lce.structure.trajectory import (
 LINE_GRAPH_DERIVATION_SCHEMA_VERSION = 2
 
 
+@dataclass(frozen=True, slots=True)
+class CanonicalProjectionReceipt:
+    """Delivery outcome for committed cognition; no compilation was performed."""
+
+    input_id: str
+    block_ids: tuple[str, ...]
+    replayed: bool = False
+
+
 def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
     configured = block.metadata.get("vector")
     if isinstance(configured, (list, tuple)) and configured:
@@ -95,7 +105,7 @@ def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
 
 @dataclass(frozen=True, slots=True)
 class ProcessResult:
-    compiler_result: CompilerResult
+    compiler_result: CompilerResult | CanonicalProjectionReceipt
     snapshot: StructureSnapshot
     diff: StructureDiff | None
     higher_order_candidates: tuple[HigherOrderCandidate, ...]
@@ -148,6 +158,7 @@ class LceProjectionCore:
         ] | None = None,
         block_embedding_version: str = "lce-vector-v1",
         close_memory: bool = False,
+        semantic_mode: str = "legacy-standalone",
     ) -> None:
         if type(close_memory) is not bool:
             raise TypeError("close_memory must be bool")
@@ -156,6 +167,10 @@ class LceProjectionCore:
             or not block_embedding_version.strip()
         ):
             raise ValueError("block_embedding_version must be nonempty")
+        if semantic_mode not in {"legacy-standalone", "canonical"}:
+            raise ValueError("semantic_mode must be legacy-standalone or canonical")
+        self.semantic_mode = semantic_mode
+        self.lineage_id = lineage_id
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.memory = memory
@@ -211,10 +226,10 @@ class LceProjectionCore:
             config=frontier_config,
             rejection_store=self.rejections,
         )
-        self.compiler = SemanticCompiler(
-            self.memory,
-            provider,
-            lineage_id=lineage_id,
+        self.compiler = (
+            SemanticCompiler(self.memory, provider, lineage_id=lineage_id)
+            if semantic_mode == "legacy-standalone"
+            else None
         )
         self.policy = policy or ConservativePromotionPolicy()
         self.interpreter = interpreter or RuleBasedBoundedInterpreter()
@@ -398,31 +413,56 @@ class LceProjectionCore:
         for block in self.memory.list_semantic_blocks(
             current_valid_only=False
         ):
-            if block.lineage_id != self.compiler.lineage_id:
+            if block.lineage_id != self.lineage_id:
                 continue
             for evidence_id in block.raw_evidence_ids:
                 try:
-                    evidence = self.memory.get_evidence(evidence_id)
+                    evidence = support_status(self.memory, evidence_id)
                 except KeyError:
                     return False
-                if evidence.effective_known_at != evidence.occurred_at:
+                if evidence.known_at != evidence.occurred_at:
                     return False
         return True
 
     def process(
         self, material: RawEvidence, *, mode: str = "nearline"
     ) -> ProcessResult:
+        """Compatibility entrypoint for legacy standalone semantic compilation."""
+        return self.process_raw_evidence(material, mode=mode)
+
+    def process_raw_evidence(
+        self, material: RawEvidence, *, mode: str = "nearline"
+    ) -> ProcessResult:
+        if self.semantic_mode != "legacy-standalone" or self.compiler is None:
+            raise RuntimeError("Raw input is forbidden in canonical integrated mode")
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
         if self._line_graph_recovery_cutoff is not None:
             self._ensure_line_graph_current()
         compiler_result = self.compiler.process(material)
-        stage = self.memory.get_pipeline_stage(material.evidence_id)
+        return self._process_post_compiled(
+            material.evidence_id, material.occurred_at, material.effective_known_at,
+            compiler_result, mode=mode,
+        )
+
+    def _process_post_compiled(
+        self, input_id: str, occurred_at: datetime, known_at: datetime,
+        compiler_result: CompilerResult | CanonicalProjectionReceipt,
+        *, mode: str = "nearline",
+    ) -> ProcessResult:
+        """Shared downstream over explicit compiled identity and clocks only.
+
+        ProcessResult.compiler_result is retained as a legacy API field name;
+        canonical mode returns a CanonicalProjectionReceipt in that field.
+        """
+        if mode not in {"batch", "nearline"}:
+            raise ValueError("mode must be batch or nearline")
+        stage = self.memory.get_pipeline_stage(input_id)
         if compiler_result.replayed and stage == "complete":
             if mode == "nearline":
                 self._ensure_line_graph_current()
             return self._completed_replay_result(
-                material,
+                input_id, occurred_at,
                 compiler_result,
             )
         if stage not in {
@@ -437,7 +477,7 @@ class LceProjectionCore:
                 index_version=self._block_embedding_version,
             )
             self.memory.mark_pipeline_stage(
-                material.evidence_id,
+                input_id,
                 "vector-ready",
                 fingerprint=self._block_embedding_version,
             )
@@ -445,12 +485,12 @@ class LceProjectionCore:
             (
                 snapshot
                 for snapshot in self.discovery.snapshots.all_snapshots()
-                if snapshot.cutoff < material.occurred_at
+                if snapshot.cutoff < occurred_at
             ),
             key=lambda snapshot: snapshot.cutoff,
             default=None,
         )
-        snapshot = self.discovery.create_snapshot(material.occurred_at)
+        snapshot = self.discovery.create_snapshot(occurred_at)
         diff = (
             self.discovery.diff(previous, snapshot)
             if previous
@@ -462,7 +502,7 @@ class LceProjectionCore:
             trajectory_result = self._ensure_line_graph_current()
             if trajectory_result is None:
                 trajectory_result = self.trajectory.observe(
-                    knowledge_cutoff=material.effective_known_at,
+                    knowledge_cutoff=known_at,
                     current_block_ids=compiler_result.block_ids,
                 )
         # Surface discovery is a higher-order slow-path operation. Merely
@@ -475,7 +515,7 @@ class LceProjectionCore:
             self.frontier.candidates(
                 snapshot,
                 current_block_ids=compiler_result.block_ids,
-                processing_input_id=material.evidence_id,
+                processing_input_id=input_id,
             )
             if legacy_compatible
             else ()
@@ -489,7 +529,7 @@ class LceProjectionCore:
         promotions: list[ConsolidationResult] = []
 
         self.memory.mark_pipeline_stage(
-            material.evidence_id,
+            input_id,
             "snapshot/discovery-evaluated",
             fingerprint=snapshot.snapshot_id,
         )
@@ -501,7 +541,7 @@ class LceProjectionCore:
                 snapshot,
                 diff,
                 replayed=compiler_result.replayed,
-                processing_input_id=material.evidence_id,
+                processing_input_id=input_id,
             )
             frontier_handled = frontier_handled or outcome.handled
             if outcome.promotion is not None:
@@ -516,23 +556,23 @@ class LceProjectionCore:
                     snapshot,
                     diff,
                     replayed=compiler_result.replayed,
-                    processing_input_id=material.evidence_id,
+                    processing_input_id=input_id,
                 )
                 if outcome.promotion is not None:
                     promotions.append(outcome.promotion)
 
         self.memory.mark_pipeline_stage(
-            material.evidence_id,
+            input_id,
             "worktree-support-evaluated",
             fingerprint=snapshot.snapshot_id,
         )
         self.memory.mark_pipeline_stage(
-            material.evidence_id,
+            input_id,
             "promotion-evaluated",
             fingerprint=snapshot.snapshot_id,
         )
         self.memory.mark_pipeline_stage(
-            material.evidence_id,
+            input_id,
             "complete",
             fingerprint=snapshot.snapshot_id,
         )
@@ -547,10 +587,11 @@ class LceProjectionCore:
         )
 
     def _completed_replay_result(
-        self, material: RawEvidence, compiler_result: CompilerResult
+        self, input_id: str, occurred_at: datetime,
+        compiler_result: CompilerResult | CanonicalProjectionReceipt,
     ) -> ProcessResult:
         progress_reader = getattr(self.memory, "get_pipeline_progress", None)
-        progress = progress_reader(material.evidence_id) if callable(progress_reader) else None
+        progress = progress_reader(input_id) if callable(progress_reader) else None
         snapshot: StructureSnapshot | None = None
         if progress is not None and progress[1] is not None:
             try:
@@ -560,12 +601,12 @@ class LceProjectionCore:
         if snapshot is None:
             matching = [
                 item for item in self.discovery.snapshots.all_snapshots()
-                if item.cutoff == material.occurred_at
+                if item.cutoff == occurred_at
             ]
             snapshot = max(matching, key=lambda item: item.snapshot_id, default=None)
         if snapshot is None:
             # Rebuilding a derived snapshot is safe, but no cognition stage is rerun.
-            snapshot = self.discovery.create_snapshot(material.occurred_at)
+            snapshot = self.discovery.create_snapshot(occurred_at)
         candidates = (
             self.discovery.higher_order_candidates(snapshot)
             if self._legacy_lineage_compatible()

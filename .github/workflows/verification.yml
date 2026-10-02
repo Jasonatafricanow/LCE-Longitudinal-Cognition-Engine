@@ -8,6 +8,7 @@ on:
   pull_request:
     branches:
       - master
+      - "feat/canonical-semantic-projection-*"
 
 permissions:
   contents: read

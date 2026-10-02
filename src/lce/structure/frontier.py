@@ -22,6 +22,7 @@ from lce.reference_memory.contracts import (
     ReferenceMemorySubstratePort,
     SemanticBlock,
 )
+from lce.reference_memory.support import block_current_valid
 from lce.store.interface import BaselineStorePort
 from lce.structure.contracts import (
     StructureRelationCandidate,
@@ -327,10 +328,7 @@ class FrontierCandidateDiscovery:
 
     def _state_is_current(self, block: SemanticBlock) -> bool:
         try:
-            return all(
-                self.memory.get_evidence(evidence_id).current_valid
-                for evidence_id in block.raw_evidence_ids
-            )
+            return block_current_valid(self.memory, block)
         except KeyError:
             return False
 
