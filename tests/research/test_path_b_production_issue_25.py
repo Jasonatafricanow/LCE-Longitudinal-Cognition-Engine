@@ -13,17 +13,16 @@ from pathlib import Path
 
 import pytest
 
-from research.experiments.path_b_production_issue_25.adjudicator import SelectiveAdjudicator
+from research.experiments.path_b_production_issue_25.adjudicator import (
+    SelectiveAdjudicator,
+)
 from research.experiments.path_b_production_issue_25.benchmark import (
-    compute_adjudication_metrics,
     compute_candidate_metrics,
-    compute_knowledge_effect_metrics,
     compute_temporal_integrity,
     run_benchmark,
 )
 from research.experiments.path_b_production_issue_25.candidate_generator import (
     CandidateGenerator,
-    CandidateGeneratorConfig,
 )
 from research.experiments.path_b_production_issue_25.contracts import (
     AdjudicationResult,
