@@ -11,16 +11,12 @@ from pathlib import Path
 
 import pytest
 
-from research.experiments.path_b_confirmatory_issue_26.confirmatory_runner import (
-    run_confirmatory,
-)
+from research.experiments.path_b_confirmatory_issue_26.confirmatory_runner import run_confirmatory
 from research.experiments.path_b_confirmatory_issue_26.heldout_corpus import (
     build_heldout_corpus,
     build_heldout_gold,
 )
-from research.experiments.path_b_production_issue_25.contracts import (
-    LongitudinalRelation,
-)
+from research.experiments.path_b_production_issue_25.contracts import LongitudinalRelation
 
 
 RESULTS_DIR = (
