@@ -1,0 +1,187 @@
+{
+  "schema_version": "semantic-compilation-experiment-v1",
+  "cases": [
+    {
+      "id": "simple_assertion",
+      "raw": [
+        {"evidence_id": "E01", "occurred_at": "2026-10-01T09:00:00+00:00", "text": "服务器现在运行在办公室的 Linux 机器上。"}
+      ],
+      "requirements": {"block_count": 1, "speech_acts": ["assertion"], "epistemic": ["asserted"], "temporal_kinds": ["current"], "relation_types": [], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B01", "source_refs": ["E01"], "canonical_meaning": "办公室的 Linux 机器当前承载服务器运行。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "current", "expression": "现在"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": []
+      }
+    },
+    {
+      "id": "mixed_transient_and_constraint",
+      "raw": [
+        {"evidence_id": "E02", "occurred_at": "2026-10-01T09:10:00+00:00", "text": "测试全过了。另外以后这种报告不用写那么长，我只看结论和异常。"}
+      ],
+      "requirements": {"block_count": 2, "speech_acts": ["assertion", "directive"], "epistemic": ["asserted"], "temporal_kinds": ["current", "future"], "relation_types": [], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B02A", "source_refs": ["E02"], "canonical_meaning": "当前测试已经全部通过。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "current", "expression": "当前"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B02B", "source_refs": ["E02"], "canonical_meaning": "用户要求今后同类报告缩短，只保留结论和异常。", "speech_act": "directive", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "future", "expression": "以后"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": []
+      }
+    },
+    {
+      "id": "plan_completed_ongoing",
+      "raw": [
+        {"evidence_id": "E03", "occurred_at": "2026-10-01T10:00:00+00:00", "text": "我本来准备这个月交首付，不过昨天已经交了，现在就等贷款审批。"}
+      ],
+      "requirements": {"block_count": 3, "speech_acts": ["assertion"], "epistemic": ["planned", "asserted"], "temporal_kinds": ["future", "past", "current"], "relation_types": ["updates", "continuation"], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B03A", "source_refs": ["E03"], "canonical_meaning": "用户原计划在本月支付首付。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "planned", "temporal": {"kind": "future", "expression": "本月（相对于说话时点的原计划）"}, "unresolved_refs": [], "confidence": 0.98},
+          {"local_id": "B03B", "source_refs": ["E03"], "canonical_meaning": "用户在说话时点的昨天已经支付首付。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "past", "expression": "昨天"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B03C", "source_refs": ["E03"], "canonical_meaning": "用户当前正在等待贷款审批结果。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "current", "expression": "现在"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": [
+          {"from": "B03B", "to": "B03A", "relation": "updates", "source_refs": ["E03"], "confidence": 0.98},
+          {"from": "B03C", "to": "B03B", "relation": "continuation", "source_refs": ["E03"], "confidence": 0.96}
+        ]
+      }
+    },
+    {
+      "id": "uncertain_diagnosis",
+      "raw": [
+        {"evidence_id": "E04", "occurred_at": "2026-10-01T11:00:00+00:00", "text": "我感觉热启动机制可能有问题，但还没确认。"}
+      ],
+      "requirements": {"block_count": 1, "speech_acts": ["assertion"], "epistemic": ["uncertain"], "temporal_kinds": ["current"], "relation_types": [], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B04", "source_refs": ["E04"], "canonical_meaning": "用户怀疑热启动机制存在问题，但尚未确认这一判断。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "uncertain", "temporal": {"kind": "current", "expression": "当前判断"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": []
+      }
+    },
+    {
+      "id": "conditional_invariant",
+      "raw": [
+        {"evidence_id": "E05", "occurred_at": "2026-10-01T12:00:00+00:00", "text": "如果 BGE 换版本，就必须重建向量，但 SemanticBlock identity 不应该变。"}
+      ],
+      "requirements": {"block_count": 2, "speech_acts": ["assertion", "directive"], "epistemic": ["hypothetical", "asserted"], "temporal_kinds": ["atemporal"], "relation_types": ["conditional"], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B05A", "source_refs": ["E05"], "canonical_meaning": "在 BGE 版本发生变化的条件下，需要重建向量投影。", "speech_act": "directive", "polarity": "positive", "epistemic_status": "hypothetical", "temporal": {"kind": "atemporal", "expression": "条件规则"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B05B", "source_refs": ["E05"], "canonical_meaning": "BGE 版本变化不应改变 SemanticBlock 的语义身份。", "speech_act": "assertion", "polarity": "negative", "epistemic_status": "asserted", "temporal": {"kind": "atemporal", "expression": "架构不变量"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": [
+          {"from": "B05A", "to": "B05B", "relation": "conditional", "source_refs": ["E05"], "confidence": 0.90}
+        ]
+      }
+    },
+    {
+      "id": "cross_turn_correction",
+      "raw": [
+        {"evidence_id": "E06A", "occurred_at": "2026-10-01T13:00:00+00:00", "text": "AML 先试 top-k=100。"},
+        {"evidence_id": "E06B", "occurred_at": "2026-10-01T13:05:00+00:00", "text": "不对，别用100，还是扫20/30/50/70。"}
+      ],
+      "requirements": {"block_count": 2, "speech_acts": ["directive"], "epistemic": ["asserted"], "temporal_kinds": ["future"], "relation_types": ["supersedes"], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B06A", "source_refs": ["E06A"], "canonical_meaning": "用户最初要求 AML 实验先使用 top-k=100。", "speech_act": "directive", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "future", "expression": "后续实验"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B06B", "source_refs": ["E06B"], "canonical_meaning": "用户改为要求 AML 实验扫描 top-k=20/30/50/70，并取消 top-k=100 的先前要求。", "speech_act": "directive", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "future", "expression": "后续实验"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": [
+          {"from": "B06B", "to": "B06A", "relation": "supersedes", "source_refs": ["E06A", "E06B"], "confidence": 0.99}
+        ]
+      }
+    },
+    {
+      "id": "unresolved_reference",
+      "raw": [
+        {"evidence_id": "E07", "occurred_at": "2026-10-01T14:00:00+00:00", "text": "还是用那个方案吧。"}
+      ],
+      "requirements": {"block_count": 1, "speech_acts": ["directive"], "epistemic": ["asserted"], "temporal_kinds": ["future"], "relation_types": [], "unresolved_refs": 1},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B07", "source_refs": ["E07"], "canonical_meaning": "用户要求继续采用某个先前提到但当前证据无法唯一确定的方案。", "speech_act": "directive", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "future", "expression": "后续执行"}, "unresolved_refs": ["那个方案"], "confidence": 0.96}
+        ],
+        "relations": []
+      }
+    },
+    {
+      "id": "resolved_reference_with_context",
+      "raw": [
+        {"evidence_id": "E08A", "occurred_at": "2026-10-01T15:00:00+00:00", "text": "方案A是双库同步，方案B是原生库做Raw authority、MR-Mem只做语义覆盖。"},
+        {"evidence_id": "E08B", "occurred_at": "2026-10-01T15:02:00+00:00", "text": "还是用后者。"}
+      ],
+      "requirements": {"block_count": 3, "speech_acts": ["assertion", "directive"], "epistemic": ["asserted"], "temporal_kinds": ["atemporal", "future"], "relation_types": ["same_referent"], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B08A", "source_refs": ["E08A"], "canonical_meaning": "方案A采用双库同步。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "atemporal", "expression": "方案定义"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B08B", "source_refs": ["E08A"], "canonical_meaning": "方案B以原生库作为 Raw authority，并让 MR-Mem 仅承载语义覆盖层。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "atemporal", "expression": "方案定义"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B08C", "source_refs": ["E08A", "E08B"], "canonical_meaning": "用户选择方案B继续执行。", "speech_act": "directive", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "future", "expression": "后续执行"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": [
+          {"from": "B08C", "to": "B08B", "relation": "same_referent", "source_refs": ["E08A", "E08B"], "confidence": 0.99}
+        ]
+      }
+    },
+    {
+      "id": "state_change_over_time",
+      "raw": [
+        {"evidence_id": "E09A", "occurred_at": "2026-09-24T08:00:00+00:00", "text": "上周这个问题已经修好了。"},
+        {"evidence_id": "E09B", "occurred_at": "2026-10-01T08:00:00+00:00", "text": "现在又坏了。"}
+      ],
+      "requirements": {"block_count": 2, "speech_acts": ["assertion"], "epistemic": ["asserted"], "temporal_kinds": ["past", "current"], "relation_types": ["updates"], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B09A", "source_refs": ["E09A"], "canonical_meaning": "该问题在 E09A 的说话时点之前一周已经修复。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "past", "expression": "上周"}, "unresolved_refs": [], "confidence": 0.97},
+          {"local_id": "B09B", "source_refs": ["E09A", "E09B"], "canonical_meaning": "同一问题在 E09B 的说话时点再次处于故障状态。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "current", "expression": "现在"}, "unresolved_refs": [], "confidence": 0.96}
+        ],
+        "relations": [
+          {"from": "B09B", "to": "B09A", "relation": "updates", "source_refs": ["E09A", "E09B"], "confidence": 0.96}
+        ]
+      }
+    },
+    {
+      "id": "nested_stance",
+      "raw": [
+        {"evidence_id": "E10", "occurred_at": "2026-10-01T16:00:00+00:00", "text": "我不认为这个结果证明算法正确，只能说明夹具能跑。"}
+      ],
+      "requirements": {"block_count": 2, "speech_acts": ["assertion"], "epistemic": ["asserted"], "temporal_kinds": ["atemporal"], "relation_types": ["contrast"], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B10A", "source_refs": ["E10"], "canonical_meaning": "用户否认当前结果足以证明算法正确。", "speech_act": "assertion", "polarity": "negative", "epistemic_status": "asserted", "temporal": {"kind": "atemporal", "expression": "对证据意义的判断"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B10B", "source_refs": ["E10"], "canonical_meaning": "用户认为当前结果只能证明测试夹具可以运行。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "atemporal", "expression": "对证据意义的判断"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": [
+          {"from": "B10B", "to": "B10A", "relation": "contrast", "source_refs": ["E10"], "confidence": 0.97}
+        ]
+      }
+    },
+    {
+      "id": "question_not_fact",
+      "raw": [
+        {"evidence_id": "E11", "occurred_at": "2026-10-01T17:00:00+00:00", "text": "为什么 LCE 执行不是即时性的？"}
+      ],
+      "requirements": {"block_count": 1, "speech_acts": ["question"], "epistemic": ["unknown"], "temporal_kinds": ["current"], "relation_types": [], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B11", "source_refs": ["E11"], "canonical_meaning": "用户询问 LCE 当前为何不能即时执行。", "speech_act": "question", "polarity": "unknown", "epistemic_status": "unknown", "temporal": {"kind": "current", "expression": "当前行为"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": []
+      }
+    },
+    {
+      "id": "coding_result_plus_durable_rule",
+      "raw": [
+        {"evidence_id": "E12", "occurred_at": "2026-10-01T18:00:00+00:00", "text": "pytest 3918 passed。以后别为了 coverage 写低价值重复测试。"}
+      ],
+      "requirements": {"block_count": 2, "speech_acts": ["assertion", "directive"], "epistemic": ["asserted"], "temporal_kinds": ["current", "future"], "relation_types": [], "unresolved_refs": 0},
+      "candidate": {
+        "blocks": [
+          {"local_id": "B12A", "source_refs": ["E12"], "canonical_meaning": "当前 pytest 运行有 3918 个测试通过。", "speech_act": "assertion", "polarity": "positive", "epistemic_status": "asserted", "temporal": {"kind": "current", "expression": "当前测试运行"}, "unresolved_refs": [], "confidence": 0.99},
+          {"local_id": "B12B", "source_refs": ["E12"], "canonical_meaning": "用户要求今后不要为了提高 coverage 而增加低价值的重复测试。", "speech_act": "directive", "polarity": "negative", "epistemic_status": "asserted", "temporal": {"kind": "future", "expression": "以后"}, "unresolved_refs": [], "confidence": 0.99}
+        ],
+        "relations": []
+      }
+    }
+  ]
+}
