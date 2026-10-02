@@ -94,8 +94,18 @@ def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
 
 
 @dataclass(frozen=True, slots=True)
+class BlockProjectionReceipt:
+    """Derived-input receipt for one already committed canonical Block."""
+
+    evidence_id: str
+    block_ids: tuple[str, ...]
+    action: str = "CANONICAL_PROJECTION"
+    replayed: bool = False
+
+
+@dataclass(frozen=True, slots=True)
 class ProcessResult:
-    compiler_result: CompilerResult
+    compiler_result: CompilerResult | BlockProjectionReceipt
     snapshot: StructureSnapshot
     diff: StructureDiff | None
     higher_order_candidates: tuple[HigherOrderCandidate, ...]
@@ -148,9 +158,14 @@ class LceProjectionCore:
         ] | None = None,
         block_embedding_version: str = "lce-vector-v1",
         close_memory: bool = False,
+        canonical_blocks: bool = False,
     ) -> None:
         if type(close_memory) is not bool:
             raise TypeError("close_memory must be bool")
+        if type(canonical_blocks) is not bool:
+            raise TypeError("canonical_blocks must be bool")
+        if canonical_blocks and provider is not None:
+            raise ValueError("integrated canonical Blocks cannot use a semantic provider")
         if (
             not isinstance(block_embedding_version, str)
             or not block_embedding_version.strip()
@@ -211,7 +226,8 @@ class LceProjectionCore:
             config=frontier_config,
             rejection_store=self.rejections,
         )
-        self.compiler = SemanticCompiler(
+        self._lineage_id = lineage_id
+        self.compiler = None if canonical_blocks else SemanticCompiler(
             self.memory,
             provider,
             lineage_id=lineage_id,
@@ -398,7 +414,7 @@ class LceProjectionCore:
         for block in self.memory.list_semantic_blocks(
             current_valid_only=False
         ):
-            if block.lineage_id != self.compiler.lineage_id:
+            if block.lineage_id != self._lineage_id:
                 continue
             for evidence_id in block.raw_evidence_ids:
                 try:
@@ -412,11 +428,43 @@ class LceProjectionCore:
     def process(
         self, material: RawEvidence, *, mode: str = "nearline"
     ) -> ProcessResult:
+        if self.compiler is None:
+            raise ValueError("integrated path accepts committed SemanticBlocks only")
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
         if self._line_graph_recovery_cutoff is not None:
             self._ensure_line_graph_current()
         compiler_result = self.compiler.process(material)
+        return self._project_committed_input(material, compiler_result, mode=mode)
+
+    def process_semantic_block(
+        self, block: SemanticBlock, *, mode: str = "nearline"
+    ) -> ProcessResult:
+        """Project one exact canonical Block without running a semantic compiler."""
+        if self.compiler is not None:
+            raise ValueError("canonical Block projection requires the integrated path")
+        if mode not in {"batch", "nearline"}:
+            raise ValueError("mode must be batch or nearline")
+        source = getattr(self.memory, "source", None)
+        read_block = getattr(source, "get_semantic_block", None)
+        if not callable(read_block) or read_block(block.block_id) != block:
+            raise ValueError("projection Block differs from canonical authority")
+        material = self.memory.get_evidence(block.block_id)
+        if not material.current_valid or block.lineage_id != self._lineage_id:
+            raise ValueError("current canonical Block in the bound lineage required")
+        if self._line_graph_recovery_cutoff is not None:
+            self._ensure_line_graph_current()
+        replayed = self.memory.get_pipeline_stage(block.block_id) is not None
+        self.memory.put_semantic_block(block)
+        return self._project_committed_input(
+            material, BlockProjectionReceipt(block.block_id, (block.block_id,), replayed=replayed),
+            mode=mode,
+        )
+
+    def _project_committed_input(
+        self, material: RawEvidence, compiler_result: CompilerResult | BlockProjectionReceipt,
+        *, mode: str,
+    ) -> ProcessResult:
         stage = self.memory.get_pipeline_stage(material.evidence_id)
         if compiler_result.replayed and stage == "complete":
             if mode == "nearline":
@@ -547,7 +595,7 @@ class LceProjectionCore:
         )
 
     def _completed_replay_result(
-        self, material: RawEvidence, compiler_result: CompilerResult
+        self, material: RawEvidence, compiler_result: CompilerResult | BlockProjectionReceipt
     ) -> ProcessResult:
         progress_reader = getattr(self.memory, "get_pipeline_progress", None)
         progress = progress_reader(material.evidence_id) if callable(progress_reader) else None
