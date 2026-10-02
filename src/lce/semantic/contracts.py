@@ -1,4 +1,4 @@
-"""Ports and decisions for the bounded Semantic Block compiler."""
+"""LEGACY / STANDALONE semantic decisions; not the MR-Mem integrated protocol."""
 
 from __future__ import annotations
 

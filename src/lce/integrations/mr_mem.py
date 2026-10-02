@@ -46,6 +46,8 @@ class CanonicalSemanticBlockView:
 
 
 class MRMemSemanticBlockAdapter:
+    canonical_semantic_blocks = True
+
     def __init__(self, reader: MRMemReader, *, scope: object) -> None:
         if not reader.read_only:
             raise ValueError("LCE requires a read-only MR-Mem canonical reader")

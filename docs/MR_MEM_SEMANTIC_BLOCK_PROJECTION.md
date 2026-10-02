@@ -4,7 +4,7 @@
 MemoryCore and writes LCE derivations to a separate projection root. It accepts
 an explicit MR-Mem Scope. The caller obtains committed Blocks through
 `MRMemSemanticBlockAdapter.get_semantic_block(memory_id)` and passes them to
-`LceProjectionCore.process_semantic_block`.
+`LceProjectionCore.process_semantic_block` or `run_semantic_block_batch`.
 
 `CanonicalSemanticBlockView` maps existing MR-Mem fields: memory ID, unchanged
 content, source occurred range, canonical known_at, native SourceRefs, context
@@ -41,3 +41,12 @@ finally:
 Projection restart reuses canonical identity and pipeline progress. It never
 requests a semantic proposal again. No online flag or production DB cutover is
 performed by this tool.
+
+## Legacy standalone boundary
+
+`lce.semantic.compiler`, `contracts` and `providers` remain available for the
+standalone `LceRuntime` and legacy Raw source callers. They are explicitly
+LEGACY / STANDALONE. Loading the integrated adapter does not load those modules;
+the old compiler is imported only when standalone composition is constructed.
+Integrated composition rejects Raw ingestion and configured semantic providers.
+No production canonical source passes through two semantic compilers.

@@ -13,6 +13,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from lce.cognition.convergence import AuthorityConfig
 from lce.cognition.inspiration import (
@@ -52,8 +53,6 @@ from lce.reference_memory.contracts import (
     ReferenceMemorySubstratePort,
     SemanticBlock,
 )
-from lce.semantic.compiler import CompilerResult, SemanticCompiler
-from lce.semantic.contracts import SemanticDecisionProvider
 from lce.store.sqlite_store import SqliteBaselineStore
 from lce.structure.contracts import (
     HigherOrderCandidate,
@@ -80,6 +79,10 @@ from lce.structure.trajectory import (
 )
 
 LINE_GRAPH_DERIVATION_SCHEMA_VERSION = 2
+
+if TYPE_CHECKING:
+    from lce.semantic.compiler import CompilerResult, SemanticCompiler
+    from lce.semantic.contracts import SemanticDecisionProvider
 
 
 def deterministic_block_embedding(block: SemanticBlock) -> tuple[float, ...]:
@@ -167,6 +170,11 @@ class LceProjectionCore:
         if canonical_blocks and provider is not None:
             raise ValueError("integrated canonical Blocks cannot use a semantic provider")
         if (
+            getattr(getattr(memory, "source", None), "canonical_semantic_blocks", False)
+            and not canonical_blocks
+        ):
+            raise ValueError("canonical Block source requires the integrated path")
+        if (
             not isinstance(block_embedding_version, str)
             or not block_embedding_version.strip()
         ):
@@ -227,11 +235,12 @@ class LceProjectionCore:
             rejection_store=self.rejections,
         )
         self._lineage_id = lineage_id
-        self.compiler = None if canonical_blocks else SemanticCompiler(
-            self.memory,
-            provider,
-            lineage_id=lineage_id,
-        )
+        self.compiler: SemanticCompiler | None = None
+        if not canonical_blocks:
+            # LEGACY / STANDALONE only. Integrated composition never imports it.
+            from lce.semantic.compiler import SemanticCompiler
+
+            self.compiler = SemanticCompiler(self.memory, provider, lineage_id=lineage_id)
         self.policy = policy or ConservativePromotionPolicy()
         self.interpreter = interpreter or RuleBasedBoundedInterpreter()
         self._block_embedder = (
@@ -702,8 +711,32 @@ class LceProjectionCore:
             self.process(material, mode="batch")
             for material in ordered
         ]
+        return self._finish_projection_batch(results, ordered)
+
+    def run_semantic_block_batch(
+        self, blocks: Sequence[SemanticBlock]
+    ) -> tuple[ProcessResult, ...]:
+        """Integrated batch consumes committed units, never legacy Raw inputs."""
+        if self.compiler is not None:
+            raise ValueError("canonical Block batch requires the integrated path")
+        if len({block.block_id for block in blocks}) != len(blocks):
+            raise ValueError("duplicate canonical Block in batch")
+        ordered = sorted(
+            blocks, key=lambda block: (
+                self.memory.get_evidence(block.block_id).effective_ordering_key, block.block_id,
+            ),
+        )
+        if not ordered:
+            return ()
+        results = [self.process_semantic_block(block, mode="batch") for block in ordered]
+        materials = [self.memory.get_evidence(block.block_id) for block in ordered]
+        return self._finish_projection_batch(results, materials)
+
+    def _finish_projection_batch(
+        self, results: list[ProcessResult], materials: Sequence[RawEvidence]
+    ) -> tuple[ProcessResult, ...]:
         cutoff = max(
-            material.effective_known_at for material in ordered
+            material.effective_known_at for material in materials
         )
         trajectory_result = self._ensure_line_graph_current()
         if trajectory_result is None:

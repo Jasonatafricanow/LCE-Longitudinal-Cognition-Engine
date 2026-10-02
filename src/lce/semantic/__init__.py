@@ -1,4 +1,4 @@
-"""Semantic-stream compilation for production LCE ingestion."""
+"""LEGACY / STANDALONE semantic compilation. Integrated LCE consumes MR-Mem Blocks."""
 
 from lce.semantic.compiler import CompilerResult, SemanticCompiler
 from lce.semantic.contracts import (

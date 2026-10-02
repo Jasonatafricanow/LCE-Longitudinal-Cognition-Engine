@@ -8,6 +8,7 @@ standalone demos and research runs.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from lce.cognition.promotion import BoundedInterpreter, PromotionPolicy
 from lce.core.projection import (
@@ -17,8 +18,10 @@ from lce.core.projection import (
 )
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort
 from lce.reference_memory.sqlite import ReferenceMemoryStore
-from lce.semantic.contracts import SemanticDecisionProvider
 from lce.structure.contracts import StructureConfig
+
+if TYPE_CHECKING:
+    from lce.semantic.contracts import SemanticDecisionProvider
 
 
 class LceRuntime(LceProjectionCore):

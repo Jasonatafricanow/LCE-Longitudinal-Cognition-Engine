@@ -1,4 +1,4 @@
-"""Restart-safe Semantic Block compiler using the BLOCK-03 stream boundary."""
+"""LEGACY / STANDALONE compiler using BLOCK-03; bypassed by integrated MR-Mem LCE."""
 
 from __future__ import annotations
 

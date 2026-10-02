@@ -3,6 +3,8 @@ from __future__ import annotations
 import ast
 import hashlib
 import importlib
+import subprocess
+import sys
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -10,6 +12,7 @@ from typing import Any
 
 import pytest
 
+from lce.core.projection import LceProjectionCore
 from lce.integrations.mr_mem import MRMemSemanticBlockAdapter, open_mr_mem_projection
 
 
@@ -99,6 +102,8 @@ def test_real_mr_mem_blocks_project_without_recompilation_and_replay(
     projection = open_mr_mem_projection(path, projection_root, scope=scope)
     try:
         assert projection.compiler is None
+        with pytest.raises(ValueError, match="requires the integrated"):
+            LceProjectionCore(tmp_path / "invalid-legacy", memory=projection.memory)
         source = projection.memory.source  # type: ignore[attr-defined]
         block = source.get_semantic_block(old_id)
         assert block.block_id == old_id and block.content == content
@@ -128,6 +133,12 @@ def test_real_mr_mem_blocks_project_without_recompilation_and_replay(
         view = source.view(new_id)
         assert view.context_memory_ids == (old_id,) and view.relations
         projection.process_semantic_block(source.get_semantic_block(new_id))
+        batch = projection.run_semantic_block_batch(
+            (source.get_semantic_block(new_id),)
+        )
+        assert (
+            batch[0].compiler_result.replayed and batch[0].trajectory_result is not None
+        )
         assert tuple(b.block_id for b in projection.memory.list_semantic_blocks()) == (
             new_id,
         )
@@ -170,4 +181,16 @@ def test_lce_integration_has_no_semantic_delta_or_agy_dependency() -> None:
     }
     assert not any(
         name and name.startswith(("historical", "lce.semantic")) for name in imports
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "import sys; import lce.integrations.mr_mem; "
+                "assert 'lce.semantic.compiler' not in sys.modules; "
+                "assert 'lce.semantic.providers' not in sys.modules"
+            ),
+        ],
+        check=True,
     )
