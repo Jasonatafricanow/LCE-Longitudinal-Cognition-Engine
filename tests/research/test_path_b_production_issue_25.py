@@ -5,6 +5,8 @@ Validates the complete two-stage pipeline:
   Stage 2: Selective adjudication with orthogonal relation + knowledge effect
 """
 
+# ruff: noqa: I001
+
 from __future__ import annotations
 
 import json
