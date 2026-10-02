@@ -4,6 +4,8 @@ Freeze rule: DO NOT modify any Issue #25 code based on failures here.
 This is a one-shot frozen evaluation.
 """
 
+# ruff: noqa: I001
+
 from __future__ import annotations
 
 import json
