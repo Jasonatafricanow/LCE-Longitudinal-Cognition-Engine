@@ -11,23 +11,15 @@ from pathlib import Path
 
 import pytest
 
-from research.experiments.path_b_production_issue_25.candidate_generator import (
-    CandidateGenerator,
-)
-from research.experiments.path_b_production_issue_25.adjudicator import (
-    SelectiveAdjudicator,
-)
-from research.experiments.path_b_production_issue_25.contracts import (
-    LongitudinalRelation,
-    ProductionMemoryView,
+from research.experiments.path_b_confirmatory_issue_26.confirmatory_runner import (
+    run_confirmatory,
 )
 from research.experiments.path_b_confirmatory_issue_26.heldout_corpus import (
     build_heldout_corpus,
     build_heldout_gold,
 )
-from research.experiments.path_b_confirmatory_issue_26.confirmatory_runner import (
-    compute_marginal_value,
-    run_confirmatory,
+from research.experiments.path_b_production_issue_25.contracts import (
+    LongitudinalRelation,
 )
 
 
