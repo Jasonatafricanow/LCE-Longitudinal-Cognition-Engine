@@ -15,6 +15,9 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        input_mode: [standalone, canonical]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,6 +33,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e . -r requirements-verification.txt
+
+      - name: Check out pinned MR-Mem contract for canonical mode
+        if: matrix.input_mode == 'canonical'
+        uses: actions/checkout@v4
+        with:
+          repository: Jasonatafricanow/MR-Mem
+          ref: e7b4bb6e404d0eb2770e81a23b1b5352b956404c
+          path: _mr_mem_contract
+
+      - name: Install optional MR-Mem contract
+        if: matrix.input_mode == 'canonical'
+        run: python -m pip install -e ./_mr_mem_contract
 
       - name: Run canonical public verification gate
         run: python scripts/verify.py
