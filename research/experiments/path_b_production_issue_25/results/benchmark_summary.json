@@ -1,0 +1,210 @@
+{
+  "candidate_metrics": {
+    "B0": {
+      "baseline_level": "B0",
+      "total_possible_pairs": 378,
+      "candidates_produced": 378,
+      "true_relation_pairs": 11,
+      "true_recalled": 11,
+      "recall": 1.0,
+      "candidates_per_block": 13.5,
+      "reduction_pct": 0.0,
+      "false_candidate_rate": 0.9708994708994709,
+      "target_miss_ids": []
+    },
+    "B1": {
+      "baseline_level": "B1",
+      "total_possible_pairs": 378,
+      "candidates_produced": 22,
+      "true_relation_pairs": 11,
+      "true_recalled": 10,
+      "recall": 0.9090909090909091,
+      "candidates_per_block": 0.7857142857142857,
+      "reduction_pct": 94.17989417989419,
+      "false_candidate_rate": 0.5454545454545454,
+      "target_miss_ids": [
+        "m17_visa_pending__m18_visa_still_pending"
+      ]
+    },
+    "B2": {
+      "baseline_level": "B2",
+      "total_possible_pairs": 378,
+      "candidates_produced": 110,
+      "true_relation_pairs": 11,
+      "true_recalled": 10,
+      "recall": 0.9090909090909091,
+      "candidates_per_block": 3.9285714285714284,
+      "reduction_pct": 70.89947089947091,
+      "false_candidate_rate": 0.9090909090909091,
+      "target_miss_ids": [
+        "m17_visa_pending__m18_visa_still_pending"
+      ]
+    }
+  },
+  "adjudication_metrics": {
+    "total_evaluated": 13,
+    "relation_accuracy": 0.6923076923076923,
+    "correction_vs_state_confusion": 0.0,
+    "unrelated_rejection_accuracy": 0.0,
+    "persistence_accuracy": 1.0,
+    "unknown_relation_rate": 0.07692307692307693,
+    "confusion_matrix": {
+      "UNRELATED": {
+        "UNKNOWN_RELATION": 1,
+        "STATE_CHANGE": 2
+      },
+      "STATE_CHANGE": {
+        "STATE_CHANGE": 8
+      },
+      "CORRECTION_RETRACTION": {
+        "PERSISTENCE_CONFIRMATION": 1,
+        "CORRECTION_RETRACTION": 1
+      }
+    }
+  },
+  "knowledge_effect_metrics": {
+    "total_evaluated": 13,
+    "prior_unknown_resolution_precision": 0.75,
+    "prior_unknown_resolution_recall": 0.8571428571428571,
+    "wrong_unknown_closure_rate": 0.15384615384615385,
+    "wrong_dimension_resolution_rate": 0.46153846153846156,
+    "evidence_free_closure_count": 2
+  },
+  "temporal_integrity": {
+    "reverse_time_errors": 0,
+    "future_leakage_count": 0,
+    "invalid_rewrite_count": 0,
+    "axis_confusion_count": 0,
+    "passed_all": true
+  },
+  "cost_metrics": {
+    "adjudication_calls": 110,
+    "calls_per_block": 3.9285714285714284,
+    "tokens_per_accepted": 0.0,
+    "candidate_volume_before": 378,
+    "candidate_volume_after": 110
+  },
+  "falsification_results": [
+    {
+      "falsification_id": "F1",
+      "name": "Time necessary but insufficient",
+      "passed": true,
+      "detail": {
+        "b0_total": 378,
+        "unrelated_in_b0": 4,
+        "false_candidates_in_b0": 367
+      }
+    },
+    {
+      "falsification_id": "F2",
+      "name": "No oracle recovery",
+      "passed": true,
+      "detail": {
+        "violations": [],
+        "views_checked": 28
+      }
+    },
+    {
+      "falsification_id": "F3",
+      "name": "No gold-pair shortcut",
+      "passed": true,
+      "detail": {
+        "adjudicated_count": 110,
+        "in_b2_count": 110,
+        "shortcut_count": 0
+      }
+    },
+    {
+      "falsification_id": "F4",
+      "name": "State change != correction",
+      "passed": true,
+      "detail": {
+        "confusions": []
+      }
+    },
+    {
+      "falsification_id": "F5",
+      "name": "Relation != knowledge effect",
+      "passed": true,
+      "detail": {
+        "dual_gold_count": 6,
+        "dual_result_count": 52,
+        "dual_result_ids": [
+          "B2_m01_plan_trip__m20_own_shanghai_memory",
+          "B2_m01_plan_trip__m06_dinner_cancelled",
+          "B2_m01_plan_trip__m04_exam_failed",
+          "B2_m01_plan_trip__m25_noise_exam",
+          "B2_m01_plan_trip__m02_trip_completed",
+          "B2_m01_plan_trip__m12_blood_test_result",
+          "B2_m01_plan_trip__m23_future_deadline",
+          "B2_m01_plan_trip__m18_visa_still_pending",
+          "B2_m19_colleague_trip__m20_own_shanghai_memory",
+          "B2_m19_colleague_trip__m06_dinner_cancelled",
+          "B2_m19_colleague_trip__m04_exam_failed",
+          "B2_m19_colleague_trip__m25_noise_exam",
+          "B2_m19_colleague_trip__m02_trip_completed",
+          "B2_m19_colleague_trip__m12_blood_test_result",
+          "B2_m19_colleague_trip__m23_future_deadline",
+          "B2_m19_colleague_trip__m18_visa_still_pending",
+          "B2_m03_exam_plan__m20_own_shanghai_memory",
+          "B2_m03_exam_plan__m06_dinner_cancelled",
+          "B2_m03_exam_plan__m04_exam_failed",
+          "B2_m03_exam_plan__m25_noise_exam",
+          "B2_m03_exam_plan__m02_trip_completed",
+          "B2_m03_exam_plan__m12_blood_test_result",
+          "B2_m03_exam_plan__m23_future_deadline",
+          "B2_m03_exam_plan__m18_visa_still_pending",
+          "B2_m05_dinner_plan__m06_dinner_cancelled",
+          "B2_m05_dinner_plan__m04_exam_failed",
+          "B2_m05_dinner_plan__m25_noise_exam",
+          "B2_m05_dinner_plan__m02_trip_completed",
+          "B2_m05_dinner_plan__m12_blood_test_result",
+          "B2_m05_dinner_plan__m23_future_deadline",
+          "B2_m05_dinner_plan__m18_visa_still_pending",
+          "B2_m17_visa_pending__m07_possible_raise",
+          "B2_m17_visa_pending__m06_dinner_cancelled",
+          "B2_m17_visa_pending__m09_possible_move",
+          "B2_m17_visa_pending__m11_blood_test_waiting",
+          "B2_m17_visa_pending__m12_blood_test_result",
+          "B2_m17_visa_pending__m23_future_deadline",
+          "B2_m17_visa_pending__m08_raise_confirmed",
+          "B2_m07_possible_raise__m06_dinner_cancelled",
+          "B2_m07_possible_raise__m11_blood_test_waiting",
+          "B2_m07_possible_raise__m12_blood_test_result",
+          "B2_m07_possible_raise__m23_future_deadline",
+          "B2_m07_possible_raise__m08_raise_confirmed",
+          "B2_m09_possible_move__m11_blood_test_waiting",
+          "B2_m09_possible_move__m12_blood_test_result",
+          "B2_m09_possible_move__m23_future_deadline",
+          "B2_m09_possible_move__m08_raise_confirmed",
+          "B2_m09_possible_move__m10_move_disproven",
+          "B2_m11_blood_test_waiting__m12_blood_test_result",
+          "B2_m11_blood_test_waiting__m23_future_deadline",
+          "B2_m11_blood_test_waiting__m08_raise_confirmed",
+          "B2_m21_late_fact__m08_raise_confirmed"
+        ]
+      }
+    },
+    {
+      "falsification_id": "F6",
+      "name": "No new evidence, no new cognition",
+      "passed": true,
+      "detail": {
+        "violations": []
+      }
+    },
+    {
+      "falsification_id": "F7",
+      "name": "Sparse discovery",
+      "passed": true,
+      "detail": {
+        "all_pairs": 378,
+        "b0_count": 378,
+        "b2_count": 110,
+        "b0_reduction_pct": 0.0,
+        "b2_reduction_pct": 70.9,
+        "b2_vs_b0_reduction_pct": 70.9
+      }
+    }
+  ]
+}
