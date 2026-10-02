@@ -83,3 +83,30 @@ def map_canonical_semantic_block(
         outgoing_relations=view.outgoing_relations,
         incoming_relations=view.incoming_relations,
     )
+
+
+class MRMemSemanticBlockAdapter:
+    """Explicit post-compilation adapter mapping MR-Mem's CanonicalSemanticBlockView to LCE."""
+
+    def __init__(self, *, lineage_id: str = "mr-mem") -> None:
+        self.lineage_id = lineage_id
+
+    def adapt(
+        self,
+        view: CanonicalSemanticBlockView,
+        *,
+        lineage_id: str | None = None,
+    ) -> CanonicalBlockProjection:
+        return map_canonical_semantic_block(
+            view,
+            lineage_id=lineage_id or self.lineage_id,
+        )
+
+    def __call__(
+        self,
+        view: CanonicalSemanticBlockView,
+        *,
+        lineage_id: str | None = None,
+    ) -> CanonicalBlockProjection:
+        return self.adapt(view, lineage_id=lineage_id)
+

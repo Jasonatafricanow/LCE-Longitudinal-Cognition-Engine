@@ -48,3 +48,15 @@ def test_unknown_transition_is_not_sync_time(lifecycle: MemoryLifecycle) -> None
     assert projected.transition_known_at is None
     with pytest.raises(LifecycleTimeUnknown):
         projected.valid_at(view.known_at)
+
+def test_mrmem_semantic_block_adapter() -> None:
+    from lce.integrations.mr_mem import MRMemSemanticBlockAdapter
+
+    adapter = MRMemSemanticBlockAdapter(lineage_id="tenant-adapter")
+    view = canonical_view("canonical-adapter-1")
+    projected = adapter.adapt(view)
+    assert projected.block.block_id == "canonical-adapter-1"
+    assert projected.block.lineage_id == "tenant-adapter"
+
+    projected2 = adapter(view, lineage_id="override-lineage")
+    assert projected2.block.lineage_id == "override-lineage"
