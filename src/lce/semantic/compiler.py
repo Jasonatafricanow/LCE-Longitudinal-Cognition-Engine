@@ -1,4 +1,8 @@
-"""Restart-safe Semantic Block compiler using the BLOCK-03 stream boundary."""
+"""LEGACY STANDALONE SEMANTIC COMPILATION.
+
+Restart-safe BLOCK-03 compiler. Integrated canonical production MUST NOT CALL
+this compiler; committed MR-Mem Blocks enter the post-compilation path directly.
+"""
 
 from __future__ import annotations
 

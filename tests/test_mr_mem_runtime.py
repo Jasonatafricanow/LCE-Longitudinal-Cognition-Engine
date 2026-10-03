@@ -7,6 +7,7 @@ import pytest
 
 pytest.importorskip("mr_mem.memory.semantic_projection")
 
+from mr_mem.contracts import Scope, ScopeDomain
 from mr_mem.memory.contracts import MemoryLifecycle
 
 from lce.integrations.mr_mem_runtime import MrMemProjectionRuntime
@@ -43,6 +44,8 @@ def test_canonical_replay_restart_and_no_raw_compiler(tmp_path: Path, monkeypatc
             runtime.process_raw_evidence(object())  # type: ignore[arg-type]
     finally:
         runtime.close()
+
+
     restarted = MrMemProjectionRuntime(tmp_path, scope=view.scope, provider=ForbiddenSemanticProvider())
     try:
         assert restarted.project_canonical_semantic_block(view).receipt.replayed
@@ -50,6 +53,20 @@ def test_canonical_replay_restart_and_no_raw_compiler(tmp_path: Path, monkeypatc
         assert restarted.lines.list_lines() == lines
     finally:
         restarted.close()
+
+
+def test_scope_is_explicit_and_persisted_across_restart(tmp_path: Path) -> None:
+    view = canonical_view()
+    other = Scope(ScopeDomain.USER, user_id="different-user")
+    runtime = MrMemProjectionRuntime(tmp_path, scope=view.scope)
+    try:
+        with pytest.raises(ValueError, match="scope mismatch"):
+            runtime.project_canonical_semantic_block(replace(view, scope=other))
+        assert runtime.projected.list_semantic_blocks(current_valid_only=False) == ()
+    finally:
+        runtime.close()
+    with pytest.raises(ValueError, match="binding mismatch"):
+        MrMemProjectionRuntime(tmp_path, scope=other)
 
 
 @pytest.mark.parametrize("lifecycle", [MemoryLifecycle.INVALIDATED, MemoryLifecycle.ARCHIVED])
