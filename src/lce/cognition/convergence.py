@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Literal
 
 from lce.reference_memory.contracts import ReferenceMemorySubstratePort
+from lce.reference_memory.support import support_valid_at
 
 Polarity = Literal["support", "contradict"]
 DecisionStatus = Literal["CONVERGED", "UNRESOLVED"]
@@ -38,11 +39,7 @@ def _evidence_valid_at(
     evidence_id: str,
     cutoff: datetime,
 ) -> bool:
-    reader = getattr(memory, "evidence_valid_at", None)
-    if callable(reader):
-        return bool(reader(evidence_id, cutoff))
-    item = memory.get_evidence(evidence_id)
-    return item.effective_known_at <= cutoff and item.current_valid
+    return support_valid_at(memory, evidence_id, cutoff)
 
 
 @dataclass(frozen=True, slots=True)

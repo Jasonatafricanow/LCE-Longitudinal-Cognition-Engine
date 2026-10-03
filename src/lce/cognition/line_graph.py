@@ -29,6 +29,11 @@ from lce.reference_memory.contracts import (
     ReferenceMemorySubstratePort,
     SemanticBlock,
 )
+from lce.reference_memory.support import (
+    block_valid_at,
+    support_status,
+    support_valid_at,
+)
 
 
 def _require_utc(value: datetime, name: str) -> None:
@@ -49,11 +54,7 @@ def _evidence_valid_at(
     evidence_id: str,
     cutoff: datetime,
 ) -> bool:
-    reader = getattr(memory, "evidence_valid_at", None)
-    if callable(reader):
-        return bool(reader(evidence_id, cutoff))
-    item = memory.get_evidence(evidence_id)
-    return item.effective_known_at <= cutoff and item.current_valid
+    return support_valid_at(memory, evidence_id, cutoff)
 
 
 def _cosine(
@@ -1089,7 +1090,7 @@ class LineAssembler:
         if block.derived_known_at is not None:
             return block.derived_known_at
         return max(
-            self.memory.get_evidence(evidence_id).effective_known_at
+            support_status(self.memory, evidence_id).known_at
             for evidence_id in block.raw_evidence_ids
         )
 
@@ -1109,14 +1110,7 @@ class LineAssembler:
         if persisted != block:
             return False
         try:
-            return all(
-                _evidence_valid_at(
-                    self.memory,
-                    evidence_id,
-                    knowledge_cutoff,
-                )
-                for evidence_id in persisted.raw_evidence_ids
-            )
+            return block_valid_at(self.memory, persisted, knowledge_cutoff)
         except KeyError:
             return False
 
@@ -1525,14 +1519,7 @@ class LineGraphView:
                 block = self.memory.get_semantic_block_state(
                     node_state.state_id
                 )
-                if not all(
-                    _evidence_valid_at(
-                        self.memory,
-                        evidence_id,
-                        knowledge_cutoff,
-                    )
-                    for evidence_id in block.raw_evidence_ids
-                ):
+                if not block_valid_at(self.memory, block, knowledge_cutoff):
                     continue
             except KeyError:
                 continue

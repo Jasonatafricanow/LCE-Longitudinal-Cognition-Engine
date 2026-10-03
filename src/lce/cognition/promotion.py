@@ -21,6 +21,7 @@ from lce.reference_memory.contracts import (
     SemanticBlock,
     SemanticBlockPort,
 )
+from lce.reference_memory.support import block_current_valid
 from lce.store.interface import BaselineStorePort
 from lce.structure.contracts import StructureObservation, StructureRelationCandidate
 
@@ -269,7 +270,7 @@ class UnderstandingPromoter:
             state = self.memory.get_semantic_block_state(item.state_id)
             if state.block_id != item.block_id:
                 raise ValueError("selected immutable state belongs to another Semantic Block")
-            if not all(self.memory.get_evidence(evidence_id).current_valid for evidence_id in state.raw_evidence_ids):
+            if not block_current_valid(self.memory, state):
                 raise ValueError("selected immutable state is no longer current-valid")
         return selected
 

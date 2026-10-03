@@ -22,6 +22,7 @@ from lce.reference_memory.contracts import (
     ReferenceMemorySubstratePort,
     SemanticBlock,
 )
+from lce.reference_memory.support import block_valid_at, support_valid_at
 from lce.structure.trajectory import TrajectoryRuntimeResult
 
 
@@ -41,11 +42,7 @@ def _evidence_valid_at(
     evidence_id: str,
     cutoff: datetime,
 ) -> bool:
-    reader = getattr(memory, "evidence_valid_at", None)
-    if callable(reader):
-        return bool(reader(evidence_id, cutoff))
-    item = memory.get_evidence(evidence_id)
-    return item.effective_known_at <= cutoff and item.current_valid
+    return support_valid_at(memory, evidence_id, cutoff)
 
 
 class InspirationKind(StrEnum):
@@ -474,14 +471,7 @@ class InspirationRuntime:
                 return ()
             if block.block_id != block_id:
                 return ()
-            if not all(
-                _evidence_valid_at(
-                    self.memory,
-                    evidence_id,
-                    knowledge_cutoff,
-                )
-                for evidence_id in block.raw_evidence_ids
-            ):
+            if not block_valid_at(self.memory, block, knowledge_cutoff):
                 return ()
             blocks.append(block)
         return tuple(blocks)
