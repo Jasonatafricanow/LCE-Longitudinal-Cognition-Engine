@@ -50,6 +50,8 @@ class MrMemProjectionRuntime(LceProjectionCore):
     def project_canonical_semantic_block(
         self, view: CanonicalSemanticBlockView,
     ) -> CanonicalProjectionResult:
+        if not isinstance(view, CanonicalSemanticBlockView):
+            raise TypeError("CanonicalSemanticBlockView required; Point is not an LCE input")
         if view.scope != self.scope:
             raise ValueError("canonical projection scope mismatch")
         projection = map_canonical_semantic_block(view, lineage_id=self.lineage_id)

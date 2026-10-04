@@ -73,6 +73,8 @@ def map_canonical_semantic_block(
                 "schema_version": view.schema_version,
                 "source_interaction_id": view.source_interaction_id,
                 "context_memory_ids": view.context_memory_ids,
+                "semantic_units": tuple(unit.wire() for unit in view.units),
+                "unit_source_indices": view.unit_source_indices,
                 "source_refs": tuple({
                     **asdict(ref), "occurred_at": ref.occurred_at.isoformat(),
                 } for ref in view.source_refs),
