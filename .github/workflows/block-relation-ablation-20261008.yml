@@ -1,0 +1,35 @@
+name: Block Relation Ablation (Research Only)
+
+on:
+  push:
+    branches:
+      - research/block-semantic-ablation-20261008
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-ablation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install LCE and local embedding packages
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . "sentence-transformers>=3.3,<4"
+      - name: Execute two embedding models through the unchanged Path B supplier
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+          TOKENIZERS_PARALLELISM: "false"
+        run: python research/experiments/block_relation_ablation_20261008/probe.py
+      - name: Preserve result whether finished or partial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: block-relation-ablation-results
+          path: relation_ablation_results.json
+          if-no-files-found: ignore
