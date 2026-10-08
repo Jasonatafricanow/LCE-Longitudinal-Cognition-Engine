@@ -1,0 +1,32 @@
+name: Open Block Compilation Probe (Research Only)
+on:
+  push:
+    branches:
+      - research/block-open-compilation-20261008
+permissions:
+  contents: read
+jobs:
+  semantic-compiler:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install local inference
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "huggingface_hub>=0.33,<1" "llama-cpp-python==0.3.16"
+      - name: Run open compilation and forced-exclusive control
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+          HF_HUB_ENABLE_HF_TRANSFER: "0"
+        run: python -u research/experiments/block_open_compilation_20261008/run.py
+      - name: Preserve full receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: block-open-compilation-receipts
+          path: block_open_compilation_results.json
+          if-no-files-found: ignore
