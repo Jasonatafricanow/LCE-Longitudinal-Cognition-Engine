@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "status": "AUTHOR_CONSTRUCTED_UNADJUDICATED",
+    "origin": "privacy-reduced transformations of prior experimental themes; controlled ambiguous-reference and correction tests are synthetic",
+    "note": "Evaluation rubric is not passed into prompts. Do not call this unseen real-world held-out corpus."
+  },
+  "cases": [
+    {
+      "id": "mixed_same_source",
+      "turns": [
+        {
+          "id": "culture-r1",
+          "text": "一部反叛作品要产生影响，首先得被人看见；作品进入公众解读后，作者也不再独占它的意义，读者的再解释还能延续批判。还有一件完全独立的事：AI作为审稿人要客观、建设性，不能为了批评而制造稻草人，交付前应该复查论证。"
+        }
+      ],
+      "check": {
+        "separate_meanings": [
+          "作品传播后作者不能独占意义",
+          "AI审稿应客观避免稻草人"
+        ],
+        "count_min": 2,
+        "negative": "两项内容不应合并成一个唯一的Block"
+      }
+    },
+    {
+      "id": "multi_source_closure",
+      "turns": [
+        {
+          "id": "assets-r1",
+          "text": "评估算力租赁不能仅凭账面折旧和静态回本期；我更在意整个设备生命周期里的实际收费利用率、经济寿命、运维成本以及最终残值。"
+        },
+        {
+          "id": "assets-r2",
+          "text": "旧卡退出前沿训练后，仍可能出租来做推理并继续产生现金流，所以刚才全周期估值里的退出残值未必接近零。另外我计划另查旧卡推理市场的真实租金。"
+        }
+      ],
+      "check": {
+        "meaning_claims": [
+          "全周期估值依赖实际收费利用率",
+          "旧卡仍可产生推理现金流",
+          "计划核实旧卡实际租金"
+        ],
+        "source_rule": "任何声称旧卡仍能承载推理服务的Block必须引用assets-r2；若同一Block同时谈全周期模型和旧卡事实，应同时引用r1/r2"
+      }
+    },
+    {
+      "id": "delayed_bridge",
+      "turns": [
+        {
+          "id": "bridge-r1",
+          "text": "日线回测如果用买入当天的全天成交额做盘前筛选，就是未来函数。过滤条件只能用交易当时实际可看到的数据。"
+        },
+        {
+          "id": "bridge-r2",
+          "text": "我打算另做盘中的提醒服务，不用等日线收盘。但是它和刚才回测过滤规则之间到底怎么衔接，我还没想出来；先保留这个空缺。"
+        },
+        {
+          "id": "bridge-r3",
+          "text": "现在找到了衔接办法：拿开盘前30分钟的成交额与历史同期比较。这样既不用拿全天数据作弊，又能成为盘中提醒服务的触发过滤条件。"
+        },
+        {
+          "id": "bridge-r4",
+          "text": "上面没有补充了，就是前面说的那些。"
+        }
+      ],
+      "check": {
+        "must_exist_early": [
+          "未来函数约束",
+          "盘中提醒计划"
+        ],
+        "pending_at": "bridge-r2",
+        "should_not_infer_early": "开盘30分钟比较在r3前不得出现",
+        "should_resolve_at": "bridge-r3",
+        "zero_new_at": "bridge-r4"
+      }
+    },
+    {
+      "id": "unresolved_reference",
+      "turns": [
+        {
+          "id": "reference-r1",
+          "text": "他那个替换法好像可以，但这里说的那个东西还没搞清楚是什么。我没确定之前，不要替我定义替换对象。"
+        },
+        {
+          "id": "reference-r2",
+          "text": "现在明确了，我说的是保留移动聊天框架、只把框架内部的决策组件从模型甲换成模型乙，不是替换整套聊天框架。"
+        }
+      ],
+      "check": {
+        "pending_at": "reference-r1",
+        "should_resolve_at": "reference-r2",
+        "must_not_infer_early": "不能在第一轮提前生成模型甲/模型乙的确定替换关系"
+      }
+    },
+    {
+      "id": "correction_and_parallel",
+      "turns": [
+        {
+          "id": "parallel-r1",
+          "text": "我暂时觉得方案A在手机上可能更省内存，但这只是猜测；另外我还想独立测试语音识别的延迟。"
+        },
+        {
+          "id": "parallel-r2",
+          "text": "更正刚才的判断：现在没有依据认为方案A一定更省内存，原话只是一种假设。语音识别延迟的测试计划不受这次更正影响。"
+        }
+      ],
+      "check": {
+        "parallel_claims": 2,
+        "correction": "更正只作用于内存推测，不能顺带撤销语音识别测试计划",
+        "epistemic": "不能把省内存推测改写成已证实事实"
+      }
+    }
+  ]
+}
