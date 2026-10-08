@@ -1,0 +1,5 @@
+{"source_id":"398843","context_before":["398838","398842"],"content":"用户要求比较两种决策模型的能力差异。","manual_cognition_action":"comparison_request","evidence_note":"模型对比是本轮焦点，速度与准确率说法是比较依据而非用户既定结论"}
+{"source_id":"398848","context_before":["398842","398843","398847"],"content":"用户认为其中的开源决策模型具有较大潜力，主要能力差距来自后训练。","manual_cognition_action":"assessment","evidence_note":"独立潜力判断；不将Qwen旁支查询收录到该认知"}
+{"source_id":"399022","context_before":["398842","398843","399021"],"content":"用户提出沿用现有移动聊天框架，但将其内部原有决策模型组件替换为另一款决策模型的计划。","manual_cognition_action":"replacement_plan","evidence_note":"手机模型大小为提议理由，不抢先编入后续两模型组合部署"}
+{"source_id":"399028","context_before":["398842","399022","399027"],"content":"用户指出，拟替换的决策模型仍然需要前置语言模型承担输入清洗。","manual_cognition_action":"dependency_correction","evidence_note":"先前助手把该模型当生成LLM的解释已被用户否定；保留替换后的必要依赖"}
+{"source_id":"399051","context_before":["399022","399028","399031","399050"],"content":"用户探索将前置清洗语言模型与小型决策模型组合部署到手机端。","manual_cognition_action":"joint_deployment_proposal","evidence_note":"原有清洗→决策的功能关系+手机本地运行设想；不声称已部署或已验证"}
