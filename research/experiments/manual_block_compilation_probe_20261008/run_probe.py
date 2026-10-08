@@ -57,7 +57,13 @@ def main():
         }, method="POST")
         try:
             with urllib.request.urlopen(request, timeout=75) as response:
-                body = json.loads(response.read())
+                raw_body = response.read()
+                print("HTTP_STATUS", response.status, "CONTENT_TYPE", response.headers.get("Content-Type"), "BODY_BYTES", len(raw_body))
+                try:
+                    body = json.loads(raw_body)
+                except json.JSONDecodeError:
+                    print("NOT_JSON_BODY_PREFIX", repr(raw_body[:200]))
+                    return 4
         except Exception as exc:
             # Never print token or full request headers.
             print(case["id"], "PROVIDER_ERROR", type(exc).__name__, getattr(exc,"code", None))
