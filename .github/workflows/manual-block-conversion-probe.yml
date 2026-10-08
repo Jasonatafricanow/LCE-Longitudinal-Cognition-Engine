@@ -1,0 +1,31 @@
+name: Manual Block Conversion Probe (Research Only)
+
+on:
+  push:
+    branches:
+      - research/manual-block-rule-repro-20261008
+
+permissions:
+  contents: read
+  models: read
+
+jobs:
+  semantic-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe two privacy-trimmed technical turns
+        env:
+          GH_MODELS_TOKEN: ${{ github.token }}
+        run: python research/experiments/manual_block_compilation_probe_20261008/run_probe.py
+      - name: Save frozen responses
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-block-two-case-probe
+          path: manual_block_probe_results.json
+          if-no-files-found: ignore
