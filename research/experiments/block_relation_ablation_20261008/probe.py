@@ -67,7 +67,7 @@ def build_blocks(corpus):
         dt=datetime.fromisoformat(stamp)
         memory.add_evidence(RawEvidence(
           evidence_id="e_"+bid,content=sentence,occurred_at=dt,known_at=dt,
-          provenance={"source":"anonymized-conceptual-probe"}))
+          provenance={"source":"anonymized-conceptual-probe","canonical":True}))
         block=memory.put_semantic_block(SemanticBlock(
           block_id=bid,content=sentence,raw_evidence_ids=("e_"+bid,),
           occurred_start=dt,occurred_end=dt,compiler_version="human-redacted-v1",
