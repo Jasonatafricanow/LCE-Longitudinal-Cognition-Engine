@@ -1,0 +1,36 @@
+name: SemanticBlock E1 Frozen Handoff Replay
+on:
+  push:
+    branches:
+      - research/semantic-compiler-handoff-localization-20261008
+permissions:
+  contents: read
+  actions: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read and enforce frozen control
+        run: |
+          cat research/semantic_block_compiler/CONTROL.md
+          grep -F '唯一下一实验 E1' research/semantic_block_compiler/CONTROL.md
+      - uses: actions/download-artifact@v4
+        with:
+          name: semantic-compiler-method-raw-results
+          run-id: 37743041650
+          github-token: ${{ github.token }}
+          path: previous_results
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run read-only localization and stop on reproducible evidence
+        run: python research/semantic_block_compiler/replay_e1.py
+      - name: Preserve empirical replay only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semanticblock-e1-replay-receipt
+          path: handoff_loss_replay.json
+          if-no-files-found: ignore
