@@ -1,0 +1,572 @@
+{
+  "schema": "semanticblock-fixed-block-corpus-v1",
+  "authored": "2026-10-09",
+  "synthetic_only": true,
+  "purpose": "fixed-block content compilation; LCE locally organizes candidates; LLM locally judges links",
+  "intentional_limits": [
+    "No semantic relation gold labels in consumer inputs",
+    "Three arm outputs manually drafted, not outputs of an automatic compiler",
+    "Block boundaries are fixed experimental windows, not learned segmentation",
+    "Variants aim at functional semantic equivalence and may vary in length",
+    "Do not mix three variants of the same source block in one LCE index"
+  ],
+  "arms": [
+    "baseline",
+    "attribution",
+    "state"
+  ],
+  "track_counts": {
+    "release": 6,
+    "jewelry": 6,
+    "venue": 6,
+    "scanners": 6
+  },
+  "cases": [
+    {
+      "block_id": "A01",
+      "track": "release",
+      "known_at": "2026-09-01T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A01-T1",
+          "role": "user",
+          "text": "Lumen 2.3 安装包已下载到测试机共享文件夹，还没安装。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "Lumen 2.3 安装包已放到测试机共享文件夹，软件尚未安装。",
+        "attribution": "用户确认 Lumen 2.3 安装包已下载到测试机共享文件夹，尚未安装。",
+        "state": "Lumen 2.3：安装包已下载；测试机安装未执行。"
+      }
+    },
+    {
+      "block_id": "A02",
+      "track": "release",
+      "known_at": "2026-09-02T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A02-T1",
+          "role": "user",
+          "text": "测试员乔说签名可能有问题，但还没验证，不能算签名失败。"
+        }
+      ],
+      "prior_context_ids": [
+        "A01"
+      ],
+      "compiled": {
+        "baseline": "Lumen 2.3 的签名受到质疑，目前尚未核实是否有问题。",
+        "attribution": "用户转述测试员乔怀疑 Lumen 2.3 签名异常，但未经验证。",
+        "state": "Lumen 2.3：签名风险尚未证实；签名失败不成立为已知事实。"
+      }
+    },
+    {
+      "block_id": "A03",
+      "track": "release",
+      "known_at": "2026-09-03T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A03-T1",
+          "role": "user",
+          "text": "罗说昨晚签名通过了。"
+        },
+        {
+          "turn_id": "A03-T2",
+          "role": "assistant",
+          "text": "那正式版可以安装了吗？"
+        },
+        {
+          "turn_id": "A03-T3",
+          "role": "user",
+          "text": "不对，罗说的是测试包签名通过，正式版没验证，更没说能安装。"
+        }
+      ],
+      "prior_context_ids": [
+        "A01",
+        "A02"
+      ],
+      "compiled": {
+        "baseline": "罗所说的签名通过只涉及 Lumen 测试包；正式版尚未验证或获准安装。",
+        "attribution": "用户澄清：同事罗报告的是 Lumen 测试包签名通过，并非正式版已通过或可以安装。",
+        "state": "Lumen：测试包据罗报告签名通过；正式版签名未验证，正式版安装许可未取得。"
+      }
+    },
+    {
+      "block_id": "A04",
+      "track": "release",
+      "known_at": "2026-09-04T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A04-T1",
+          "role": "user",
+          "text": "乔复测确认测试包签名没问题，但权限冲突还没查完。"
+        }
+      ],
+      "prior_context_ids": [
+        "A01",
+        "A02",
+        "A03"
+      ],
+      "compiled": {
+        "baseline": "Lumen 测试包经复测签名正常，权限冲突检查尚未结束。",
+        "attribution": "用户报告测试员乔复测确认 Lumen 测试包签名正常，但权限冲突未查完。",
+        "state": "Lumen 测试包：签名复测通过；权限冲突核查未完成。"
+      }
+    },
+    {
+      "block_id": "A05",
+      "track": "release",
+      "known_at": "2026-09-05T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A05-T1",
+          "role": "user",
+          "text": "权限冲突已排除，可以在一台测试机安装，但正式机不能部署。"
+        }
+      ],
+      "prior_context_ids": [
+        "A01",
+        "A02",
+        "A03",
+        "A04"
+      ],
+      "compiled": {
+        "baseline": "Lumen 权限冲突已排除，获准在一台测试机安装，正式机暂不可部署。",
+        "attribution": "用户确认 Lumen 权限冲突已排除，并允许仅在一台测试机安装，禁止正式机部署。",
+        "state": "Lumen：权限冲突已排除；测试机安装获准但尚未确认执行；正式机部署未获许可。"
+      }
+    },
+    {
+      "block_id": "A06",
+      "track": "release",
+      "known_at": "2026-09-06T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A06-T1",
+          "role": "user",
+          "text": "测试机装好了，正式机还在等负责人批准，别写成上线了。"
+        }
+      ],
+      "prior_context_ids": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05"
+      ],
+      "compiled": {
+        "baseline": "Lumen 已在测试机完成安装，正式机部署仍等待负责人批准。",
+        "attribution": "用户报告 Lumen 测试机安装完成，并明确正式机仍待负责人批准。",
+        "state": "Lumen：测试机安装已完成；正式机部署未批准，也未上线。"
+      }
+    },
+    {
+      "block_id": "B01",
+      "track": "jewelry",
+      "known_at": "2026-09-01T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B01-T1",
+          "role": "user",
+          "text": "客户想看 J17 手链银色样品，但订单还没下。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "J17 手链客户希望查看银色样品，尚未下正式订单。",
+        "attribution": "用户转述客户希望查看 J17 手链银色样品，但客户尚未订购。",
+        "state": "J17 手链：银色样品展示需求存在；正式订单未成立。"
+      }
+    },
+    {
+      "block_id": "B02",
+      "track": "jewelry",
+      "known_at": "2026-09-02T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B02-T1",
+          "role": "user",
+          "text": "供应商陈说样品可能下周到，不保证一定能到。"
+        }
+      ],
+      "prior_context_ids": [
+        "B01"
+      ],
+      "compiled": {
+        "baseline": "供应商预计 J17 银色样品可能下周到，但没有承诺日期。",
+        "attribution": "用户转述供应商陈称 J17 银色样品可能下周到，陈未作确定承诺。",
+        "state": "J17 银色样品：下周到货仅为可能性；确定交付日期未知。"
+      }
+    },
+    {
+      "block_id": "B03",
+      "track": "jewelry",
+      "known_at": "2026-09-03T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B03-T1",
+          "role": "user",
+          "text": "客户确认银色照片可以，但没有批准批量生产。"
+        }
+      ],
+      "prior_context_ids": [
+        "B01",
+        "B02"
+      ],
+      "compiled": {
+        "baseline": "J17 银色样品照片已获客户认可，批量生产仍未获批。",
+        "attribution": "用户报告客户认可 J17 银色样品照片，但客户并未授权批量生产。",
+        "state": "J17：银色样品照片已确认；批量生产尚未获授权。"
+      }
+    },
+    {
+      "block_id": "B04",
+      "track": "jewelry",
+      "known_at": "2026-09-04T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B04-T1",
+          "role": "user",
+          "text": "客服说要先量准手腕围度，再让客户补尾款，不能反过来。"
+        }
+      ],
+      "prior_context_ids": [
+        "B01",
+        "B02",
+        "B03"
+      ],
+      "compiled": {
+        "baseline": "J17 订单接下来要先核对手腕围度，再让客户补尾款。",
+        "attribution": "用户转述客服的 J17 订单流程：确认腕围之后，才通知客户补尾款。",
+        "state": "J17：先确认腕围、后补尾款的顺序已规定；未报告这两步已完成。"
+      }
+    },
+    {
+      "block_id": "B05",
+      "track": "jewelry",
+      "known_at": "2026-09-05T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B05-T1",
+          "role": "user",
+          "text": "实测是 18 厘米，不是之前口头说的 22 厘米，要按 18 改样。"
+        }
+      ],
+      "prior_context_ids": [
+        "B01",
+        "B02",
+        "B03",
+        "B04"
+      ],
+      "compiled": {
+        "baseline": "J17 腕围实测为 18 厘米，修正之前口头的 22 厘米，需据此调整样品。",
+        "attribution": "用户澄清 J17 实测腕围为 18 厘米，之前 22 厘米只是口头值，应按实测改样。",
+        "state": "J17：腕围 18 厘米已实测确认；22 厘米旧口头值被修正，改样仍待进行。"
+      }
+    },
+    {
+      "block_id": "B06",
+      "track": "jewelry",
+      "known_at": "2026-09-06T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B06-T1",
+          "role": "user",
+          "text": "18 厘米样品改好了，但周五能不能发还不知道，不要向客户保证。"
+        }
+      ],
+      "prior_context_ids": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05"
+      ],
+      "compiled": {
+        "baseline": "J17 的 18 厘米样品已调整完成，是否周五发货仍不确定。",
+        "attribution": "用户确认 J17 样品已改至 18 厘米，并要求不要向客户承诺周五发货。",
+        "state": "J17：18 厘米改样完成；周五发货未确认，未作发货承诺。"
+      }
+    },
+    {
+      "block_id": "C01",
+      "track": "venue",
+      "known_at": "2026-09-01T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C01-T1",
+          "role": "user",
+          "text": "场地方说松叶论坛周六 C 厅可能空出来，但还不能算订到。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "松叶论坛周六可能可以使用 C 厅，目前尚未预订。",
+        "attribution": "用户转述场地方称周六 C 厅可能有空档，松叶论坛尚未完成预订。",
+        "state": "松叶论坛：周六 C 厅可用性不确定；场地预订尚未完成。"
+      }
+    },
+    {
+      "block_id": "C02",
+      "track": "venue",
+      "known_at": "2026-09-02T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C02-T1",
+          "role": "user",
+          "text": "投影设备已经订了，C 厅还没订，两件事别混了。"
+        }
+      ],
+      "prior_context_ids": [
+        "C01"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛已预订投影设备，但 C 厅仍未预订。",
+        "attribution": "用户明确确认松叶论坛投影设备已预订，同时否认 C 厅已预订。",
+        "state": "松叶论坛：投影设备预订完成；C 厅预订未完成。"
+      }
+    },
+    {
+      "block_id": "C03",
+      "track": "venue",
+      "known_at": "2026-09-03T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C03-T1",
+          "role": "user",
+          "text": "工作人员说场地方现在确认 C 厅周六能用，但合同还没签。"
+        }
+      ],
+      "prior_context_ids": [
+        "C01",
+        "C02"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛周六使用 C 厅已经得到确认，合同尚未签署。",
+        "attribution": "用户转述工作人员称场地方确认 C 厅周六可使用，合同仍未签。",
+        "state": "松叶论坛：C 厅周六可用性已确认；合同签署未完成。"
+      }
+    },
+    {
+      "block_id": "C04",
+      "track": "venue",
+      "known_at": "2026-09-04T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C04-T1",
+          "role": "user",
+          "text": "财务已经批了论坛场地预算，不能说场地协议也批了。"
+        }
+      ],
+      "prior_context_ids": [
+        "C01",
+        "C02",
+        "C03"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛场地预算已获财务批准，场地协议还未办妥。",
+        "attribution": "用户报告财务批准松叶论坛场地预算，未称场地协议获得批准。",
+        "state": "松叶论坛：场地预算已获批；场地协议仍未办妥。"
+      }
+    },
+    {
+      "block_id": "C05",
+      "track": "venue",
+      "known_at": "2026-09-05T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C05-T1",
+          "role": "user",
+          "text": "今天 C 厅场地协议签完了，活动公告还没发。"
+        }
+      ],
+      "prior_context_ids": [
+        "C01",
+        "C02",
+        "C03",
+        "C04"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛 C 厅场地协议已签署，活动公告尚未发布。",
+        "attribution": "用户报告今天签署松叶论坛 C 厅协议，同时指出活动公告仍未发出。",
+        "state": "松叶论坛：场地协议签署完成；对外公告未发布。"
+      }
+    },
+    {
+      "block_id": "C06",
+      "track": "venue",
+      "known_at": "2026-09-06T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C06-T1",
+          "role": "user",
+          "text": "工作人员根据周六天气预报决定取消露台环节，室内论坛还是计划照常办。"
+        }
+      ],
+      "prior_context_ids": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛因天气预报取消露台环节，室内论坛仍按原计划进行。",
+        "attribution": "用户转述工作人员参考天气预报后决定取消露台环节，室内论坛计划不变。",
+        "state": "松叶论坛：露台环节已决定取消；室内论坛仍计划举行，尚未宣称举办完成。"
+      }
+    },
+    {
+      "block_id": "D01",
+      "track": "scanners",
+      "known_at": "2026-09-01T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D01-T1",
+          "role": "user",
+          "text": "南仓门店订了四台扫描器，供货商说周四有望发货。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "南仓门店订购四台扫描器，供货商预计可能周四发货。",
+        "attribution": "用户报告南仓门店已订四台扫描器，并转述供货商称周四有望发货。",
+        "state": "南仓扫描器：4 台已下单；周四发货仅为预期，尚未确认。"
+      }
+    },
+    {
+      "block_id": "D02",
+      "track": "scanners",
+      "known_at": "2026-09-02T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D02-T1",
+          "role": "user",
+          "text": "司机说车队排好了，可扫描器还没从仓库发出来。"
+        }
+      ],
+      "prior_context_ids": [
+        "D01"
+      ],
+      "compiled": {
+        "baseline": "南仓扫描器配送车辆已安排，但货物仍未出库。",
+        "attribution": "用户转述司机称配送车队已安排，同时说明南仓扫描器尚未出库。",
+        "state": "南仓扫描器：运力已排班；货物未出库、未发运。"
+      }
+    },
+    {
+      "block_id": "D03",
+      "track": "scanners",
+      "known_at": "2026-09-03T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D03-T1",
+          "role": "user",
+          "text": "现在只发出两台扫描器，另外两台还缺货。"
+        }
+      ],
+      "prior_context_ids": [
+        "D01",
+        "D02"
+      ],
+      "compiled": {
+        "baseline": "南仓四台扫描器订单已发出两台，另外两台缺货。",
+        "attribution": "用户确认南仓扫描器四台订单里只有两台发货，其余两台缺货。",
+        "state": "南仓扫描器：2/4 已发货；2/4 缺货且未发货。"
+      }
+    },
+    {
+      "block_id": "D04",
+      "track": "scanners",
+      "known_at": "2026-09-04T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D04-T1",
+          "role": "user",
+          "text": "两台扫描器到店了，员工签收后还没验机。"
+        }
+      ],
+      "prior_context_ids": [
+        "D01",
+        "D02",
+        "D03"
+      ],
+      "compiled": {
+        "baseline": "南仓先发出的两台扫描器已经到店，但尚未完成验机。",
+        "attribution": "用户报告两台南仓扫描器到店并由员工签收，仍未经过验机。",
+        "state": "南仓扫描器：两台已到店、已签收；设备验收未执行。"
+      }
+    },
+    {
+      "block_id": "D05",
+      "track": "scanners",
+      "known_at": "2026-09-05T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D05-T1",
+          "role": "user",
+          "text": "验机发现一台坏了，我们要求换货，供应商还没同意。"
+        }
+      ],
+      "prior_context_ids": [
+        "D01",
+        "D02",
+        "D03",
+        "D04"
+      ],
+      "compiled": {
+        "baseline": "南仓已到店扫描器验收发现一台故障，提出换货要求但尚未获准。",
+        "attribution": "用户报告南仓验机发现一台扫描器故障，门店已向供应商要求换货但尚未获同意。",
+        "state": "南仓扫描器：一台故障已发现；换货申请已提出，批准未取得。"
+      }
+    },
+    {
+      "block_id": "D06",
+      "track": "scanners",
+      "known_at": "2026-09-06T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D06-T1",
+          "role": "user",
+          "text": "供应商同意把那台坏的换新，不过新机还没发货。"
+        }
+      ],
+      "prior_context_ids": [
+        "D01",
+        "D02",
+        "D03",
+        "D04",
+        "D05"
+      ],
+      "compiled": {
+        "baseline": "南仓一台故障扫描器的换货已获同意，新设备尚未发货。",
+        "attribution": "用户转述供应商同意更换南仓故障扫描器，新机仍未寄出。",
+        "state": "南仓扫描器：换货已获批准；替换新机尚未发货。"
+      }
+    }
+  ]
+}
