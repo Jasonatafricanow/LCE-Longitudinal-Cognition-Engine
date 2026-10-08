@@ -1,9 +1,7 @@
 name: Manual Block Conversion Probe (Research Only)
 
 on:
-  push:
-    branches:
-      - research/manual-block-rule-repro-20261008
+  workflow_dispatch:
 
 permissions:
   contents: read
