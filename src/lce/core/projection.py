@@ -122,7 +122,18 @@ class _CandidateEvaluation:
 
 
 class StaleLineGraphError(RuntimeError):
-    """Current Line graph was compiled by a different derivation fingerprint."""
+    """Current Line graph is not a complete derivation of the current sources.
+
+    Raised when the stored derivation fingerprint differs, or when an earlier
+    ``replay_projection_from_sources()`` did not run to completion.
+    """
+
+
+# Persisted before replay_projection_from_sources() destroys any derived state
+# and cleared only after the whole replay succeeds. While it is set, derived
+# projection state is a partial generation and must never be served or
+# extended.
+_REPLAY_MARKER = "replay_in_progress"
 
 
 class LceProjectionCore:
@@ -246,6 +257,10 @@ class LceProjectionCore:
         prior_line_fingerprint = self.lines.get_metadata(
             "derivation_fingerprint"
         )
+        self._projection_replay_incomplete = bool(
+            self.lines.get_metadata(_REPLAY_MARKER)
+        )
+        self._projection_replay_active = False
         rebuild_marker = self.lines.get_metadata("rebuild_in_progress")
         self._line_graph_recovery_cutoff = (
             datetime.fromisoformat(rebuild_marker)
@@ -363,7 +378,29 @@ class LceProjectionCore:
         self._mark_line_graph_current()
         return result
 
+    def _require_projection_replay_complete(self) -> None:
+        """Fail closed while an interrupted replay left a partial generation.
+
+        A killed replay leaves some sources derived and others not, and an
+        empty or partial Line graph that carries a valid fingerprint. Neither
+        rebuilding from that memory nor ingesting on top of it is provably the
+        same as an uninterrupted replay, so the only way out is re-running
+        replay_projection_from_sources() over the full authoritative source
+        set, which resets and re-derives everything in source order.
+        """
+        if (
+            self._projection_replay_incomplete
+            and not self._projection_replay_active
+        ):
+            raise StaleLineGraphError(
+                "An earlier replay_projection_from_sources() did not "
+                "finish; derived projection state is incomplete. Re-run "
+                "replay_projection_from_sources() with the full "
+                "authoritative source set before reading or ingesting."
+            )
+
     def _require_line_graph_current(self) -> None:
+        self._require_projection_replay_complete()
         if self._line_graph_requires_rebuild:
             raise StaleLineGraphError(
                 "Line graph derivation is stale; run process() or "
@@ -384,6 +421,7 @@ class LceProjectionCore:
     def _ensure_line_graph_current(
         self,
     ) -> TrajectoryRuntimeResult | None:
+        self._require_projection_replay_complete()
         if self._line_graph_recovery_cutoff is not None:
             return self._recover_line_graph_current()
         if not self._line_graph_requires_rebuild:
@@ -437,6 +475,9 @@ class LceProjectionCore:
             raise RuntimeError("Raw input is forbidden in canonical integrated mode")
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
+        # Barrier before the compiler touches memory: no new source may be
+        # derived on top of an interrupted replay's partial generation.
+        self._require_projection_replay_complete()
         if self._line_graph_recovery_cutoff is not None:
             self._ensure_line_graph_current()
         compiler_result = self.compiler.process(material)
@@ -457,6 +498,9 @@ class LceProjectionCore:
         """
         if mode not in {"batch", "nearline"}:
             raise ValueError("mode must be batch or nearline")
+        # Also covers canonical-mode callers that reach the shared downstream
+        # without going through process_raw_evidence().
+        self._require_projection_replay_complete()
         stage = self.memory.get_pipeline_stage(input_id)
         if compiler_result.replayed and stage == "complete":
             if mode == "nearline":
@@ -661,22 +705,35 @@ class LceProjectionCore:
                 "Worktree store cannot reset projection drafts"
             )
 
-        reset_memory()
-        self.discovery.delete_derived_snapshots()
-        reset_worktrees()
-        self.inspiration.store.reset_derived()
-        self.lines.reset_derived()
-
-        self._line_graph_recovery_cutoff = None
-        self._line_graph_requires_rebuild = False
-        self.lines.set_derivation_fingerprint(
-            self._line_graph_expected_fingerprint
+        # Persist the interruption marker BEFORE the first destructive step
+        # and keep it through every reset below. Only a fully successful
+        # replay clears it; a kill or exception anywhere in between leaves it
+        # set, so a restart refuses to serve or extend the partial generation.
+        self.lines.set_metadata(
+            _REPLAY_MARKER, datetime.now(UTC).isoformat()
         )
-        self._mark_line_graph_current()
+        self._projection_replay_incomplete = True
+        self._projection_replay_active = True
+        try:
+            reset_memory()
+            self.discovery.delete_derived_snapshots()
+            reset_worktrees()
+            self.inspiration.store.reset_derived()
+            self.lines.reset_derived(preserve_metadata=(_REPLAY_MARKER,))
 
-        if not ordered:
-            return ()
-        return self.run_batch(ordered)
+            self._line_graph_recovery_cutoff = None
+            self._line_graph_requires_rebuild = False
+            self.lines.set_derivation_fingerprint(
+                self._line_graph_expected_fingerprint
+            )
+            self._mark_line_graph_current()
+
+            results = self.run_batch(ordered) if ordered else ()
+        finally:
+            self._projection_replay_active = False
+        self.lines.set_metadata(_REPLAY_MARKER, "")
+        self._projection_replay_incomplete = False
+        return results
 
     def run_batch(
         self,
