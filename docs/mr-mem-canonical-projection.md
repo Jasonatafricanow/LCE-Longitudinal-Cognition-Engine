@@ -45,7 +45,7 @@ algorithm validity predicates conservatively omit unknown support.
 ## Verification
 
 The optional CI matrix checks out MR-Mem at
-`e7b4bb6e404d0eb2770e81a23b1b5352b956404c` and runs the full public verification
+`0685a8a2498cc828c8d500be6f4673e53fa6dc24` and runs the full public verification
 gate in both standalone and canonical mode. The trajectory workflow retains its
 existing focused standalone gate. Integration tests skip when the optional
 public MR-Mem contract is unavailable; standalone tests must still pass.
