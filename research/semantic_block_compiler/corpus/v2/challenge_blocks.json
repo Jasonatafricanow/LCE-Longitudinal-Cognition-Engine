@@ -1,0 +1,528 @@
+{
+  "schema": "semanticblock-fixed-block-corpus-v2-addendum",
+  "based_on": "../v1/fixed_blocks.json",
+  "authoring_status": "manually_written_synthetic_challenge_windows",
+  "sample_role": "fixed-block candidate structure discovery, not pre-labeled relation gold",
+  "frozen_at": "2026-10-09",
+  "synthetic_only": true,
+  "arms": [
+    "baseline",
+    "attribution",
+    "state"
+  ],
+  "cases": [
+    {
+      "block_id": "A07",
+      "track": "release",
+      "known_at": "2026-09-07T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A07-T1",
+          "role": "user",
+          "text": "Lumen 2.3 还要在南仓扫码端跑现场核验，等坏设备换回来才能测。现场核验端就是那台南仓扫码设备，不是发布服务器。"
+        }
+      ],
+      "prior_context_ids": [
+        "A06",
+        "D05",
+        "D06"
+      ],
+      "compiled": {
+        "baseline": "Lumen 2.3 计划在南仓扫码设备上做现场核验，需要等故障设备替换；待测设备不是发布服务器。",
+        "attribution": "用户说明 Lumen 2.3 要在南仓扫码设备上核验，需待故障设备更换，且明确不是在发布服务器上测。",
+        "state": "Lumen 2.3 的南仓现场核验尚未执行；前提是替换故障扫码设备。"
+      }
+    },
+    {
+      "block_id": "A08",
+      "track": "release",
+      "known_at": "2026-09-08T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A08-T1",
+          "role": "user",
+          "text": "项目经理说那套现场核验可以先排期，但备用扫码端到位前不启动测试。"
+        }
+      ],
+      "prior_context_ids": [
+        "A07",
+        "D07"
+      ],
+      "compiled": {
+        "baseline": "Lumen 2.3 的南仓现场核验允许先安排日程，替换扫码设备未到位不能开测。",
+        "attribution": "用户转述项目经理：Lumen 2.3 的南仓核验可先排期，但设备到位前不能开始测试。",
+        "state": "Lumen 2.3 南仓核验排期获允许，测试尚未开始，等待替换扫码端到位。"
+      }
+    },
+    {
+      "block_id": "A09",
+      "track": "release",
+      "known_at": "2026-09-09T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A09-T1",
+          "role": "user",
+          "text": "听说仓库那台替换设备已经寄出，周五可预排核验；机器没收到前，不能写成核验通过。"
+        }
+      ],
+      "prior_context_ids": [
+        "A08",
+        "D08"
+      ],
+      "compiled": {
+        "baseline": "Lumen 2.3 的南仓现场核验可预排周五，替换设备据说已寄出，但尚不能认为核验通过。",
+        "attribution": "用户听闻南仓替换设备已经寄出，并表示可预排 Lumen 2.3 周五核验，未确认设备到货或核验通过。",
+        "state": "Lumen 2.3 南仓核验尚未通过；设备仅据说已发出，周五可预排测试。"
+      }
+    },
+    {
+      "block_id": "A10",
+      "track": "release",
+      "known_at": "2026-09-10T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A10-T1",
+          "role": "user",
+          "text": "Lumen 2.4 是售后知识库的独立试验版，和 2.3 的南仓核验不是一项放行流程。2.4 文档审完了，安装还没安排。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "Lumen 2.4 的售后知识库试验文档已审完，但尚未安排安装；它与 2.3 南仓核验是不同流程。",
+        "attribution": "用户区分 Lumen 2.4 售后知识库试验与 2.3 南仓核验，确认前者文档已审核但未安排安装。",
+        "state": "Lumen 2.4 售后知识库文档审核已完成；安装未排期，放行流程独立于 2.3。"
+      }
+    },
+    {
+      "block_id": "A11",
+      "track": "release",
+      "known_at": "2026-09-11T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A11-T1",
+          "role": "user",
+          "text": "2.4 的安装包放进测试区了，但没有签名报告，别套用 2.3 之前的签名结论。"
+        }
+      ],
+      "prior_context_ids": [
+        "A10"
+      ],
+      "compiled": {
+        "baseline": "Lumen 2.4 安装包已进入测试区，但签名报告缺失，不能援引 2.3 的结论。",
+        "attribution": "用户确认 Lumen 2.4 安装包已放测试区，提醒不能把 2.3 的签名结论归给 2.4。",
+        "state": "Lumen 2.4 安装包已在测试区；签名报告仍无，签名是否合格未知。"
+      }
+    },
+    {
+      "block_id": "A12",
+      "track": "release",
+      "known_at": "2026-09-12T10:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "A12-T1",
+          "role": "user",
+          "text": "售后知识库 2.4 的演示做完了，客户还没批准正式发布。"
+        }
+      ],
+      "prior_context_ids": [
+        "A10",
+        "A11"
+      ],
+      "compiled": {
+        "baseline": "Lumen 2.4 售后知识库演示已完成，正式发布还未获得客户批准。",
+        "attribution": "用户报告 Lumen 2.4 售后知识库演示完成，但客户尚未批准正式发布。",
+        "state": "Lumen 2.4：演示完成；正式发布授权未取得。"
+      }
+    },
+    {
+      "block_id": "B07",
+      "track": "jewelry",
+      "known_at": "2026-09-07T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B07-T1",
+          "role": "user",
+          "text": "松叶论坛的主办方问 J17 那条 18 厘米银色手链能不能放进签到礼袋，还没有确认采购。"
+        }
+      ],
+      "prior_context_ids": [
+        "B06",
+        "C06"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛考虑把 J17 的 18 厘米银色手链用于签到礼袋，但采购尚未确认。",
+        "attribution": "用户转述松叶论坛主办方询问能否将 J17 银色手链放进签到礼袋，并未确认采购。",
+        "state": "J17 银色手链被考虑作为松叶论坛签到礼品；采购尚未确定。"
+      }
+    },
+    {
+      "block_id": "B08",
+      "track": "jewelry",
+      "known_at": "2026-09-08T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B08-T1",
+          "role": "user",
+          "text": "论坛方收到了 J17 样品照片，但谁出礼袋饰品的尾款仍没定。"
+        }
+      ],
+      "prior_context_ids": [
+        "B07",
+        "C07"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛已收到 J17 样品照片，礼袋饰品尾款由谁支付尚未确定。",
+        "attribution": "用户称松叶论坛主办方已收到 J17 照片，但尾款支付方仍不明确。",
+        "state": "松叶论坛 J17 礼袋项目：样品照片已送达；尾款承担方未知。"
+      }
+    },
+    {
+      "block_id": "B09",
+      "track": "jewelry",
+      "known_at": "2026-09-09T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B09-T1",
+          "role": "user",
+          "text": "论坛礼袋那批 J17 的采购审批通过了，供应商订单还没下。"
+        }
+      ],
+      "prior_context_ids": [
+        "B08",
+        "C08"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛礼袋所需 J17 已获采购审批，但尚未向供应商下单。",
+        "attribution": "用户确认松叶论坛 J17 手链采购获批，并说明尚未向供应商下单。",
+        "state": "松叶论坛 J17 礼袋采购：审批通过；供应商订单未提交。"
+      }
+    },
+    {
+      "block_id": "B10",
+      "track": "jewelry",
+      "known_at": "2026-09-10T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B10-T1",
+          "role": "user",
+          "text": "另一个客户咨询 J18 银色手链，和论坛礼袋的 J17 不是同一笔订单，照片还没确认。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "新客户咨询 J18 银色手链，照片尚待确认；该订单不同于论坛的 J17。",
+        "attribution": "用户明确另一位客户的 J18 银色手链咨询与论坛 J17 采购无关，J18 照片未确认。",
+        "state": "J18 银色手链：独立客户咨询；照片待确认，未与 J17 礼袋订单合并。"
+      }
+    },
+    {
+      "block_id": "B11",
+      "track": "jewelry",
+      "known_at": "2026-09-11T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B11-T1",
+          "role": "user",
+          "text": "J18 的银色照片客户说可以了，但批量生产还没批准。"
+        }
+      ],
+      "prior_context_ids": [
+        "B10"
+      ],
+      "compiled": {
+        "baseline": "J18 银色照片获客户认可，批量生产仍未批准。",
+        "attribution": "用户转述 J18 客户认可银色照片，未授权批量生产。",
+        "state": "J18：银色照片确认完成；批量生产授权未取得。"
+      }
+    },
+    {
+      "block_id": "B12",
+      "track": "jewelry",
+      "known_at": "2026-09-12T11:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "B12-T1",
+          "role": "user",
+          "text": "J18 的手腕围度实测也是 18 厘米，要求改样，但还没开始改。"
+        }
+      ],
+      "prior_context_ids": [
+        "B10",
+        "B11"
+      ],
+      "compiled": {
+        "baseline": "J18 腕围实测 18 厘米，已提出改样要求，尚未执行。",
+        "attribution": "用户说明 J18 的腕围实测为 18 厘米，客户要求改样但尚未开始。",
+        "state": "J18：腕围 18 厘米已确认；改样要求已提出、执行未开始。"
+      }
+    },
+    {
+      "block_id": "C07",
+      "track": "venue",
+      "known_at": "2026-09-07T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C07-T1",
+          "role": "user",
+          "text": "松叶论坛策划提议把 J17 的 18 厘米银色手链放签到礼袋里，但还没批礼品预算。"
+        }
+      ],
+      "prior_context_ids": [
+        "C06",
+        "B07"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛策划想用 J17 银色手链制作签到礼袋，礼品预算尚未批准。",
+        "attribution": "用户报告松叶论坛策划提出采用 J17 银色手链作签到礼物，预算未获批。",
+        "state": "松叶论坛签到礼袋：J17 手链方案已提出；礼品预算未批准。"
+      }
+    },
+    {
+      "block_id": "C08",
+      "track": "venue",
+      "known_at": "2026-09-08T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C08-T1",
+          "role": "user",
+          "text": "活动负责人说礼袋饰品不能从场地预算里走，得单独申请礼品采购。"
+        }
+      ],
+      "prior_context_ids": [
+        "C07",
+        "B08"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛签到礼袋饰品需要单独申请礼品采购，不能占用已批场地预算。",
+        "attribution": "用户转述活动负责人要求松叶论坛礼袋饰品单独审批，不得沿用场地预算。",
+        "state": "松叶论坛礼袋饰品：场地预算不能用于采购；需独立审批，尚未称已通过。"
+      }
+    },
+    {
+      "block_id": "C09",
+      "track": "venue",
+      "known_at": "2026-09-09T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C09-T1",
+          "role": "user",
+          "text": "主办方确认 J17 礼袋预算批下来了，但签到礼袋还没备齐。"
+        }
+      ],
+      "prior_context_ids": [
+        "C08",
+        "B09"
+      ],
+      "compiled": {
+        "baseline": "松叶论坛 J17 礼袋预算已获批准，签到礼袋尚未备齐。",
+        "attribution": "用户转述松叶论坛主办方确认 J17 礼袋预算批准，但物料未全部备齐。",
+        "state": "松叶论坛：J17 礼袋预算审批通过；签到礼袋准备未完成。"
+      }
+    },
+    {
+      "block_id": "C10",
+      "track": "venue",
+      "known_at": "2026-09-10T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C10-T1",
+          "role": "user",
+          "text": "另有一场松叶工作坊计划周日在 D 厅举行，和周六的松叶论坛不是同一个活动。场地方说 D 厅可能有空。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "松叶工作坊考虑周日使用 D 厅，尚未确认可用；它与松叶论坛是不同活动。",
+        "attribution": "用户区分周日 D 厅的松叶工作坊与周六论坛，并转述场地方称 D 厅可能可用。",
+        "state": "松叶工作坊：周日 D 厅可用性未确认；与周六松叶论坛分别筹备。"
+      }
+    },
+    {
+      "block_id": "C11",
+      "track": "venue",
+      "known_at": "2026-09-11T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C11-T1",
+          "role": "user",
+          "text": "工作坊的 D 厅投影设备已经订好，不过场地合同还没签。"
+        }
+      ],
+      "prior_context_ids": [
+        "C10"
+      ],
+      "compiled": {
+        "baseline": "松叶工作坊 D 厅投影设备已订，场地合同尚未签署。",
+        "attribution": "用户确认松叶工作坊投影设备预订完成，同时说明 D 厅场地合同未签。",
+        "state": "松叶工作坊：投影预订完成；D 厅合同仍未签署。"
+      }
+    },
+    {
+      "block_id": "C12",
+      "track": "venue",
+      "known_at": "2026-09-12T12:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "C12-T1",
+          "role": "user",
+          "text": "周日的松叶工作坊 D 厅合同今天签好了，活动公告还没发。"
+        }
+      ],
+      "prior_context_ids": [
+        "C10",
+        "C11"
+      ],
+      "compiled": {
+        "baseline": "松叶工作坊周日 D 厅合同已签，活动公告尚未发布。",
+        "attribution": "用户报告松叶工作坊的 D 厅合同签署完成，公告仍未发布。",
+        "state": "松叶工作坊：场地合同完成签署；对外公告尚未发布。"
+      }
+    },
+    {
+      "block_id": "D07",
+      "track": "scanners",
+      "known_at": "2026-09-07T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D07-T1",
+          "role": "user",
+          "text": "南仓那台等换货的故障扫描器就是 Lumen 2.3 现场核验要用的终端，供应商答应换，但新机还没寄。"
+        }
+      ],
+      "prior_context_ids": [
+        "D05",
+        "D06",
+        "A07"
+      ],
+      "compiled": {
+        "baseline": "南仓故障扫描器与 Lumen 2.3 现场核验有关，供应商已同意换货但新机未发出。",
+        "attribution": "用户明确待更换的南仓故障扫描器是 Lumen 2.3 核验终端，供应商同意更换但尚未发货。",
+        "state": "南仓扫描器替换：换货获同意，新机未寄；Lumen 2.3 现场核验设备仍缺位。"
+      }
+    },
+    {
+      "block_id": "D08",
+      "track": "scanners",
+      "known_at": "2026-09-08T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D08-T1",
+          "role": "user",
+          "text": "供应商今天寄出替换扫码设备，预计两天到，但没人确认已签收。"
+        }
+      ],
+      "prior_context_ids": [
+        "D07"
+      ],
+      "compiled": {
+        "baseline": "南仓替换扫码设备已由供应商寄出，预计两天到，尚未确认签收。",
+        "attribution": "用户报告供应商寄出了南仓替换扫码设备，仅预计两天到达，签收未确认。",
+        "state": "南仓替换扫码设备：发运完成；到货、签收尚未确认。"
+      }
+    },
+    {
+      "block_id": "D09",
+      "track": "scanners",
+      "known_at": "2026-09-09T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D09-T1",
+          "role": "user",
+          "text": "替换机员工已经签收开箱，但还没连上现场核验程序。"
+        }
+      ],
+      "prior_context_ids": [
+        "D08",
+        "A09"
+      ],
+      "compiled": {
+        "baseline": "南仓替换扫描器已由员工签收开箱，尚未接入 Lumen 现场核验程序。",
+        "attribution": "用户报告南仓员工已签收并开箱替换机，但还没连上之前提到的核验程序。",
+        "state": "南仓替换扫描器：签收、开箱已完成；与现场核验程序联接未完成。"
+      }
+    },
+    {
+      "block_id": "D10",
+      "track": "scanners",
+      "known_at": "2026-09-10T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D10-T1",
+          "role": "user",
+          "text": "北仓另订了四台扫描器，跟南仓那四台不是同一批。供应商说也许周四发。"
+        }
+      ],
+      "prior_context_ids": [],
+      "compiled": {
+        "baseline": "北仓另购四台扫描器，属于不同于南仓的订单，预计周四可能发货。",
+        "attribution": "用户说明北仓的新四台扫描器订单独立于南仓订单，转述供应商说可能周四发出。",
+        "state": "北仓扫描器：4 台另单已订；周四发货只属可能，非已发运。"
+      }
+    },
+    {
+      "block_id": "D11",
+      "track": "scanners",
+      "known_at": "2026-09-11T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D11-T1",
+          "role": "user",
+          "text": "北仓扫码设备的配送车辆安排好了，但是那批货还没从仓库发出。"
+        }
+      ],
+      "prior_context_ids": [
+        "D10"
+      ],
+      "compiled": {
+        "baseline": "北仓扫描器配送车辆已安排，设备仍未发出。",
+        "attribution": "用户说明北仓扫描器配送车辆已经排好，但货物尚未出库。",
+        "state": "北仓扫描器：车辆排班已完成；货物未出库、未发运。"
+      }
+    },
+    {
+      "block_id": "D12",
+      "track": "scanners",
+      "known_at": "2026-09-12T13:00:00+08:00",
+      "synthetic": true,
+      "source_turns": [
+        {
+          "turn_id": "D12-T1",
+          "role": "user",
+          "text": "北仓的四台设备发出了两台，另外两台仍缺货。"
+        }
+      ],
+      "prior_context_ids": [
+        "D10",
+        "D11"
+      ],
+      "compiled": {
+        "baseline": "北仓订购四台扫描器，其中两台已发出，另外两台仍缺货。",
+        "attribution": "用户报告北仓扫描器订单已有两台发运，其余两台尚缺货。",
+        "state": "北仓扫描器：2/4 发出，2/4 缺货未发。"
+      }
+    }
+  ]
+}
