@@ -1,0 +1,32 @@
+{
+  "model_arm": "glm_4_flash",
+  "total_cases": 5,
+  "evaluated_cases": 5,
+  "pass_all_rate": 0.2,
+  "metrics": {
+    "defer_accuracy": 1.0,
+    "semantic_recall": 0.2667,
+    "hallucination_rate": 0.0,
+    "semantic_precision": 1.0,
+    "modality_accuracy": 1.0,
+    "negation_accuracy": 1.0,
+    "temporal_accuracy": 1.0,
+    "final_block_overmerge_rate": 0.0,
+    "separate_accuracy": 1.0,
+    "final_block_fragmentation_rate": 0.0,
+    "cohabit_accuracy": 1.0,
+    "final_block_context_completeness": 1.0
+  },
+  "error_distribution": {
+    "E1": 4
+  },
+  "depth_breakdown": {
+    "1-turn": {
+      "count": 5,
+      "context_completeness": 1.0,
+      "semantic_recall": 0.2667,
+      "overmerge_rate": 0.0,
+      "fragmentation_rate": 0.0
+    }
+  }
+}

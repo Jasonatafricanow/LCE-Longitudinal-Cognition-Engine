@@ -76,7 +76,6 @@ dist/
 /outputs/
 /work/
 /research/benchmarks/
-/research/experiments/semantic_compilation_body_v1/
 /research/experiments/semantic_block_issue_22/
 /research/experiments/longitudinal_relations_issue_24/
 semanticblock_STEP1*.zip

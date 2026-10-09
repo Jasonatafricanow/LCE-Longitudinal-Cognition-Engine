@@ -1,0 +1,1232 @@
+[
+  {
+    "case_id": "MT-2T-01",
+    "category": "direct_correction",
+    "description": "User sets meeting time then updates it in next turn",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我们定在周二上午十点开项目周会。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "好的，已为你记下周二上午十点的项目周会。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "等等，周二客户要来，改到周四上午十点。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-02",
+    "category": "partial_correction",
+    "description": "User updates budget while explicitly retaining venue",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "年会选在外滩华尔道夫酒店，预算暂定5万元。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "外滩华尔道夫酒店办年会，预算5万，记下了。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "预算跟财务争取到了，追加到8万元，地点不变。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-03",
+    "category": "reference_resolution_latter",
+    "description": "User refers to '后者' which must resolve to Option B",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我们目前考虑两个方案：方案A开发周期短但维护成本极高，方案B重构需要一个月但扩展性极佳。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "方案A重在快但有技术债，方案B重构稳健但初期耗时。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "综合长远利益，我们决定采用后者。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-04",
+    "category": "ambiguous_reference_defer",
+    "description": "User refers to '那个方案' with no antecedent in context -> MUST DEFER",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "刚才跟老李在走廊聊了半天。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "聊得怎么样？有什么新进展吗？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "我们觉得还是执行那个方案最稳妥。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-05",
+    "category": "modality_transition",
+    "description": "Transition from uncertain consideration to committed plan",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "最近油价太贵了，我可能考虑换台纯电车。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "电车通勤确实能省不少油费，有心仪的车型吗？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "已经去店里交了定金，下周六直接去提Model Y。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-06",
+    "category": "plan_execution_completion",
+    "description": "Plan in turn 1 transitions to completed state in turn 2",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我准备今天下午把用户认证模块的代码提交审核。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "好的，提交后记得提醒组内同学评审。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "PR已经合并进主干了，现在流水线正在跑回归测试。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-07",
+    "category": "retraction_and_flip",
+    "description": "User cancels cancellation: decide not to cancel, but keep for canary",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "由于架构演进，我们决定下线旧版推荐接口。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "收到，旧版推荐接口下线会影响现有老客户端吗？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "等等，先别全下线，保留老接口给海外慢速节点做灰度。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-08",
+    "category": "source_relative_stance",
+    "description": "Contrast third-party reported stance with user's own opinion",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "老张说系统重构后性能至少能提升十倍，建议下周全量上线。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "十倍提升很显著，压测报告出来了吗？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "我认为他的测试样本太理想化，真实网络环境下根本不可能达标，绝不能下周上。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-09",
+    "category": "nested_negation",
+    "description": "User explicitly denies that critic's denial was correct",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "审计组昨天指出我们的汇率折算公式存在逻辑错误。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "审计组具体指出了哪个环节的计算问题？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "我重新核对了国际会计准则，我不认为审计组说我们错了是对的，我们的折算完全合规。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-10",
+    "category": "tail_omission_trap",
+    "description": "User adds secondary trailing constraint at the end of turn 2",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我今天必须把季度总结写完发给王总。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "好的，抓紧时间写，有需要润色的段落随时发我。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "发给王总前抄送李经理，顺便把附件里所有财务数字都隐去。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-11",
+    "category": "durable_instruction_intro",
+    "description": "User sets a permanent behavioral rule for future outputs",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "帮我看看这篇报告排版怎么样。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "整体排版层次分明，标题很突出。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "以后不管生成什么文档，正文一律用四级标题编号，严禁使用非标准罗马数字。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-2T-12",
+    "category": "condition_resolution",
+    "description": "Condition established in T1 evaluated and cleared in T2",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "明天如果下暴雨，户外团建就取消改在室内轰趴。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "好，明天早晨看下气象预警再最后决定。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "刚看了最新雷达图，明天晴空万里，户外团建照常举行。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-01",
+    "category": "correction_after_unrelated_turn",
+    "description": "Correction occurs after an unrelated topic turn intervening",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我准备买索尼A7M4相机拍视频。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "A7M4是水桶机，色彩和对焦都很均衡。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "今天北京这大风吹得头疼，外面降温好厉害。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "秋冬季节注意保暖，出门多添衣物。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "对了，相机我不买索尼了，决定买佳能R6 Mark II。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-02",
+    "category": "stepwise_plan_execution",
+    "description": "Progressive execution across three stages",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "新房准备在这个月开始硬装施工。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "硬装开工前要做好设计图和物业报备。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "昨天已经跟装修施工队签好了闭口合同。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "签闭口合同能避免后期恶意增项，很明智。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "今天上午水电工已经进场开槽拆墙了。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-03",
+    "category": "modality_chain",
+    "description": "Consideration -> Booking -> Passed verification",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我最近在考虑要不要去考个PMP证书。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "PMP对项目管理规范化很有帮助，很多大厂有要求。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "上周咬牙交了培训费，报了12月的考试。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "加油备考，做好章节模拟题。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "今天成绩出来了，5A高分通过！"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-04",
+    "category": "multi_entity_anaphora_resolution",
+    "description": "User assigns roles to Xiao Li and Xiao Wang, then resolves '后者'",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "登录界面重构交给小李，支付通道对接交给小王。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "小李负责登录重构，小王负责支付通道。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "小李今天突发感冒请假了。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "那登录界面的进度可能要顺延或者找人顶替。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "后者的工作最关键，先集中全力把他的联调环境搭好。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-05",
+    "category": "cross_turn_partial_override",
+    "description": "Architecture choice: change DB from PG to MySQL, retain Redis cache",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "后端架构初定：主数据库用PostgreSQL，会话缓存用Redis。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "PostgreSQL支持复杂查询，配合Redis缓存很稳。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "运维刚把Redis集群的高可用搭建完毕了。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "集群可用性有保障了，接下来配置数据库连接池吗？"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "主数据库改用MySQL 8.0，业务方更熟悉；缓存依然用已经建好的Redis。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-06",
+    "category": "buried_durable_instruction",
+    "description": "User inserts permanent coding constraint in turn 2 surrounded by chatter",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "今天周五了，工位旁边都在聊周末去哪玩。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "忙碌了一周，周末确实该好好放松。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "交代个规矩：以后写的所有Python代码，类型注解一律用typing的新标准（如使用int | None，严禁使用Optional）。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "明白，以后生成的Python代码全部采用PEP 604联合类型语法。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "下周一上午十点记得提醒我向架构组汇报。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-07",
+    "category": "ambiguous_cross_turn_defer",
+    "description": "User mentions two candidate companies, then says '买那个好的' -> MUST DEFER",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我今天调研了宁德时代和比亚迪两家公司。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "动力电池和整车制造各有千秋，财务指标如何？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "两家Q3利润都超预期了，毛利率也咬得很紧。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "行业龙头竞争激烈，技术路线也各有侧重。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "下周一开盘直接全仓买入那个更好的。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-08",
+    "category": "stance_attribution_multi_turn",
+    "description": "Management target vs sales team fear vs user personal commitment",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "集团领导宣布Q4各业务线营收目标整体上调30%。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "年底冲刺上调30%指标，各条线压力都会很大。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "销售二组组长私下跟我抱怨，说这个目标绝对不可能完成。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "一线销售往往对市场行情敏感，担忧很正常。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "但我认为只要把海外电商渠道跑通，我们组不仅能完成，还能超额达标。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-09",
+    "category": "condition_branch_accumulation",
+    "description": "Nested contingency conditions across three turns",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "如果明天下午不下雨，我们就去江滩踢足球。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "户外踢球很畅快，注意带好护膝。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "如果下雨但风不大，就改去室内羽毛球馆。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "室内羽毛球也是很好的备选。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "要是既下暴雨又刮大风，大家就都在家线上打游戏。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-3T-10",
+    "category": "plan_scope_tightening",
+    "description": "Plan gets progressively tightened with strict boundary conditions",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我想在国庆假期自驾去川西环线旅游。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "川西风景绝美，折多山和新都桥值得去。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "同行的小张高反严重，所以海拔超过4000米的点全部剔除。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "避开高海拔垭口，行程会更舒适安全。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "还有，全程只能开燃油车，严禁开纯电车，充电排队耗不起。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-01",
+    "category": "deep_correction_intervening_shifts",
+    "description": "Deadline established in T1, discussed infrastructure in T2-T3, updated in T4",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "项目一期交付截止日期定在10月15日。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "收到，10月15日交付一期。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "服务器配置选4核16G应该够支撑初期流量吧？"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "初期流量单机4C16G完全没问题，配合Nginx缓存更稳。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "云厂商我们打算在阿里云和腾讯云之间挑一家便宜的。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "两家都有新客优惠券，可以对比一下折扣。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "对了，客户通知上线时间提前了，一期交付改到10月10日，云厂商定选AWS。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-02",
+    "category": "progressive_constraint_accumulation",
+    "description": "5 turns of accumulating rental search constraints",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我想在浦东租一套两居室。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "浦东两居室房源不少，预算大概多少？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "月租预算控制在6000元以内，最多不能超过6500元。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "6000-6500元在张江或三林附近挺合适。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "必须步行10分钟内到2号线地铁站。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "靠近2号线通勤很方便。楼层和朝向有要求吗？"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "一楼潮湿顶楼漏水，绝对不要一楼和顶楼。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "中间楼层更干燥安静。入住时间定了吗？"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "本月25号前必须搬进去，最晚不能拖过月底。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-03",
+    "category": "state_evolution_patient",
+    "description": "Tracking patient temperature and symptoms across 5 turns",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "孩子下午发烧到38.8度，精神有点蔫。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "超过38.5度可以考虑吃退烧药，多补充温水。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "刚才吃了对乙酰氨基酚，额头贴了退热贴。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "服药后观察半小时到一小时，注意散热。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "现在体温降到37.4度了，但是开始有点咳嗽。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "体温降下来是好事，咳嗽有痰还是干咳？"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "是干咳，晚上睡觉鼻子也塞住了。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "可以垫高枕头或者用生理盐水喷鼻。"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "目前完全退烧了（36.7度），精神恢复了，就剩轻微鼻塞。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-04",
+    "category": "buried_durable_persona_instruction",
+    "description": "User sets a system format requirement in turn 2, followed by multiple tasks",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我们开始进行技术选型讨论。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "好的，请随时提出具体方向。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "立个规矩：后续所有技术方案对比，必须用三栏Markdown表格呈现（维度、方案A、方案B），严禁纯文本罗列。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "明白，后续所有技术方案对比均严格输出三栏对比表格。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "先帮我对比一下FastAPI与Go Gin在高并发场景下的性能表现。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "| 维度 | FastAPI | Go Gin |\n| --- | --- | --- |\n| 吞吐量 | 中高 | 极高 |"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "再对比一下PostgreSQL和MongoDB在JSON文档检索上的差异。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-05",
+    "category": "anaphora_chain_candidates",
+    "description": "User interviews Zhang and Li, evaluates pros/cons, then hires '后者'",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "今天面试了两位高级前端候选人：张三和李四。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "两位候选人的面试表现如何？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "张三算法很强，但沟通比较生硬，要价25k。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "那李四的技术栈和团队协同怎么样？"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "李四工程经验扎实，沟通顺畅，期望薪资20k。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "综合性价比和团队匹配度，各有所长。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "团队目前更需要接地气的协作，我们决定发offer给后者，定薪21k。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-06",
+    "category": "multiple_cancellations_flip_flop",
+    "description": "Group dinner proposals: Hotpot -> Cantonese -> Sichuan -> Japanese",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "周五团建聚餐，我提议去吃海底捞火锅。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "火锅气氛热闹，适合团队聚餐。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "老陈痛风发作不能吃高嘌呤，火锅取消，换成顺德粤菜。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "顺德菜清淡健康，照顾到了老陈。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "几个湖南同事嫌粤菜太淡没味道，强烈要求改吃川菜。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "川菜和痛风忌口又冲突了，众口难调。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "谁也别吵了，最终定下去吃日料放题，既有刺身又有熟食，定案不再改了。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-07",
+    "category": "ambiguous_anaphora_trap",
+    "description": "User discusses multiple designs, then asks '那个好吗' -> MUST DEFER",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "UI设计师给APP首页提供了极简黑白和活力彩色两版方案。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "黑白高级感强，彩色对年轻用户吸引力大。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "后来产品经理又加了一版沉浸式暗黑主题。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "现在共有三版候选方案了。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "运营总监也拿出了海外竞品的拟物化排版方案。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "方案非常多元化，用户群体偏好调研过吗？"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "你觉得我们采用那个怎么样？"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-4T-08",
+    "category": "complex_negation_limitation_scope",
+    "description": "User limits third party claim: 99% accuracy on small test set != production ready",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "算法团队的小赵宣称新模型在测试集上达到了99.2%的准确率。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "99.2%是个非常漂亮的数据，他们准备申请上线了吗？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "我今天仔细查验了他们的测试集，发现总共只有80个样本，且全是简单样本。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "样本量太小且缺乏长尾样本，容易过拟合。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "所以我明确告知团队：这只能说明模型在极小玩具集上跑通了，绝不代表真实能力达到99%，坚决不能批准上线。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-LT-01",
+    "category": "full_lifecycle_project_turns",
+    "description": "6 turns project from concept to tech choice, budget shift, timeline change, commit",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我们计划立项自研一个企业内部的实时知识库问答系统。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "立项内部知识库很有价值，初期的核心架构怎么考虑？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "底层模型使用Qwen-2.5-72B私有化部署，向量库选Milvus。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "Qwen私有化加上Milvus是成熟可靠的企业级方案。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "硬件预算最初批了20万，刚收到通知被财务砍到了12万。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "预算被砍了40%，可能需要考虑量化模型或者减少GPU卡数。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "交付时间由原定年底缩短到11月15日必须内部公测。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "时间紧任务重，需要砍掉一些边缘功能保核心问答链路。"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "决定了：模型改用Qwen-2.5-32B INT4量化版以适应12万预算，11月15日前只交付文档解析和向量检索两项核心能力。"
+      },
+      {
+        "evidence_id": "E10",
+        "speaker": "assistant",
+        "text": "务实的裁剪方案，集中攻坚核心链路。"
+      },
+      {
+        "evidence_id": "E11",
+        "speaker": "user",
+        "text": "另外补充一条：所有上传的内部敏感文档严禁调用外部API，必须完全在本地局域网闭环。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-LT-02",
+    "category": "long_distractor_buried_directive",
+    "description": "7 turns: Durable directive set in T2, turns 3-6 discuss news/weather/sports, T7 applies directive",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "今天我们要开启一个长期协作项目。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "随时待命，请明确协作规范。"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "设定永久规则：以后任何时候只要生成SQL查询，关键字必须大写，字段名必须全部用反引号包裹，且禁止使用SELECT *。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "明白，SQL关键字大写、字段用反引号、严禁SELECT *，已存为永久规则。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "今天看欧冠比赛了吗？皇马那场逆转太不可思议了。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "补时绝杀确实跌宕起伏，很有韧性。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "明天上海好像要降温到十度左右，秋天一下子就来了。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "换季温差大，早晚出门记得多穿一件外套。"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "中午在公司食堂吃的红烧牛肉面，牛肉给得还挺多。"
+      },
+      {
+        "evidence_id": "E10",
+        "speaker": "assistant",
+        "text": "食堂厚道能提升一整天的工作幸福感。"
+      },
+      {
+        "evidence_id": "E11",
+        "speaker": "user",
+        "text": "回到正题，写个查询用户表订单总额大于1000的SQL。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-LT-03",
+    "category": "multi_party_debate_attribution",
+    "description": "User reports Alice's opinion, Bob's rebuttal, Charlie's proposal, then makes synthesis decision",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "下午开会就微服务拆分进行了激烈讨论。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "大家主要的分歧点在什么地方？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "爱丽丝主张立刻把订单和库存从单体拆分成独立服务。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "拆分后可以独立扩容，但分布式事务复杂度会上升。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "鲍勃强烈反对，认为当前日活只有两万，过早拆分就是灾难。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "鲍勃的顾虑很实际，团队人力维护微服务开销很大。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "查理提出了折中方案：先保持单体架构，但在代码库内部进行严格的模块化解耦。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "模块化单体是极佳的过渡方案，进可攻退可守。"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "我作为技术负责人最终拍板：采纳查理的模块化单体方案，半年内严禁拆分独立微服务。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-LT-04",
+    "category": "multi_step_car_purchase_updates",
+    "description": "6 turns car purchase: budget changed in T2, model changed in T4, payment changed in T5, delivery T6",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "我准备年底买辆新车，预算定在25万左右。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "25万预算选择很多，看重轿车还是SUV？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "老婆把年终奖拿出来了，预算提高到35万。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "预算提升到35万，豪华品牌或高端新能源都可以看了。"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "本来想买宝马3系，试驾后觉得后排太硬，决定买理想L7。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "理想L7空间大且适合家用，舒适度确实比3系强。"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "付款方式原想全款，销售说有两年免息贷款，决定办分期贷款。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "免息分期资金利用率更高，很划算。"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "合同已签，交了1万定金，销售保证下个月20号前提车。"
+      }
+    ]
+  },
+  {
+    "case_id": "MT-LT-05",
+    "category": "mixed_anaphora_resolve_and_defer",
+    "description": "8 turns: Multiple items introduced, several resolved, one remains ambiguous -> MUST resolve resolved and DEFER ambiguous",
+    "dialogue": [
+      {
+        "evidence_id": "E01",
+        "speaker": "user",
+        "text": "公司准备采购三批设备：第一批是开发用MacBook Pro，第二批是设计用Dell显示器，第三批是会议室投影仪。"
+      },
+      {
+        "evidence_id": "E02",
+        "speaker": "assistant",
+        "text": "三批设备分工明确，供应商都联系了吗？"
+      },
+      {
+        "evidence_id": "E03",
+        "speaker": "user",
+        "text": "苹果直营店已经给了企业折扣，第一批设备今天下午直接下单。"
+      },
+      {
+        "evidence_id": "E04",
+        "speaker": "assistant",
+        "text": "第一批MacBook落实得很快。显示器和投影仪呢？"
+      },
+      {
+        "evidence_id": "E05",
+        "speaker": "user",
+        "text": "Dell代理商那边缺货，第二批设备延期到下个月中旬采购。"
+      },
+      {
+        "evidence_id": "E06",
+        "speaker": "assistant",
+        "text": "那第三批会议室投影仪的选型定了吗？"
+      },
+      {
+        "evidence_id": "E07",
+        "speaker": "user",
+        "text": "投影仪我们看了爱普生和明基两个品牌。"
+      },
+      {
+        "evidence_id": "E08",
+        "speaker": "assistant",
+        "text": "两家都是老牌投影大厂，流明和色彩表现如何？"
+      },
+      {
+        "evidence_id": "E09",
+        "speaker": "user",
+        "text": "爱普生流明高但体积大，明基色彩好但价格贵。"
+      },
+      {
+        "evidence_id": "E10",
+        "speaker": "assistant",
+        "text": "会议室遮光好的话色彩更重要，遮光一般就需要高流明。"
+      },
+      {
+        "evidence_id": "E11",
+        "speaker": "user",
+        "text": "会议室采光太强，第三批投影仪我们决定采购前者。"
+      },
+      {
+        "evidence_id": "E12",
+        "speaker": "assistant",
+        "text": "选爱普生高流明保证强光下看得清。"
+      },
+      {
+        "evidence_id": "E13",
+        "speaker": "user",
+        "text": "还有，行政刚才又提了一个神秘的补充采购需求，我们觉得还是买那个算了。"
+      }
+    ]
+  }
+]

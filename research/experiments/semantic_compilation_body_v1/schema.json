@@ -1,0 +1,282 @@
+{
+  "SemanticParseResultV1": {
+    "$defs": {
+      "SemanticDependency": {
+        "properties": {
+          "from_point": {
+            "description": "Source semantic point ID",
+            "title": "From Point",
+            "type": "string"
+          },
+          "to_point": {
+            "description": "Target semantic point ID",
+            "title": "To Point",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Open string relation name, e.g. condition_scope, updates_state, supersedes, limitation_scope",
+            "title": "Relation",
+            "type": "string"
+          },
+          "boundary_policy": {
+            "description": "'cohabit': splitting changes original meaning; must be in same SemanticBlock. 'context': separate longitudinal identity, but target is required supporting context. 'separate': independent semantic points.",
+            "enum": [
+              "cohabit",
+              "context",
+              "separate"
+            ],
+            "title": "Boundary Policy",
+            "type": "string"
+          },
+          "reason": {
+            "default": "",
+            "description": "Brief explanation for boundary policy assignment",
+            "title": "Reason",
+            "type": "string"
+          },
+          "confidence": {
+            "default": 1.0,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          }
+        },
+        "required": [
+          "from_point",
+          "to_point",
+          "relation",
+          "boundary_policy"
+        ],
+        "title": "SemanticDependency",
+        "type": "object"
+      },
+      "SemanticPoint": {
+        "properties": {
+          "local_id": {
+            "description": "Unique local identifier, e.g. P01, P02A",
+            "title": "Local Id",
+            "type": "string"
+          },
+          "source_refs": {
+            "description": "Raw evidence IDs grounding this point, e.g. ['E01']",
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Refs",
+            "type": "array"
+          },
+          "meaning": {
+            "description": "Open natural language meaning statement representing this semantic component",
+            "title": "Meaning",
+            "type": "string"
+          },
+          "status": {
+            "default": "resolved",
+            "description": "'resolved' if self-contained/resolved, 'defer' if ambiguous/unresolved",
+            "enum": [
+              "resolved",
+              "defer"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "speech_act": {
+            "default": "assertion",
+            "enum": [
+              "assertion",
+              "question",
+              "directive",
+              "other"
+            ],
+            "title": "Speech Act",
+            "type": "string"
+          },
+          "polarity": {
+            "default": "positive",
+            "enum": [
+              "positive",
+              "negative",
+              "unknown"
+            ],
+            "title": "Polarity",
+            "type": "string"
+          },
+          "epistemic_status": {
+            "default": "asserted",
+            "enum": [
+              "asserted",
+              "uncertain",
+              "hypothetical",
+              "counterfactual",
+              "planned",
+              "reported",
+              "unknown"
+            ],
+            "title": "Epistemic Status",
+            "type": "string"
+          },
+          "temporal": {
+            "default": "current",
+            "enum": [
+              "past",
+              "current",
+              "future",
+              "atemporal",
+              "unknown"
+            ],
+            "title": "Temporal",
+            "type": "string"
+          },
+          "unresolved_refs": {
+            "description": "Unresolved anaphoric or contextual references",
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Refs",
+            "type": "array"
+          },
+          "confidence": {
+            "default": 1.0,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          }
+        },
+        "required": [
+          "local_id",
+          "meaning"
+        ],
+        "title": "SemanticPoint",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "schema_version": {
+        "default": "semantic_parse_v1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "source_window_refs": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Source Window Refs",
+        "type": "array"
+      },
+      "semantic_points": {
+        "items": {
+          "$ref": "#/$defs/SemanticPoint"
+        },
+        "title": "Semantic Points",
+        "type": "array"
+      },
+      "dependencies": {
+        "items": {
+          "$ref": "#/$defs/SemanticDependency"
+        },
+        "title": "Dependencies",
+        "type": "array"
+      },
+      "unresolved": {
+        "description": "List of deferred points or unresolved references",
+        "items": {
+          "type": "string"
+        },
+        "title": "Unresolved",
+        "type": "array"
+      }
+    },
+    "title": "SemanticParseResultV1",
+    "type": "object"
+  },
+  "SemanticBlock": {
+    "properties": {
+      "block_id": {
+        "title": "Block Id",
+        "type": "string"
+      },
+      "member_point_ids": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Member Point Ids",
+        "type": "array"
+      },
+      "context_point_ids": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Context Point Ids",
+        "type": "array"
+      },
+      "source_refs": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Source Refs",
+        "type": "array"
+      },
+      "analysis_text": {
+        "description": "Context-complete canonical meaning for embedding and cognition analysis without verbatim context string concatenation",
+        "title": "Analysis Text",
+        "type": "string"
+      },
+      "speech_act": {
+        "default": "assertion",
+        "enum": [
+          "assertion",
+          "question",
+          "directive",
+          "other"
+        ],
+        "title": "Speech Act",
+        "type": "string"
+      },
+      "polarity": {
+        "default": "positive",
+        "enum": [
+          "positive",
+          "negative",
+          "unknown"
+        ],
+        "title": "Polarity",
+        "type": "string"
+      },
+      "epistemic_status": {
+        "default": "asserted",
+        "enum": [
+          "asserted",
+          "uncertain",
+          "hypothetical",
+          "counterfactual",
+          "planned",
+          "reported",
+          "unknown"
+        ],
+        "title": "Epistemic Status",
+        "type": "string"
+      },
+      "temporal": {
+        "default": "current",
+        "enum": [
+          "past",
+          "current",
+          "future",
+          "atemporal",
+          "unknown"
+        ],
+        "title": "Temporal",
+        "type": "string"
+      }
+    },
+    "required": [
+      "block_id",
+      "member_point_ids",
+      "analysis_text"
+    ],
+    "title": "SemanticBlock",
+    "type": "object"
+  }
+}

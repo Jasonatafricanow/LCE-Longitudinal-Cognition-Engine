@@ -1,0 +1,1458 @@
+{
+  "V2-simple_assertion": {
+    "case_id": "V2-simple_assertion",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "办公室 Linux 机器承载服务器运行"
+    ],
+    "forbidden_inferences": [],
+    "expected_closure_groups": [
+      [
+        "P01"
+      ]
+    ],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": "assertion",
+    "expected_epistemic": "asserted",
+    "gold_points": [
+      {
+        "id": "P01",
+        "origin": "E01",
+        "source_refs": [
+          "E01"
+        ],
+        "meaning": "办公室的 Linux 机器当前承载服务器运行。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "current"
+      }
+    ],
+    "gold_dependencies": []
+  },
+  "V2-mixed_transient_and_constraint": {
+    "case_id": "V2-mixed_transient_and_constraint",
+    "min_point_count": 2,
+    "max_point_count": 4,
+    "required_meanings": [
+      "测试已全部通过",
+      "报告不用太长，只看结论和异常"
+    ],
+    "forbidden_inferences": [],
+    "expected_closure_groups": [
+      [
+        "P02A"
+      ],
+      [
+        "P02B"
+      ]
+    ],
+    "expected_separate_pairs": [
+      [
+        "P02A",
+        "P02B"
+      ]
+    ],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P02A",
+        "origin": "E02",
+        "source_refs": [
+          "E02"
+        ],
+        "meaning": "当前测试已经全部通过。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "current"
+      },
+      {
+        "id": "P02B",
+        "origin": "E02",
+        "source_refs": [
+          "E02"
+        ],
+        "meaning": "用户要求今后同类报告缩短，只保留结论和异常。",
+        "status": "resolved",
+        "speech_act": "directive",
+        "epistemic": "asserted",
+        "temporal": "future"
+      }
+    ],
+    "gold_dependencies": []
+  },
+  "V2-plan_completed_ongoing": {
+    "case_id": "V2-plan_completed_ongoing",
+    "min_point_count": 3,
+    "max_point_count": 5,
+    "required_meanings": [
+      "原计划本月交首付",
+      "昨天已经交了首付",
+      "正在等待贷款审批"
+    ],
+    "forbidden_inferences": [
+      "首付款尚未支付",
+      "贷款已经完成审批"
+    ],
+    "expected_closure_groups": [
+      [
+        "P03A",
+        "P03B",
+        "P03C"
+      ]
+    ],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P03A",
+        "origin": "E03",
+        "source_refs": [
+          "E03"
+        ],
+        "meaning": "用户原计划在本月支付首付。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "planned",
+        "temporal": "future"
+      },
+      {
+        "id": "P03B",
+        "origin": "E03",
+        "source_refs": [
+          "E03"
+        ],
+        "meaning": "用户在说话时点的昨天已经支付首付。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "past"
+      },
+      {
+        "id": "P03C",
+        "origin": "E03",
+        "source_refs": [
+          "E03"
+        ],
+        "meaning": "用户当前正在等待贷款审批结果。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "current"
+      }
+    ],
+    "gold_dependencies": [
+      {
+        "from": "P03B",
+        "to": "P03A",
+        "type": "updates_state",
+        "policy": "cohabit"
+      },
+      {
+        "from": "P03C",
+        "to": "P03B",
+        "type": "state_continuation",
+        "policy": "cohabit"
+      }
+    ]
+  },
+  "V2-uncertain_diagnosis": {
+    "case_id": "V2-uncertain_diagnosis",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "怀疑热启动机制可能有问题，尚未确认"
+    ],
+    "forbidden_inferences": [
+      "热启动机制已被确认存在故障"
+    ],
+    "expected_closure_groups": [
+      [
+        "P04"
+      ]
+    ],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_epistemic": "uncertain",
+    "gold_points": [
+      {
+        "id": "P04",
+        "origin": "E04",
+        "source_refs": [
+          "E04"
+        ],
+        "meaning": "用户怀疑热启动机制存在问题，但尚未确认这一判断。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "uncertain",
+        "temporal": "current"
+      }
+    ],
+    "gold_dependencies": []
+  },
+  "V2-conditional_invariant": {
+    "case_id": "V2-conditional_invariant",
+    "min_point_count": 3,
+    "max_point_count": 5,
+    "required_meanings": [
+      "如果 BGE 换版本则必须重建向量",
+      "SemanticBlock 身份不应该改变"
+    ],
+    "forbidden_inferences": [
+      "无条件必须重建向量",
+      "SemanticBlock 身份随版本改变"
+    ],
+    "expected_closure_groups": [
+      [
+        "P05A",
+        "P05B",
+        "P05C"
+      ]
+    ],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_epistemic": "hypothetical",
+    "gold_points": [
+      {
+        "id": "P05A",
+        "origin": "E05",
+        "source_refs": [
+          "E05"
+        ],
+        "meaning": "条件是 BGE 版本发生变化。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "hypothetical",
+        "temporal": "atemporal"
+      },
+      {
+        "id": "P05B",
+        "origin": "E05",
+        "source_refs": [
+          "E05"
+        ],
+        "meaning": "在该条件下必须重建向量投影。",
+        "status": "resolved",
+        "speech_act": "directive",
+        "epistemic": "hypothetical",
+        "temporal": "atemporal"
+      },
+      {
+        "id": "P05C",
+        "origin": "E05",
+        "source_refs": [
+          "E05"
+        ],
+        "meaning": "BGE 版本变化不应改变 SemanticBlock 的语义身份。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "atemporal"
+      }
+    ],
+    "gold_dependencies": [
+      {
+        "from": "P05B",
+        "to": "P05A",
+        "type": "condition_scope",
+        "policy": "cohabit"
+      },
+      {
+        "from": "P05C",
+        "to": "P05B",
+        "type": "contrast_scope",
+        "policy": "cohabit"
+      }
+    ]
+  },
+  "V2-cross_turn_correction": {
+    "case_id": "V2-cross_turn_correction",
+    "min_point_count": 2,
+    "max_point_count": 4,
+    "required_meanings": [
+      "最初要求 top-k=100",
+      "撤销 100 改为测试 20/30/50/70"
+    ],
+    "forbidden_inferences": [
+      "当前仍要求使用 top-k=100"
+    ],
+    "expected_closure_groups": [
+      [
+        "P06A"
+      ],
+      [
+        "P06B"
+      ]
+    ],
+    "expected_separate_pairs": [
+      [
+        "P06A",
+        "P06B"
+      ]
+    ],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": "directive",
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P06A",
+        "origin": "E06A",
+        "source_refs": [
+          "E06A"
+        ],
+        "meaning": "用户最初要求 AML 实验先使用 top-k=100。",
+        "status": "resolved",
+        "speech_act": "directive",
+        "epistemic": "asserted",
+        "temporal": "future"
+      },
+      {
+        "id": "P06B",
+        "origin": "E06B",
+        "source_refs": [
+          "E06A",
+          "E06B"
+        ],
+        "meaning": "用户撤销 top-k=100 的先前要求，改为扫描 top-k=20/30/50/70。",
+        "status": "resolved",
+        "speech_act": "directive",
+        "epistemic": "asserted",
+        "temporal": "future"
+      }
+    ],
+    "gold_dependencies": [
+      {
+        "from": "P06B",
+        "to": "P06A",
+        "type": "supersedes",
+        "policy": "context"
+      }
+    ]
+  },
+  "V2-unresolved_reference": {
+    "case_id": "V2-unresolved_reference",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [],
+    "forbidden_inferences": [
+      "擅自猜测并确定具体是哪个方案"
+    ],
+    "expected_closure_groups": [],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [
+      "P07"
+    ],
+    "must_defer": true,
+    "expected_speech_act": null,
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P07",
+        "origin": "E07",
+        "source_refs": [
+          "E07"
+        ],
+        "meaning": "用户要求继续采用一个当前无法唯一解析的既有方案。",
+        "status": "defer",
+        "speech_act": "directive",
+        "epistemic": "asserted",
+        "temporal": "future"
+      }
+    ],
+    "gold_dependencies": []
+  },
+  "V2-resolved_reference_with_context": {
+    "case_id": "V2-resolved_reference_with_context",
+    "min_point_count": 3,
+    "max_point_count": 5,
+    "required_meanings": [
+      "用户选择方案 B（原生库做 Raw authority）"
+    ],
+    "forbidden_inferences": [
+      "用户选择了方案 A（双库同步）"
+    ],
+    "expected_closure_groups": [
+      [
+        "P08A"
+      ],
+      [
+        "P08B"
+      ],
+      [
+        "P08C"
+      ]
+    ],
+    "expected_separate_pairs": [
+      [
+        "P08A",
+        "P08B"
+      ],
+      [
+        "P08A",
+        "P08C"
+      ],
+      [
+        "P08B",
+        "P08C"
+      ]
+    ],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": "directive",
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P08A",
+        "origin": "E08A",
+        "source_refs": [
+          "E08A"
+        ],
+        "meaning": "方案A采用双库同步。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "atemporal"
+      },
+      {
+        "id": "P08B",
+        "origin": "E08A",
+        "source_refs": [
+          "E08A"
+        ],
+        "meaning": "方案B以原生库作为 Raw authority，并让 MR-Mem 仅承载语义覆盖层。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "atemporal"
+      },
+      {
+        "id": "P08C",
+        "origin": "E08B",
+        "source_refs": [
+          "E08A",
+          "E08B"
+        ],
+        "meaning": "用户选择方案B继续执行。",
+        "status": "resolved",
+        "speech_act": "directive",
+        "epistemic": "asserted",
+        "temporal": "future"
+      }
+    ],
+    "gold_dependencies": [
+      {
+        "from": "P08C",
+        "to": "P08B",
+        "type": "resolved_reference",
+        "policy": "context"
+      }
+    ]
+  },
+  "V2-state_change_over_time": {
+    "case_id": "V2-state_change_over_time",
+    "min_point_count": 2,
+    "max_point_count": 4,
+    "required_meanings": [
+      "该问题上周已经修好",
+      "同一问题当前再次出现故障"
+    ],
+    "forbidden_inferences": [
+      "该问题一直处于完好状态"
+    ],
+    "expected_closure_groups": [
+      [
+        "P09A"
+      ],
+      [
+        "P09B"
+      ]
+    ],
+    "expected_separate_pairs": [
+      [
+        "P09A",
+        "P09B"
+      ]
+    ],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P09A",
+        "origin": "E09A",
+        "source_refs": [
+          "E09A"
+        ],
+        "meaning": "该问题在先前时点已经修复。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "past"
+      },
+      {
+        "id": "P09B",
+        "origin": "E09B",
+        "source_refs": [
+          "E09A",
+          "E09B"
+        ],
+        "meaning": "同一问题在当前时点再次处于故障状态。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "current"
+      }
+    ],
+    "gold_dependencies": [
+      {
+        "from": "P09B",
+        "to": "P09A",
+        "type": "updates_state",
+        "policy": "context"
+      }
+    ]
+  },
+  "V2-nested_stance": {
+    "case_id": "V2-nested_stance",
+    "min_point_count": 2,
+    "max_point_count": 4,
+    "required_meanings": [
+      "否认当前结果足以证明算法正确",
+      "仅说明测试夹具能跑"
+    ],
+    "forbidden_inferences": [
+      "用户断定算法存在错误"
+    ],
+    "expected_closure_groups": [
+      [
+        "P10A",
+        "P10B"
+      ]
+    ],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P10A",
+        "origin": "E10",
+        "source_refs": [
+          "E10"
+        ],
+        "meaning": "用户否认当前结果足以证明算法正确。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "atemporal"
+      },
+      {
+        "id": "P10B",
+        "origin": "E10",
+        "source_refs": [
+          "E10"
+        ],
+        "meaning": "用户认为当前结果的证据能力仅限于说明测试夹具能够运行。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "atemporal"
+      }
+    ],
+    "gold_dependencies": [
+      {
+        "from": "P10B",
+        "to": "P10A",
+        "type": "limitation_scope",
+        "policy": "cohabit"
+      }
+    ]
+  },
+  "V2-question_not_fact": {
+    "case_id": "V2-question_not_fact",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "询问 LCE 为何不能即时执行"
+    ],
+    "forbidden_inferences": [
+      "断言 LCE 永远无法即时执行"
+    ],
+    "expected_closure_groups": [
+      [
+        "P11"
+      ]
+    ],
+    "expected_separate_pairs": [],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": "question",
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P11",
+        "origin": "E11",
+        "source_refs": [
+          "E11"
+        ],
+        "meaning": "用户询问 LCE 当前为何不能即时执行。",
+        "status": "resolved",
+        "speech_act": "question",
+        "epistemic": "unknown",
+        "temporal": "current"
+      }
+    ],
+    "gold_dependencies": []
+  },
+  "V2-coding_result_plus_durable_rule": {
+    "case_id": "V2-coding_result_plus_durable_rule",
+    "min_point_count": 2,
+    "max_point_count": 4,
+    "required_meanings": [
+      "pytest 3918 个测试通过",
+      "今后不要为了 coverage 写低价值重复测试"
+    ],
+    "forbidden_inferences": [
+      "测试未通过",
+      "要求以后写更多测试以提高覆盖率"
+    ],
+    "expected_closure_groups": [
+      [
+        "P12A"
+      ],
+      [
+        "P12B"
+      ]
+    ],
+    "expected_separate_pairs": [
+      [
+        "P12A",
+        "P12B"
+      ]
+    ],
+    "expected_deferred_ids": [],
+    "must_defer": false,
+    "expected_speech_act": "directive",
+    "expected_epistemic": null,
+    "gold_points": [
+      {
+        "id": "P12A",
+        "origin": "E12",
+        "source_refs": [
+          "E12"
+        ],
+        "meaning": "当前 pytest 运行有 3918 个测试通过。",
+        "status": "resolved",
+        "speech_act": "assertion",
+        "epistemic": "asserted",
+        "temporal": "current"
+      },
+      {
+        "id": "P12B",
+        "origin": "E12",
+        "source_refs": [
+          "E12"
+        ],
+        "meaning": "用户要求今后不要为了提高 coverage 而增加低价值的重复测试。",
+        "status": "resolved",
+        "speech_act": "directive",
+        "epistemic": "asserted",
+        "temporal": "future"
+      }
+    ],
+    "gold_dependencies": []
+  },
+  "V3-001": {
+    "case_id": "V3-001",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我觉得我们这个项目下个月可能会延期。"
+    ],
+    "forbidden_inferences": [
+      "项目下个月一定会延期",
+      "延期已经发生"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "uncertain"
+  },
+  "V3-002": {
+    "case_id": "V3-002",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我朋友说公司可能下个月裁员。"
+    ],
+    "forbidden_inferences": [
+      "公司下个月一定会裁员",
+      "用户本人认为公司会裁员"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "reported"
+  },
+  "V3-003": {
+    "case_id": "V3-003",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "老王说他听HR提过，下个月可能会裁员。"
+    ],
+    "forbidden_inferences": [
+      "HR正式宣布裁员",
+      "用户或老王本人确定裁员会发生"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "reported"
+  },
+  "V3-004": {
+    "case_id": "V3-004",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "嗯，我也觉得八九不离十。"
+    ],
+    "forbidden_inferences": [
+      "裁员一定会发生",
+      "朋友的消息已被证实"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "reported"
+  },
+  "V3-005": {
+    "case_id": "V3-005",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "我不信，他最近老拿这种事吓唬我。"
+    ],
+    "forbidden_inferences": [
+      "公司一定不会裁员",
+      "朋友在故意撒谎"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "reported"
+  },
+  "V3-006": {
+    "case_id": "V3-006",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "裁员这事是朋友跟我讲的，说下个月可能会动刀。"
+    ],
+    "forbidden_inferences": [
+      "公司下个月一定会裁员",
+      "用户本人认为公司会裁员"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "reported"
+  },
+  "V3-007": {
+    "case_id": "V3-007",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我明天去北京。"
+    ],
+    "forbidden_inferences": [
+      "用户已经到北京",
+      "用户明天一定成功到达北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-008": {
+    "case_id": "V3-008",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我明天是去北京吗？"
+    ],
+    "forbidden_inferences": [
+      "用户已经决定明天去北京",
+      "用户明天不会去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": "question",
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-009": {
+    "case_id": "V3-009",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "你明天去北京吗？"
+    ],
+    "forbidden_inferences": [
+      "对话对象明天会去北京",
+      "用户本人明天去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": "question",
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-010": {
+    "case_id": "V3-010",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "要不我明天去北京？"
+    ],
+    "forbidden_inferences": [
+      "用户已决定明天去北京",
+      "用户一定不会去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "hypothetical"
+  },
+  "V3-011": {
+    "case_id": "V3-011",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我明天不去北京。"
+    ],
+    "forbidden_inferences": [
+      "用户明天会去北京",
+      "用户已经去过北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": "negative",
+    "expected_epistemic": null
+  },
+  "V3-012": {
+    "case_id": "V3-012",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "北京这趟我明天会过去。"
+    ],
+    "forbidden_inferences": [
+      "用户已经到北京",
+      "用户明天一定成功到达北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-013": {
+    "case_id": "V3-013",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "公司下个月会裁员。"
+    ],
+    "forbidden_inferences": [
+      "裁员已经发生",
+      "该预测已经被外部证实"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-014": {
+    "case_id": "V3-014",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "公司下个月大概率会裁员。"
+    ],
+    "forbidden_inferences": [
+      "公司一定会裁员",
+      "裁员已经发生"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "uncertain"
+  },
+  "V3-015": {
+    "case_id": "V3-015",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "公司下个月可能会裁员。"
+    ],
+    "forbidden_inferences": [
+      "公司一定会裁员",
+      "用户认为裁员大概率会发生"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "uncertain"
+  },
+  "V3-016": {
+    "case_id": "V3-016",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "公司下个月不会裁员。"
+    ],
+    "forbidden_inferences": [
+      "公司下个月会裁员",
+      "该判断已被外部证实"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": "negative",
+    "expected_epistemic": null
+  },
+  "V3-017": {
+    "case_id": "V3-017",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我不知道公司下个月会不会裁员。"
+    ],
+    "forbidden_inferences": [
+      "用户认为会裁员",
+      "用户认为不会裁员"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-018": {
+    "case_id": "V3-018",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "下个月裁员这事，我觉得有这个可能。"
+    ],
+    "forbidden_inferences": [
+      "公司一定会裁员",
+      "用户认为裁员大概率会发生"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "uncertain"
+  },
+  "V3-019": {
+    "case_id": "V3-019",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我想明天去北京。"
+    ],
+    "forbidden_inferences": [
+      "用户已经决定明天去北京",
+      "用户明天一定会去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-020": {
+    "case_id": "V3-020",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我打算明天去北京。"
+    ],
+    "forbidden_inferences": [
+      "用户已经到北京",
+      "用户明天一定会成功成行"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "planned"
+  },
+  "V3-021": {
+    "case_id": "V3-021",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我明天必须去北京。"
+    ],
+    "forbidden_inferences": [
+      "用户已经去了北京",
+      "用户明天必然成功到达北京",
+      "未来不会出现阻碍"
+    ],
+    "must_defer": false,
+    "expected_speech_act": "directive",
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-022": {
+    "case_id": "V3-022",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我已经到北京了。"
+    ],
+    "forbidden_inferences": [
+      "只是计划去北京",
+      "只是想去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "asserted"
+  },
+  "V3-023": {
+    "case_id": "V3-023",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "公司要求我明天去北京。"
+    ],
+    "forbidden_inferences": [
+      "用户本人想去北京",
+      "用户已经决定一定执行",
+      "用户已到北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": "directive",
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-024": {
+    "case_id": "V3-024",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "北京那边我明天非去不可。"
+    ],
+    "forbidden_inferences": [
+      "用户已经去了北京",
+      "用户明天必然成功到达北京",
+      "未来不会出现阻碍"
+    ],
+    "must_defer": false,
+    "expected_speech_act": "directive",
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-025": {
+    "case_id": "V3-025",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "如果明天下雨，我就不去北京。"
+    ],
+    "forbidden_inferences": [
+      "明天一定会下雨",
+      "用户已经确定不去北京",
+      "用户一定会去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "hypothetical"
+  },
+  "V3-026": {
+    "case_id": "V3-026",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "如果我昨天去了北京就好了。"
+    ],
+    "forbidden_inferences": [
+      "用户昨天确实去了北京",
+      "用户正在计划明天去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "counterfactual"
+  },
+  "V3-027": {
+    "case_id": "V3-027",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我要是有钱早就去北京了。"
+    ],
+    "forbidden_inferences": [
+      "用户已经去过北京",
+      "用户当前一定没有任何钱",
+      "用户已经订好行程"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "counterfactual"
+  },
+  "V3-028": {
+    "case_id": "V3-028",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "明天要是下雨，北京我就不去了。"
+    ],
+    "forbidden_inferences": [
+      "明天一定会下雨",
+      "用户已经确定不去北京",
+      "用户一定会去北京"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "hypothetical"
+  },
+  "V3-029": {
+    "case_id": "V3-029",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "假设我明天去了北京，后天再回来。"
+    ],
+    "forbidden_inferences": [
+      "用户已经决定明天去北京",
+      "用户后天一定回来"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "hypothetical"
+  },
+  "V3-030": {
+    "case_id": "V3-030",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "幸好昨天没去北京，不然赶上暴雨了。"
+    ],
+    "forbidden_inferences": [
+      "用户昨天去了北京",
+      "用户实际遭遇了暴雨"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": "counterfactual"
+  },
+  "V3-031": {
+    "case_id": "V3-031",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "我周二去北京。 ",
+      "不对，我刚说错了，是周三。"
+    ],
+    "forbidden_inferences": [
+      "行程从周二真实改到了周三",
+      "用户已经完成北京行程"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-032": {
+    "case_id": "V3-032",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "本来周二去北京，后来行程改到周三了。"
+    ],
+    "forbidden_inferences": [
+      "周二从未是有效计划",
+      "用户只是记错了日期"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-033": {
+    "case_id": "V3-033",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我刚说已经付款，其实还没有。"
+    ],
+    "forbidden_inferences": [
+      "付款已经完成",
+      "只是未来可能未付款"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-034": {
+    "case_id": "V3-034",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我之前说不去了，现在决定还是去。"
+    ],
+    "forbidden_inferences": [
+      "用户从未决定不去",
+      "用户已经完成出行"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-035": {
+    "case_id": "V3-035",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "不是我去，是老王去。"
+    ],
+    "forbidden_inferences": [
+      "用户也会去",
+      "去的人身份仍然未知"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-036": {
+    "case_id": "V3-036",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "北京行程我刚才讲错日期了，不是周二，是周三。"
+    ],
+    "forbidden_inferences": [
+      "行程从周二真实改到了周三",
+      "用户已经完成北京行程"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-037": {
+    "case_id": "V3-037",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "没有，他开什么玩笑。"
+    ],
+    "forbidden_inferences": [
+      "用户接受了报价",
+      "报价客观上一定不合理"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-038": {
+    "case_id": "V3-038",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "他？上周也是这么说的。"
+    ],
+    "forbidden_inferences": [
+      "用户确定今晚不能发版",
+      "小张今晚一定能发版"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-039": {
+    "case_id": "V3-039",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "后者。"
+    ],
+    "forbidden_inferences": [
+      "用户选择了北京",
+      "用户同时选择北京和上海"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-040": {
+    "case_id": "V3-040",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "刚刚好了。"
+    ],
+    "forbidden_inferences": [
+      "其他问题也已解决",
+      "问题仍未解决"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-041": {
+    "case_id": "V3-041",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "算了，不折腾了。"
+    ],
+    "forbidden_inferences": [
+      "用户已经辞职",
+      "用户从未想过辞职"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-042": {
+    "case_id": "V3-042",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "上海那个。"
+    ],
+    "forbidden_inferences": [
+      "用户选择了北京",
+      "用户同时选择北京和上海"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-043": {
+    "case_id": "V3-043",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "真棒，稳定得很。"
+    ],
+    "forbidden_inferences": [
+      "用户真心认为系统很稳定",
+      "系统故障已由独立技术证据确认"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-044": {
+    "case_id": "V3-044",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "我都快累死了。"
+    ],
+    "forbidden_inferences": [
+      "用户正在死亡",
+      "用户存在确定的生命危险"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-045": {
+    "case_id": "V3-045",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "找个好日子走走掉算了。"
+    ],
+    "forbidden_inferences": [
+      "用户已经决定采取某个具体行动",
+      "用户存在确定的自伤或其他特定计划",
+      "这句话只是毫无意义的玩笑"
+    ],
+    "must_defer": true,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-046": {
+    "case_id": "V3-046",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "这项目真是我的亲儿子。"
+    ],
+    "forbidden_inferences": [
+      "项目是用户的真实子女",
+      "用户具有某个具体法律所有权"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-047": {
+    "case_id": "V3-047",
+    "min_point_count": 1,
+    "max_point_count": 3,
+    "required_meanings": [
+      "是啊，真稳定。"
+    ],
+    "forbidden_inferences": [
+      "用户真心认为系统稳定",
+      "系统故障的技术原因已知"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  },
+  "V3-048": {
+    "case_id": "V3-048",
+    "min_point_count": 1,
+    "max_point_count": 2,
+    "required_meanings": [
+      "系统又宕机了。"
+    ],
+    "forbidden_inferences": [
+      "用户是在反讽系统稳定",
+      "宕机原因已知"
+    ],
+    "must_defer": false,
+    "expected_speech_act": null,
+    "expected_polarity": null,
+    "expected_epistemic": null
+  }
+}

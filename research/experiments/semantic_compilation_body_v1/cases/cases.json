@@ -1,0 +1,1034 @@
+{
+  "total_cases": 60,
+  "cases": [
+    {
+      "case_id": "V2-simple_assertion",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "simple_assertion"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "服务器现在运行在办公室的 Linux 机器上。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-mixed_transient_and_constraint",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "transient_plus_durable",
+        "multiple_independent_topics"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "测试全过了。另外以后这种报告不用写那么长，我只看结论和异常。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-plan_completed_ongoing",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "plan_completed_ongoing",
+        "state_evolution"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E03",
+          "speaker": "user",
+          "text": "我本来准备这个月交首付，不过昨天已经交了，现在就等贷款审批。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-uncertain_diagnosis",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "uncertainty",
+        "self_belief"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E04",
+          "speaker": "user",
+          "text": "我感觉热启动机制可能有问题，但还没确认。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-conditional_invariant",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "conditional_statement",
+        "durable_rule"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E05",
+          "speaker": "user",
+          "text": "如果 BGE 换版本，就必须重建向量，但 SemanticBlock identity 不应该变。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-cross_turn_correction",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "cross_turn_correction",
+        "supersedes"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E06A",
+          "speaker": "user",
+          "text": "AML 先试 top-k=100。"
+        },
+        {
+          "evidence_id": "E06B",
+          "speaker": "user",
+          "text": "不对，别用100，还是扫20/30/50/70。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V2-unresolved_reference",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "unresolved_reference",
+        "must_defer"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E07",
+          "speaker": "user",
+          "text": "还是用那个方案吧。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-resolved_reference_with_context",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "resolved_pronoun",
+        "context_dependency"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E08A",
+          "speaker": "user",
+          "text": "方案A是双库同步，方案B是原生库做Raw authority、MR-Mem只做语义覆盖。"
+        },
+        {
+          "evidence_id": "E08B",
+          "speaker": "user",
+          "text": "还是用后者。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V2-state_change_over_time",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "state_change_over_time",
+        "longitudinal_evolution"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E09A",
+          "speaker": "user",
+          "text": "上周这个问题已经修好了。"
+        },
+        {
+          "evidence_id": "E09B",
+          "speaker": "user",
+          "text": "现在又坏了。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V2-nested_stance",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "nested_stance",
+        "evidence_limitation",
+        "negation"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E10",
+          "speaker": "user",
+          "text": "我不认为这个结果证明算法正确，只能说明夹具能跑。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-question_not_fact",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "question_not_fact"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E11",
+          "speaker": "user",
+          "text": "为什么 LCE 执行不是即时性的？"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V2-coding_result_plus_durable_rule",
+      "source": "v2_adversarial",
+      "phenomena": [
+        "transient_plus_durable",
+        "durable_rule"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E12",
+          "speaker": "user",
+          "text": "pytest 3918 passed。以后别为了 coverage 写低价值重复测试。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-001",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "attribution_reported_speech",
+        "direct_self_belief_project_delay"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我觉得我们这个项目下个月可能会延期。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-002",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "attribution_reported_speech",
+        "friend_report"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我朋友说公司可能下个月裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-003",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "attribution_reported_speech",
+        "nested_report"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "老王说他听HR提过，下个月可能会裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-004",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "attribution_reported_speech",
+        "user_endorses_report"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "你朋友说公司下个月可能裁员。你也这么觉得？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "嗯，我也觉得八九不离十。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-005",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "attribution_reported_speech",
+        "user_rejects_report"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "你朋友说公司下个月可能裁员。你也这么觉得？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "我不信，他最近老拿这种事吓唬我。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-006",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "attribution_reported_speech",
+        "friend_report_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "裁员这事是朋友跟我讲的，说下个月可能会动刀。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-007",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "communicative_act",
+        "future_assertion"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我明天去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-008",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "communicative_act",
+        "self_schedule_question"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我明天是去北京吗？"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-009",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "communicative_act",
+        "question_about_other"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "你明天去北京吗？"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-010",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "communicative_act",
+        "tentative_suggestion"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "要不我明天去北京？"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-011",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "communicative_act",
+        "negative_assertion"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我明天不去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-012",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "communicative_act",
+        "future_assertion_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "北京这趟我明天会过去。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-013",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "epistemic_commitment",
+        "certain_layoff"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "公司下个月会裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-014",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "epistemic_commitment",
+        "probable_layoff"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "公司下个月大概率会裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-015",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "epistemic_commitment",
+        "possible_layoff"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "公司下个月可能会裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-016",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "epistemic_commitment",
+        "negative_layoff"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "公司下个月不会裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-017",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "epistemic_commitment",
+        "unknown_layoff"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我不知道公司下个月会不会裁员。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-018",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "epistemic_commitment",
+        "possible_layoff_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "下个月裁员这事，我觉得有这个可能。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-019",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "desire_intention_obligation",
+        "desire"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我想明天去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-020",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "desire_intention_obligation",
+        "intention"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我打算明天去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-021",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "desire_intention_obligation",
+        "strong_requirement"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我明天必须去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-022",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "desire_intention_obligation",
+        "completed_arrival"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我已经到北京了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-023",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "desire_intention_obligation",
+        "external_obligation"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "公司要求我明天去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-024",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "desire_intention_obligation",
+        "strong_requirement_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "北京那边我明天非去不可。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-025",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "hypothetical_counterfactual",
+        "conditional_rain"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "如果明天下雨，我就不去北京。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-026",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "hypothetical_counterfactual",
+        "past_counterfactual_wish"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "如果我昨天去了北京就好了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-027",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "hypothetical_counterfactual",
+        "money_counterfactual"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我要是有钱早就去北京了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-028",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "hypothetical_counterfactual",
+        "conditional_rain_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "明天要是下雨，北京我就不去了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-029",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "hypothetical_counterfactual",
+        "hypothetical_planning"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "假设我明天去了北京，后天再回来。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-030",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "hypothetical_counterfactual",
+        "actual_non_event_plus_counterfactual"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "幸好昨天没去北京，不然赶上暴雨了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-031",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "correction_revision",
+        "explicit_date_correction"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我周二去北京。 "
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "不对，我刚说错了，是周三。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-032",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "correction_revision",
+        "world_plan_changed"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "本来周二去北京，后来行程改到周三了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-033",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "correction_revision",
+        "payment_correction"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我刚说已经付款，其实还没有。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-034",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "correction_revision",
+        "decision_changed"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我之前说不去了，现在决定还是去。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-035",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "correction_revision",
+        "agent_correction"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "不是我去，是老王去。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-036",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "correction_revision",
+        "explicit_date_correction_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "北京行程我刚才讲错日期了，不是周二，是周三。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-037",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "context_dependence",
+        "ellipsis_offer_rejection"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "那个报价你接受了吗？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "没有，他开什么玩笑。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-038",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "context_dependence",
+        "pronoun_skepticism"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "小张说今晚能发版。 "
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "他？上周也是这么说的。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-039",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "context_dependence",
+        "ellipsis_choice"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "你明天去北京还是上海？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "后者。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-040",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "context_dependence",
+        "resolved_antecedent"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "你说的那个登录问题解决了吗？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "刚刚好了。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-041",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "context_dependence",
+        "intent_reversal_in_context"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "昨天你说想辞职，现在呢？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "算了，不折腾了。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-042",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "context_dependence",
+        "ellipsis_choice_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "明天北京和上海，你最后选哪个？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "上海那个。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-043",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "nonliteral_ambiguity",
+        "sarcasm_outage"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "系统又挂了？"
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "真棒，稳定得很。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-044",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "nonliteral_ambiguity",
+        "hyperbole_fatigue"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "我都快累死了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-045",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "nonliteral_ambiguity",
+        "genuine_ambiguity"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "找个好日子走走掉算了。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-046",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "nonliteral_ambiguity",
+        "metaphor_attachment"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "这项目真是我的亲儿子。"
+        }
+      ],
+      "context_turns": 1
+    },
+    {
+      "case_id": "V3-047",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "nonliteral_ambiguity",
+        "sarcasm_outage_paraphrase"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "assistant",
+          "text": "系统怎么又挂了。 "
+        },
+        {
+          "evidence_id": "E02",
+          "speaker": "user",
+          "text": "是啊，真稳定。"
+        }
+      ],
+      "context_turns": 2
+    },
+    {
+      "case_id": "V3-048",
+      "source": "v0_3_adjudicated",
+      "phenomena": [
+        "nonliteral_ambiguity",
+        "literal_outage"
+      ],
+      "dialogue": [
+        {
+          "evidence_id": "E01",
+          "speaker": "user",
+          "text": "系统又宕机了。"
+        }
+      ],
+      "context_turns": 1
+    }
+  ]
+}
