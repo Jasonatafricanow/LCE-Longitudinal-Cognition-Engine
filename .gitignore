@@ -66,3 +66,17 @@ lab/diary_trend_04/common.py
 build/
 dist/
 *.egg-info/
+
+# Local research outputs, run state and private corpora (never commit).
+# Backed up outside the repo; see C:/projects/_archive/.
+/.llm_cache/
+**/.llm_cache/
+**/.cache/
+/out/
+/outputs/
+/work/
+/research/benchmarks/
+/research/experiments/semantic_compilation_body_v1/
+/research/experiments/semantic_block_issue_22/
+/research/experiments/longitudinal_relations_issue_24/
+semanticblock_STEP1*.zip
