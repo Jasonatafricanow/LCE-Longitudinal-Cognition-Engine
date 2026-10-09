@@ -252,15 +252,76 @@ def test_case_i_invalidated_current_false_history_retained(tmp_path: Path) -> No
             worker = ProjectionWorker(queue, MrMemProjectionWriter(reader, runtime), target=PROJECTION_TARGET)
             assert worker.run_once() == (1, 0)
             original = runtime.projected.get_semantic_block(mid)
-            assert core.canonical.invalidate_source(SCOPE, sources.refs["first"], deleted=True) == (mid,)
+            invalidated_at = KNOWN + timedelta(days=5)
+            assert core.canonical.invalidate_source(
+                SCOPE, sources.refs["first"], deleted=True, at=invalidated_at
+            ) == (mid,)
             assert worker.run_once() == (1, 0)
             projected = runtime.projected.canonical_projection(mid)
             assert not projected.current_valid
-            assert projected.transition_known_at is None
+            assert projected.transition_known_at == invalidated_at
             assert runtime.projected.get_semantic_block(mid) == original
             assert runtime.projected.list_semantic_blocks() == ()
+            # as-of replay: visible before the invalidation became known, hidden after
+            assert projected.valid_at(KNOWN + timedelta(days=2))
+            assert not projected.valid_at(invalidated_at)
+            assert not projected.valid_at(KNOWN + timedelta(days=9))
+        finally:
+            runtime.close()
+            reader.close()
+
+
+def test_case_i_unrecorded_invalidation_time_stays_fail_closed(tmp_path: Path) -> None:
+    """Rows invalidated before MR-Mem recorded times have no transition time: stay unknown."""
+    path = tmp_path / "mr-mem.sqlite"
+    sources = NativeSources()
+    with MemoryCore(path) as core:
+        mid = admit(core, sources, "first", 1, [point("p1", "canonical cognition")])[0]
+        queue = core.canonical.projection_queue()
+        queue.register_projection_target(PROJECTION_TARGET)
+        reader = SqliteCanonicalSemanticBlockReader(path)
+        runtime = MrMemProjectionRuntime(tmp_path / "lce", scope=SCOPE)
+        try:
+            worker = ProjectionWorker(queue, MrMemProjectionWriter(reader, runtime), target=PROJECTION_TARGET)
+            assert worker.run_once() == (1, 0)
+            with core.canonical._transaction():  # legacy path: lifecycle change without a time
+                core.canonical._set_lifecycle(core.get(mid), MemoryLifecycle.INVALIDATED)
+            assert worker.run_once() == (1, 0)
+            projected = runtime.projected.canonical_projection(mid)
+            assert projected.transition_known_at is None
             with pytest.raises(LifecycleTimeUnknown):
                 projected.valid_at(KNOWN + timedelta(days=2))
+        finally:
+            runtime.close()
+            reader.close()
+
+
+def test_case_i_asof_history_reproducible_after_later_invalidation(tmp_path: Path) -> None:
+    path = tmp_path / "mr-mem.sqlite"
+    sources = NativeSources()
+    with MemoryCore(path) as core:
+        ids = [
+            admit(core, sources, n, i, [point("p1", f"cognition point {n}")])[0]
+            for i, n in enumerate(("a", "b", "c"), start=1)
+        ]
+        queue = core.canonical.projection_queue()
+        queue.register_projection_target(PROJECTION_TARGET)
+        reader = SqliteCanonicalSemanticBlockReader(path)
+        runtime = MrMemProjectionRuntime(tmp_path / "lce", scope=SCOPE, provider=ForbiddenSemanticProvider())
+        try:
+            worker = ProjectionWorker(queue, MrMemProjectionWriter(reader, runtime), target=PROJECTION_TARGET)
+            worker.run_once()
+            cutoff = KNOWN + timedelta(days=10)
+
+            def visible() -> list[str]:
+                return sorted(b.block_id for b in runtime.projected.list_semantic_blocks_at_knowledge_cutoff(cutoff))
+
+            before = visible()
+            assert set(before) == set(ids)
+            core.canonical.invalidate_source(SCOPE, sources.refs["b"], deleted=True)  # now > cutoff
+            worker.run_once()
+            assert visible() == before  # same cutoff, same history
+            assert {b.block_id for b in runtime.projected.list_semantic_blocks()} == {ids[0], ids[2]}
         finally:
             runtime.close()
             reader.close()
