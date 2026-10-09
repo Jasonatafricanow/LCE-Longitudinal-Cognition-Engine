@@ -1042,8 +1042,13 @@ class LineGraphStore:
         ).fetchall()
         return {str(row[0]): int(row[1]) for row in rows}
 
-    def reset_derived(self) -> None:
-        """Delete the rebuildable Line graph generation."""
+    def reset_derived(self, *, preserve_metadata: tuple[str, ...] = ()) -> None:
+        """Delete the rebuildable Line graph generation.
+
+        ``preserve_metadata`` names metadata keys that must survive the reset
+        inside the same transaction (for example an interruption marker that
+        has to outlive the destructive step it protects).
+        """
         with self.conn:
             self.conn.execute("DELETE FROM line_edge_revisions")
             self.conn.execute("DELETE FROM line_node_memberships")
@@ -1051,7 +1056,15 @@ class LineGraphStore:
             self.conn.execute("DELETE FROM line_node_states")
             self.conn.execute("DELETE FROM line_nodes")
             self.conn.execute("DELETE FROM lines")
-            self.conn.execute("DELETE FROM line_graph_metadata")
+            if preserve_metadata:
+                placeholders = ",".join("?" for _ in preserve_metadata)
+                self.conn.execute(
+                    "DELETE FROM line_graph_metadata "
+                    f"WHERE key NOT IN ({placeholders})",
+                    preserve_metadata,
+                )
+            else:
+                self.conn.execute("DELETE FROM line_graph_metadata")
 
     def close(self) -> None:
         self.conn.close()
