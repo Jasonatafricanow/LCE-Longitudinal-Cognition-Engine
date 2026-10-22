@@ -1,5 +1,7 @@
 # Contributing to LCE
 
+**Licensing status:** no project-wide reuse license has been selected. Please agree contribution and reuse terms with the maintainer before submitting substantial code. See [NOTICE.md](NOTICE.md).
+
 LCE is built around research questions that can fail.
 
 A useful contribution does not need to prove a new algorithm is better. A reproducible negative result, a clearer failure boundary, or a stronger adversarial fixture can be equally valuable.
